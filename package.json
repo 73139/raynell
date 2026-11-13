@@ -5,5 +5,5 @@
   "engines": {"node": ">=20"},
   "dependencies": {"tesseract.js": "7.0.0", "tesseract.js-core": "7.0.0"},
   "devDependencies": {"jsdom": "26.1.0"},
-  "scripts": {"build": "node scripts/build-ocr.mjs", "start": "node support-service/server.mjs", "test": "node --experimental-vm-modules scripts/test-startup.cjs && node scripts/test-guide-core.mjs && node scripts/test-market.mjs"}
+  "scripts": {"build": "node scripts/build-ocr.mjs", "start": "node support-service/server.mjs", "test": "node --experimental-vm-modules scripts/test-startup.cjs && node scripts/test-guide-core.mjs && node scripts/test-market.mjs && node scripts/test-quest-photos.mjs"}
 }

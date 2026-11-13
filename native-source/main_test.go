@@ -39,6 +39,9 @@ func TestNativeServesBootstrapAndModuleMIME(t *testing.T) {
 	if got := rr.Header().Get("Content-Type"); got != "text/html; charset=utf-8" {
 		t.Fatalf("index Content-Type = %q", got)
 	}
+	if !strings.Contains(rr.Header().Get("Content-Security-Policy"), "https://escapefromtarkov.fandom.com") {
+		t.Fatal("native site must permit the public quest photo API")
+	}
 	pattern := regexp.MustCompile(`<script type="application/json" id="tfg-companion-bootstrap">([^<]+)</script>`)
 	matches := pattern.FindAllStringSubmatch(rr.Body.String(), -1)
 	if len(matches) != 1 {
@@ -53,6 +56,9 @@ func TestNativeServesBootstrapAndModuleMIME(t *testing.T) {
 	}
 	for _, asset := range []struct{ name, mime string }{
 		{"/app.mjs", "text/javascript; charset=utf-8"},
+		{"/quest-photos.mjs", "text/javascript; charset=utf-8"},
+		{"/quest-photo-core.mjs", "text/javascript; charset=utf-8"},
+		{"/quest-guide-fallbacks.json", "application/json; charset=utf-8"},
 		{"/companion-client.mjs", "text/javascript; charset=utf-8"},
 		{"/maps-source.json", "application/json; charset=utf-8"},
 		{"/styles.css", "text/css; charset=utf-8"},

@@ -16,6 +16,7 @@ import { initializeR14Shell } from './r14-shell.mjs';
 import { initializeMapIntel } from './map-intel-ui.mjs';
 import { initializeSimpleUI } from './simple-ui.mjs';
 import { initializeGuideExtras } from './guide-extras.mjs';
+import { initializeQuestPhotos } from './quest-photos.mjs';
 
 const $ = (id) => document.getElementById(id);
 // Keep quest details in the same panel so the map retains its width.
@@ -34,7 +35,7 @@ Object.assign(state,{companionMode:false,companion:null,companionConnected:false
 Object.assign(state,{mapDataset:null,mapDetailsStatus:'loading',floorOptions:[],floorImageSequence:0,followFloor:false,showOtherFloors:false,exitFilters:{pmc:true,scav:true,shared:true,unknown:true,transit:true},showExitLabels:false,exitSearch:'',selectedExit:null});
 let opsRoute=[],opsExit=null,opsController=null,lastAutoMapRev=0;
 let fieldKitController=null,r12Controller=null,r13Controller=null;
-let mapIntelController=null,verifiedIntelLabels={},extrasController=null;
+let mapIntelController=null,verifiedIntelLabels={},extrasController=null,questPhotosController=null;
 Object.assign(state,{kappaOnly:false,guideRoute:null});
 let companionClient=null;
 let questOcrController=null,ocrCompanionCursor='',ocrBrowserTimer=null,ocrBrowserTicket=0,ocrSourceEpoch=0;
@@ -101,6 +102,7 @@ function renderMapList(){
 }
 function setMapLoading(message,error=false){const el=$('map-loading');el.hidden=false;el.classList.toggle('is-error',error);el.innerHTML=`<div class="${error?'':'loading-orbit'}"></div><strong>${esc(message)}</strong>${error?'<button class="btn btn-small" id="retry-map">지도 다시 불러오기</button>':''}`;}
 async function selectMap(key,change=true){
+  questPhotosController?.close();
   if(!state.configs.some(c=>c.key===key))return;
   const changed=state.mapKey!==key;state.mapKey=key;mapIntelController?.refresh();state.floor='';state.floorOptions=[];state.mapDoc=null;state.imageReady=false;state.selectedExit=null;const seq=++state.mapSequence;
   try{localStorage.setItem('tfg-map',key);}catch{}
@@ -221,7 +223,7 @@ function renderMarkers(){
   renderExitMarkers(fragment);
   for(const task of tasks){for(const l of locationsFor(task)){
     const pos=project(l),floor=floorMarkerState(l);if(!pos?.inBounds||(!floor.visible&&!state.showOtherFloors))continue;
-    index++;const b=document.createElement('button');b.className='pin-marker'+(state.selected===task.id?' selected':'')+(floor.otherFloor?' other-floor':'');b.style.left=(pos.u*100)+'%';b.style.top=(pos.v*100)+'%';b.dataset.task=task.id;
+    index++;const b=document.createElement('button');b.className='pin-marker'+(state.selected===task.id?' selected':'')+(floor.otherFloor?' other-floor':'');b.style.left=(pos.u*100)+'%';b.style.top=(pos.v*100)+'%';b.dataset.task=task.id;b.dataset.questPhotoObjective=l.objective.id;
     b.innerHTML=String(index)+(floor.badge?`<span class="marker-floor-badge ${floor.unknown?'unknown':''}">${esc(floor.badge)}</span>`:'');
     const distance=state.player?.mapKey===state.mapKey?` · 직선 ${Math.round(Math.hypot(l.x-state.player.x,l.z-state.player.z))}m`:'';
     b.title=`${task.name}\n${l.objective.description}\n${l.kind==='possible'?'등장 후보':l.kind==='zone'?'구역 기준점':l.label||'목표 위치'} · ${floor.label} · 높이 ${Number.isFinite(l.y)?l.y.toFixed(1):'미등록'}${distance}`;b.setAttribute('aria-label',b.title);fragment.append(b);
@@ -630,7 +632,8 @@ function renderQuests(){
   list.innerHTML=tasks.slice(0,state.renderLimit).map(task=>{const status=statusOf(task.id);const p=taskProgress(task.id);const points=locationsFor(task);const maps=[...new Set(task.mapIds.map(mapKeyFor))].map(mapName);return `<article class="quest-card ${state.selected===task.id?'selected':''} ${status==='done'?'is-complete':''}"><button class="quest-open" data-task="${esc(task.id)}"><div class="quest-meta"><span>${esc(task.traderName||'상인 확인 필요')}</span><span>요구 Lv.${Number(task.minPlayerLevel)||1}</span></div><h3 class="quest-title">${esc(task.name)}</h3>${task.nameEn&&task.nameEn!==task.name?`<p class="quest-name-en">${esc(task.nameEn)}</p>`:''}<div class="quest-card-bottom"><span class="badge status-${status}">${STATUS_LABELS[status]}</span>${task.kappaRequired?'<span class="kappa-card-mark" aria-label="카파 필수 퀘스트" title="카파 필수 퀘스트">K</span>':''}<span class="quest-map-label">${esc(maps.slice(0,2).join(' · ')||'여러 지역 / 위치 미등록')}${maps.length>2?' 외':''}</span></div></button><button class="quest-pin ${p.pinned?'pinned':''}" data-pin="${esc(task.id)}" aria-label="${esc(task.name)} ${p.pinned?'지도 표시 해제':'지도 표시'}" title="${p.pinned?'지도 표시 해제':'지도에 목표 표시'}" aria-pressed="${!!p.pinned}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 3h8l-1 7 4 4v2H5v-2l4-4-1-7zM12 16v6"/></svg></button></article>`;}).join('')+(tasks.length>state.renderLimit?`<button class="btn load-more" data-action="load-more">퀘스트 더 보기 (${fmt.format(tasks.length-state.renderLimit)}개)</button>`:'');
 }
 function openTask(id){const task=state.dataset?.tasks.find(t=>t.id===id);if(!task)return;state.selected=id;$('quest-browser').hidden=true;$('quest-detail').hidden=false;$('intel-blank').hidden=true;$('quest-panel').classList.add('has-detail');renderDetail();renderQuests();renderMarkers();}
-function closeDetail(){state.selected=null;$('quest-detail').hidden=true;$('intel-blank').hidden=false;$('quest-browser').hidden=false;$('quest-panel').classList.remove('has-detail');renderQuests();renderMarkers();}
+function openQuestPhotos(task,objective){const maps=(objective?.mapIds||[]).map(mapKeyFor).filter(Boolean);return questPhotosController?.open({task,objective,mapKey:maps.length&&!maps.includes(state.mapKey)?maps[0]:state.mapKey});}
+function closeDetail(){questPhotosController?.close();state.selected=null;$('quest-detail').hidden=true;$('intel-blank').hidden=false;$('quest-browser').hidden=false;$('quest-panel').classList.remove('has-detail');renderQuests();renderMarkers();}
 function notesHTML(notes){return notes?.length?`<ul class="condition-list">${notes.map(note=>`<li>${esc(note)}</li>`).join('')}</ul>`:'';}
 function renderDetail(){
   const task=state.dataset?.tasks.find(t=>t.id===state.selected);if(!task)return;
@@ -648,6 +651,7 @@ function renderDetail(){
       ${o.items?.length?`<div class="objective-items">${choices?'<span class="small-note">허용 아이템 후보 · 수량과 조합은 목표 설명 기준</span>':''}${o.items.map(it=>`<span>${esc(it.name||'아이템 이름 미등록')}${!choices&&it.count?' × '+esc(it.count):''}</span>`).join('')}</div>`:''}
       ${notesHTML(o.conditionNotes)}
       ${pins.length?`<button class="objective-locate" data-focus-objective="${esc(o.id)}">${pins.some(l=>l.kind==='possible')?`등장 후보 ${pins.length}곳 보기`:pins.length>1?`구역 ${pins.length}곳 보기`:'지도에서 보기'} <span>↗</span></button>`:'<div class="objective-location-note">이 지도에 등록된 고정 좌표 없음</div>'}
+      <button class="objective-photo-button btn btn-small" data-quest-photo-task="${esc(task.id)}" data-quest-photo-objective="${esc(o.id)}">위치 사진 보기</button>
     </div>`;
   }).join('');
   const reqs=(task.requirements||[]).map(r=>{
@@ -670,7 +674,7 @@ function renderDetail(){
     ${task.failureNotes?.length?`<section class="detail-section"><h3>실패 조건</h3>${notesHTML(task.failureNotes)}</section>`:''}
     ${rewardSections}
     <section class="detail-section"><h3>위치 정보</h3><p class="muted">${allLocationCount?`공개 데이터에 목표 위치 ${allLocationCount}곳이 등록되어 있어요. 선택한 지도에는 ${locations.length}곳이 있어요. 구역 표시는 구역의 기준점이고, 등장 후보는 가능한 위치예요.`:'고정 좌표가 등록되지 않은 퀘스트예요. 목표 설명과 원문 공략을 확인해 주세요.'}</p><p class="small-note">층은 직접 선택하세요. 표시는 평면 위치이며 다른 층의 목표가 겹칠 수 있어요.</p></section>
-    <div class="detail-links"><a class="btn btn-small" href="${esc(detailURL)}" target="_blank" rel="noopener noreferrer">데이터 원문 ↗</a>${wiki?`<a class="btn btn-small" href="${esc(wiki)}" target="_blank" rel="noopener noreferrer">위키 공략 ↗</a>`:''}</div>`;
+    <div class="detail-links"><button class="btn btn-small" data-quest-photo-task="${esc(task.id)}">퀘스트 공략 사진</button><a class="btn btn-small" href="${esc(detailURL)}" target="_blank" rel="noopener noreferrer">데이터 원문 ↗</a>${wiki?`<a class="btn btn-small" href="${esc(wiki)}" target="_blank" rel="noopener noreferrer">위키 공략 ↗</a>`:''}</div>`;
 }
 async function loadItemNames(force=false){
   if(!state.dataset||state.itemsLoading||state.dataset.allItemNamesLoaded&&!force)return;
@@ -805,10 +809,11 @@ document.addEventListener('click',event=>{
   if(target.dataset.map)selectMap(target.dataset.map);
   if(target.dataset.floor)chooseFloor(target.dataset.floor);
   if(target.dataset.exit)openExit(target.dataset.exit);
-  if(target.dataset.task)openTask(target.dataset.task);
+  if(target.dataset.task){openTask(target.dataset.task);if(target.classList.contains('pin-marker')){const task=state.dataset?.tasks.find(t=>t.id===target.dataset.task);void openQuestPhotos(task,task?.objectives.find(o=>o.id===target.dataset.questPhotoObjective));}}
+  if(target.dataset.questPhotoTask){const task=state.dataset?.tasks.find(t=>t.id===target.dataset.questPhotoTask);void openQuestPhotos(task,task?.objectives.find(o=>o.id===target.dataset.questPhotoObjective));}
   if(target.dataset.pin)togglePin(target.dataset.pin);
   if(target.dataset.mapJump){const key=target.dataset.mapJump;if(state.configs.some(c=>c.key===key)){setView('map');selectMap(key);}else toast('이 지역은 보정된 지도 이미지가 아직 등록되지 않았어요.',true);}
-  if(target.dataset.focusObjective){const task=state.dataset.tasks.find(t=>t.id===state.selected);const point=locationsFor(task).find(l=>l.objective.id===target.dataset.focusObjective);if(point){if(!taskProgress(task.id).pinned)updateProgress(task.id,{pinned:true});setView('map');centerOn(point);}}
+  if(target.dataset.focusObjective){const task=state.dataset.tasks.find(t=>t.id===state.selected);const point=locationsFor(task).find(l=>l.objective.id===target.dataset.focusObjective);if(point){if(!taskProgress(task.id).pinned)updateProgress(task.id,{pinned:true});setView('map');centerOn(point);void openQuestPhotos(task,point.objective);}}
   if(target.id==='retry-map')selectMap(state.mapKey,false);
   if(target.dataset.action==='retry-data')loadData(true);
   if(target.dataset.action==='load-items')loadItemNames(true);
@@ -866,6 +871,7 @@ r13Controller=initializeR13({getMode:()=>state.mode,getMap:()=>state.mapKey,getM
 questOcrController=initializeQuestOcr({getTasks:()=>state.dataset?.tasks||[],getMode:()=>state.mode,getTaskInfo:questOcrTaskInfo,onApply:applyRecognizedQuests,onBatchReady:showCapturedBatch,onOpen:showRecognizedQuest,onMap:async(key,id)=>{if(!state.configs.some(c=>c.key===key)){toast('이 지역은 보정된 지도 이미지가 아직 없어요.',true);return;}setView('map',{keepFilter:true});await selectMap(key);showRecognizedQuest(id);},onNotify:toast,onAutoChange:()=>{resetQuestOcrSource();renderOcrConnection();}});
 mapIntelController=initializeMapIntel({getMap:()=>state.mapKey,getMode:()=>state.mode,getConfig:cfg,getRecord:()=>mapRecords().find(m=>baseMapKey(m.normalizedName)===state.mapKey),getFallbackLabels:()=>verifiedIntelLabels,project,getFloorState:point=>{const f=floorMarkerState(point);return {...f,visible:f.visible||state.showOtherFloors};},getZoomRatio:()=>state.fitZoom>0?state.zoom/state.fitZoom:1,centerOn,refreshMarkers:()=>renderMarkers(),notify:toast});
 extrasController=initializeGuideExtras({getTasks:()=>state.dataset?.tasks||[],getStatus:statusOf,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),onOpenQuest:id=>{setView('quests');openTask(id);},onComplete:(id,status)=>updateProgress(id,{status}),onRoute:route=>{state.guideRoute=route;renderMarkers();}});
+questPhotosController=initializeQuestPhotos({getMap:()=>state.mapKey,getMapName:key=>mapName(key||state.mapKey)});
 fetch('./verified-labels.json').then(r=>r.ok?r.json():null).then(data=>{if(data?.maps){verifiedIntelLabels=data.maps;mapIntelController?.refresh();}}).catch(()=>{});
 initializeR14Shell();
 initializeCompanion();renderSummary();renderLocation();renderFloorControls();renderExitList();

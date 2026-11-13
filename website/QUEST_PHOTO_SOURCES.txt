@@ -1,0 +1,36 @@
+Quest location photographs and guide captions
+
+Original guide pages and captions:
+Escape from Tarkov Wiki / Fandom
+https://escapefromtarkov.fandom.com/
+Each quest photo card links to its original quest page. Guide content is read
+through the public MediaWiki parse API. Only the Guide section is used.
+The fallback metadata for Delivery From the Past and Missing Informant was
+checked on 2026-11-13. Fifteen captions were also translated into Korean.
+
+Public preview images:
+https://github.com/narnesss/tarkov-help
+Pinned revision: 427dd29293e758264db592a24692786410e99821
+Original-image to preview-file correspondence:
+config/media-previews.php in that revision.
+Preview images are loaded from public/assets/media-previews in that revision.
+The source index contains 1,132 corresponding images; every indexed file was
+checked against the repository tree. Images are not included in this ZIP.
+Source attribution and rights notices:
+https://github.com/narnesss/tarkov-help/blob/427dd29293e758264db592a24692786410e99821/public/licenses/GUIDE-DATA.txt
+https://github.com/narnesss/tarkov-help/blob/427dd29293e758264db592a24692786410e99821/public/licenses/QUEST-GUIDES.txt
+
+Game screenshots and game content remain the property of Battlestate Games
+and their respective authors. Wiki community text and annotations retain their
+source terms, including CC BY-NC-SA 3.0 where applicable. Source diagrams may
+carry CC BY-NC-SA 4.0 and individual author credits. Each original file's terms
+take precedence. This is a noncommercial reference guide; no new ownership or
+broader license is claimed for third-party material. Korean caption translations
+and derived guide metadata retain the applicable source share-alike terms.
+https://creativecommons.org/licenses/by-nc-sa/3.0/
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+The app does not copy any application code from the preview repository.
+Internet access is required to retrieve photographs not already in the browser
+cache. A public file's availability may change. The original Wiki source link
+and a clear image-loading error remain available if an image cannot be loaded.

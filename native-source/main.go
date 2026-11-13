@@ -31,7 +31,7 @@ var assets embed.FS
 const port = "43873"
 const maxImage = 20 << 20
 const appName = "tarkov-field-guide-companion"
-const version = "2026.11.13-r16-red-pen"
+const version = "2026.11.13-r16-quest-photos"
 
 var screenshotRe = regexp.MustCompile(`(?i)^(\d{4}-\d{2}-\d{2}\[\d{2}-\d{2}\])_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)(?:_([+-]?[0-9.]+))?\s+\((\d+)\)\.png$`)
 var safeImageRe = regexp.MustCompile(`(?i)^[^/\\:\x00-\x1f\x7f]{1,255}\.(png|jpg|jpeg|webp|bmp)$`)
@@ -432,7 +432,7 @@ func (a *App) serve(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	w.Header().Set("Referrer-Policy", "no-referrer")
 	w.Header().Set("X-Frame-Options", "DENY")
-	w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' https: blob: data:; connect-src 'self' https://raw.githubusercontent.com https://assets.tarkov.dev https://json.tarkov.dev https://cdn.jsdelivr.net; object-src 'none'; base-uri 'self'; frame-ancestors 'none'")
+	w.Header().Set("Content-Security-Policy", "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' https: blob: data:; connect-src 'self' https://raw.githubusercontent.com https://assets.tarkov.dev https://json.tarkov.dev https://cdn.jsdelivr.net https://escapefromtarkov.fandom.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none'")
 	if r.Host != "127.0.0.1:"+a.listenPort {
 		http.Error(w, "local only", 403)
 		return
