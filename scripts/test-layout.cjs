@@ -97,7 +97,7 @@ const site=path.resolve(__dirname,'../website');
     await photo.locator('#open-recommended-routes').click();
     await photo.locator('[data-apply-route="customs-center"]').click();
     assert.equal(await photo.locator('#map-markers .guide-waypoint').count(),3);
-    assert.equal(await photo.locator('.recommended-route-line polyline').count(),1);
+    assert.equal(await photo.locator('.recommended-route-line path').count(),1);
     await photo.locator('#clear-recommended-route').click();
     assert.equal(await photo.locator('#map-markers .guide-waypoint').count(),0);
     await photo.locator('#open-kappa-line').click();

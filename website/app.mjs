@@ -252,7 +252,19 @@ function renderMarkers(){
 function renderGuideRoute(fragment){
  const route=state.guideRoute;if(!route||route.map!==state.mapKey)return;
  const points=route.points.map(point=>({point,pos:project(point)})).filter(p=>p.pos?.inBounds);
- if(points.length>1){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','recommended-route-line');svg.setAttribute('viewBox','0 0 1000 1000');svg.setAttribute('preserveAspectRatio','none');const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('points',points.map(p=>(p.pos.u*1000)+','+(p.pos.v*1000)).join(' '));svg.append(line);fragment.append(svg);}
+ if(points.length>1){
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.setAttribute('class','recommended-route-line');svg.setAttribute('viewBox','0 0 1000 1000');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');
+  const vertices=points.map(p=>({x:p.pos.u*1000,y:p.pos.v*1000}));
+  let stroke=`M ${vertices[0].x} ${vertices[0].y}`;
+  for(let i=1;i<vertices.length;i++){
+   const a=vertices[i-1],b=vertices[i],dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy)||1;
+   // Slight, stable bends give a pen stroke while keeping every stop exact.
+   const bend=Math.min(5,length*.045)*(i%2?1:-1),nx=-dy/length,ny=dx/length;
+   stroke+=` C ${a.x+dx/3+nx*bend} ${a.y+dy/3+ny*bend} ${a.x+dx*2/3-nx*bend*.65} ${a.y+dy*2/3-ny*bend*.65} ${b.x} ${b.y}`;
+  }
+  const line=document.createElementNS('http://www.w3.org/2000/svg','path');line.setAttribute('d',stroke);svg.append(line);fragment.append(svg);
+ }
  points.forEach(({point,pos},i)=>{const button=document.createElement('button');button.type='button';button.className='guide-waypoint';button.textContent=String(i+1);button.style.left=(pos.u*100)+'%';button.style.top=(pos.v*100)+'%';button.title=(i+1)+'. '+point.label+(point.floor?' · '+point.floor:'')+' · 방문 순서';button.setAttribute('aria-label',button.title);button.addEventListener('click',event=>{event.stopPropagation();centerOn(point);});fragment.append(button);});
 }
 function currentExits(){return exitsForMap(mapRecords(),state.mapKey,{items:state.dataset?.items||[]});}
