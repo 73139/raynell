@@ -33,7 +33,7 @@ function publicFixture(url) {
       map: 'fixture-customs', minPlayerLevel: 1,
       objectives: [{id: `fixture-${mode}-objective`, type: 'visit',
         description: objective, maps: ['fixture-customs']}]}]},
-    maps: {maps: [{id: 'fixture-customs', name: mapName, normalizedName: 'customs'}]},
+    maps: {maps: [{id: 'fixture-customs', name: mapName, normalizedName: 'customs'},{id:'fixture-tutorial',name:'Tutorial',normalizedName:'ground-zero-tutorial'}]},
     traders: {traders: [{id: '54cb50c76803fa8b248b4571', name: traderName, normalizedName: 'prapor'}]},
     items: {items: [{id: 'fixture-item', name: 'fixture/item', normalizedName: 'startup-item', lastLowPrice: 10000, updated: '2026-11-13T09:00:00Z', sellFor: [{vendor:{name:'Prapor',normalizedName:'prapor'},price:4000,priceRUB:4000,currency:'RUB'}]}]},
     tasks_ko: {[taskName]: koreanName, [objective]: '세관을 확인하세요'},
@@ -175,6 +175,8 @@ process.on('unhandledRejection', error => {
     const questName = () => document.querySelector('.quest-card .quest-title')?.textContent;
     await waitFor(() => questName() === '회귀 검증 임무 PvP', 'PvP fixture must render a real quest card');
     assertNativeAndMap(online);
+    assert.equal(document.querySelectorAll('#map-switcher option').length,13,'Tutorial must share the calibrated Ground Zero map');
+    assert.equal(document.querySelector('#map-switcher option[value="ground-zero-tutorial"]'),null);
     assert.equal(document.querySelectorAll('.quest-card').length, 1);
     assert.match(document.getElementById('data-status').textContent, /PvP · 1개/);
     assert.equal(document.querySelector('[data-task]').dataset.task, 'fixture-regular-task');

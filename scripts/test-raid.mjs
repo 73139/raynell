@@ -21,6 +21,8 @@ assert.equal(Object.values(data.maps).reduce((n,m)=>n+m.stops.length,0),22);
 assert.equal(Object.values(data.maps).reduce((n,m)=>n+m.routes.length,0),12);
 assert.equal(data.maps.lighthouse.stops.filter(s=>s.verifiedByCurrentApi).length,0);
 assert.equal(data.maps.lighthouse.routes.find(r=>r.id==='route4').path.length,0);
+assert.equal(data.maps.lighthouse.routes.find(r=>r.id==='route4').label,'R2');
+assert.equal(data.maps.lighthouse.routes.find(r=>r.id==='route4').snapshot,'2026-10-06');
 for(const map of Object.values(data.maps)){const ids=new Set(map.stops.map(s=>s.id));assert.ok(btrSpawns(map).length>0);for(const route of map.routes){for(const v of route.visits){assert.ok(ids.has(v.stopId));assert.ok(v.arrivalRemainingSeconds>=v.departureRemainingSeconds);}for(const p of route.path)assert.ok(Number.isFinite(p.x)&&Number.isFinite(p.z));}}
 console.log('PASS dual game clocks, 7x rate, 12-hour separation, calibration, cultist midnight window, boss identity/time, real-second BTR timer and sourced 22 stops/12 route entries');
 const dom=new JSDOM('<body><div class="map-heading"></div><button id="open-btr-timetable"></button><button id="open-cultist-info"></button><input id="show-btr-markers" type="checkbox" checked></body>',{url:'http://127.0.0.1:43873/'});
@@ -32,8 +34,9 @@ const ui=initializeRaidIntel({getMap:()=>map,getMode:()=> 'pve',getMapName:key=>
 await new Promise(r=>setTimeout(r,0));assert.ok(refreshes>0);ui.openBtr('woods');assert.equal(document.querySelectorAll('#btr-route option').length,5);assert.ok(document.querySelectorAll('#btr-schedule tr').length>5);
 document.getElementById('btr-minutes').value='30';document.getElementById('btr-seconds').value='0';document.getElementById('align-btr-timer').click();assert.match(document.getElementById('btr-current-time').textContent,/29:59|30:00/);
 ui.openBtr('lighthouse','route4');assert.match(document.getElementById('btr-spawn-time').textContent,/미등록/);assert.equal(document.querySelectorAll('#btr-route option').length,4);
+assert.match(document.getElementById('btr-data-note').textContent,/2026-10-06/);
 document.getElementById('open-cultist-info').click();assert.equal(document.querySelectorAll('[data-cultist-map]').length,5);
 document.getElementById('open-clock-settings').click();document.getElementById('clock-value').value='22:30:00';document.getElementById('apply-clock-time').click();assert.match(document.querySelector('[data-raid-clock="0"]').textContent,/22:30:/);
 map='woods';const fragment=document.createDocumentFragment();ui.renderMarkers(fragment);assert.equal(fragment.querySelectorAll('.btr-map-marker:not(.btr-spawn)').length,8);assert.equal(fragment.querySelectorAll('.btr-spawn').length,2);
-console.log('PASS BTR timetable switching, unknown Lighthouse R4 timings, manual countdown, 5 cultist areas, game clock adjustment and rendered BTR stop/spawn pins');
+console.log('PASS BTR timetable switching, untimed Lighthouse October R2 path, manual countdown, 5 cultist areas, game clock adjustment and rendered BTR stop/spawn pins');
 globalThis.setInterval=originalInterval;dom.window.close();

@@ -20,7 +20,8 @@ export function initializeRaidIntel({getMap,getMode,getMapName,getRecord,project
  function renderTable(){
   const map=model(),selected=route();if(!map||!selected){$('btr-schedule').innerHTML='<tr><td colspan="5">'+esc(error||'시간표를 불러오는 중입니다.')+'</td></tr>';return;}
   const lookup=new Map(map.stops.map(s=>[s.id,s]));
-  $('btr-data-note').textContent=`${data.scheduleSnapshot}의 PvE 공개 참고 운행표 · 시간 오차 ±${map.uncertaintySeconds}초. ${displayMap==='lighthouse'?'등대 8개 위치는 현재 API에서 대조되지 않은 참고 좌표입니다.':'정류장 좌표를 현재 공개 API와 대조했습니다.'}${getMode()!=='pve'?' 현재 모드와 운행표의 모드가 달라질 수 있습니다.':''}`;
+  const snapshot=selected.snapshot||data.scheduleSnapshot;
+  $('btr-data-note').textContent=`${snapshot}의 ${selected.timingUnavailable?'공개 경로 목록 · 정류장별 시각 미등록':'PvE 공개 참고 운행표 · 시간 오차 ±'+map.uncertaintySeconds+'초'}. ${displayMap==='lighthouse'?'등대 8개 위치는 현재 API에서 대조되지 않은 참고 좌표입니다.':'정류장 좌표를 현재 공개 API와 대조했습니다.'}${!selected.timingUnavailable&&getMode()!=='pve'?' 현재 모드와 운행표의 모드가 달라질 수 있습니다.':''}`;
   $('btr-spawn-time').textContent=`${selected.label} · 참고 BTR 출현 시 남은 시간 ${durationText(selected.spawnRemainingSeconds)}${selected.timingUnavailable?' · 이 경로는 정류장별 시각과 현재 지도에 맞는 경로 좌표가 미등록입니다. 원문 운행 자료를 확인하세요.':''}`;
   $('btr-schedule').innerHTML=selected.visits.map((v,i)=>`<tr><td>${i+1}. ${esc(lookup.get(v.stopId)?.name||v.stopId)}</td><td>${durationText(v.arrivalRemainingSeconds)}</td><td>${durationText(v.departureRemainingSeconds)}</td><td>${v.timing==='observed'?'공개 관측':v.timing==='estimated'?'계산 참고':'시각 미등록'}</td><td data-btr-visit="${i}"></td></tr>`).join('')||'<tr><td colspan="5">정류장별 시각이 등록되지 않았습니다.</td></tr>';
   $('btr-stop-list').innerHTML=map.stops.map(s=>`<button class="btn btn-small" data-btr-stop="${esc(s.id)}">${esc(s.name)}${s.verifiedByCurrentApi?'':' · 참고'}</button>`).join('');
@@ -28,7 +29,7 @@ export function initializeRaidIntel({getMap,getMode,getMapName,getRecord,project
   clockTick();
  }
  function renderRoutes(){const map=model();$('btr-map').value=displayMap;if(!map){renderTable();return;}if(!map.routes.some(r=>r.id===routeId))routeId=map.routes[0]?.id||'';
-  $('btr-route').innerHTML=map.routes.map(r=>`<option value="${esc(r.id)}" ${r.id===routeId?'selected':''}>${esc(r.label)}${r.timingUnavailable?' · 시각 미등록':''}</option>`).join('');
+  $('btr-route').innerHTML=map.routes.map(r=>`<option value="${esc(r.id)}" ${r.id===routeId?'selected':''}>${esc(r.label)} · ${esc((r.snapshot||data.scheduleSnapshot).slice(5).replace('-','.'))}${r.timingUnavailable?' · 시각 미등록':''}</option>`).join('');
   if(!anchors.has(anchorKey())){$('btr-minutes').value=Math.floor(map.raidDurationSeconds/60);$('btr-seconds').value=0;}renderTable();
  }
  function openBtr(mapKey=getMap(),preferredRoute){displayMap=['woods','lighthouse','streets-of-tarkov'].includes(mapKey)?mapKey:'woods';if(preferredRoute)routeId=preferredRoute;renderRoutes();if(!$('btr-dialog').open)$('btr-dialog').showModal();}

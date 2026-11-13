@@ -31,7 +31,7 @@ No moving vehicle position or guaranteed arrival is claimed.
 22 reference stops: 8 Woods, 8 Lighthouse, 6 Streets of Tarkov.
 14 Woods/Streets coordinates were compared with the current public API.
 The 8 Lighthouse stops remain clearly marked as reference coordinates because
-the current API has no corresponding stop rows. Lighthouse R4 is listed from
+the current API has no corresponding stop rows. The added Lighthouse path (ID route4, named R2 in the October source) is listed from
 the newer source with its public spawn-time field, but no unverified world path
 or stop-by-stop arrival/departure times are drawn or invented.
 Source diagrams cannot all be registered to the older world-coordinate snapshot;
@@ -48,3 +48,8 @@ Game content and imagery belong to Battlestate Games and their respective
 authors. Existing map artwork license notices remain in the map viewer.
 Only factual reference data is used here; no third-party application code or
 game input automation has been imported.
+
+Lighthouse route names changed between the September timetable and October pixel paths.
+Timetabled world paths retain September names; the October route4 is named R2
+in its source and has no registered world path or stop timings here. Dates are
+shown beside route names so the two source R2 entries are distinguishable.
