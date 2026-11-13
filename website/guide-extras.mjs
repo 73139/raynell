@@ -2,7 +2,7 @@ import {buildKappaLine,validRoutePoints} from './guide-core.mjs';
 const $=id=>document.getElementById(id);
 const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const statusName={todo:'미완료',active:'진행 중',done:'완료'};
-export function initializeGuideExtras({getTasks,getStatus,getMap,getMapName,onOpenQuest,onComplete,onRoute}){
+export function initializeGuideExtras({getTasks,getStatus,getMap,getMapName,onOpenQuest,onComplete,onRoute,onCopyRoute}){
  let routes=[],routeError='',activeRoute=null;
  const kappa=$('kappa-dialog'),routeDialog=$('routes-dialog');
  function renderKappa(){
@@ -14,7 +14,7 @@ export function initializeGuideExtras({getTasks,getStatus,getMap,getMapName,onOp
  function renderRoutes(){
   $('routes-map-name').textContent=getMapName();
   const current=routes.filter(r=>r.map===getMap());
-  $('recommended-route-list').innerHTML=current.map(r=>`<article class="recommended-route-card"><div class="route-card-heading"><h3>${esc(r.name)}</h3><span>위험 ${esc(r.risk)}</span></div><p>${esc(r.why)}</p><ol>${validRoutePoints(r).map(p=>`<li>${esc(p.label)}${p.floor?' · '+esc(p.floor):''}</li>`).join('')}</ol><p class="route-caution">${esc(r.note)}</p><small>${esc(r.keys)}</small><div class="route-card-actions"><button class="btn btn-primary" data-apply-route="${esc(r.id)}">지도에 경로 표시</button>${(r.sources||[]).map(s=>{let url='';try{const u=new URL(s.url);if(u.protocol==='https:')url=u.href;}catch{}return url?`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">공략 원문 ↗</a>`:'';}).join('')}<small>좌표 확인 ${esc(r.verifiedOn)}</small></div></article>`).join('')||`<p>${routeError||'이 지도에는 아직 검증된 추천 경로가 없습니다. 지도 마커와 탈출구를 먼저 확인해 주세요.'}</p>`;
+  $('recommended-route-list').innerHTML=current.map(r=>`<article class="recommended-route-card"><div class="route-card-heading"><h3>${esc(r.name)}</h3><span>위험 ${esc(r.risk)}</span></div><p>${esc(r.why)}</p><ol>${validRoutePoints(r).map(p=>`<li>${esc(p.label)}${p.floor?' · '+esc(p.floor):''}</li>`).join('')}</ol><p class="route-caution">${esc(r.note)}</p><small>${esc(r.keys)}</small><div class="route-card-actions"><button class="btn btn-primary" data-apply-route="${esc(r.id)}">지도에 경로 표시</button><button class="btn btn-small" data-copy-route="${esc(r.id)}">내 경로로 복사</button>${(r.sources||[]).map(s=>{let url='';try{const u=new URL(s.url);if(u.protocol==='https:')url=u.href;}catch{}return url?`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">공략 원문 ↗</a>`:'';}).join('')}<small>좌표 확인 ${esc(r.verifiedOn)}</small></div></article>`).join('')||`<p>${routeError||'이 지도에는 아직 검증된 추천 경로가 없습니다. 지도 마커와 탈출구를 먼저 확인해 주세요.'}</p>`;
  }
  function clear(){activeRoute=null;$('active-route-note').hidden=true;onRoute(null);}
  $('open-kappa-line').addEventListener('click',()=>{renderKappa();kappa.showModal();});
@@ -31,6 +31,7 @@ export function initializeGuideExtras({getTasks,getStatus,getMap,getMapName,onOp
  $('close-recommended-routes').addEventListener('click',()=>routeDialog.close());
  $('clear-recommended-route').addEventListener('click',clear);
  $('recommended-route-list').addEventListener('click',event=>{
+  const copy=event.target.closest('[data-copy-route]');if(copy){const route=routes.find(r=>r.id===copy.dataset.copyRoute&&r.map===getMap());if(route&&onCopyRoute?.(route)!==false)routeDialog.close();return;}
   const button=event.target.closest('[data-apply-route]');if(!button)return;
   const route=routes.find(r=>r.id===button.dataset.applyRoute&&r.map===getMap());if(!route||validRoutePoints(route).length<2)return;
   activeRoute=route;onRoute(route);$('active-route-note').hidden=false;
@@ -38,5 +39,5 @@ export function initializeGuideExtras({getTasks,getStatus,getMap,getMapName,onOp
   routeDialog.close();
  });
  fetch('./recommended-routes.json').then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>{routes=Array.isArray(data.routes)?data.routes:[];if(routeDialog.open)renderRoutes();}).catch(()=>{routeError='추천 경로를 불러오지 못했습니다. 인터넷 연결 후 다시 열어 주세요.';if(routeDialog.open)renderRoutes();});
- return {refresh(){if(activeRoute&&activeRoute.map!==getMap())clear();if(kappa.open)renderKappa();if(routeDialog.open)renderRoutes();}};
+ return {clearRoute:clear,refresh(){if(activeRoute&&activeRoute.map!==getMap())clear();if(kappa.open)renderKappa();if(routeDialog.open)renderRoutes();}};
 }

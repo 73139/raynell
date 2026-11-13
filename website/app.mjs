@@ -17,6 +17,8 @@ import { initializeMapIntel } from './map-intel-ui.mjs';
 import { initializeSimpleUI } from './simple-ui.mjs';
 import { initializeGuideExtras } from './guide-extras.mjs';
 import { initializeQuestPhotos } from './quest-photos.mjs';
+import { initializeRaidIntel } from './raid-intel-ui.mjs';
+import { isCultist } from './raid-core.mjs';
 
 const $ = (id) => document.getElementById(id);
 // Keep quest details in the same panel so the map retains its width.
@@ -35,7 +37,7 @@ Object.assign(state,{companionMode:false,companion:null,companionConnected:false
 Object.assign(state,{mapDataset:null,mapDetailsStatus:'loading',floorOptions:[],floorImageSequence:0,followFloor:false,showOtherFloors:false,exitFilters:{pmc:true,scav:true,shared:true,unknown:true,transit:true},showExitLabels:false,exitSearch:'',selectedExit:null});
 let opsRoute=[],opsExit=null,opsController=null,lastAutoMapRev=0;
 let fieldKitController=null,r12Controller=null,r13Controller=null;
-let mapIntelController=null,verifiedIntelLabels={},extrasController=null,questPhotosController=null;
+let mapIntelController=null,verifiedIntelLabels={},extrasController=null,questPhotosController=null,raidIntelController=null;
 Object.assign(state,{kappaOnly:false,guideRoute:null});
 let companionClient=null;
 let questOcrController=null,ocrCompanionCursor='',ocrBrowserTimer=null,ocrBrowserTicket=0,ocrSourceEpoch=0;
@@ -57,6 +59,7 @@ function text(id,value){if($(id))$(id).textContent=value;}
 function baseMapKey(key){return ({'ground-zero-21':'ground-zero','night-factory':'factory','infected-factory':'factory','factory-day':'factory','factory-night':'factory','laboratory':'the-lab','the-laboratory':'the-lab','streets':'streets-of-tarkov'})[key]||key;}
 function cfg(){return state.configs.find(c=>c.key===state.mapKey);}
 function mapRecords(){return state.mapDataset?.mode===state.mode&&state.mapDataset.maps?.length?state.mapDataset.maps:state.dataset?.maps||[];}
+function intelMapRecord(){const variants=mapRecords().filter(m=>baseMapKey(m.normalizedName)===state.mapKey),main=variants.find(m=>m.normalizedName===state.mapKey)||variants[0];if(!main)return null;return {...main,bosses:variants.flatMap(m=>(m.bosses||[]).filter(b=>m===main||isCultist(b)).map(b=>({...b,variant:m.normalizedName})))};}
 function mapName(key){const m=mapRecords().find(m=>baseMapKey(m.normalizedName)===key);return MAP_LABELS[key]||m?.name||key;}
 function mapById(id){return mapRecords().find(m=>m.id===id);}
 function mapKeyFor(id){return baseMapKey(mapById(id)?.normalizedName||id);}
@@ -233,7 +236,7 @@ function renderMarkers(){
   if(typeof opsRoute!=='undefined'&&opsRoute.length){const targets=[...(state.player?.mapKey===state.mapKey?[state.player]:[]),...opsRoute,...(opsExit?[opsExit]:[])];const vertices=targets.map(project).filter(p=>p?.inBounds).map(p=>`${(p.u*1000).toFixed(2)},${(p.v*1000).toFixed(2)}`);if(vertices.length>1){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','ops-route-overlay');svg.setAttribute('viewBox','0 0 1000 1000');svg.setAttribute('preserveAspectRatio','none');const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('points',vertices.join(' '));svg.appendChild(line);box.append(svg);}}
   const favorite=typeof fieldKitController!=='undefined'?fieldKitController?.getActiveRoute():null;
   if(favorite?.points?.length){
-    if(favorite.points.length>1){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','favorite-route-overlay');svg.setAttribute('viewBox','0 0 1000 1000');svg.setAttribute('preserveAspectRatio','none');const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('points',favorite.points.map(p=>`${(p.u*1000).toFixed(2)},${(p.v*1000).toFixed(2)}`).join(' '));svg.append(line);box.append(svg);}
+    appendPenRoute(fragment,favorite.points,'personal-route-line');
     favorite.points.forEach((p,i)=>{const el=document.createElement('div');el.className='favorite-waypoint';el.style.left=(p.u*100)+'%';el.style.top=(p.v*100)+'%';el.title=`${favorite.name} · ${i+1}. ${p.label}${p.floor?' · '+p.floor:''}${p.note?' · '+p.note:''}`;el.innerHTML=`<span>${i+1}</span>`;el.setAttribute('aria-label',el.title);fragment.append(el);});
   }
   // r12 optional public intelligence layer. Absence of coordinates is never
@@ -249,15 +252,14 @@ function renderMarkers(){
   }}
   renderGuideRoute(fragment);
   mapIntelController?.renderMarkers(fragment);
+  raidIntelController?.renderMarkers(fragment);
   box.append(fragment);text('pin-count',pinCount());
 }
-function renderGuideRoute(fragment){
- const route=state.guideRoute;if(!route||route.map!==state.mapKey)return;
- const points=route.points.map(point=>({point,pos:project(point)})).filter(p=>p.pos?.inBounds);
- if(points.length>1){
+function appendPenRoute(fragment,positions,extra=''){
+ if(positions.length>1){
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.setAttribute('class','recommended-route-line');svg.setAttribute('viewBox','0 0 1000 1000');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');
-  const vertices=points.map(p=>({x:p.pos.u*1000,y:p.pos.v*1000}));
+  svg.setAttribute('class','recommended-route-line '+extra);svg.setAttribute('viewBox','0 0 1000 1000');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('aria-hidden','true');
+  const vertices=positions.map(p=>({x:p.u*1000,y:p.v*1000}));
   let stroke=`M ${vertices[0].x} ${vertices[0].y}`;
   for(let i=1;i<vertices.length;i++){
    const a=vertices[i-1],b=vertices[i],dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy)||1;
@@ -267,6 +269,11 @@ function renderGuideRoute(fragment){
   }
   const line=document.createElementNS('http://www.w3.org/2000/svg','path');line.setAttribute('d',stroke);svg.append(line);fragment.append(svg);
  }
+}
+function renderGuideRoute(fragment){
+ const route=state.guideRoute;if(!route||route.map!==state.mapKey)return;
+ const points=route.points.map(point=>({point,pos:project(point)})).filter(p=>p.pos?.inBounds);
+ appendPenRoute(fragment,points.map(p=>p.pos));
  points.forEach(({point,pos},i)=>{const button=document.createElement('button');button.type='button';button.className='guide-waypoint';button.textContent=String(i+1);button.style.left=(pos.u*100)+'%';button.style.top=(pos.v*100)+'%';button.title=(i+1)+'. '+point.label+(point.floor?' · '+point.floor:'')+' · 방문 순서';button.setAttribute('aria-label',button.title);button.addEventListener('click',event=>{event.stopPropagation();centerOn(point);});fragment.append(button);});
 }
 function currentExits(){return exitsForMap(mapRecords(),state.mapKey,{items:state.dataset?.items||[]});}
@@ -632,7 +639,7 @@ function renderQuests(){
   list.innerHTML=tasks.slice(0,state.renderLimit).map(task=>{const status=statusOf(task.id);const p=taskProgress(task.id);const points=locationsFor(task);const maps=[...new Set(task.mapIds.map(mapKeyFor))].map(mapName);return `<article class="quest-card ${state.selected===task.id?'selected':''} ${status==='done'?'is-complete':''}"><button class="quest-open" data-task="${esc(task.id)}"><div class="quest-meta"><span>${esc(task.traderName||'상인 확인 필요')}</span><span>요구 Lv.${Number(task.minPlayerLevel)||1}</span></div><h3 class="quest-title">${esc(task.name)}</h3>${task.nameEn&&task.nameEn!==task.name?`<p class="quest-name-en">${esc(task.nameEn)}</p>`:''}<div class="quest-card-bottom"><span class="badge status-${status}">${STATUS_LABELS[status]}</span>${task.kappaRequired?'<span class="kappa-card-mark" aria-label="카파 필수 퀘스트" title="카파 필수 퀘스트">K</span>':''}<span class="quest-map-label">${esc(maps.slice(0,2).join(' · ')||'여러 지역 / 위치 미등록')}${maps.length>2?' 외':''}</span></div></button><button class="quest-pin ${p.pinned?'pinned':''}" data-pin="${esc(task.id)}" aria-label="${esc(task.name)} ${p.pinned?'지도 표시 해제':'지도 표시'}" title="${p.pinned?'지도 표시 해제':'지도에 목표 표시'}" aria-pressed="${!!p.pinned}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 3h8l-1 7 4 4v2H5v-2l4-4-1-7zM12 16v6"/></svg></button></article>`;}).join('')+(tasks.length>state.renderLimit?`<button class="btn load-more" data-action="load-more">퀘스트 더 보기 (${fmt.format(tasks.length-state.renderLimit)}개)</button>`:'');
 }
 function openTask(id){const task=state.dataset?.tasks.find(t=>t.id===id);if(!task)return;state.selected=id;$('quest-browser').hidden=true;$('quest-detail').hidden=false;$('intel-blank').hidden=true;$('quest-panel').classList.add('has-detail');renderDetail();renderQuests();renderMarkers();}
-function openQuestPhotos(task,objective){const maps=(objective?.mapIds||[]).map(mapKeyFor).filter(Boolean);return questPhotosController?.open({task,objective,mapKey:maps.length&&!maps.includes(state.mapKey)?maps[0]:state.mapKey});}
+function openQuestPhotos(task,objective){mapIntelController?.closeDetails();const maps=(objective?.mapIds||[]).map(mapKeyFor).filter(Boolean);return questPhotosController?.open({task,objective,mapKey:maps.length&&!maps.includes(state.mapKey)?maps[0]:state.mapKey});}
 function closeDetail(){questPhotosController?.close();state.selected=null;$('quest-detail').hidden=true;$('intel-blank').hidden=false;$('quest-browser').hidden=false;$('quest-panel').classList.remove('has-detail');renderQuests();renderMarkers();}
 function notesHTML(notes){return notes?.length?`<ul class="condition-list">${notes.map(note=>`<li>${esc(note)}</li>`).join('')}</ul>`:'';}
 function renderDetail(){
@@ -829,8 +836,8 @@ document.addEventListener('drop',event=>{if(event.dataTransfer.files.length){eve
 const viewport=$('map-viewport');let routePickDown=null;let drag=null;const touches=new Map();let pinch=null;let viewportSize=null;
 viewport.addEventListener('wheel',event=>{if(!event.ctrlKey&&!event.metaKey)return;if(event.target.closest('.map-side-panels,.map-floor-wrap,.map-utility-rail'))return;event.preventDefault();const rect=viewport.getBoundingClientRect();zoomAt(event.deltaY<0?1.16:1/1.16,event.clientX-rect.left,event.clientY-rect.top);},{passive:false});
 viewport.addEventListener('pointerdown',event=>{
- if(event.pointerType==='touch')return; // Let touch gestures scroll the page.
- if(fieldKitController?.isPicking() && state.imageReady && !event.target.closest('button,select,a,input,label,summary,.map-side-panels,.map-floor-wrap,.map-utility-rail')){routePickDown={x:event.clientX,y:event.clientY};event.preventDefault();return;}
+ if(fieldKitController?.isPicking() && state.imageReady && (event.pointerType!=="mouse"||event.button===0) && !event.target.closest('button,select,a,input,label,summary,.map-side-panels,.map-floor-wrap,.map-utility-rail')){routePickDown={x:event.clientX,y:event.clientY};event.preventDefault();return;}
+ if(event.pointerType==='touch')return; // Ordinary touch scrolls; route selection above accepts taps.
  if(!state.imageReady || (event.pointerType==='mouse'&&event.button!==0) || event.target.closest('button,select,a,input,label,summary,.map-side-panels,.map-floor-wrap,.map-utility-rail'))return;
  event.preventDefault();viewport.setPointerCapture(event.pointerId);touches.set(event.pointerId,{x:event.clientX,y:event.clientY});
  if(touches.size===2){const [a,b]=[...touches.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y);drag=null;}
@@ -859,7 +866,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&state.selec
 const marketController=initializeMarket({getMode:()=>state.mode,readCache:cachedGet,writeCache:cachedPut});
 const lootController=initializeLootScan({getCatalog:()=>marketController.getCatalog(),getMode:()=>state.mode,onOpenMarket:()=>marketController.setActive(true)});
 opsController=initializeOperations({getMode:()=>state.mode,getMap:()=>({key:state.mapKey,name:mapName(state.mapKey)}),getPoints:()=> (state.dataset?.tasks||[]).filter(t=>taskProgress(t.id).pinned).flatMap(task=>locationsFor(task).map(l=>({...l,taskId:task.id,taskName:task.name,objectiveId:l.objective?.id,objective:l.objective?.description}))),getExits:currentExits,getPlayer:()=>state.player,getQuestItems:()=>new Set((state.dataset?.tasks||[]).filter(t=>statusOf(t.id)!=='done').flatMap(t=>t.objectives||[]).flatMap(o=>(o.items||[]).map(i=>i.id||i.item?.id).filter(Boolean))),getCatalog:()=>marketController.getCatalog(),showRoute:(points,exit)=>{opsRoute=points;opsExit=exit;setView('map');renderMarkers();},openLoot:()=>lootController.open(),refreshMarket:()=>marketController.refresh(),onMarketOpen:()=>marketController.setActive(true),onMarketClose:()=>marketController.setActive(state.view==='market'),getLogStatus:()=>state.companion?.logs,onLogFolder:folder=>companionAction('logs-folder',{folder}),notify:toast});
-fieldKitController=initializeFieldKit({getMode:()=>state.mode,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),getTasks:()=>state.dataset?.tasks||[],getCatalog:()=>marketController.getCatalog(),getStatus:statusOf,matchTaskMap:matchesMap,onPickRoute:active=>{viewport.classList.toggle('is-route-picking',active);},onDrawRoute:()=>{setView('map');renderMarkers();},onRouteUpdated:()=>renderMarkers(),onOpenQuest:id=>{setView('quests');openTask(id);},onRefreshCatalog:active=>marketController.setActive(active||state.view==='market'),notify:toast});
+fieldKitController=initializeFieldKit({getMode:()=>state.mode,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),getTasks:()=>state.dataset?.tasks||[],getCatalog:()=>marketController.getCatalog(),getStatus:statusOf,matchTaskMap:matchesMap,onPickRoute:active=>{viewport.classList.toggle('is-route-picking',active);viewport.style.touchAction=active?'none':'pan-y';$('personal-route-toolbar').hidden=!active;if(active){extrasController?.clearRoute();questPhotosController?.close();mapIntelController?.closeDetails();}} ,onDrawRoute:()=>{extrasController?.clearRoute();setView('map');renderMarkers();},onRouteUpdated:()=>renderMarkers(),onOpenQuest:id=>{setView('quests');openTask(id);},onRefreshCatalog:active=>marketController.setActive(active||state.view==='market'),notify:toast});
 r12Controller=initializeR12({getMode:()=>state.mode,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),
  getMapRecord:()=>mapRecords().find(m=>baseMapKey(m.normalizedName)===state.mapKey),getCatalog:()=>marketController.getCatalog(),getExits:currentExits,
  getCompanion:()=>({...state.companion,connected:state.companionConnected}),getTasks:()=>state.dataset?.tasks||[],getPlayer:()=>state.player,
@@ -869,9 +876,13 @@ r12Controller=initializeR12({getMode:()=>state.mode,getMap:()=>state.mapKey,getM
  refreshData:()=>loadData(true),refreshMarket:()=>marketController.refresh(),renderMap:()=>renderMarkers(),notify:toast,onRescan:()=>companionAction('rescan',{}),onChooseFolder:()=>companionAction('choose-folder',{})});
 r13Controller=initializeR13({getMode:()=>state.mode,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),getTasks:()=>state.dataset?.tasks||[],getCatalog:()=>marketController.getCatalog(),getStatus:statusOf,getRoutes:()=>fieldKitController?.getRoutes()||[],getExits:currentExits,getDataState:()=>({maps:mapRecords(),tasks:state.dataset?.tasks||[],items:marketController.getCatalog()?.items||[],fetchedAt:state.dataset?.fetchedAt}),refreshData:()=>loadData(true),refreshMarket:()=>marketController.refresh(),notify:toast,onApplyQuests:ids=>{applyRecognizedQuests(ids);showCapturedBatch(ids,0);},onOpenQuest:id=>{setView('quests');openTask(id);},onOpenMarket:()=>setView('market')});
 questOcrController=initializeQuestOcr({getTasks:()=>state.dataset?.tasks||[],getMode:()=>state.mode,getTaskInfo:questOcrTaskInfo,onApply:applyRecognizedQuests,onBatchReady:showCapturedBatch,onOpen:showRecognizedQuest,onMap:async(key,id)=>{if(!state.configs.some(c=>c.key===key)){toast('이 지역은 보정된 지도 이미지가 아직 없어요.',true);return;}setView('map',{keepFilter:true});await selectMap(key);showRecognizedQuest(id);},onNotify:toast,onAutoChange:()=>{resetQuestOcrSource();renderOcrConnection();}});
-mapIntelController=initializeMapIntel({getMap:()=>state.mapKey,getMode:()=>state.mode,getConfig:cfg,getRecord:()=>mapRecords().find(m=>baseMapKey(m.normalizedName)===state.mapKey),getFallbackLabels:()=>verifiedIntelLabels,project,getFloorState:point=>{const f=floorMarkerState(point);return {...f,visible:f.visible||state.showOtherFloors};},getZoomRatio:()=>state.fitZoom>0?state.zoom/state.fitZoom:1,centerOn,refreshMarkers:()=>renderMarkers(),notify:toast});
-extrasController=initializeGuideExtras({getTasks:()=>state.dataset?.tasks||[],getStatus:statusOf,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),onOpenQuest:id=>{setView('quests');openTask(id);},onComplete:(id,status)=>updateProgress(id,{status}),onRoute:route=>{state.guideRoute=route;renderMarkers();}});
+mapIntelController=initializeMapIntel({getMap:()=>state.mapKey,getMode:()=>state.mode,getConfig:cfg,getRecord:intelMapRecord,getFallbackLabels:()=>verifiedIntelLabels,project,getFloorState:point=>{const f=floorMarkerState(point);return {...f,visible:f.visible||state.showOtherFloors};},getZoomRatio:()=>state.fitZoom>0?state.zoom/state.fitZoom:1,centerOn,refreshMarkers:()=>renderMarkers(),notify:toast,onOpenBoss:()=>questPhotosController?.close()});
+extrasController=initializeGuideExtras({getTasks:()=>state.dataset?.tasks||[],getStatus:statusOf,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),onOpenQuest:id=>{setView('quests');openTask(id);},onComplete:(id,status)=>updateProgress(id,{status}),onRoute:route=>{state.guideRoute=route;if(route)fieldKitController?.clearActiveRoute();renderMarkers();},onCopyRoute:route=>{const points=route.points.map((point,i)=>{const p=project(point);return p?.inBounds?{id:'copy-'+i,u:p.u,v:p.v,label:point.label,floor:point.floor||'',category:'loot'}:null;}).filter(Boolean);if(points.length<2){toast('지도가 준비되면 다시 복사해 주세요.',true);return false;}return fieldKitController.copyRoute({name:route.name,points,note:route.note});}});
 questPhotosController=initializeQuestPhotos({getMap:()=>state.mapKey,getMapName:key=>mapName(key||state.mapKey)});
+raidIntelController=initializeRaidIntel({getMap:()=>state.mapKey,getMode:()=>state.mode,getMapName:mapName,getRecord:intelMapRecord,project,refreshMarkers:renderMarkers,onShowMap:async(key,point)=>{setView('map');if(key!==state.mapKey)await selectMap(key);if(point)centerOn(point);}});
+$('open-personal-routes').addEventListener('click',()=>fieldKitController.openPersonal());
+$('finish-personal-route').addEventListener('click',()=>{fieldKitController.stopPicking();fieldKitController.openPersonal();});
+$('undo-personal-point').addEventListener('click',()=>{fieldKitController.undoPoint();renderMarkers();});
 fetch('./verified-labels.json').then(r=>r.ok?r.json():null).then(data=>{if(data?.maps){verifiedIntelLabels=data.maps;mapIntelController?.refresh();}}).catch(()=>{});
 initializeR14Shell();
 initializeCompanion();renderSummary();renderLocation();renderFloorControls();renderExitList();

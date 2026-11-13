@@ -1,6 +1,7 @@
 /* Read-only, coordinate-backed map intel. Unknown data is not fabricated.
  * Data: tarkov.dev JSON maps endpoint and the-hideout/tarkov-dev maps.json labels.
  */
+import {isCultist,bossName,bossChance,bossSpawnTime} from './raid-core.mjs';
 const list=x=>Array.isArray(x)?x:[];
 const name=x=>typeof x==='string'?x.trim():'';
 const valid=p=>p&&typeof p.x==='number'&&Number.isFinite(p.x)&&typeof p.z==='number'&&Number.isFinite(p.z);
@@ -9,7 +10,7 @@ const toPoint=raw=>{
   if(valid(raw))return {x:raw.x,y:Number.isFinite(raw.y)?raw.y:null,z:raw.z};
   return null;
 };
-export const INTEL_KINDS={landmark:'주요 지역',container:'파밍 컨테이너',loose:'루즈 루트',boss:'보스 후보',pmc:'PMC 스폰 후보',scav:'Scav 스폰 후보',other:'기타 스폰'};
+export const INTEL_KINDS={landmark:'주요 지역',container:'파밍 컨테이너',loose:'루즈 루트',boss:'보스 후보',cultist:'컬티스트 후보',pmc:'PMC 스폰 후보',scav:'Scav 스폰 후보',other:'기타 스폰'};
 const slug=s=>name(s).toLowerCase().normalize('NFKC').replace(/[^\p{L}\p{N}]+/gu,'');
 const bossAreaLabels={customs:{ZoneDormitory:'Dorms',ZoneGasStation:'New Gas'},shoreline:{ZonePort:'Pier',ZoneSanatorium1:'West Wing',ZoneSanatorium2:'East Wing'}};
 export function normalizeMapLabels(config={},verifiedFallback=[]){
@@ -50,21 +51,22 @@ export function collectMapIntel(map={},config={},fallbackLabels=[]){
     if(classed.unknown)push('other',label,s.position,{source:'tarkov-dev-maps',detail:'진영 정보가 없는 스폰 후보'});
   }
   for(const b of list(map.bosses)){
+    const type=isCultist(b)?'cultist':'boss',displayName=bossName(b),facts={bossName:displayName,boss:b,cultist:isCultist(b),chance:bossChance(b.sourceChance),spawnTimeLabel:bossSpawnTime(b)};
     for(const loc of list(b.locations)){
       const positions=list(loc.positions).length?loc.positions:loc.position?[loc.position]:[];
-      for(const position of positions)push('boss',`${name(b.name)||'보스'} · ${name(loc.name)||'후보'}`,position,{source:'tarkov-dev-maps',detail:'공개 데이터의 보스 출현 후보 좌표 · 현재 레이드 출현 확정 아님'});
+      for(const position of positions)push(type,`${displayName} · ${name(loc.name)||'후보'}`,position,{...facts,source:'tarkov-dev-maps',detail:'공개 데이터의 출현 후보 · '+bossSpawnTime(b)+' · 현재 레이드 출현 확정 아님'});
       if(!positions.length){
         const areaName=bossAreaLabels[config.key||map.normalizedName]?.[loc.zoneKey||loc.name];
         const area=rows.find(r=>r.type==='landmark'&&r.label===areaName);
-        if(area)push('boss',`${name(b.name)||'보스'} · ${areaName}`,area.position,{area:true,source:'tarkov-dev-boss-zone-and-map-label',detail:'보스 출현 구역의 중심 표시 · 정확한 개별 스폰 좌표나 현재 레이드 출현은 미확인'});
+        if(area)push(type,`${displayName} · ${areaName}`,area.position,{...facts,area:true,source:'tarkov-dev-boss-zone-and-map-label',detail:'출현 구역 중심 · 개별 스폰 좌표나 현재 레이드 출현은 미확인'});
       }
     }
-    if(b.position)push('boss',name(b.name)||'보스 출현 후보',b.position,{source:'tarkov-dev-maps',detail:'보스 출현 후보 · 출현 확정 아님'});
+    if(b.position)push(type,displayName,b.position,{...facts,source:'tarkov-dev-maps',detail:'출현 후보 · 현재 레이드 출현 확정 아님'});
   }
   return rows;
 }
 export function describeBosses(map={}){
-  return list(map.bosses).map(b=>({name:name(b.name)||'보스 정보 미등록',locations:list(b.locations).map(x=>name(x.name)).filter(Boolean),hasCoordinates:!!b.position||list(b.locations).some(x=>valid(x.position)||list(x.positions).some(valid)),spawnTrigger:name(b.spawnTrigger)}));
+  return list(map.bosses).map(b=>({name:bossName(b),chance:bossChance(b.sourceChance),time:bossSpawnTime(b),locations:list(b.locations).map(x=>name(x.name)).filter(Boolean),hasCoordinates:!!b.position||list(b.locations).some(x=>valid(x.position)||list(x.positions).some(valid)),spawnTrigger:name(b.spawnTrigger)}));
 }
 export function filterIntel(rows=[],{enabled={},term='',type='all'}={}){
   const needle=String(term||'').normalize('NFKC').toLocaleLowerCase('ko');

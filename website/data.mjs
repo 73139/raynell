@@ -204,6 +204,7 @@ function normalizedMaps(bundle, fetchedAt) {
       id: idOf(map), name: names.value, nameEn: names.english,
       normalizedName: readable(map.normalizedName),
       minPlayerLevel: countValue(map.minPlayerLevel), maxPlayerLevel: countValue(map.maxPlayerLevel),
+      btrStops:references(map.btrStops).map(row=>({name:textPair(row.name,ko,en,'BTR 정류장').value,position:point(row.position||row)})).filter(row=>row.position),
       raidDuration: countValue(map.raidDuration), wikiLink: safeUrl(map.wiki),
       sourceURL, fetchedAt, switches: rawSwitches.map(switchDetails), extracts, transits,
       bosses: extractBossIntel(map,payload(bundle.maps).mobs).map(b=>({...b,name:textPair(b.name,ko,en,b.name).value,locations:b.locations.map(l=>({...l,name:textPair(l.name,ko,en,l.name).value}))})),

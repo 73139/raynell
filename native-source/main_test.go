@@ -57,6 +57,9 @@ func TestNativeServesBootstrapAndModuleMIME(t *testing.T) {
 	for _, asset := range []struct{ name, mime string }{
 		{"/app.mjs", "text/javascript; charset=utf-8"},
 		{"/quest-photos.mjs", "text/javascript; charset=utf-8"},
+		{"/raid-core.mjs", "text/javascript; charset=utf-8"},
+		{"/raid-intel-ui.mjs", "text/javascript; charset=utf-8"},
+		{"/raid-intel.json", "application/json; charset=utf-8"},
 		{"/quest-photo-core.mjs", "text/javascript; charset=utf-8"},
 		{"/quest-guide-fallbacks.json", "application/json; charset=utf-8"},
 		{"/companion-client.mjs", "text/javascript; charset=utf-8"},

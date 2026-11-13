@@ -1,0 +1,50 @@
+Raid reference tools — sources and scope
+
+Boss identity, spawn candidate coordinates, spawn chance and delay fields:
+https://json.tarkov.dev/regular/maps and the corresponding PvE endpoints.
+Names come from the public mob catalog and locales, with Korean aliases for
+known bosses. These are candidate spawn facts, never current-raid detections.
+Night Factory cultists and level 21+ Ground Zero cultists retain their variant
+restriction when shown on the combined map.
+
+Cultist locations and game-hour window 22:00–07:00:
+https://escapefromtarkov.fandom.com/wiki/Cultists
+Reviewed through its public MediaWiki API on 2026-11-13. Events can differ.
+
+Dual game clock formula: UTC epoch × 7 + 3 hours, second clock +12 hours.
+Independent arithmetic implementation; published reference:
+https://github.com/adamburgess/tarkov-time/blob/90ebbbf019a3dead22ead3d374b3e17e089282ad/src/time.ts
+The clocks use the PC clock and may be manually aligned to the game selection
+screen. Fixed-time map variants and server time take precedence.
+
+BTR reference facts, route paths and observed/estimated stop times:
+https://github.com/NepPure/tarkov-offline-map
+Revision: ef4ab4e9a86188dd13ed3ba8a1a51e797880ed28
+data/maps-dump.json and data/btr-dump.json
+Original community sources: https://tarkovbtr.com/ and https://www.eftarkov.com/btr
+https://escapefromtarkov.fandom.com/wiki/BTR_Driver
+Source snapshot dates, source mode and ±60 second uncertainty remain in
+raid-intel.json. The table uses remaining raid seconds, not the game-hour clock.
+The timer starts only when the user aligns their remaining raid time.
+No moving vehicle position or guaranteed arrival is claimed.
+
+22 reference stops: 8 Woods, 8 Lighthouse, 6 Streets of Tarkov.
+14 Woods/Streets coordinates were compared with the current public API.
+The 8 Lighthouse stops remain clearly marked as reference coordinates because
+the current API has no corresponding stop rows. Lighthouse R4 is listed from
+the newer source with its public spawn-time field, but no unverified world path
+or stop-by-stop arrival/departure times are drawn or invented.
+Source diagrams cannot all be registered to the older world-coordinate snapshot;
+the app deliberately leaves missing registration and timing fields unavailable.
+
+Recommended farming paths:
+The source guide URLs are included on each card in recommended-routes.json.
+28 editorial route suggestions use 89 verified public map-label coordinates.
+They are visit orders and do not guarantee profit, traversability or safety.
+Personal routes use user-picked normalized image points and local storage,
+separated by mode and map. No personal routes are uploaded.
+
+Game content and imagery belong to Battlestate Games and their respective
+authors. Existing map artwork license notices remain in the map viewer.
+Only factual reference data is used here; no third-party application code or
+game input automation has been imported.

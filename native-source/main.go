@@ -31,7 +31,7 @@ var assets embed.FS
 const port = "43873"
 const maxImage = 20 << 20
 const appName = "tarkov-field-guide-companion"
-const version = "2026.11.13-r16-quest-photos"
+const version = "2026.11.13-r16-raid-tools"
 
 var screenshotRe = regexp.MustCompile(`(?i)^(\d{4}-\d{2}-\d{2}\[\d{2}-\d{2}\])_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)(?:_([+-]?[0-9.]+))?\s+\((\d+)\)\.png$`)
 var safeImageRe = regexp.MustCompile(`(?i)^[^/\\:\x00-\x1f\x7f]{1,255}\.(png|jpg|jpeg|webp|bmp)$`)

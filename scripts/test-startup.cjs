@@ -206,7 +206,7 @@ process.on('unhandledRejection', error => {
     document.querySelector('[data-kappa-complete]').click();
     document.getElementById('close-kappa-line').click();
     document.getElementById('open-recommended-routes').click();
-    await waitFor(()=>document.querySelectorAll('[data-apply-route]').length===2,'Customs recommended routes must load');
+    await waitFor(()=>document.querySelectorAll('[data-apply-route]').length===4,'Customs recommended routes must load');
     document.querySelector('[data-apply-route]').click();
     assert.equal(document.getElementById('routes-dialog').open,false);
     assert.equal(document.getElementById('active-route-note').hidden,false);

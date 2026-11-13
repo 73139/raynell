@@ -15,7 +15,7 @@ export function extractBossIntel(map={},mobCatalog={}){
      const positions=[...arr(l.positions).map(point).filter(Boolean),...(point(l.position)?[point(l.position)]:[])];
      return {id:id(l)||String(j),name:txt(l.name||l.spawnKey)||'위치 이름 미등록',zoneKey:txt(l.spawnKey||l.zoneKey||l.name),positions,position:point(l.position),sourceChance:num(l.chance??l.sourceChance)};
    });
-   return {id:id(mob)||id(r)||id(r.mob)||`boss-${i}`,name:txt(mob.name||r.name||mob.normalizedName||r.normalizedName||r.mob)||'보스 이름 미등록',sourceChance:num(r.spawnChance??r.sourceChance),spawnTrigger:txt(r.spawnTrigger),spawnTime:num(r.spawnTime),locations,position:point(r.position),escorts:arr(r.escorts).map(e=>({name:txt(e?.boss?.name||e?.name||mobCatalog[id(e.mob)]?.name||e.mob)||'호위 NPC',amount:arr(e.amount).map(q=>q.count).filter(v=>num(v)!==null)}))};
+   return {id:id(mob)||id(r)||id(r.mob)||`boss-${i}`,mobId:id(r.mob)||id(r.boss)||id(mob),name:txt(mob.name||r.name||mob.normalizedName||r.normalizedName||r.mob)||'보스 이름 미등록',sourceChance:num(r.spawnChance??r.sourceChance),spawnTrigger:txt(r.spawnTrigger),spawnTime:num(r.spawnTime),spawnTimeRandom:r.spawnTimeRandom===true,locations,position:point(r.position),escorts:arr(r.escorts).map(e=>({name:txt(e?.boss?.name||e?.name||mobCatalog[id(e.mob)]?.name||e.mob)||'호위 NPC',amount:arr(e.amount).map(q=>q.count).filter(v=>num(v)!==null)}))};
  });
 }
 export function point(p){if(!obj(p))return null;const x=num(p.x),y=num(p.y),z=num(p.z);return x===null||y===null||z===null?null:{x,y,z};}

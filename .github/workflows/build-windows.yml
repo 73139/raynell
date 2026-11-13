@@ -11,6 +11,7 @@ on:
       - 'scripts/test-guide-core.mjs'
       - 'scripts/test-market.mjs'
       - 'scripts/test-quest-photos.mjs'
+      - 'scripts/test-raid.mjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/build-windows.yml'
@@ -68,7 +69,7 @@ jobs:
           If only icons are visible, search and add those items manually.
           Does not automatically press game keys or read game memory.
           TXT
-          printf 'Source commit: %s\nNative version: 2026.11.13-r16-quest-photos\n' "$GITHUB_SHA" > BUILD_INFO.txt
+          printf 'Source commit: %s\nNative version: 2026.11.13-r16-raid-tools\n' "$GITHUB_SHA" > BUILD_INFO.txt
           zip -9 TarkovFieldGuide_Windows.zip TarkovFieldGuide.exe START_HERE.txt BUILD_INFO.txt
           sha256sum TarkovFieldGuide_Windows.zip > SHA256SUMS.txt
       - name: Publish Windows download
@@ -77,4 +78,4 @@ jobs:
         run: |
           gh release view tfg-r16-windows >/dev/null 2>&1 || gh release create tfg-r16-windows --target "$GITHUB_SHA" --title 'Tarkov Field Guide Windows' --notes 'Standalone Windows x64 companion. No Node.js installer. Source on tarkov-r16-free branch.'
           gh release upload tfg-r16-windows TarkovFieldGuide_Windows.zip SHA256SUMS.txt --clobber
-          gh release edit tfg-r16-windows --notes "Standalone Windows x64 companion. Source commit: $GITHUB_SHA on tarkov-r16-free. Click quest targets to open wiki location photos, descriptions and thumbnails. Includes red pen farming routes, Kappa lines, flea and bag prices, and local OCR assets. No automatic keypress or screenshot capture."
+          gh release edit tfg-r16-windows --notes "Standalone Windows x64 companion. Source commit: $GITHUB_SHA on tarkov-r16-free. Boss names and cultist windows, dual game clocks, BTR reference timetables and stops, 28 recommended routes and editable personal routes. Includes quest photos, Kappa lines, flea and bag prices. No automatic keypress or screenshot capture."

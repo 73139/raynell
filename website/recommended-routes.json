@@ -385,6 +385,572 @@
         }
       ],
       "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "customs-west",
+      "map": "customs",
+      "name": "빨간 창고·창고단지·트레일러",
+      "risk": "중간",
+      "why": "서쪽 스폰에서 창고·공구·서류함 구역을 짧게 확인합니다.",
+      "note": "빨간 창고 사무실은 별도 열쇠가 필요합니다. 다리 진입 전에 출구와 사선을 확인하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Big Red",
+          "x": -215,
+          "z": -119
+        },
+        {
+          "label": "Storage",
+          "x": -288,
+          "z": -134
+        },
+        {
+          "label": "Trailer Park",
+          "x": -211,
+          "z": -219
+        }
+      ],
+      "sources": [
+        {
+          "title": "Customs loot routes guide",
+          "url": "https://topgamecarry.com/guides/escape-from-tarkov-customs-loot-routes/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "customs-east",
+      "map": "customs",
+      "name": "동쪽 창고·군 검문소",
+      "risk": "중간",
+      "why": "동쪽 산업 구역의 창고와 주변 컨테이너를 잇습니다.",
+      "note": "군 검문소와 도로 저격 사선을 주의하고 잠긴 창고방은 해당 열쇠를 준비하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Warehouse 17",
+          "x": 46,
+          "z": -59
+        },
+        {
+          "label": "Warehouse 7",
+          "x": 555,
+          "z": -118
+        },
+        {
+          "label": "Military Checkpoint",
+          "x": 572,
+          "z": 0
+        }
+      ],
+      "sources": [
+        {
+          "title": "Customs loot routes guide",
+          "url": "https://topgamecarry.com/guides/escape-from-tarkov-customs-loot-routes/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "woods-military",
+      "map": "woods",
+      "name": "군 캠프·제재소·통나무집",
+      "risk": "높음",
+      "why": "의료 보급품 구역에서 제재소 상자와 숙소를 확인합니다.",
+      "note": "제재소는 슈트르만 구역이며 군 캠프와 호숫가 사선도 위험합니다.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Military Camp",
+          "x": -188,
+          "z": 235
+        },
+        {
+          "label": "Sawmill",
+          "x": 10,
+          "z": -3
+        },
+        {
+          "label": "Cabins",
+          "x": -3,
+          "z": -74
+        }
+      ],
+      "sources": [
+        {
+          "title": "Woods money routes guide",
+          "url": "https://timesaver.gg/blog/tarkov-woods-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "woods-west",
+      "map": "woods",
+      "name": "USEC 캠프·검문소·오두막",
+      "risk": "중간",
+      "why": "서쪽 캠프와 도로 주변 보급품을 확인하는 짧은 순서입니다.",
+      "note": "USEC 캠프 바깥 지뢰와 저격수 경계에 들어가지 마세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "USEC Camp",
+          "x": 290,
+          "z": -475
+        },
+        {
+          "label": "Checkpoint",
+          "x": 239,
+          "z": -65
+        },
+        {
+          "label": "Shack",
+          "x": 244,
+          "z": 125
+        }
+      ],
+      "sources": [
+        {
+          "title": "Woods money routes guide",
+          "url": "https://timesaver.gg/blog/tarkov-woods-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "woods-villages",
+      "map": "woods",
+      "name": "컬티스트 마을·옛 제재소·마을",
+      "risk": "중간",
+      "why": "북쪽 마을과 옛 제재소의 식량·상자 구역을 이어 봅니다.",
+      "note": "밤에는 폐촌에 컬티스트가 등장할 수 있습니다. 야간 출현 시간과 탈출 조건을 확인하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Cultist Village",
+          "x": -80,
+          "z": -680
+        },
+        {
+          "label": "Old Sawmill",
+          "x": -517,
+          "z": -210
+        },
+        {
+          "label": "Scav Town",
+          "x": -485,
+          "z": -390
+        }
+      ],
+      "sources": [
+        {
+          "title": "Woods money routes guide",
+          "url": "https://timesaver.gg/blog/tarkov-woods-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "shoreline-east",
+      "map": "shoreline",
+      "name": "기상 관측소·전파탑·발전소",
+      "risk": "중간",
+      "why": "리조트 대신 동쪽 실외 거점의 보급품을 확인합니다.",
+      "note": "언덕 사선과 스캐브를 주의하세요. 발전소 주변과 리조트 진입 방향은 교전이 잦습니다.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Weather Station",
+          "x": -496,
+          "z": 257
+        },
+        {
+          "label": "Radio Tower",
+          "x": -708.9,
+          "z": 93.91
+        },
+        {
+          "label": "Power Station",
+          "x": -215.8,
+          "z": 178.4
+        }
+      ],
+      "sources": [
+        {
+          "title": "Guided Shoreline loot and navigation guide",
+          "url": "https://guided.news/en/guides/escape-from-tarkov-shoreline-map-spawns-exits-loot-boss/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "shoreline-coast",
+      "map": "shoreline",
+      "name": "스캐브 섬·주유소·부두",
+      "risk": "높음",
+      "why": "해안가 거점을 따라 상자와 부두 건물을 확인합니다.",
+      "note": "부두는 세니타 출현 후보입니다. 주유소 화재와 해안 도로 사선을 피하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Scav Island",
+          "x": 216,
+          "z": 424
+        },
+        {
+          "label": "Gas Station",
+          "x": -189.3,
+          "z": 420
+        },
+        {
+          "label": "Pier",
+          "x": -338.6,
+          "z": 525
+        }
+      ],
+      "sources": [
+        {
+          "title": "Guided Shoreline loot and navigation guide",
+          "url": "https://guided.news/en/guides/escape-from-tarkov-shoreline-map-spawns-exits-loot-boss/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "interchange-medical",
+      "map": "interchange",
+      "name": "맨티스·EMERCOM 매장·고샨",
+      "risk": "높음",
+      "why": "1층 의료 매장과 고샨 식량 구역을 묶은 동선입니다.",
+      "note": "EMERCOM은 1층 의료 매장을 뜻합니다. 잠긴 의료실 열쇠와 킬라·PMC 교전을 주의하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Mantis",
+          "x": 13,
+          "z": -66
+        },
+        {
+          "label": "EMERCOM",
+          "x": 18,
+          "z": -103
+        },
+        {
+          "label": "Goshan",
+          "x": -115,
+          "z": -45
+        }
+      ],
+      "sources": [
+        {
+          "title": "GGRecon Interchange loot and Scav route guide",
+          "url": "https://www.ggrecon.com/guides/escape-from-tarkov-interchange-map-best-loot-extractions/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "interchange-idea",
+      "map": "interchange",
+      "name": "이데아·내셔널·고샨",
+      "risk": "중간",
+      "why": "생활용품·서류함·식량 위주로 매장을 확인합니다.",
+      "note": "매장 통로가 개방되어 사선이 길며 고가품이나 안전을 보장하지 않습니다.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "IDEA",
+          "x": -34,
+          "z": -235
+        },
+        {
+          "label": "The National",
+          "x": 57,
+          "z": -32
+        },
+        {
+          "label": "Goshan",
+          "x": -115,
+          "z": -45
+        }
+      ],
+      "sources": [
+        {
+          "title": "GGRecon Interchange loot and Scav route guide",
+          "url": "https://www.ggrecon.com/guides/escape-from-tarkov-interchange-map-best-loot-extractions/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "lighthouse-coast",
+      "map": "lighthouse",
+      "name": "보트 창고·붉은 벽돌집·별장",
+      "risk": "중간",
+      "why": "해안과 남쪽 주택 구역을 잇고 정수장 깊숙한 진입을 줄입니다.",
+      "note": "해안 저격 사선과 주택 주변 PMC를 주의하세요. 등대 섬 접근 동선은 아닙니다.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Boathouses",
+          "x": 125,
+          "z": -153
+        },
+        {
+          "label": "Red Brick",
+          "x": -75,
+          "z": -284
+        },
+        {
+          "label": "Cottages",
+          "x": -162,
+          "z": -225
+        }
+      ],
+      "sources": [
+        {
+          "title": "Lighthouse money routes guide",
+          "url": "https://timesaver.gg/blog/tarkov-lighthouse-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "lighthouse-village",
+      "map": "lighthouse",
+      "name": "건설 현장·상점·언덕 마을",
+      "risk": "중간",
+      "why": "건설 구역과 마을 보급품을 확인하는 중부 순서입니다.",
+      "note": "북쪽 로그 사거리와 샬레 보스 구역을 주의하고 필요하면 중간에 이탈하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Construction",
+          "x": 0,
+          "z": -188
+        },
+        {
+          "label": "Convenience",
+          "x": -55,
+          "z": -288
+        },
+        {
+          "label": "Hillside",
+          "x": -151,
+          "z": -243
+        }
+      ],
+      "sources": [
+        {
+          "title": "Lighthouse money routes guide",
+          "url": "https://timesaver.gg/blog/tarkov-lighthouse-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "reserve-knights",
+      "map": "reserve",
+      "name": "흑마·백마·차고",
+      "risk": "높음",
+      "why": "차량 정비동과 차고의 군용 보급품·부품 구역을 확인합니다.",
+      "note": "건물 사이 사선과 글루하르 출현을 주의하세요. 잠긴 방은 해당 열쇠가 필요합니다.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Black Knight",
+          "x": 14.5,
+          "z": -10.8
+        },
+        {
+          "label": "White Knight",
+          "x": 82.2,
+          "z": -30.2
+        },
+        {
+          "label": "Garage",
+          "x": 96,
+          "z": 30
+        }
+      ],
+      "sources": [
+        {
+          "title": "Loot route examples by map",
+          "url": "https://www.ludo.guide/guide/escape-from-tarkov/the-ultimate-survival-guide/maps-locations/9-14-best-loot-routes-for-each-map"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "reserve-warehouses",
+      "map": "reserve",
+      "name": "K 창고·기차역",
+      "risk": "높음",
+      "why": "K 창고의 군용 상자와 기차역 주변을 잇습니다.",
+      "note": "레이더·글루하르와 넓은 야외 사선을 주의하세요. 기차가 항상 사용 가능한 탈출구라는 뜻은 아닙니다.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "K1",
+          "x": -1,
+          "z": -71
+        },
+        {
+          "label": "K2",
+          "x": 66,
+          "z": -90
+        },
+        {
+          "label": "K3",
+          "x": -5.5,
+          "z": -94
+        },
+        {
+          "label": "Train Station",
+          "x": 161,
+          "z": -149
+        }
+      ],
+      "sources": [
+        {
+          "title": "Loot route examples by map",
+          "url": "https://www.ludo.guide/guide/escape-from-tarkov/the-ultimate-survival-guide/maps-locations/9-14-best-loot-routes-for-each-map"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "reserve-dome",
+      "map": "reserve",
+      "name": "퀸 건물·돔·주유소",
+      "risk": "높음",
+      "why": "중앙 건물과 돔 주변을 짧게 확인하는 순서입니다.",
+      "note": "돔은 저격 사선이 넓습니다. 절벽 탈출에 필요한 장비·조건을 별도로 확인하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "White Queen",
+          "x": -25,
+          "z": 180
+        },
+        {
+          "label": "Dome",
+          "x": -8.5,
+          "z": 175
+        },
+        {
+          "label": "Gas Station",
+          "x": 29.7,
+          "z": 29.5
+        }
+      ],
+      "sources": [
+        {
+          "title": "Loot route examples by map",
+          "url": "https://www.ludo.guide/guide/escape-from-tarkov/the-ultimate-survival-guide/maps-locations/9-14-best-loot-routes-for-each-map"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "streets-north",
+      "map": "streets-of-tarkov",
+      "name": "파인우드·카디널 아파트·은행",
+      "risk": "높음",
+      "why": "북쪽 호텔·아파트·은행 거점의 물품을 잇습니다.",
+      "note": "호텔과 도로 횡단 교전을 주의하고 잠긴 방 열쇠를 준비하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Pinewood Hotel",
+          "x": -35,
+          "z": 64
+        },
+        {
+          "label": "Cardinal Apartments",
+          "x": 99,
+          "z": -71
+        },
+        {
+          "label": "Cardinal Bank",
+          "x": 89,
+          "z": -20
+        }
+      ],
+      "sources": [
+        {
+          "title": "Streets loot cluster guide",
+          "url": "https://timesaver.gg/blog/tarkov-streets-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "streets-shopping",
+      "map": "streets-of-tarkov",
+      "name": "클리모프 쇼핑몰·벨루가·영화관",
+      "risk": "높음",
+      "why": "쇼핑몰·식당·영화관 거점의 전리품을 확인합니다.",
+      "note": "콜론타이와 PMC, 영화관 주변 야간 위협을 주의하세요. 수익은 보장되지 않습니다.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Kilmov Shopping Mall",
+          "x": -128,
+          "z": -35
+        },
+        {
+          "label": "Beluga",
+          "x": -45,
+          "z": -52
+        },
+        {
+          "label": "Cinema",
+          "x": -175,
+          "z": 400
+        }
+      ],
+      "sources": [
+        {
+          "title": "Streets loot cluster guide",
+          "url": "https://timesaver.gg/blog/tarkov-streets-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "streets-south",
+      "map": "streets-of-tarkov",
+      "name": "동물병원·콩코르디아·폐공장",
+      "risk": "높음",
+      "why": "남쪽 건물군을 묶어 의료품과 아파트 전리품을 확인합니다.",
+      "note": "콩코르디아 잠긴 방은 열쇠가 필요하며 건물 간 사선과 귀환 탈출구를 먼저 확인하세요.",
+      "keys": "잠긴 방은 해당 열쇠와 조건을 별도로 확인",
+      "points": [
+        {
+          "label": "Vet Clinic",
+          "x": 222,
+          "z": 173
+        },
+        {
+          "label": "Concordia",
+          "x": 140,
+          "z": 362
+        },
+        {
+          "label": "Abandon Factory",
+          "x": -119,
+          "z": 287
+        }
+      ],
+      "sources": [
+        {
+          "title": "Streets loot cluster guide",
+          "url": "https://timesaver.gg/blog/tarkov-streets-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
     }
   ]
 }

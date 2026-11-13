@@ -26,6 +26,6 @@ assert.deepEqual(line.rows.map(r=>r.task.id),['a','b','c']);assert.equal(line.re
 assert.equal(buildKappaLine([{id:'a',kappaRequired:true,requirements:[{taskId:'a'}]}]).cycles.length,1);
 console.log('PASS Kappa dependency order, unflagged prerequisites, completion count and cycle guard');
 const data=JSON.parse(fs.readFileSync(new URL('../website/recommended-routes.json',import.meta.url)));
-assert.equal(data.routes.length,11);assert.equal(new Set(data.routes.map(r=>r.map)).size,7);
+assert.equal(data.routes.length,28);assert.equal(new Set(data.routes.map(r=>r.map)).size,7);
 for(const route of data.routes){assert.ok(validRoutePoints(route).length>=3);assert.ok(route.sources.every(s=>new URL(s.url).protocol==='https:'));}
-console.log('PASS 11 sourced farming routes on 7 maps with finite landmark coordinates');
+console.log('PASS 28 sourced farming routes on 7 maps with finite landmark coordinates');

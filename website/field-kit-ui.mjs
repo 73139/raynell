@@ -30,7 +30,8 @@ export function initializeFieldKit({getMode,getMap,getMapName,getTasks,getCatalo
  const itemById=id=>(catalog()?.items||[]).find(i=>i.id===id);
  const statusOf=id=>getStatus(id);
  const matchingTasks=()=>getTasks().filter(t=>matchTaskMap(t,map()));
- function open(next='routes'){tab=next;selectedId=active()?.id||'';picking=false;routeNameEditing=false;onPickRoute(false);if(!dialog.open)dialog.showModal();onRefreshCatalog(true);render();autoBackup();}
+ function open(next='routes'){dialog.classList.remove('routes-only');dialog.querySelector('header h2').textContent='개인 필드 키트';tab=next;selectedId=active()?.id||'';picking=false;routeNameEditing=false;onPickRoute(false);if(!dialog.open)dialog.showModal();onRefreshCatalog(true);render();autoBackup();}
+ function openPersonal(){open('routes');dialog.classList.add('routes-only');dialog.querySelector('header h2').textContent='내 파밍 루트';}
  function close(){dialog.close();picking=false;onPickRoute(false);onRefreshCatalog(false);}
  function routeChanged(next){const x=records().map(r=>r.id===next.id?{...next,updatedAt:new Date().toISOString()}:r);setRecords(x);renderRoutes();}
  function selectRoute(id){const r=records().find(x=>x.id===id);selectedId=r?.id||'';if(r?.map===map())setActive(r.id);renderRoutes();}
@@ -101,5 +102,5 @@ export function initializeFieldKit({getMode,getMap,getMapName,getTasks,getCatalo
  document.addEventListener('tfg-market-loaded',()=>{if(dialog.open&&['keys','fir','ammo','armor','value'].includes(tab))render();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&picking){stopPicking();e.preventDefault();}});
  autoBackup();setInterval(autoBackup,15*60*1000);
- return {open,getActiveRoute:active,isPicking:()=>picking,addMapPoint,stopPicking,getRoutes:records,setRoutes:setRecords};
+ return {open,openPersonal,getActiveRoute:active,isPicking:()=>picking,addMapPoint,stopPicking,getRoutes:records,setRoutes:setRecords,clearActiveRoute:()=>setActive(''),undoPoint(){const r=active();if(r?.points.length)setRecords(records().map(x=>x.id===r.id?{...x,points:x.points.slice(0,-1)}:x));},copyRoute({name,points,note=''}){const list=records();if(list.length>=80){notify('저장 가능한 루트는 최대 80개입니다.',true);return false;}const r={id:makeId(),map:map(),name:name+' · 내 경로',note,points,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};setRecords([...list,r]);setActive(r.id);openPersonal();return true;}};
 }
