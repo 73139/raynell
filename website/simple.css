@@ -1,0 +1,73 @@
+/* Document scrolling and a full-size map, without nested clipped panes. */
+html:has(body.simple-guide){height:auto!important;overflow-y:auto!important;scrollbar-gutter:stable}
+body.simple-guide{height:auto!important;min-height:100dvh;overflow:visible!important}
+body.simple-guide .topbar{height:auto!important;min-height:64px;flex-wrap:wrap;padding:9px 18px;gap:8px 20px;position:relative}
+body.simple-guide .top-nav{order:0;flex:1;justify-content:center}
+body.simple-guide .top-nav-btn{font-size:15px!important;min-height:42px;padding:10px 20px!important}
+body.simple-guide .topbar-tools{width:auto;gap:8px;margin:0}
+body.simple-guide .topbar-tools #data-status,body.simple-guide #open-quest-ocr,body.simple-guide #tactical-tools-menu,body.simple-guide #open-help,body.simple-guide .tool-divider{display:none!important}
+body.simple-guide .workspace{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;grid-template-rows:auto!important;align-items:start}
+body.simple-guide .sidebar,body.simple-guide .intel-panel,body.simple-guide #market-view,body.simple-guide .r14-intel-strip,body.simple-guide #companion-panel,body.simple-guide #capture-diagnostics,body.simple-guide .map-actions,body.simple-guide .map-topline,body.simple-guide .map-page-footer,body.simple-guide .quest-import-zone,body.simple-guide #open-quest-ocr-panel,body.simple-guide .quest-heading-icon{display:none!important}
+body.simple-guide[data-view="map"] .workspace{display:grid!important;grid-template-columns:320px minmax(0,1fr)!important}
+body.simple-guide[data-view="map"] .quest-panel{grid-column:1!important;grid-row:1!important;position:sticky;top:0;height:100dvh!important;max-height:100dvh!important;min-height:0!important;overflow:hidden!important}
+body.simple-guide[data-view="map"] .map-view{grid-column:2!important;grid-row:1!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;padding:14px 18px 24px!important;gap:10px;display:flex;flex-direction:column}
+body.simple-guide .map-heading{min-height:50px!important;display:flex;align-items:center}
+body.simple-guide .map-heading>div:first-child{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+body.simple-guide .map-heading .eyebrow,body.simple-guide .map-subtitle{display:none}
+body.simple-guide .map-selector-line{margin:0}
+body.simple-guide .map-selector-line select{font-size:15px;max-width:240px;padding:7px 12px}
+body.simple-guide .map-heading h1{font-size:26px!important}
+body.simple-guide .map-display-tools{flex:none;min-height:38px;padding:5px 10px;gap:10px;flex-wrap:wrap}
+body.simple-guide .layer-toggles label:has(#show-player),body.simple-guide .layer-toggles label:has(#follow-player){display:none}
+body.simple-guide .layer-toggles{width:auto}
+body.simple-guide .map-view-buttons{margin-left:auto}
+body.simple-guide .map-frame{height:auto!important;min-height:0!important;max-height:none!important;flex:0 0 auto!important;overflow:hidden!important}
+body.simple-guide .map-viewport{flex:0 0 auto!important;height:max(440px,calc(100dvh - 210px))!important;min-height:440px!important;max-height:none!important;touch-action:pan-y}
+body.simple-guide .simple-map-options{flex:none;background:#17221b;border:1px solid #435b45;border-radius:3px}
+body.simple-guide .simple-map-options>summary{cursor:pointer;padding:11px 14px;color:#c4d7b5;font-size:13px}
+body.simple-guide .simple-map-options:not([open])>:not(summary){display:none!important}
+body.simple-guide .simple-map-options .intel-layer-toolbar,body.simple-guide .simple-map-options .exit-layer-toolbar{border-top:1px solid #354b37;padding:10px 14px}
+body.simple-guide .quest-panel-heading{padding:16px!important}
+body.simple-guide .quest-panel-heading .eyebrow{display:none}
+body.simple-guide .quest-panel-heading h2{font-size:21px}
+body.simple-guide .quest-workspace{display:flex!important;flex-direction:column;max-height:none!important;min-height:0!important;overflow:hidden!important;flex:1}
+body.simple-guide #quest-browser{display:flex;flex-direction:column;min-height:0!important;height:auto!important;flex:1}
+body.simple-guide #quest-browser[hidden]{display:none!important}
+body.simple-guide .quest-list{overflow-y:auto!important;min-height:0;flex:1}
+body.simple-guide #quest-detail{padding:14px 16px!important;overflow-y:auto!important;min-height:0;max-height:none!important;flex:1}
+body.simple-guide .quest-panel:has(#quest-detail:not([hidden])) .quest-panel-heading{display:none}
+body.simple-guide[data-view="quests"] .workspace{display:block!important;max-width:1100px;margin:0 auto;padding:18px}
+body.simple-guide[data-view="quests"] .quest-panel{height:auto!important;max-height:none!important;min-height:calc(100dvh - 100px)!important;overflow:visible!important}
+body.simple-guide[data-view="quests"] .quest-workspace,body.simple-guide[data-view="quests"] #quest-browser,body.simple-guide[data-view="quests"] .quest-list,body.simple-guide[data-view="quests"] #quest-detail{overflow:visible!important;max-height:none!important}
+body.simple-guide[data-view="quests"] .quest-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-top:10px}
+body.simple-guide[data-view="map"].map-focus .workspace,body.simple-guide[data-view="map"].quests-collapsed .workspace{grid-template-columns:minmax(0,1fr)!important}
+body.simple-guide[data-view="map"].map-focus .quest-panel,body.simple-guide[data-view="map"].quests-collapsed .quest-panel{display:none!important}
+body.simple-guide[data-view="map"].map-focus .map-view,body.simple-guide[data-view="map"].quests-collapsed .map-view{grid-column:1!important}
+body.simple-guide .loot-dialog{max-height:94dvh;overflow-y:auto}
+body.simple-guide .loot-dialog-content{max-height:none;overflow:visible}
+body.simple-guide .loot-input-col,body.simple-guide .loot-results-col{max-height:none;overflow:visible}
+body.simple-guide .loot-dialog-header p,body.simple-guide .loot-privacy,body.simple-guide .loot-warning{font-size:13px;line-height:1.65}
+body.simple-guide .loot-input-col label,body.simple-guide #loot-progress,body.simple-guide .loot-result-table{font-size:13px}
+body.simple-guide .loot-drop{min-height:190px;font-size:16px}
+body.simple-guide .loot-result-wrap{max-height:none;overflow-x:auto}
+@media(max-width:1000px){
+ body.simple-guide .brand-type>span{display:none}
+ body.simple-guide .top-nav{order:3;flex:1 0 100%}
+ body.simple-guide[data-view="map"] .workspace{grid-template-columns:275px minmax(0,1fr)!important}
+ body.simple-guide .map-view-buttons .btn{font-size:12px!important}
+ body.simple-guide .map-heading h1{display:none}
+}
+@media(max-width:700px){
+ body.simple-guide .topbar{padding:8px 12px}
+ body.simple-guide .brand-type strong{font-size:13px}
+ body.simple-guide .top-nav-btn{padding:9px 10px!important;font-size:14px!important;justify-content:center}
+ body.simple-guide .topbar-tools{width:auto!important;margin-left:auto}
+ body.simple-guide[data-view="map"] .workspace{display:flex!important;flex-direction:column}
+ body.simple-guide[data-view="map"] .map-view{order:1!important;min-height:0!important;width:100%;padding:10px!important}
+ body.simple-guide[data-view="map"] .quest-panel{order:2!important;position:static;width:100%;height:650px!important;max-height:none!important}
+ body.simple-guide .map-viewport{height:max(420px,calc(100dvh - 250px))!important;min-height:420px!important}
+ body.simple-guide .map-floor-wrap{max-width:calc(100% - 75px);left:10px;top:10px}
+ body.simple-guide[data-view="quests"] .workspace{padding:10px}
+ body.simple-guide[data-view="quests"] .quest-list{grid-template-columns:1fr}
+ body.simple-guide .loot-dialog-content{display:flex;flex-direction:column}
+}

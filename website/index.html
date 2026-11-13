@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101512">
   <meta name="description" content="타르코프 스크린샷으로 촬영 당시 위치를 확인하고, 퀘스트를 검색하고 정리하는 개인용 필드 가이드.">
-  <title>타르코프 필드 가이드 — 통합 온라인판</title>
+  <title>타르코프 지도 · 퀘스트 · 가방 가격</title>
   <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./simple.css">
 </head>
-<body data-view="map">
+<body data-view="map" class="simple-guide">
   <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <symbol id="i-map" viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2Z M9 3v16m6-14v16"/></symbol>
     <symbol id="i-quests" viewBox="0 0 24 24"><path d="M9 5H5v16h14V5h-4M9 3h6v4H9zM8 12h8m-8 4h5"/></symbol>
@@ -42,9 +43,9 @@
       <span class="brand-type"><strong>타르코프 필드 가이드</strong><span>TARKOV <b>/</b> FIELD GUIDE</span></span>
     </a>
     <nav class="top-nav" aria-label="주요 화면">
-      <button class="top-nav-btn active" data-view="map"><svg class="icon"><use href="#i-map"/></svg> 전술 지도</button>
+      <button class="top-nav-btn active" data-view="map"><svg class="icon"><use href="#i-map"/></svg> 지도</button>
       <button class="top-nav-btn" data-view="quests"><svg class="icon"><use href="#i-quests"/></svg> 퀘스트</button>
-      <button class="top-nav-btn" data-view="market"><svg class="icon"><use href="#i-market"/></svg> 마켓</button>
+      <button id="open-loot-top" class="top-nav-btn" aria-haspopup="dialog" aria-controls="loot-dialog"><svg class="icon"><use href="#i-image"/></svg> 가방 가격</button>
     </nav>
     <div class="topbar-tools">
       <span id="data-status" class="data-status"><span class="status-dot"></span>데이터 확인 중</span>
@@ -53,7 +54,7 @@
       <button id="refresh-data" class="icon-button" title="퀘스트 데이터 새로고침" aria-label="퀘스트 데이터 새로고침"><svg class="icon"><use href="#i-refresh"/></svg></button>
       <span class="tool-divider"></span>
       <button id="open-quest-ocr" class="quest-capture-button" data-open-quest-ocr="true" aria-haspopup="dialog" aria-controls="quest-ocr-dialog" aria-label="퀘스트 캡처로 찾기" title="퀘스트 캡처로 찾기"><svg class="icon"><use href="#i-scan"/></svg><span>퀘스트 캡처</span></button>
-      <details id="tactical-tools-menu" class="tactical-tools-menu"><summary aria-label="전술 도구 메뉴 열기"><svg class="icon"><use href="#i-layers"/></svg><span>전술 도구</span><span class="tool-chevron">▾</span></summary><div class="tactical-tools-panel"><div class="tool-menu-kicker">FIELD UTILITIES <small>기존 기능 유지</small></div>      <button id="open-loot-top" class="quest-capture-button" title="아이템 사진 가격 분석"><svg class="icon"><use href="#i-scan"/></svg><span>아이템 캡처</span></button>
+      <details id="tactical-tools-menu" class="tactical-tools-menu"><summary aria-label="전술 도구 메뉴 열기"><svg class="icon"><use href="#i-layers"/></svg><span>전술 도구</span><span class="tool-chevron">▾</span></summary><div class="tactical-tools-panel"><div class="tool-menu-kicker">FIELD UTILITIES <small>기존 기능 유지</small></div>
       <button id="open-ops" class="quest-capture-button" aria-haspopup="dialog" aria-controls="ops-dialog">⚑ 작전 도구</button>
       <button id="open-r12" class="quest-capture-button" aria-haspopup="dialog" aria-controls="r12-dialog">⚠ 전술 분석 r12</button>
       <button id="open-r13" class="quest-capture-button" aria-haspopup="dialog" aria-controls="r13-dialog">◎ 자동 분석 r13</button>
@@ -140,11 +141,11 @@
           <p id="intel-layer-status" role="status">공개 지도 데이터를 확인하고 있어요.</p>
         </div>
         <div id="exit-layer-toolbar" class="exit-layer-toolbar">
-          <div class="exit-layer-filters" role="group" aria-label="탈출구 표시 설정"><span class="exit-toolbar-label">탈출구</span><label class="exit-filter-pmc"><input id="show-exit-pmc" type="checkbox" checked><i aria-hidden="true"></i><span>PMC</span></label><label class="exit-filter-scav"><input id="show-exit-scav" type="checkbox" checked><i aria-hidden="true"></i><span>Scav</span></label><label class="exit-filter-shared"><input id="show-exit-shared" type="checkbox" checked><i aria-hidden="true"></i><span>공용·기타</span></label><label class="exit-filter-transit"><input id="show-exit-transit" type="checkbox" checked><i aria-hidden="true"></i><span>이동</span></label><label class="exit-filter-labels"><input id="show-exit-labels" type="checkbox" checked><span>이름 표시</span></label></div>
+          <div class="exit-layer-filters" role="group" aria-label="탈출구 표시 설정"><span class="exit-toolbar-label">탈출구</span><label class="exit-filter-pmc"><input id="show-exit-pmc" type="checkbox" checked><i aria-hidden="true"></i><span>PMC</span></label><label class="exit-filter-scav"><input id="show-exit-scav" type="checkbox" checked><i aria-hidden="true"></i><span>Scav</span></label><label class="exit-filter-shared"><input id="show-exit-shared" type="checkbox" checked><i aria-hidden="true"></i><span>공용·기타</span></label><label class="exit-filter-transit"><input id="show-exit-transit" type="checkbox" checked><i aria-hidden="true"></i><span>이동</span></label><label class="exit-filter-labels"><input id="show-exit-labels" type="checkbox"><span>이름 표시</span></label></div>
           <button id="toggle-exit-list" class="btn btn-small" aria-expanded="false" aria-controls="exit-list-panel"><svg class="icon"><use href="#i-exit"/></svg>탈출구 목록</button>
           <div class="exit-toolbar-status"><span id="exit-count">데이터 확인 중</span><span id="exit-data-status">등록된 위치만 표시 · 현재 레이드 활성 여부는 게임에서 확인</span></div>
         </div>
-        <div id="map-viewport" class="map-viewport" tabindex="0" aria-label="지도. 마우스로 이동하고 휠로 확대할 수 있습니다.">
+        <div id="map-viewport" class="map-viewport" tabindex="0" aria-label="지도. 드래그로 이동, 더하기와 빼기 버튼 또는 Ctrl과 휠로 확대합니다. 일반 휠은 페이지를 스크롤합니다.">
           <div id="map-stage" class="map-stage"><img id="map-image" class="map-image" alt="선택한 타르코프 맵" draggable="false"><div id="map-markers" class="map-markers"></div></div>
           <div id="map-loading" class="map-loading" role="status"><span class="loading-ring"></span><strong>지도를 불러오는 중</strong><span>레이드에 필요한 정보를 준비하고 있어요.</span></div>
           <div class="map-floor-wrap"><label for="map-floor">현재 지도 층</label><select id="map-floor" aria-label="지도 층 선택"><option>기본 지도</option></select><span id="floor-status" class="floor-status">층 정보 확인 중</span><details class="floor-settings"><summary><svg class="icon"><use href="#i-layers"/></svg>층 표시 설정</summary><div><label><input id="follow-floor" type="checkbox"><span>촬영 층 따라가기</span></label><label><input id="show-other-floors" type="checkbox"><span>다른 층도 표시</span></label></div></details></div>
@@ -158,7 +159,7 @@
             <p class="intel-panel-source">데이터: tarkov.dev · 표시되지 않는 지점은 공개 좌표가 누락된 경우일 수 있습니다.</p>
           </aside>
           <div class="map-side-panels"><section id="exit-list-panel" class="exit-list-panel" aria-label="탈출구 목록" hidden><label class="exit-search-field"><svg class="icon"><use href="#i-search"/></svg><input id="exit-search" type="search" placeholder="탈출구 이름 검색" aria-label="탈출구 이름 검색" autocomplete="off"></label><div id="exit-list" class="exit-list"></div></section><section id="exit-detail" class="exit-detail" aria-label="탈출구 상세 정보" hidden><div class="exit-detail-top"><span><svg class="icon"><use href="#i-exit"/></svg>탈출구 정보</span><button id="close-exit-detail" class="icon-button" aria-label="탈출구 상세 정보 닫기"><svg class="icon"><use href="#i-close"/></svg></button></div><div id="exit-detail-content"></div></section></div>
-          <div class="map-navigation-note">드래그 이동 · 휠 확대<br>선택한 층의 목표 표시 · 층 미확인은 ?</div>
+          <div class="map-navigation-note">드래그 이동 · + / − 확대 · Ctrl+휠 확대<br>선택한 층의 목표 표시 · 층 미확인은 ?</div>
           <div id="map-attribution" class="map-attribution"></div>
         </div>
         <div class="position-bar"><div class="position-bar-icon"><svg class="icon"><use href="#i-target"/></svg></div><div id="position-info" class="position-info">아직 확인된 위치가 없어요.<span>게임 내 스크린샷을 열어 촬영 당시 위치를 확인하세요.</span></div><div class="watch-block"><span id="watch-status">폴더 연결 안 됨</span><button id="disconnect-folder" class="text-button" hidden>연결 해제</button></div></div>
@@ -231,9 +232,9 @@
   </main>
 
   <dialog id="loot-dialog" class="loot-dialog" aria-labelledby="loot-dialog-title">
-    <header class="loot-dialog-header"><div><p class="eyebrow">LOOT ASSESSMENT / 이미지 기반 가격 계산</p><h2 id="loot-dialog-title">아이템 가치 분석</h2><p>사진 한 장에서 읽히는 이름을 항목별로 분석해요. 아이콘만 있는 사진은 자동 판별을 보장하지 않습니다.</p></div><button type="button" id="loot-close" class="icon-button" aria-label="아이템 캡처 닫기"><svg class="icon"><use href="#i-close"/></svg></button></header>
+    <header class="loot-dialog-header"><div><p class="eyebrow">LOOT ASSESSMENT / 이미지 기반 가격 계산</p><h2 id="loot-dialog-title">가방 사진으로 가격 확인</h2><p>직접 찍은 가방 사진을 올리면, 읽힌 아이템 이름으로 플리마켓·상인 합계를 계산합니다. 아이콘만 보이면 검색으로 아이템을 추가해 주세요.</p></div><button type="button" id="loot-close" class="icon-button" aria-label="아이템 캡처 닫기"><svg class="icon"><use href="#i-close"/></svg></button></header>
     <div class="loot-dialog-content">
-      <div class="loot-input-col"><label for="loot-file" id="loot-drop" class="loot-drop"><svg class="icon"><use href="#i-image"/></svg><strong>아이템 사진을 선택하거나 끌어 놓기</strong><span>PNG · JPG · WEBP / 클립보드 Ctrl+V</span><input type="file" id="loot-file" accept="image/png,image/jpeg,image/webp,image/bmp" hidden></label><img id="loot-preview" alt="아이템 캡처 미리보기" class="loot-preview" hidden><label>글자 인식 언어 <select id="loot-language"><option value="kor+eng">한국어 + 영어</option><option value="eng">영어</option></select></label><p class="loot-privacy">이미지 분석은 브라우저 안에서 수행합니다. 아이템 가격 데이터만 공개 API에서 가져옵니다.</p><button type="button" id="loot-analyze" class="btn btn-primary" disabled>사진 분석 시작</button><p id="loot-progress" role="status" aria-live="polite">사진을 선택하세요.</p><details class="loot-recognized"><summary>인식된 글자 보기 · 수정</summary><textarea id="loot-ocr-text" rows="5" placeholder="사진에 찍힌 아이템 이름을 줄마다 입력하거나 수정하세요."></textarea><button type="button" class="btn btn-small" id="loot-rematch">이 글자로 가격표 만들기</button></details></div>
+      <div class="loot-input-col"><label for="loot-file" id="loot-drop" class="loot-drop"><svg class="icon"><use href="#i-image"/></svg><strong>가방 사진 올리기</strong><span>PNG · JPG · WEBP / 클립보드 Ctrl+V</span><input type="file" id="loot-file" accept="image/png,image/jpeg,image/webp,image/bmp" hidden></label><img id="loot-preview" alt="아이템 캡처 미리보기" class="loot-preview" hidden><label>글자 인식 언어 <select id="loot-language"><option value="kor+eng">한국어 + 영어</option><option value="eng">영어</option></select></label><p class="loot-privacy">이미지 분석은 브라우저 안에서 수행합니다. 아이템 가격 데이터만 공개 API에서 가져옵니다.</p><button type="button" id="loot-analyze" class="btn btn-primary" disabled>사진 분석 시작</button><p id="loot-progress" role="status" aria-live="polite">사진을 선택하세요.</p><details class="loot-recognized"><summary>인식된 글자 보기 · 수정</summary><textarea id="loot-ocr-text" rows="5" placeholder="사진에 찍힌 아이템 이름을 줄마다 입력하거나 수정하세요."></textarea><button type="button" class="btn btn-small" id="loot-rematch">이 글자로 가격표 만들기</button></details></div>
       <div class="loot-results-col"><div class="loot-totals"><div><small>플리마켓 등록가 기준 합계</small><strong id="loot-total-flea">—</strong></div><div><small>상인 판매가 기준 합계</small><strong id="loot-total-trader">—</strong></div><div><small>분석 항목</small><strong id="loot-total-count">0개</strong></div></div><p id="loot-warning" class="loot-warning" aria-live="polite">가격이 표시되려면 아이템 시세 데이터가 먼저 로드되어야 해요.</p><div class="loot-add-line"><input id="loot-add-name" placeholder="찾지 못한 아이템을 이름으로 검색해 수동 추가" aria-label="수동 아이템 검색" autocomplete="off"><select id="loot-add-select" aria-label="추가할 아이템 후보"><option value="">아이템 선택</option></select><button class="btn btn-small" id="loot-add">추가</button></div><div class="loot-result-wrap"><table class="loot-result-table"><thead><tr><th>아이템</th><th>수량</th><th>플리 1개</th><th>상인 1개</th><th>소계 (플리)</th><th>조작</th></tr></thead><tbody id="loot-results"><tr><td colspan="6">캡처를 분석하면 인식된 물품이 한 개씩 나열돼요.</td></tr></tbody></table></div><div class="loot-results-foot"><small id="loot-price-time">가격을 불러온 시각 표시</small><button class="btn btn-small" id="loot-csv">가격표 CSV 내보내기</button><button class="btn btn-small" id="loot-clear">초기화</button></div></div>
     </div>
   </dialog>

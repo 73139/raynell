@@ -14,10 +14,11 @@ import { initializeR12 } from './r12-ui.mjs';
 import { initializeR13 } from './r13-ui.mjs';
 import { initializeR14Shell } from './r14-shell.mjs';
 import { initializeMapIntel } from './map-intel-ui.mjs';
+import { initializeSimpleUI } from './simple-ui.mjs';
 
 const $ = (id) => document.getElementById(id);
-// Keep the quest browser visible on the left and move its detail view to the right.
-$('intel-panel').appendChild($('quest-detail'));
+// Keep quest details in the same panel so the map retains its width.
+initializeSimpleUI();
 const esc = (value = '') => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const safeURL = (value) => { try { const u = new URL(value); return u.protocol === 'https:' ? u.href : ''; } catch { return ''; } };
 const fmt = new Intl.NumberFormat('ko-KR');
@@ -29,7 +30,7 @@ const STORAGE_KEY = 'tarkov-field-guide-progress-v1';
 const STATUS_LABELS = {todo:'미완료',active:'진행 중',done:'완료'};
 const state = {mode:'regular',mapKey:'customs',view:'map',dataset:null,configs:[],selected:null,progress:{},player:null,watchHandle:null,watchTimer:null,watchBusy:false,watchSeen:new Set(),watchStarted:0,mapSequence:0,dataSequence:0,mapDoc:null,mapURL:null,floor:'',imageReady:false,zoom:1,fitZoom:1,panX:0,panY:0,imageWidth:1000,imageHeight:700,search:'',trader:'all',status:'all',mapFilter:'current',renderLimit:70,watchSession:null,capture:null,mapDisplayMode:'loading',showPlayerMarker:true,showQuestMarkers:true,followPlayer:true,capturedQuestIds:[],capturedCandidateCount:0};
 Object.assign(state,{companionMode:false,companion:null,companionConnected:false,companionBusy:false,companionError:'',companionWaiting:false,companionGate:null});
-Object.assign(state,{mapDataset:null,mapDetailsStatus:'loading',floorOptions:[],floorImageSequence:0,followFloor:false,showOtherFloors:false,exitFilters:{pmc:true,scav:true,shared:true,unknown:true,transit:true},showExitLabels:true,exitSearch:'',selectedExit:null});
+Object.assign(state,{mapDataset:null,mapDetailsStatus:'loading',floorOptions:[],floorImageSequence:0,followFloor:false,showOtherFloors:false,exitFilters:{pmc:true,scav:true,shared:true,unknown:true,transit:true},showExitLabels:false,exitSearch:'',selectedExit:null});
 let opsRoute=[],opsExit=null,opsController=null,lastAutoMapRev=0;
 let fieldKitController=null,r12Controller=null,r13Controller=null;
 let mapIntelController=null,verifiedIntelLabels={};
@@ -607,7 +608,7 @@ function renderQuests(){
   if(!tasks.length){list.innerHTML='<div class="empty-state"><span class="empty-symbol">⌕</span><strong>조건에 맞는 퀘스트가 없어요</strong><p>검색어를 줄이거나 지도·상인 필터를 바꿔 보세요.</p><button class="btn btn-small" data-action="reset-filters">필터 초기화</button></div>';return;}
   list.innerHTML=tasks.slice(0,state.renderLimit).map(task=>{const status=statusOf(task.id);const p=taskProgress(task.id);const points=locationsFor(task);const maps=[...new Set(task.mapIds.map(mapKeyFor))].map(mapName);return `<article class="quest-card ${state.selected===task.id?'selected':''} ${status==='done'?'is-complete':''}"><button class="quest-open" data-task="${esc(task.id)}"><div class="quest-meta"><span>${esc(task.traderName||'상인 확인 필요')}</span><span>요구 Lv.${Number(task.minPlayerLevel)||1}</span></div><h3 class="quest-title">${esc(task.name)}</h3>${task.nameEn&&task.nameEn!==task.name?`<p class="quest-name-en">${esc(task.nameEn)}</p>`:''}<div class="quest-card-bottom"><span class="badge status-${status}">${STATUS_LABELS[status]}</span>${task.kappaRequired?'<span class="badge badge-kappa">KAPPA</span>':''}<span class="quest-map-label">${esc(maps.slice(0,2).join(' · ')||'여러 지역 / 위치 미등록')}${maps.length>2?' 외':''}</span></div></button><button class="quest-pin ${p.pinned?'pinned':''}" data-pin="${esc(task.id)}" aria-label="${esc(task.name)} ${p.pinned?'지도 표시 해제':'지도 표시'}" title="${p.pinned?'지도 표시 해제':'지도에 목표 표시'}" aria-pressed="${!!p.pinned}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 3h8l-1 7 4 4v2H5v-2l4-4-1-7zM12 16v6"/></svg></button></article>`;}).join('')+(tasks.length>state.renderLimit?`<button class="btn load-more" data-action="load-more">퀘스트 더 보기 (${fmt.format(tasks.length-state.renderLimit)}개)</button>`:'');
 }
-function openTask(id){const task=state.dataset?.tasks.find(t=>t.id===id);if(!task)return;state.selected=id;$('quest-detail').hidden=false;$('intel-blank').hidden=true;$('quest-panel').classList.add('has-detail');renderDetail();renderQuests();renderMarkers();}
+function openTask(id){const task=state.dataset?.tasks.find(t=>t.id===id);if(!task)return;state.selected=id;$('quest-browser').hidden=true;$('quest-detail').hidden=false;$('intel-blank').hidden=true;$('quest-panel').classList.add('has-detail');renderDetail();renderQuests();renderMarkers();}
 function closeDetail(){state.selected=null;$('quest-detail').hidden=true;$('intel-blank').hidden=false;$('quest-browser').hidden=false;$('quest-panel').classList.remove('has-detail');renderQuests();renderMarkers();}
 function notesHTML(notes){return notes?.length?`<ul class="condition-list">${notes.map(note=>`<li>${esc(note)}</li>`).join('')}</ul>`:'';}
 function renderDetail(){
@@ -665,6 +666,7 @@ async function loadItemNames(force=false){
 }
 function togglePin(id){const p=taskProgress(id);const task=state.dataset.tasks.find(t=>t.id===id);if(!p.pinned&&!task.objectives.some(o=>o.locations.length)){toast('이 퀘스트에는 등록된 좌표가 없어요. 상세 목표와 원문 공략을 확인해 주세요.',true);openTask(id);return;}updateProgress(id,{pinned:!p.pinned});if(!p.pinned&&!locationsFor(task).length)toast('목표를 지도에 고정했어요. 상세 화면에서 해당 맵을 선택해 주세요.');}
 function setView(view,{keepFilter=false}={}){
+  if(state.selected)closeDetail();
   if(view==='quests'){
     document.body.classList.remove('map-focus','quests-collapsed');
     $('toggle-quests').setAttribute('aria-expanded','true');$('toggle-quests').textContent='퀘스트 목록 접기';
@@ -798,8 +800,9 @@ document.addEventListener('dragenter',event=>{if(event.dataTransfer.types.includ
 document.addEventListener('dragleave',()=>{if(--dragDepth<=0){dragDepth=0;document.body.classList.remove('file-dragging');}});
 document.addEventListener('drop',event=>{if(event.dataTransfer.files.length){event.preventDefault();dragDepth=0;document.body.classList.remove('file-dragging');if($('loot-dialog').open||state.view==='market'||event.target.closest('.loot-entry')){lootController.ingest(event.dataTransfer.files[0]);}else if($('quest-ocr-dialog').open||event.target.closest('#quest-import-zone'))void questOcrController?.ingest(event.dataTransfer.files[0]);else handleFiles(event.dataTransfer.files);}});
 const viewport=$('map-viewport');let routePickDown=null;let drag=null;const touches=new Map();let pinch=null;let viewportSize=null;
-viewport.addEventListener('wheel',event=>{if(event.target.closest('.map-side-panels,.map-floor-wrap,.map-utility-rail'))return;event.preventDefault();const rect=viewport.getBoundingClientRect();zoomAt(event.deltaY<0?1.16:1/1.16,event.clientX-rect.left,event.clientY-rect.top);},{passive:false});
+viewport.addEventListener('wheel',event=>{if(!event.ctrlKey&&!event.metaKey)return;if(event.target.closest('.map-side-panels,.map-floor-wrap,.map-utility-rail'))return;event.preventDefault();const rect=viewport.getBoundingClientRect();zoomAt(event.deltaY<0?1.16:1/1.16,event.clientX-rect.left,event.clientY-rect.top);},{passive:false});
 viewport.addEventListener('pointerdown',event=>{
+ if(event.pointerType==='touch')return; // Let touch gestures scroll the page.
  if(fieldKitController?.isPicking() && state.imageReady && !event.target.closest('button,select,a,input,label,summary,.map-side-panels,.map-floor-wrap,.map-utility-rail')){routePickDown={x:event.clientX,y:event.clientY};event.preventDefault();return;}
  if(!state.imageReady || (event.pointerType==='mouse'&&event.button!==0) || event.target.closest('button,select,a,input,label,summary,.map-side-panels,.map-floor-wrap,.map-utility-rail'))return;
  event.preventDefault();viewport.setPointerCapture(event.pointerId);touches.set(event.pointerId,{x:event.clientX,y:event.clientY});
@@ -827,7 +830,7 @@ new ResizeObserver(()=>{const newWidth=viewport.clientWidth,newHeight=viewport.c
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(state.watchHandle)pollFolder();if(companionClient)companionClient.refresh();}});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&state.selected&&!$('help-dialog').open&&!$('quest-ocr-dialog').open)closeDetail();if(event.key==='/'&&!event.target.matches('input,textarea,select')&&!$('help-dialog').open&&!$('quest-ocr-dialog').open){event.preventDefault();if(state.selected)closeDetail();$('quest-search').focus();}});
 const marketController=initializeMarket({getMode:()=>state.mode,readCache:cachedGet,writeCache:cachedPut});
-const lootController=initializeLootScan({getCatalog:()=>marketController.getCatalog(),getMode:()=>state.mode,onOpenMarket:()=>setView('market')});
+const lootController=initializeLootScan({getCatalog:()=>marketController.getCatalog(),getMode:()=>state.mode,onOpenMarket:()=>marketController.setActive(true)});
 opsController=initializeOperations({getMode:()=>state.mode,getMap:()=>({key:state.mapKey,name:mapName(state.mapKey)}),getPoints:()=> (state.dataset?.tasks||[]).filter(t=>taskProgress(t.id).pinned).flatMap(task=>locationsFor(task).map(l=>({...l,taskId:task.id,taskName:task.name,objectiveId:l.objective?.id,objective:l.objective?.description}))),getExits:currentExits,getPlayer:()=>state.player,getQuestItems:()=>new Set((state.dataset?.tasks||[]).filter(t=>statusOf(t.id)!=='done').flatMap(t=>t.objectives||[]).flatMap(o=>(o.items||[]).map(i=>i.id||i.item?.id).filter(Boolean))),getCatalog:()=>marketController.getCatalog(),showRoute:(points,exit)=>{opsRoute=points;opsExit=exit;setView('map');renderMarkers();},openLoot:()=>lootController.open(),refreshMarket:()=>marketController.refresh(),onMarketOpen:()=>marketController.setActive(true),onMarketClose:()=>marketController.setActive(state.view==='market'),getLogStatus:()=>state.companion?.logs,onLogFolder:folder=>companionAction('logs-folder',{folder}),notify:toast});
 fieldKitController=initializeFieldKit({getMode:()=>state.mode,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),getTasks:()=>state.dataset?.tasks||[],getCatalog:()=>marketController.getCatalog(),getStatus:statusOf,matchTaskMap:matchesMap,onPickRoute:active=>{viewport.classList.toggle('is-route-picking',active);},onDrawRoute:()=>{setView('map');renderMarkers();},onRouteUpdated:()=>renderMarkers(),onOpenQuest:id=>{setView('quests');openTask(id);},onRefreshCatalog:active=>marketController.setActive(active||state.view==='market'),notify:toast});
 r12Controller=initializeR12({getMode:()=>state.mode,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),

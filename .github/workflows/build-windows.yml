@@ -7,6 +7,7 @@ on:
       - 'website/**'
       - 'scripts/build-ocr.mjs'
       - 'scripts/test-startup.cjs'
+      - 'scripts/test-layout.cjs'
       - 'package.json'
       - 'package-lock.json'
       - '.github/workflows/build-windows.yml'
@@ -33,6 +34,11 @@ jobs:
         run: npm test
       - name: Prepare verified local OCR assets
         run: node scripts/build-ocr.mjs
+      - name: Verify desktop and mobile map layout
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund playwright@1.62.1
+          npx playwright install --with-deps chromium
+          node scripts/test-layout.cjs
       - name: Copy web UI for standalone binary
         run: |
           rm -rf native-source/dist
@@ -52,12 +58,14 @@ jobs:
           Tarkov Field Guide - Windows x64
           1. Extract the ZIP into a folder.
           2. Run TarkovFieldGuide.exe (no Node.js required).
-          3. The app opens a local 127.0.0.1 map automatically.
-          4. Choose your Escape from Tarkov Screenshots folder if needed.
-          5. Take screenshots using the game's own screenshot key.
+          3. The app opens a local 127.0.0.1 page with Map, Quests and Bag Prices.
+          4. Use the mouse wheel to scroll. Use +/- or Ctrl+wheel to zoom the map.
+          5. Open Bag Prices and upload a photo you took in the game.
+          Readable item names are matched to public flea/trader prices.
+          If only icons are visible, search and add those items manually.
           Does not automatically press game keys or read game memory.
           TXT
-          printf 'Source commit: %s\nNative version: 2026.11.13-r16-startup-fix\n' "$GITHUB_SHA" > BUILD_INFO.txt
+          printf 'Source commit: %s\nNative version: 2026.11.13-r16-simple-guide\n' "$GITHUB_SHA" > BUILD_INFO.txt
           zip -9 TarkovFieldGuide_Windows.zip TarkovFieldGuide.exe START_HERE.txt BUILD_INFO.txt
           sha256sum TarkovFieldGuide_Windows.zip > SHA256SUMS.txt
       - name: Publish Windows download
@@ -66,4 +74,4 @@ jobs:
         run: |
           gh release view tfg-r16-windows >/dev/null 2>&1 || gh release create tfg-r16-windows --target "$GITHUB_SHA" --title 'Tarkov Field Guide Windows' --notes 'Standalone Windows x64 companion. No Node.js installer. Source on tarkov-r16-free branch.'
           gh release upload tfg-r16-windows TarkovFieldGuide_Windows.zip SHA256SUMS.txt --clobber
-          gh release edit tfg-r16-windows --notes "Standalone Windows x64 companion. Source commit: $GITHUB_SHA on tarkov-r16-free. Fixes map/quest startup and bundles verified local OCR assets. No automatic keypress or screenshot capture."
+          gh release edit tfg-r16-windows --notes "Standalone Windows x64 companion. Source commit: $GITHUB_SHA on tarkov-r16-free. Simple map, quests and bag photo valuation. Includes verified local OCR assets. No automatic keypress or screenshot capture."

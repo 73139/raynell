@@ -35,7 +35,7 @@ function publicFixture(url) {
         description: objective, maps: ['fixture-customs']}]}]},
     maps: {maps: [{id: 'fixture-customs', name: mapName, normalizedName: 'customs'}]},
     traders: {traders: [{id: '54cb50c76803fa8b248b4571', name: traderName, normalizedName: 'prapor'}]},
-    items: {items: [{id: 'fixture-item', name: 'fixture/item', normalizedName: 'startup-item'}]},
+    items: {items: [{id: 'fixture-item', name: 'fixture/item', normalizedName: 'startup-item', lastLowPrice: 10000, updated: '2026-11-13T09:00:00Z', sellFor: [{vendor:{name:'Prapor',normalizedName:'prapor'},price:4000,priceRUB:4000,currency:'RUB'}]}]},
     tasks_ko: {[taskName]: koreanName, [objective]: '세관을 확인하세요'},
     tasks_en: {[taskName]: `Startup regression ${mode}`, [objective]: 'Visit Customs'},
     maps_ko: {[mapName]: '세관'}, maps_en: {[mapName]: 'Customs'},
@@ -75,6 +75,8 @@ async function boot(label, offline) {
   // Only browser layout APIs missing from jsdom are shimmed. No image load or
   // canvas success event is fabricated, and indexedDB remains unavailable so the
   // app's own cache-failure handling is exercised on every clean startup.
+  window.HTMLDialogElement.prototype.showModal = function(){this.open=true;};
+  window.HTMLDialogElement.prototype.close = function(){this.open=false;};
   window.ResizeObserver = class {observe() {} unobserve() {} disconnect() {}};
   window.matchMedia = () => ({matches: false, addEventListener() {}, removeEventListener() {},
     addListener() {}, removeListener() {}});
@@ -177,6 +179,35 @@ process.on('unhandledRejection', error => {
     assert.match(document.getElementById('data-status').textContent, /PvP · 1개/);
     assert.equal(document.querySelector('[data-task]').dataset.task, 'fixture-regular-task');
     console.log(`PASS PvP startup: ${online.moduleCount} modules, translated quest card and data status`);
+    assert.deepEqual([...document.querySelectorAll('.top-nav button')].map(b=>b.textContent.trim()), ['지도','퀘스트','가방 가격']);
+    assert.equal(document.getElementById('map-options').open, false);
+    assert.equal(document.getElementById('map-options').previousElementSibling.className, 'map-frame');
+    assert.equal(document.querySelector('[data-intel-toggle="container"]').checked, false);
+    const wheel=new online.window.WheelEvent('wheel',{deltaY:500,cancelable:true,bubbles:true});
+    document.getElementById('map-viewport').dispatchEvent(wheel);
+    assert.equal(wheel.defaultPrevented,false,'Ordinary wheel must scroll the document');
+    const zoomWheel=new online.window.WheelEvent('wheel',{deltaY:-100,ctrlKey:true,cancelable:true,bubbles:true});
+    document.getElementById('map-viewport').dispatchEvent(zoomWheel);
+    assert.equal(zoomWheel.defaultPrevented,true,'Ctrl+wheel is reserved for map zoom');
+    document.querySelector('.quest-open').click();
+    assert.equal(document.getElementById('quest-detail').hidden,false);
+    assert.equal(document.getElementById('quest-detail').closest('#quest-panel').id,'quest-panel');
+    assert.equal(document.getElementById('quest-browser').hidden,true);
+    document.getElementById('close-detail').click();
+    assert.equal(document.getElementById('quest-browser').hidden,false);
+    console.log('PASS simple navigation, scroll wheel, optional markers and in-panel quest details');
+    document.getElementById('open-loot-top').click();
+    assert.equal(document.body.dataset.view,'map','Bag prices must preserve the current map');
+    assert.equal(document.getElementById('loot-dialog').open,true);
+    await waitFor(()=>document.getElementById('loot-price-time').textContent.includes('공개 시세 확인'),'Bag view must load the item price catalog');
+    document.getElementById('loot-ocr-text').value='검증용 물품 x2';
+    document.getElementById('loot-rematch').click();
+    assert.match(document.getElementById('loot-total-flea').textContent,/20,000/);
+    assert.match(document.getElementById('loot-total-trader').textContent,/8,000/);
+    document.getElementById('loot-close').click();
+    assert.equal(document.getElementById('loot-dialog').open,false);
+    console.log('PASS bag valuation: recognized item name x2 gives flea 20,000 and trader 8,000');
+
 
     document.getElementById('game-mode').value = 'pve';
     document.getElementById('game-mode').dispatchEvent(new online.window.Event('change', {bubbles: true}));
