@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "retrievedDate": "2026-11-12",
+  "sourceUrl": "https://github.com/the-hideout/tarkov-dev/blob/main/src/data/maps.json",
+  "runtimeSourceUrl": "https://raw.githubusercontent.com/the-hideout/tarkov-dev/main/src/data/maps.json",
+  "coverage": "Partial fallback. Four current map configurations were retrievable. Fetch the runtime source for the complete map catalog. Layers retained below are those verified from the retrieved source; Customs upper-floor extents are included separately in its source.",
+  "license": "Map graphics: Shebuka / the-hideout, CC BY-NC-SA 4.0. https://github.com/the-hideout/tarkov-dev-svg-maps",
+  "maps": [
+    {
+      "normalizedName": "streets-of-tarkov",
+      "primaryPath": "/map/streets-of-tarkov",
+      "maps": [{
+        "key": "streets-of-tarkov", "projection": "interactive",
+        "transform": [0.38, 0, 0.38, 0], "coordinateRotation": 180,
+        "bounds": [[323, -295], [-280, 532]],
+        "author": "Shebuka", "authorLink": "https://github.com/the-hideout/tarkov-dev-svg-maps/",
+        "svgPath": "https://assets.tarkov.dev/maps/svg/StreetsOfTarkov.svg",
+        "svgLayer": "Ground_Level", "heightRange": [-6, 10],
+        "layers": [
+          {"name":"2nd Floor","svgLayer":"Second_Floor","show":false,"extents":[{"height":[10,15]}]},
+          {"name":"3rd Floor","svgLayer":"Third_Floor","show":false,"extents":[{"height":[15,20]}]},
+          {"name":"4th Floor","svgLayer":"Fourth_Floor","show":false,"extents":[{"height":[20,25]}]},
+          {"name":"5th Floor","svgLayer":"Fifth_Floor","show":false,"extents":[{"height":[25,10000]}]},
+          {"name":"Underground","svgLayer":"Underground_Level","show":false,"extents":[{"height":[-10000,-6]}]}
+        ]
+      }]
+    },
+    {
+      "normalizedName": "ground-zero", "primaryPath": "/map/ground-zero",
+      "maps": [{
+        "key":"ground-zero","altMaps":["ground-zero-21"],"projection":"interactive",
+        "transform":[0.524,167.3,0.524,65.1],"coordinateRotation":180,
+        "bounds":[[249,-124],[-99,364]],
+        "author":"Shebuka","authorLink":"https://github.com/the-hideout/tarkov-dev-svg-maps/",
+        "svgPath":"https://assets.tarkov.dev/maps/svg/GroundZero.svg","svgLayer":"Ground_Level",
+        "heightRange":[-1000,28],
+        "layers":[
+          {"name":"2nd Floor","svgLayer":"Second_Floor","show":false,"extents":[{"height":[28,32.3]},{"height":[26,31],"bounds":[[[98,216],[91,228],"m showroom"]]}]},
+          {"name":"3rd Floor","svgLayer":"Third_Floor","show":false,"extents":[{"height":[32.3,1000]}]},
+          {"name":"Garage","svgLayer":"Underground_Level","show":false,"extents":[{"height":[-1000,21],"bounds":[[[117,-100],[43,190],"garage"],[[143,49],[117,80],"underpass"]]}]}
+        ]
+      }]
+    },
+    {
+      "normalizedName":"customs","primaryPath":"/map/customs",
+      "maps":[{
+        "key":"customs","projection":"interactive","transform":[0.239,168.65,0.239,136.35],"coordinateRotation":180,
+        "bounds":[[698,-307],[-372,237]],
+        "author":"Shebuka","authorLink":"https://github.com/the-hideout/tarkov-dev-svg-maps/",
+        "svgPath":"https://assets.tarkov.dev/maps/svg/Customs.svg","svgLayer":"Ground_Level","heightRange":[-1000,1000],
+        "layers":[
+          {"name":"2nd Floor","svgLayer":"Second_Floor","show":false,"extents":[
+            {"height":[2.7,6.5],"bounds":[[[243,190],[165,125],"dorms"],[[116,-83],[72,-170],"mechanic"],[[356,-30],[341,-84],"switch 2nd"],[[334,-52],[321,-59],"switch 2nd"],[[589,10],[577,-1],"scav checkpoint"],[[580,-104],[532,-134],"dead scav warehouse"]]},
+            {"height":[3.9,7.6],"bounds":[[[73,57],[22,-38],"warehouse 17"]]},
+            {"height":[4.4,6.5],"bounds":[[[119,-57],[100,-42],"boiler"]]},
+            {"height":[4.6,7.9],"bounds":[[[279,-79],[246,-1.4],"oilrig & panda"]]}
+          ]},
+          {"name":"3rd Floor","svgLayer":"Third_Floor","show":false,"extents":[
+            {"height":[5.7,1000],"bounds":[[[243,190],[165,125],"dorms"]]},
+            {"height":[7.7,11.3],"bounds":[[[73,-73],[22,-38],"warehouse 17"]]},
+            {"height":[6.7,11.6],"bounds":[[[126,-64],[88,-35],"boiler"]]},
+            {"height":[8,11.1],"bounds":[[[279,-79],[246,-1.4],"oilrig & panda"]]}
+          ]},
+          {"name":"Underground","svgLayer":"Underground_Level","show":false,"extents":[{"height":[-1000,0.5],"bounds":[[[635,-137],[620,-125],"zb-1011"],[[473,-122],[458,-110],"zb-1012"],[[314,-173],[308,-184],"old gas"],[[349,-88],[323,-32],"switch basement"],[[219,-158],[193,-137],"zb-013"],[[122,-61],[88,-40],"boiler room"]]}]}
+        ],
+        "layersPartial":true
+      }]
+    },
+    {
+      "normalizedName":"factory","primaryPath":"/map/factory-3d",
+      "maps":[{
+        "key":"factory","altMaps":["night-factory","infected-factory"],"projection":"interactive",
+        "transform":[1.629,119.9,1.629,139.3],"coordinateRotation":90,
+        "bounds":[[77,-64.5],[-65.5,67.4]],
+        "author":"Shebuka","authorLink":"https://github.com/the-hideout/tarkov-dev-svg-maps/",
+        "svgPath":"https://assets.tarkov.dev/maps/svg/Factory.svg","svgLayer":"Ground_Floor","heightRange":[-1,3],
+        "layers":[
+          {"name":"2nd Floor","svgLayer":"Second_Floor","show":false,"extents":[{"height":[3,6]}]},
+          {"name":"3rd Floor","svgLayer":"Third_Floor","show":false,"extents":[{"height":[6,10000]}]},
+          {"name":"Tunnels","svgLayer":"Basement","show":false,"extents":[{"height":[-10000,-1]}]}
+        ]
+      }]
+    }
+  ]
+}

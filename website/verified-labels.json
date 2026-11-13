@@ -1,0 +1,9 @@
+{
+ "source":"https://github.com/the-hideout/tarkov-dev/blob/main/src/data/maps.json",
+ "note":"Small verified offline fallback from public labels; live upstream labels take precedence. Coordinates are x,z in game map space.",
+ "maps":{
+  "customs":[{"position":[-215,-119],"text":"Big Red"},{"position":[200,150],"text":"Dorms"},{"position":[404,31],"text":"New Gas"},{"position":[331,-173],"text":"Old Gas"},{"position":[201,-127],"text":"Fortress"},{"position":[83,-153],"text":"Crackhouse"},{"position":[-69,9],"text":"Main Bridge"},{"position":[-288,-134],"text":"Storage"},{"position":[-211,-219],"text":"Trailer Park"},{"position":[46,-59],"text":"Warehouse 17"},{"position":[200,-13],"text":"Skeleton"},{"position":[75,-9],"text":"Old Construction"},{"position":[333,-67],"text":"Warehouse 4"},{"position":[572,0],"text":"Military Checkpoint"}],
+  "streets-of-tarkov":[{"position":[66,305],"text":"Lexos"},{"position":[140,362],"text":"Concordia"},{"position":[-35,64],"text":"Pinewood Hotel"},{"position":[239,-60],"text":"LERM Expo"},{"position":[42,97],"text":"Post Office"},{"position":[-175,400],"text":"Cinema"},{"position":[230,295],"text":"Construction"},{"position":[65,398],"text":"Teppakot / Koener"},{"position":[89,-20],"text":"Cardinal Bank"},{"position":[211,129],"text":"School"},{"position":[222,173],"text":"Vet Clinic"},{"position":[-200,248],"text":"Marked Hotel"}],
+  "ground-zero":[{"position":[-50,0],"text":"TerraGroup"},{"position":[150,1],"text":"Skyside"},{"position":[141,142],"text":"Fusion"},{"position":[14,201],"text":"Empire"},{"position":[115,285],"text":"Capital Insight"},{"position":[2,324],"text":"Nakatani"},{"position":[80,-118],"text":"Elemental Global"},{"position":[115,104],"text":"Oasis","bottom":22,"top":30},{"position":[43,150],"text":"Tarbank"}]
+ }
+}

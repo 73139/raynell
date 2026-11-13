@@ -1,0 +1,8 @@
+{
+  "name": "tarkov-field-guide-r16-live",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=20"},
+  "dependencies": {"tesseract.js": "7.0.0", "tesseract.js-core": "7.0.0"},
+  "scripts": {"build": "node scripts/build-ocr.mjs", "start": "node support-service/server.mjs"}
+}

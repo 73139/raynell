@@ -6,6 +6,7 @@ import http from 'node:http';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID, timingSafeEqual } from 'node:crypto';
+import {prepareOCR} from '../scripts/build-ocr.mjs';
 
 const PORT = Number(process.env.TFG_SUPPORT_PORT || process.env.PORT || 43910);
 const HOST = process.env.TFG_SUPPORT_HOST || (process.env.PORT ? '0.0.0.0' : '127.0.0.1');
@@ -44,6 +45,7 @@ function finish(res,error){if(error)fail(res,400,error.message||String(error));}
 function publicSummary(){return {mode:'shared',online:true,seq:db.seq,updatedAt:new Date().toISOString(),total:db.threads.length};}
 function headersForSSE(res){res.writeHead(200,{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-cache, no-transform','Connection':'keep-alive','X-Accel-Buffering':'no'});}
 
+await prepareOCR();
 try{const raw=JSON.parse(await fs.readFile(STORE,'utf8'));if(raw.version===1 && Array.isArray(raw.threads)){db=raw;}}catch{}
 const srv=http.createServer(async(req,res)=>{
   if(!cors(req,res)){fail(res,403,'허용되지 않은 웹사이트 Origin');return;}
