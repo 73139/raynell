@@ -73,7 +73,7 @@ async function fetchTimed(url,ms=22000){const controller=new AbortController();c
 async function loadMapConfigs(){
   const [fallback]=await Promise.allSettled([fetch('./maps-source.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error();return r.json();})]);
   const local=fallback.status==='fulfilled'?configEntries(fallback.value):[];
-  state.configs=local;
+  state.configs=local;state.mapKey=baseMapKey(state.mapKey);
   renderMapList();
   // An image fetch must not delay loading other maps or accepting a screenshot.
   // Preserve the user's selected map while its full configuration is pending.

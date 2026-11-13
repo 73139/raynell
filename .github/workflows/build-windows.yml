@@ -36,8 +36,20 @@ jobs:
           node-version: '20'
       - name: Install pinned dependencies
         run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Restore verified map build
+        id: map-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: website/maps/latest
+          key: ${{ runner.os }}-tfg-maps-${{ hashFiles('scripts/maps-upstream.json', 'scripts/maps-assets-lock.json', 'scripts/map-assets-core.mjs', 'scripts/build-maps.mjs', 'website/floor-core.mjs') }}
       - name: Prepare current calibrated map assets
         run: node scripts/build-maps.mjs
+      - name: Save verified map build
+        if: steps.map-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: website/maps/latest
+          key: ${{ steps.map-cache.outputs.cache-primary-key }}
       - name: Test complete web startup and data failure handling
         run: npm test
       - name: Prepare verified local OCR assets

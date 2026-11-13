@@ -136,6 +136,10 @@ const site=path.resolve(__dirname,'../website');
     await photo.locator('#close-kappa-line').click();
     console.log('PASS visible boss and PMC/Scav spawns, red K badges, Kappa line and three verified route waypoints on a rendered SVG');
     await photo.locator('.quest-pin').click();
+    // This office fixture is upstairs. Ground-floor filtering must hide it;
+    // selecting all floors makes its photo marker available on the real map.
+    assert.equal(await photo.locator('#map-markers .pin-marker').count(),0);
+    await photo.locator('#map-floor').selectOption('__all__');
     await photo.locator('#map-markers .pin-marker').click();
     await photo.waitForFunction(()=>document.getElementById('quest-location-image').naturalWidth>0);
     assert.equal(await photo.locator('#quest-location-card').isVisible(),true);
