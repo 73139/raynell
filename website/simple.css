@@ -5,6 +5,7 @@ body.simple-guide .topbar{height:auto!important;min-height:64px;flex-wrap:wrap;p
 body.simple-guide .top-nav{order:0;flex:1;justify-content:center}
 body.simple-guide .top-nav-btn{font-size:15px!important;min-height:42px;padding:10px 20px!important}
 body.simple-guide .topbar-tools{width:auto;gap:8px;margin:0}
+body.simple-guide .download-windows-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:7px 9px;white-space:nowrap}
 body.simple-guide .topbar-tools #data-status,body.simple-guide #open-quest-ocr,body.simple-guide #tactical-tools-menu,body.simple-guide #open-help,body.simple-guide .tool-divider{display:none!important}
 body.simple-guide .workspace{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;grid-template-rows:auto!important;align-items:start}
 body.simple-guide .sidebar,body.simple-guide .intel-panel,body.simple-guide .r14-intel-strip,body.simple-guide #companion-panel,body.simple-guide #capture-diagnostics,body.simple-guide .map-actions,body.simple-guide .map-topline,body.simple-guide .map-page-footer,body.simple-guide .quest-import-zone,body.simple-guide #open-quest-ocr-panel,body.simple-guide .quest-heading-icon{display:none!important}
@@ -60,6 +61,7 @@ body.simple-guide .loot-result-wrap{max-height:none;overflow-x:auto}
 
 @media(max-width:700px){
  body.simple-guide .topbar{padding:8px 12px}
+ body.simple-guide .download-windows-link>span{display:none}
  body.simple-guide .brand-type strong{font-size:13px}
  body.simple-guide .top-nav-btn{padding:9px 10px!important;font-size:14px!important;justify-content:center}
  body.simple-guide .topbar-tools{width:auto!important;margin-left:auto}

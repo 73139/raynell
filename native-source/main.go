@@ -630,7 +630,7 @@ func main() {
 	url := "http://127.0.0.1:" + a.listenPort + "/"
 	fmt.Println("TARKOV FIELD GUIDE " + version)
 	fmt.Println("로컬 지도:", url)
-	fmt.Println("이 창을 닫으면 자동 추적을 종료합니다.")
+	fmt.Println("이 창을 닫으면 앱이 종료됩니다.")
 	if runtime.GOOS == "windows" {
 		_ = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
 	}
