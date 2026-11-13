@@ -89,13 +89,13 @@ const site=path.resolve(__dirname,'../website');
       console.log('PASS layout '+viewport.width+'x'+viewport.height+': map '+Math.round(geometry.width)+'x'+Math.round(geometry.height)+', wheel scroll, reachable bottom, four actions, bag dialog');
       await page.close();
     }
-    // A generated label image verifies OCR and valuation without game captures.
+    // Caption-free inventory fixtures exercise the real file/worker/canvas path.
     const photo=await browser.newPage({viewport:{width:1280,height:800}});
     const photoErrors=[];photo.on('pageerror',error=>photoErrors.push(error.message));
     await photo.route('https://**/*',route=>route.abort());
     await photo.route('https://json.tarkov.dev/**',route=>{
       const endpoint=new URL(route.request().url()).pathname.split('/').at(-1);
-      const item={id:'fixture-gp-coin',name:'GP coin',normalizedName:'gp-coin',
+      const item={id:'5d235b4d86f7742e017bc88a',name:'GP coin',normalizedName:'gp-coin',
         lastLowPrice:10000,updated:'2026-11-13T09:00:00Z',
         sellFor:[{vendor:{name:'Prapor',normalizedName:'prapor'},currency:'RUB',price:4000,priceRUB:4000}]};
       const docs={endpoints:{gameModes:['regular','pve']},items:{data:{items:[item]}},
@@ -193,20 +193,39 @@ const site=path.resolve(__dirname,'../website');
     await photo.locator('#field-kit-close').click();
     console.log('PASS boss identity, dual game clocks, cultist areas, BTR tables and stop/spawn overlays, personal route drawing/undo/reorder/persistence and recommendation copying');
     await photo.locator('#open-loot-top').click();
-    await photo.locator('#loot-language').selectOption('eng');
-    const png=await photo.evaluate(()=>{
-      const canvas=document.createElement('canvas');canvas.width=700;canvas.height=180;
-      const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,700,180);
-      ctx.fillStyle='#000';ctx.font='64px Arial';ctx.fillText('GP coin x2',36,110);
-      return canvas.toDataURL('image/png').split(',')[1];
-    });
-    await photo.locator('#loot-file').setInputFiles({name:'synthetic-item-label.png',mimeType:'image/png',buffer:Buffer.from(png,'base64')});
+    const imageFiles=name=>path.join(__dirname,'fixtures/loot',name);
+    await photo.locator('#loot-file').setInputFiles(imageFiles('icon-only-bag.png'));
     await photo.waitForFunction(()=>document.getElementById('loot-total-flea').textContent.includes('20,000'),{},{timeout:90000});
     assert.match(await photo.locator('#loot-total-trader').textContent(),/8,000/);
-    assert.match(await photo.locator('#loot-ocr-text').inputValue(),/GP\s+coin/i);
+    assert.equal(await photo.locator('.loot-mark.priced').count(),5);
+    assert.equal(await photo.locator('#loot-total-count').innerText(),'4종 / 5개');
+    assert.equal(await photo.locator('#loot-ocr-text').count(),0);
+    await photo.locator('[data-loot-pick="bag"]').click();
+    const box=await photo.locator('#loot-photo').boundingBox();
+    async function selectRegion(x1,y1,x2,y2) {
+      await photo.mouse.move(box.x+box.width*x1/354,box.y+box.height*y1/232);
+      await photo.mouse.down();
+      await photo.mouse.move(box.x+box.width*x2/354,box.y+box.height*y2/232,{steps:6});
+      await photo.mouse.up();
+    }
+    await selectRegion(12,17,147,88);
+    await photo.waitForFunction(()=>document.getElementById('loot-total-count').textContent==='1종 / 2개');
+    await photo.locator('[data-loot-pick="single"]').click();
+    await selectRegion(81,86,208,150);
+    await photo.waitForFunction(()=>document.getElementById('loot-total-count').textContent==='2종 / 3개');
+    await photo.locator('#loot-full').click();
+    await photo.waitForFunction(()=>document.getElementById('loot-total-count').textContent==='4종 / 5개');
+    await photo.locator('#loot-file').setInputFiles(imageFiles('similar-cases.png'));
+    await photo.locator('#loot-review').waitFor();
+    assert.equal(await photo.locator('#loot-total-count').textContent(),'0종 / 0개');
+    await photo.locator('[data-hit]').first().click();
+    assert.equal(await photo.locator('#loot-total-count').textContent(),'1종 / 1개');
+    await photo.locator('[data-loot-qty]').fill('3');
+    await photo.locator('[data-loot-qty]').press('Tab');
+    assert.equal(await photo.locator('#loot-total-count').textContent(),'1종 / 3개');
     assert.equal(await photo.locator('body').getAttribute('data-view'),'map');
     assert.deepEqual(photoErrors,[]);
-    console.log('PASS photo OCR and valuation: local English OCR reads a synthetic GP coin x2 image, flea 20,000 and trader 8,000');
+    console.log('PASS offline picture matching in Chromium, 5 icons, two coins priced at 20,000/8,000, bag crop, one-item crop, identical-art confirmation and editable stack quantity');
     await photo.close();
   }finally{
     await browser?.close();

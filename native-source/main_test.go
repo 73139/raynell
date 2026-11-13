@@ -58,6 +58,10 @@ func TestNativeServesBootstrapAndModuleMIME(t *testing.T) {
 	}
 	for _, asset := range []struct{ name, mime string }{
 		{"/app.mjs", "text/javascript; charset=utf-8"},
+		{"/loot-ui.mjs", "text/javascript; charset=utf-8"},
+		{"/loot-worker.mjs", "text/javascript; charset=utf-8"},
+		{"/loot-vision.mjs", "text/javascript; charset=utf-8"},
+		{"/loot-icons/inventory-v1.gz", "application/octet-stream"},
 		{"/quest-photos.mjs", "text/javascript; charset=utf-8"},
 		{"/raid-core.mjs", "text/javascript; charset=utf-8"},
 		{"/raid-intel-ui.mjs", "text/javascript; charset=utf-8"},

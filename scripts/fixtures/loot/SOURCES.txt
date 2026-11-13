@@ -1,0 +1,8 @@
+Inventory picture test fixtures
+
+icon-only-bag.png combines GP coin, bolts, graphics card and Salewa inventory art from the public tarkov.dev item dataset. All item caption and counter bands are covered. The Salewa is rotated before placement. similar-cases.png uses the same caption removal on a sealed weapon case with multiple visually identical item IDs.
+
+Item metadata and game artwork
+https://json.tarkov.dev/regular/items
+https://assets.tarkov.dev/
+Escape from Tarkov artwork belongs to Battlestate Games.

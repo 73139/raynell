@@ -51,6 +51,24 @@ body.simple-guide .loot-dialog-header p,body.simple-guide .loot-privacy,body.sim
 body.simple-guide .loot-input-col label,body.simple-guide #loot-progress,body.simple-guide .loot-result-table{font-size:13px}
 body.simple-guide .loot-drop{min-height:190px;font-size:16px}
 body.simple-guide .loot-result-wrap{max-height:none;overflow-x:auto}
+.loot-photo{position:relative;display:block;width:100%;line-height:0;background:#101511;user-select:none}
+.loot-photo[hidden],.loot-tools[hidden],.loot-review[hidden]{display:none}
+.loot-photo img{display:block;width:100%;height:auto;pointer-events:none}
+.loot-photo.selecting{cursor:crosshair;touch-action:none}
+#loot-marks{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.loot-mark,.loot-selection{position:absolute;box-sizing:border-box;border:1px solid #a7da78;line-height:1}
+.loot-mark b{display:block;width:max-content;font-size:10px;font-family:system-ui;background:#162911;color:#d1f5b1;padding:2px}
+.loot-mark.review{border:1px dashed #f6bb61}.loot-mark.review b{background:#362819;color:#ffdc93}
+.loot-selection{border:2px dashed #e1f0d1;background:#bceb8720}
+.loot-tools,.loot-choices{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.loot-tools [aria-pressed=true]{outline:2px solid #b6d394}
+.loot-review{margin:12px 0;padding:12px;border:1px solid #635538}
+.loot-review h3{font-size:16px;margin:0 0 4px}.loot-review p{color:#c2c5b7;font-size:12px}
+.loot-review-item{display:flex;gap:10px;align-items:flex-start;border-top:1px solid #3e4438;padding:9px 0}
+.loot-sample{display:grid;min-width:46px;font-size:11px;text-align:center;color:#ffdc93}
+.loot-sample img{width:46px;height:46px;object-fit:contain;background:#101511}
+.loot-choice{display:flex;align-items:center;gap:5px;max-width:210px;text-align:left;color:#e1e7d9;background:#222b20;border:1px solid #526046;padding:4px 6px;cursor:pointer;font-size:12px}
+.loot-choice img{width:29px;height:29px;object-fit:contain;background-size:contain;background-position:center;background-repeat:no-repeat}.loot-choice:focus,.loot-choice:hover{border-color:#b5cf8e}
 @media(max-width:1000px){
  body.simple-guide .brand-type>span{display:none}
  body.simple-guide .top-nav{order:3;flex:1 0 100%}

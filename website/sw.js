@@ -1,7 +1,8 @@
 /* Local offline shell and previously viewed public map assets only.
    No personal screenshots, tracking API payloads, private files, or market prices are cached here. */
-const SHELL='tfg-r16-live-20261113-latest-maps-v10',MAPS='tfg-r16-maps-20261113-v2';
+const SHELL='tfg-r16-live-20261113-bag-icons-v11',MAPS='tfg-r16-maps-20261113-v2';
 const files=["./raid-core.mjs","./raid-intel-ui.mjs","./raid-intel.json","./RAID_INTEL_SOURCES.txt","./quest-photo-mirrors.json","./QUEST_PHOTO_SOURCES.txt","./quest-photo-core.mjs","./quest-photos.mjs","./quest-guide-fallbacks.json",'./','./index.html','./styles.css','./app.mjs','./simple-ui.mjs','./guide-core.mjs','./guide-extras.mjs','./recommended-routes.json','./simple.css','./data.mjs','./market-core.mjs','./market-ui.mjs','./loot-core.mjs','./loot-ui.mjs','./ops-core.mjs','./ops-ui.mjs','./field-kit-core.mjs','./field-kit-ui.mjs','./r12-core.mjs','./r12-ui.mjs','./floor-core.mjs','./map-details.mjs','./geo-core.mjs','./map-camera.mjs','./capture-core.mjs','./companion-client.mjs','./quest-match.mjs','./quest-ocr.mjs','./quest-ocr-ui.mjs','./market-categories.mjs','./r13-ui.mjs','./r14-shell.mjs','./map-intel-core.mjs','./map-intel-ui.mjs','./verified-labels.json','./maps-source.json','./support-board.mjs','./support-config.js'];
+files.push('./loot-vision.mjs','./loot-worker.mjs','./loot-icons/inventory-v1.gz');
 self.addEventListener('install',event=>event.waitUntil((async()=>{const cache=await caches.open(SHELL);await Promise.allSettled(files.map(p=>cache.add(p)));await self.skipWaiting();})()));
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('tfg-r')&&![SHELL,MAPS].includes(k)).map(k=>caches.delete(k)));await self.clients.claim();})()));
 self.addEventListener('fetch',event=>{const req=event.request;if(req.method!=='GET')return;const url=new URL(req.url);

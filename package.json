@@ -12,11 +12,13 @@
     "tesseract.js-core": "7.0.0"
   },
   "devDependencies": {
-    "jsdom": "26.1.0"
+    "jsdom": "26.1.0",
+    "sharp": "0.34.3"
   },
   "scripts": {
     "build": "node scripts/build-ocr.mjs && node scripts/build-maps.mjs",
+    "build:loot-icons": "node scripts/build-loot-icons.mjs",
     "start": "node support-service/server.mjs",
-    "test": "node --experimental-vm-modules scripts/test-startup.cjs && node scripts/test-guide-core.mjs && node scripts/test-market.mjs && node scripts/test-quest-photos.mjs && node scripts/test-raid.mjs && node scripts/test-maps.mjs"
+    "test": "node --experimental-vm-modules scripts/test-startup.cjs && node scripts/test-guide-core.mjs && node scripts/test-market.mjs && node scripts/test-loot-icons.mjs && node scripts/test-quest-photos.mjs && node scripts/test-raid.mjs && node scripts/test-maps.mjs"
   }
 }
