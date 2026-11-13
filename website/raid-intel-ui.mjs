@@ -12,7 +12,7 @@ export function initializeRaidIntel({getMap,getMode,getMapName,getRecord,project
  const model=()=>data?.maps?.[displayMap];
  const route=()=>model()?.routes.find(r=>r.id===routeId);
  function clockTick(){
-  const times=gameClocks(Date.now(),offset);times.forEach((t,i)=>{clock.querySelector(`[data-raid-clock="${i}"]`).textContent=t.text;const night=cultistWindow(t.hour);clock.querySelector(`[data-night-label="${i}"]`).textContent=night?'컬티스트 시간':'';clock.querySelector(`[data-raid-clock="${i}"]`).classList.toggle('is-night',night);});
+  const times=gameClocks(Date.now(),offset);times.forEach((t,i)=>{clock.querySelector(`[data-raid-clock="${i}"]`).textContent=t.text;const night=cultistWindow(t.hour);clock.querySelector(`[data-night-label="${i}"]`).textContent=night?(data?.cultists?.areas?.[getMap()]?'컬티스트 시간':'야간'):'';clock.querySelector(`[data-raid-clock="${i}"]`).classList.toggle('is-night',night);});
   if(!$('btr-dialog').open)return;const remaining=remainingRaid(anchors.get(anchorKey()));$('btr-current-time').textContent=remaining===null?'시간 맞춤 필요':'남은 시간 '+durationText(remaining);
   for(const cell of $('btr-schedule').querySelectorAll('[data-btr-visit]')){const visit=route()?.visits[Number(cell.dataset.btrVisit)];const status=visitStatus(visit,remaining);cell.textContent=status.text;cell.dataset.status=status.kind;}
  }
