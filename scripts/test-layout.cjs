@@ -97,7 +97,8 @@ const site=path.resolve(__dirname,'../website');
       const endpoint=new URL(route.request().url()).pathname.split('/').at(-1);
       const item={id:'5d235b4d86f7742e017bc88a',name:'GP coin',normalizedName:'gp-coin',
         lastLowPrice:10000,updated:'2026-11-13T09:00:00Z',
-        sellFor:[{vendor:{name:'Prapor',normalizedName:'prapor'},currency:'RUB',price:4000,priceRUB:4000}]};
+        sellToTrader:[{trader:'fixture-prapor',currency:'RUB',price:4000,priceRUB:4000}],
+        buyFromTrader:[{trader:'fixture-prapor',currency:'RUB',price:16000,priceRUB:16000}]};
       const docs={endpoints:{gameModes:['regular','pve']},items:{data:{items:[item]}},
         traders:{data:{traders:[{id:'fixture-prapor',name:'Prapor',normalizedName:'prapor'}]}},
         maps:{data:{maps:[{id:'fixture-customs',name:'Customs',normalizedName:'customs',bosses:[{mob:'bossBully',spawnLocations:[{name:'ZoneScavBase',positions:[{x:125,y:1,z:-146},{x:103,y:1,z:-114}]}]}],spawns:[{position:{x:100,y:0,z:0},sides:['pmc'],categories:['player']},{position:{x:200,y:0,z:50},sides:['scav'],categories:['bot']}]}],mobs:{bossBully:{id:'bossBully',name:'Reshala'}}}},tasks:{data:{tasks:[{id:'fixture-kappa',name:'Demo Kappa quest',normalizedName:'demo-kappa',wikiLink:'https://escapefromtarkov.fandom.com/wiki/Fixture_Guide',map:'fixture-customs',kappaRequired:true,objectives:[{id:'fixture-photo-objective',type:'visit',description:'Find the office',possibleLocations:[{map:'fixture-customs',positions:[{x:-202,y:7,z:-102}]}]}]}]}}};

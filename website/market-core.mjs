@@ -29,7 +29,9 @@ const unique = values => [...new Set(values.filter(value => typeof value === 'st
 const values = value => Array.isArray(value) ? value : isRecord(value) ? Object.values(value) : [];
 const payload = document => isRecord(document?.data) ? document.data : isRecord(document) ? document : {};
 function records(document, name) {
-  const collection = payload(document)[name];
+  const data = payload(document);
+  // The static /traders feed stores traders directly under data, keyed by ID.
+  const collection = data[name] ?? (name === 'traders' ? data : null);
   if (Array.isArray(collection)) return collection.filter(isRecord);
   if (!isRecord(collection)) return [];
   return Object.entries(collection).filter(([key, value]) => !BLOCKED_KEYS.has(key) && isRecord(value))
@@ -122,8 +124,8 @@ function traderOffer(raw, context, fromTraderPrices = false) {
 }
 
 function traderSales(item, context) {
-  // sellFor is player -> vendor. buyFor must never be used as a selling value.
-  const saleRows = values(item.sellFor).map(offer => traderOffer(offer, context));
+  // The static JSON feed uses sellToTrader and GraphQL snapshots use sellFor.
+  const saleRows = [...values(item.sellToTrader),...values(item.sellFor)].map(offer => traderOffer(offer, context));
   const legacyRows = values(item.traderPrices).map(offer => traderOffer(offer, context, true));
   const offers = [...new Map([...saleRows, ...legacyRows].filter(Boolean).map(offer =>
     [`${offer.traderId || offer.traderName}|${offer.currency}|${offer.price}|${offer.priceRUB}`, offer])).values()];
