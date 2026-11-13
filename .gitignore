@@ -1,0 +1,10 @@
+node_modules/
+native-source/dist/
+website/vendor/ocr/tesseract.min.js
+website/vendor/ocr/worker.min.js
+website/vendor/ocr/tesseract-core*.wasm.js
+website/vendor/ocr/eng.traineddata
+TarkovFieldGuide.exe
+TarkovFieldGuide_Windows.zip
+SHA256SUMS.txt
+support-service-data/

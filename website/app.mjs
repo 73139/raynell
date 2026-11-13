@@ -32,6 +32,7 @@ Object.assign(state,{companionMode:false,companion:null,companionConnected:false
 Object.assign(state,{mapDataset:null,mapDetailsStatus:'loading',floorOptions:[],floorImageSequence:0,followFloor:false,showOtherFloors:false,exitFilters:{pmc:true,scav:true,shared:true,unknown:true,transit:true},showExitLabels:true,exitSearch:'',selectedExit:null});
 let opsRoute=[],opsExit=null,opsController=null,lastAutoMapRev=0;
 let fieldKitController=null,r12Controller=null,r13Controller=null;
+let mapIntelController=null,verifiedIntelLabels={};
 let companionClient=null;
 let questOcrController=null,ocrCompanionCursor='',ocrBrowserTimer=null,ocrBrowserTicket=0,ocrSourceEpoch=0;
 const companionCursor=createCaptureCursor();

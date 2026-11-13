@@ -4,5 +4,6 @@
   "type": "module",
   "engines": {"node": ">=20"},
   "dependencies": {"tesseract.js": "7.0.0", "tesseract.js-core": "7.0.0"},
-  "scripts": {"build": "node scripts/build-ocr.mjs", "start": "node support-service/server.mjs"}
+  "devDependencies": {"jsdom": "26.1.0"},
+  "scripts": {"build": "node scripts/build-ocr.mjs", "start": "node support-service/server.mjs", "test": "node --experimental-vm-modules scripts/test-startup.cjs"}
 }
