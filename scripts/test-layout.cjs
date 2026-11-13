@@ -118,7 +118,7 @@ const site=path.resolve(__dirname,'../website');
     assert.equal(await photo.locator('#quest-location-expand').getAttribute('aria-expanded'),'true');
     await photo.setViewportSize({width:390,height:844});
     const card=await photo.locator('#quest-location-card').boundingBox();
-    assert.ok(card.x>=0&&card.x+card.width<=390&&card.y>=0&&card.y+card.height<=844,'Photo card must fit the mobile screen');
+    assert.ok(card.x>=0&&card.x+card.width<=390&&card.y>=0&&card.y+card.height<=844,'Photo card must fit the mobile screen: '+JSON.stringify(card));
     await photo.locator('#quest-location-close').click();
     await photo.locator('[data-quest-photo-task][data-quest-photo-objective]').click();
     assert.equal(await photo.locator('#quest-location-card').isVisible(),true);
