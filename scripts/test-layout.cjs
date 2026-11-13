@@ -12,7 +12,7 @@ const site=path.resolve(__dirname,'../website');
     if(!file.startsWith(site+path.sep)){res.writeHead(404);res.end();return;}
     try{
       const bytes=fs.readFileSync(file);
-      const types={'.html':'text/html','.css':'text/css','.mjs':'text/javascript','.js':'text/javascript','.json':'application/json'};
+      const types={'.html':'text/html','.css':'text/css','.mjs':'text/javascript','.js':'text/javascript','.json':'application/json','.svg':'image/svg+xml','.png':'image/png'};
       res.writeHead(200,{'Content-Type':types[path.extname(file)]||'application/octet-stream'});
       res.end(bytes);
     }catch{res.writeHead(404);res.end();}
@@ -65,17 +65,34 @@ const site=path.resolve(__dirname,'../website');
       assert.equal(await page.locator('body').getAttribute('data-view'),'map');
       assert.equal(await page.locator('#loot-file').getAttribute('accept'),'image/png,image/jpeg,image/webp,image/bmp');
       await page.locator('#loot-close').click();
+      if(viewport.width===1920){
+        // Reproduce the historical cache problem using real browser IndexedDB.
+        await page.evaluate(async()=>{
+          const db=await new Promise((resolve,reject)=>{const req=indexedDB.open('tarkov-field-guide',1);req.onupgradeneeded=()=>req.result.createObjectStore('cache');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
+          await new Promise((resolve,reject)=>{const tx=db.transaction('cache','readwrite');tx.objectStore('cache').put({maps:[{normalizedName:'customs',svgPath:'https://example.invalid/old-map.svg',bounds:[[0,0],[1,1]]}]},'map-configs');tx.objectStore('cache').put('<svg xmlns="http://www.w3.org/2000/svg"><text>STALE MAP</text></svg>','svg:https://assets.tarkov.dev/maps/svg/Customs.svg');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});db.close();
+        });
+        await page.reload({waitUntil:'networkidle'});
+        assert.equal(await page.locator('#map-switcher option:not([disabled])').count(),13);
+        const catalog=JSON.parse(fs.readFileSync(path.join(site,'maps-source.json'),'utf8'));
+        let drawnFloors=0;
+        for(const group of catalog.maps){
+          const c=group.maps[0];await page.locator('#map-switcher').selectOption(group.normalizedName);
+          await page.waitForFunction(()=>document.getElementById('map-image').style.visibility==='visible'&&document.getElementById('map-image').naturalWidth>0);
+          assert.match(await page.locator('#map-image').getAttribute('src'),c.floorAssets?/maps\/latest\//:/^blob:/);
+          const floors=await page.locator('#map-floor option:not([disabled])').evaluateAll(els=>els.map(el=>el.value));
+          for(const floor of floors){await page.locator('#map-floor').selectOption(floor);await page.waitForFunction(()=>document.getElementById('map-image').style.visibility==='visible'&&document.getElementById('map-image').naturalWidth>0);if(floor!=='__all__')drawnFloors++;}
+        }
+        assert.equal(drawnFloors,55);
+        console.log('PASS stale IndexedDB cache cannot replace bundled catalog; 13 actual map images and all 55 floor planes decode offline in Chromium');
+      }
       assert.deepEqual(errors,[]);
       console.log('PASS layout '+viewport.width+'x'+viewport.height+': map '+Math.round(geometry.width)+'x'+Math.round(geometry.height)+', wheel scroll, reachable bottom, four actions, bag dialog');
       await page.close();
     }
     // A generated label image verifies OCR and valuation without game captures.
     const photo=await browser.newPage({viewport:{width:1280,height:800}});
+    const photoErrors=[];photo.on('pageerror',error=>photoErrors.push(error.message));
     await photo.route('https://**/*',route=>route.abort());
-    const localMaps=JSON.parse(fs.readFileSync(path.join(site,'maps-source.json'),'utf8')).maps;
-    const template=localMaps.find(m=>m.normalizedName==='customs').maps.find(m=>m.projection==='interactive');
-    const mapFixtures=['customs','woods','lighthouse','streets-of-tarkov'].map(key=>({normalizedName:key,maps:[{...template,key,bounds:[[-1500,-1500],[1500,1500]],svgBounds:[[-1500,-1500],[1500,1500]],svgPath:'https://assets.tarkov.dev/maps/svg/'+key+'.svg'}]}));
-    await photo.route('https://raw.githubusercontent.com/the-hideout/tarkov-dev/main/src/data/maps.json',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(mapFixtures)}));
     await photo.route('https://json.tarkov.dev/**',route=>{
       const endpoint=new URL(route.request().url()).pathname.split('/').at(-1);
       const item={id:'fixture-gp-coin',name:'GP coin',normalizedName:'gp-coin',
@@ -150,7 +167,7 @@ const site=path.resolve(__dirname,'../website');
     await photo.locator('#btr-minutes').fill('30');await photo.locator('#btr-seconds').fill('0');await photo.locator('#align-btr-timer').click();
     assert.match(await photo.locator('#btr-current-time').textContent(),/남은 시간/);
     await photo.locator('#show-btr-route').click();
-    await photo.waitForFunction(()=>document.querySelectorAll('.btr-map-marker:not(.btr-spawn)').length===8);
+    try{await photo.waitForFunction(()=>document.querySelectorAll('.btr-map-marker:not(.btr-spawn)').length===8);}catch(error){console.error('BTR map diagnostics',await photo.evaluate(()=>({map:document.getElementById('map-switcher').value,title:document.getElementById('map-title').textContent,loading:document.getElementById('map-loading').textContent,visible:document.getElementById('map-image').style.visibility,pins:document.querySelectorAll('.btr-map-marker').length,checked:document.getElementById('show-btr-markers').checked})),photoErrors);throw error;}
     assert.equal(await photo.locator('.btr-spawn').count(),2);
     assert.equal(await photo.locator('.btr-route-overlay polyline').count(),1);
     await photo.locator('#map-switcher').selectOption('customs');
@@ -184,6 +201,7 @@ const site=path.resolve(__dirname,'../website');
     assert.match(await photo.locator('#loot-total-trader').textContent(),/8,000/);
     assert.match(await photo.locator('#loot-ocr-text').inputValue(),/GP\s+coin/i);
     assert.equal(await photo.locator('body').getAttribute('data-view'),'map');
+    assert.deepEqual(photoErrors,[]);
     console.log('PASS photo OCR and valuation: local English OCR reads a synthetic GP coin x2 image, flea 20,000 and trader 8,000');
     await photo.close();
   }finally{

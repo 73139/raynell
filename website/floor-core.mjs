@@ -38,6 +38,8 @@ function floorNumber(name) {
 
 function describeFloor(name, id, {base=false, separateFirst=false}={}) {
   const n = normal(name), key = normal(id);
+  const decks={'control room':['제어실','제어',0],'engine room':['기관실','기관',1],'engine room (upper)':['기관실 상층','기관↑',2],'fuel pumps (lower)':['연료 펌프 하층','펌프↓',3],'fuel pumps':['연료 펌프','펌프',4],'storage/security':['창고 · 보안실','창고',5],infirmary:['의무실','의무',6],helipad:['헬기장','헬기',7],'gym/canteen':['체육실 · 식당','식당',8],'accommodation (lower)':['선실 하층','선실↓',9],'accommodation (mid)':['선실 중층','선실',10],'accommodation (upper)':['선실 상층','선실↑',11],"officers' deck":['장교 갑판','장교',12],'stairs (blocked)':['폐쇄된 계단','계단',13],bridge:['함교','함교',14],'bridge roof':['함교 옥상','옥상',15]};
+  if(decks[n]){const[label,shortLabel,order]=decks[n];return{label,shortLabel,order};}
   const combined = `${n} ${key}`;
   // Named floor metadata takes precedence over potentially old SVG group names.
   const number = floorNumber(name) ?? floorNumber(id);

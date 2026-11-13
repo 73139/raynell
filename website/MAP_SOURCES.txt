@@ -1,0 +1,42 @@
+Tarkov Field Guide: bundled map revision 2026-11-13-559ecd59-v1
+Checked: 2026-11-13. All 13 geographic map groups available in the current
+public tarkov.dev catalog are included. Game-server geometry was not measured.
+
+Catalog and calibrated bounds/CRS:
+https://github.com/the-hideout/tarkov-dev/blob/559ecd5902b1836ab8e1ef1bc008f5730b6fce89/src/data/maps.json
+Latest catalog change at this check: 2026-10-30.
+
+Detailed public image tiles, downloaded and SHA-256 locked in
+scripts/maps-assets-lock.json (each original tile URL and hash):
+https://assets.tarkov.dev/maps/
+Customs: customs_0.16; Woods: woods/main_0.16; Factory: factory;
+Ground Zero: groundzero/main_summer; Interchange: interchange;
+Reserve: reserve; Shoreline: shoreline/main_summer;
+The Lab: labs_v4; The Labyrinth: labyrinth; Icebreaker: icebreaker.
+The Lab uses the new labs_v4 CRS, including tileSize 175.
+Reserve uses the raster bounds, not the different older SVG bounds.
+Individual floors retain the source's spatial metadata and named extents.
+Detailed tiles are composed without changing the registered world rectangle.
+
+Current public vector drawings (Streets of Tarkov, Lighthouse, Terminal;
+upper/underground floors without a detailed tile path on Interchange/Shoreline):
+https://github.com/the-hideout/tarkov-dev-svg-maps/tree/5a8b6115d1c0cf56f2ebaac1a96fa5ae3074d178
+These are the latest available upstream SVGs at the check date. A newer
+game-build drawing is not invented when the public source has no replacement.
+
+Authors credited in the catalog: Shebuka, Tarkov.dev, TarkovBOT.eu.
+Original author links and CC BY-NC-SA 4.0 credit remain on each map.
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+Changes: raster tile composition, floor selection, additional Korean labels,
+quest/spawn/boss/BTR overlays, route drawings. No original map labels were
+recreated. Package includes a manifest with hashes of all generated images.
+
+Night/infected Factory, Ground Zero 21+, and laboratory variants share their
+base map drawing when the upstream catalog defines an alias. Transit/open-world
+overview images are not separate calibrated raid maps. No live game process,
+keypress simulation or automatic screenshot capture is involved.
+
+Freshness: each package carries the matching catalog and artwork revision.
+Legacy IndexedDB map configs and unversioned SVG records are ignored. The
+service worker uses a new map-cache version, and floor-image URLs include the
+asset revision. Windows map images are embedded, available without Internet.

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"image/png"
 	"io/fs"
 	"net/http"
 	"net/http/httptest"
@@ -64,6 +66,11 @@ func TestNativeServesBootstrapAndModuleMIME(t *testing.T) {
 		{"/quest-guide-fallbacks.json", "application/json; charset=utf-8"},
 		{"/companion-client.mjs", "text/javascript; charset=utf-8"},
 		{"/maps-source.json", "application/json; charset=utf-8"},
+		{"/maps/latest/manifest.json", "application/json; charset=utf-8"},
+		{"/maps/latest/customs/main.png", "image/png"},
+		{"/maps/latest/the-labyrinth/main.png", "image/png"},
+		{"/maps/latest/icebreaker/main.png", "image/png"},
+		{"/maps/latest/lighthouse/main.svg", "image/svg+xml"},
 		{"/styles.css", "text/css; charset=utf-8"},
 		{"/vendor/ocr/tesseract.min.js", "text/javascript; charset=utf-8"},
 	} {
@@ -82,6 +89,28 @@ func TestNativeServesBootstrapAndModuleMIME(t *testing.T) {
 	a.serve(rr, localRequest(a, "HEAD", "/", false))
 	if rr.Code != http.StatusOK || rr.Body.Len() != 0 || rr.Header().Get("Content-Length") == "" {
 		t.Fatal("HEAD must retain index metadata without a body")
+	}
+}
+
+func TestCurrentMapsAreEmbeddedOffline(t *testing.T) {
+	a := testApp()
+	rr := httptest.NewRecorder()
+	a.serve(rr, localRequest(a, "GET", "/maps/latest/manifest.json", false))
+	var manifest struct {
+		Maps  []json.RawMessage `json:"maps"`
+		Files map[string]string `json:"files"`
+	}
+	if err := json.Unmarshal(rr.Body.Bytes(), &manifest); err != nil {
+		t.Fatal(err)
+	}
+	if len(manifest.Maps) != 13 || len(manifest.Files) != 60 {
+		t.Fatalf("incomplete maps: %d maps, %d floor files", len(manifest.Maps), len(manifest.Files))
+	}
+	rr = httptest.NewRecorder()
+	a.serve(rr, localRequest(a, "GET", "/maps/latest/customs/main.png?rev=current", false))
+	image, err := png.DecodeConfig(bytes.NewReader(rr.Body.Bytes()))
+	if err != nil || image.Width != 2046 || image.Height != 1041 {
+		t.Fatalf("embedded Customs PNG cannot be decoded: %+v, %v", image, err)
 	}
 }
 

@@ -20,11 +20,11 @@ const specs=[
 const model=['eng.traineddata','7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2'];
 const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 async function verified(p,sha){try{return hash(await fs.readFile(p))===sha;}catch{return false;}}
-export async function prepareOCR(){
+export async function prepareOCR({installDependencies=false}={}){
  await fs.mkdir(dest,{recursive:true});
  const missing=[];
  for(const [source,target,sha] of specs)if(!await verified(path.join(dest,target),sha))missing.push([source,target,sha]);
- if(missing.length){
+ if(missing.length||installDependencies){
   console.log('TFG OCR: preparing pinned Tesseract.js v7 assets');
   await execFileAsync('npm',['install','--omit=dev','--ignore-scripts','--no-audit','--no-fund'],{cwd:ROOT,timeout:180000,maxBuffer:1024*1024});
   for(const [source,target,sha] of missing){

@@ -27,8 +27,8 @@ const esc = (value = '') => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'
 const safeURL = (value) => { try { const u = new URL(value); return u.protocol === 'https:' ? u.href : ''; } catch { return ''; } };
 const fmt = new Intl.NumberFormat('ko-KR');
 const time = (date) => new Date(date).toLocaleString('ko-KR', {month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Asia/Seoul'});
-const MAP_LABELS = {'ground-zero':'그라운드 제로','streets-of-tarkov':'타르코프 시내',customs:'세관',factory:'공장',woods:'삼림',shoreline:'해안선',interchange:'인터체인지',lighthouse:'등대',reserve:'리저브','the-lab':'연구소',labyrinth:'미궁',terminal:'터미널'};
-const MAP_ORDER = ['ground-zero','customs','woods','shoreline','interchange','reserve','lighthouse','streets-of-tarkov','factory','the-lab','labyrinth','terminal'];
+const MAP_LABELS = {'ground-zero':'그라운드 제로','streets-of-tarkov':'타르코프 시내',customs:'세관',factory:'공장',woods:'삼림',shoreline:'해안선',interchange:'인터체인지',lighthouse:'등대',reserve:'리저브','the-lab':'연구소','the-labyrinth':'미궁',icebreaker:'쇄빙선',terminal:'터미널'};
+const MAP_ORDER = ['ground-zero','customs','woods','shoreline','interchange','reserve','lighthouse','streets-of-tarkov','factory','the-lab','the-labyrinth','icebreaker','terminal'];
 const MODE_LABELS = {regular:'PvP',pve:'PvE','pvp-season':'시즌'};
 const STORAGE_KEY = 'tarkov-field-guide-progress-v1';
 const STATUS_LABELS = {todo:'미완료',active:'진행 중',done:'완료'};
@@ -43,6 +43,7 @@ let companionClient=null;
 let questOcrController=null,ocrCompanionCursor='',ocrBrowserTimer=null,ocrBrowserTicket=0,ocrSourceEpoch=0;
 const companionCursor=createCaptureCursor();
 try { const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); if(saved&&typeof saved==='object') state.progress=saved; state.mode=localStorage.getItem('tfg-mode')||'regular'; state.mapKey=localStorage.getItem('tfg-map')||'customs'; } catch {}
+state.mapKey=baseMapKey(state.mapKey);
 if(!Object.hasOwn(MODE_LABELS,state.mode)) state.mode='regular';
 let dbPromise;
 function database(){ return dbPromise ??= new Promise((resolve,reject)=>{const req=indexedDB.open('tarkov-field-guide',1);req.onupgradeneeded=()=>req.result.createObjectStore('cache');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);}); }
@@ -56,7 +57,7 @@ function updateProgress(id,patch){progress()[id]={...taskProgress(id),...patch};
 let toastTimeout;
 function toast(message,error=false){const el=$('toast');el.textContent=message;el.classList.toggle('is-error',error);el.hidden=false;el.classList.add('visible');clearTimeout(toastTimeout);toastTimeout=setTimeout(()=>{el.classList.remove('visible');el.hidden=true;},6500);}
 function text(id,value){if($(id))$(id).textContent=value;}
-function baseMapKey(key){return ({'ground-zero-21':'ground-zero','night-factory':'factory','infected-factory':'factory','factory-day':'factory','factory-night':'factory','laboratory':'the-lab','the-laboratory':'the-lab','streets':'streets-of-tarkov'})[key]||key;}
+function baseMapKey(key){return state.configs.find(c=>c.altMaps?.includes(key))?.key||({'ground-zero-21':'ground-zero','night-factory':'factory','infected-factory':'factory','factory-day':'factory','factory-night':'factory','laboratory':'the-lab','the-laboratory':'the-lab','the-lab-dark':'the-lab','infected-laboratory':'the-lab',labyrinth:'the-labyrinth','streets':'streets-of-tarkov'})[key]||key;}
 function cfg(){return state.configs.find(c=>c.key===state.mapKey);}
 function mapRecords(){return state.mapDataset?.mode===state.mode&&state.mapDataset.maps?.length?state.mapDataset.maps:state.dataset?.maps||[];}
 function intelMapRecord(){const variants=mapRecords().filter(m=>baseMapKey(m.normalizedName)===state.mapKey),main=variants.find(m=>m.normalizedName===state.mapKey)||variants[0];if(!main)return null;return {...main,bosses:variants.flatMap(m=>(m.bosses||[]).filter(b=>m===main||isCultist(b)).map(b=>({...b,variant:m.normalizedName})))};}
@@ -70,10 +71,9 @@ function renderSummary(){extrasController?.refresh();const tasks=state.dataset?.
 function configEntries(input){const groups=Array.isArray(input)?input:Array.isArray(input?.maps)?input.maps:Object.values(input?.data||input||{});const out=[];for(const group of groups){if(!group||typeof group!=='object')continue;const c=Array.isArray(group.maps)?group.maps.find(v=>v.projection==='interactive'&&v.svgPath):group.svgPath?group:null;if(!c||!Array.isArray(c.svgBounds||c.bounds))continue;const key=baseMapKey(group.normalizedName||c.key);if(!key||out.some(x=>x.key===key))continue;out.push({...c,key,name:MAP_LABELS[key]||group.name||key,sourceGroup:group.normalizedName});}return out;}
 async function fetchTimed(url,ms=22000){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ms);try{const r=await fetch(url,{signal:controller.signal});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r;}finally{clearTimeout(timer);}}
 async function loadMapConfigs(){
-  const [fallback,cache]=await Promise.allSettled([fetch('./maps-source.json').then(r=>r.json()),cachedGet('map-configs')]);
+  const [fallback]=await Promise.allSettled([fetch('./maps-source.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error();return r.json();})]);
   const local=fallback.status==='fulfilled'?configEntries(fallback.value):[];
-  const prior=cache.status==='fulfilled'?configEntries(cache.value):[];
-  state.configs=prior.length?prior:local;
+  state.configs=local;
   renderMapList();
   // An image fetch must not delay loading other maps or accepting a screenshot.
   // Preserve the user's selected map while its full configuration is pending.
@@ -81,6 +81,9 @@ async function loadMapConfigs(){
   if(cfg())selectMap(state.mapKey,false);
   else{text('map-title',mapName(state.mapKey));text('map-subtitle','선택한 지도 구성 대기');}
   renderLocation();
+  // The packaged catalog and artwork are one calibrated revision. A live SVG-only
+  // catalog must not replace it with older drawings or omit the tile-only maps.
+  if(local.length&&fallback.value.revision)return;
   try{
     const response=await fetchTimed(geo.DEFAULT_MAPS_SOURCE||'https://raw.githubusercontent.com/the-hideout/tarkov-dev/main/src/data/maps.json');
     const raw=await response.json(),full=configEntries(raw);
@@ -88,7 +91,6 @@ async function loadMapConfigs(){
     const previous=JSON.stringify(cfg());state.configs=full;
     renderMapList();renderLocation();
     if(cfg()&&JSON.stringify(cfg())!==previous)selectMap(state.mapKey,false);
-    await cachedPut('map-configs',raw);
   }catch{
     if(!state.configs.length)setMapLoading('지도 구성을 불러오지 못했어요. 스크린샷 좌표는 읽을 수 있어요.',true);
     renderLocation();
@@ -116,10 +118,17 @@ async function selectMap(key,change=true){
   const config=cfg();renderMapList();text('map-title',mapName(key));text('map-subtitle',key.replaceAll('-',' ').toUpperCase()+' / TACTICAL MAP');renderQuests();renderLocation();
   $('map-image').style.visibility='hidden';$('map-markers').innerHTML='';setMapLoading('지도를 불러오고 있어요');
   const author=safeURL(config.authorLink);$('map-attribution').innerHTML=`지도 ${author?`<a href="${esc(author)}" target="_blank" rel="noopener noreferrer">${esc(config.author||'tarkov.dev')}</a>`:esc(config.author||'tarkov.dev')} · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a> · <a href="https://tarkov.dev/map/${esc(key)}" target="_blank" rel="noopener noreferrer">원본</a>`;
+  if(config.assetRevision)$('map-attribution').insertAdjacentHTML('beforeend',' · <a href="./MAP_SOURCES.txt" target="_blank" rel="noopener">지도 갱신 2026.11.13</a>');
   $('map-floor').disabled=true;$('map-floor').innerHTML='<option>지상층</option>';
   try{
-    let svg=await cachedGet('svg:'+config.svgPath);
-    if(!svg){const r=await fetchTimed(config.svgPath,30000);svg=await r.text();}
+    if(config.floorAssets){
+      state.floorOptions=buildFloorOptions(config,new Set(Object.keys(config.floorAssets)));
+      state.floor=config.svgLayer;[state.imageWidth,state.imageHeight]=config.bundleSize;
+      followCapturedFloor(false);renderFloorControls();updateFloor(true);return;
+    }
+    const cacheKey='svg:'+(config.assetRevision||'live-v2')+':'+config.svgPath;
+    const prior=await cachedGet(cacheKey);let svg=prior?.svg;
+    if(!svg||Date.now()-prior.checkedAt>86400000){try{const r=await fetchTimed(config.svgPath,30000);svg=await r.text();await cachedPut(cacheKey,{svg,checkedAt:Date.now()});}catch(error){if(!svg)throw error;}}
     if(seq!==state.mapSequence)return;
     if(!/<svg[\s>]/i.test(svg))throw new Error('SVG 지도 형식 오류');
     const doc=new DOMParser().parseFromString(svg,'image/svg+xml');if(doc.querySelector('parsererror'))throw new Error('지도 해석 실패');
@@ -132,7 +141,7 @@ async function selectMap(key,change=true){
     followCapturedFloor(false);renderFloorControls();
     const vb=doc.documentElement.getAttribute('viewBox')?.trim().split(/[\s,]+/).map(Number);state.imageWidth=vb?.length===4?vb[2]:parseFloat(doc.documentElement.getAttribute('width'))||1000;state.imageHeight=vb?.length===4?vb[3]:parseFloat(doc.documentElement.getAttribute('height'))||700;
     if(!(state.imageWidth>0&&state.imageHeight>0))throw new Error('지도 크기를 읽을 수 없음');
-    updateFloor(true);await cachedPut('svg:'+config.svgPath,svg);
+    updateFloor(true);
   }catch(error){if(seq!==state.mapSequence)return;loadDirectMapImage(config,seq);}
 }
 function loadDirectMapImage(config,seq){
@@ -175,7 +184,7 @@ function floorMarkerState(point){
   match.label=floorDescription(point);return match;
 }
 function renderFloorControls(){
-  const options=state.floorOptions||[],ready=!!state.mapDoc&&options.some(o=>o.available);
+  const options=state.floorOptions||[],ready=(!!state.mapDoc||!!cfg()?.floorAssets)&&options.some(o=>o.available);
   const select=$('map-floor'),buttons=$('floor-buttons');
   if(select){select.disabled=!ready;select.innerHTML=ready?`<option value="${ALL_FLOORS_ID}">전체 층</option>`+options.map(o=>`<option value="${esc(o.id)}" ${o.available?'':'disabled'}>${esc(o.label)}${o.available?'':' · 도면 없음'}</option>`).join(''):`<option value="">${state.mapDisplayMode==='direct'?'전체 지도 · 층 분리 불가':state.mapDisplayMode==='error'?'지도 연결 필요':'층 정보 불러오는 중'}</option>`;if(ready)select.value=state.floor;}
   if(buttons)buttons.innerHTML=ready?`<button type="button" class="floor-button ${state.floor===ALL_FLOORS_ID?'active':''}" data-floor="${ALL_FLOORS_ID}" aria-pressed="${state.floor===ALL_FLOORS_ID}" title="등록된 모든 층 표시">전체</button>`+options.slice().reverse().map(o=>`<button type="button" class="floor-button ${state.floor===o.id?'active':''}" data-floor="${esc(o.id)}" aria-pressed="${state.floor===o.id}" ${o.available?'':'disabled'} title="${esc(o.label)}${o.available?'':' · 이 지도 이미지에는 도면이 없어요'}">${esc(o.label)}</button>`).join(''):'';
@@ -189,16 +198,17 @@ function renderFloorStatus(){
   text('floor-status',`보고 있는 층: ${current}${p?' · 촬영 위치: '+floorDescription(p):''}`);
 }
 function chooseFloor(id){
-  if(!state.mapDoc||(id!==ALL_FLOORS_ID&&!state.floorOptions?.some(o=>o.id===id&&o.available)))return false;
+  if((!state.mapDoc&&!cfg()?.floorAssets)||(id!==ALL_FLOORS_ID&&!state.floorOptions?.some(o=>o.id===id&&o.available)))return false;
   state.floor=id;renderFloorControls();updateFloor();return true;
 }
 function followCapturedFloor(redraw=true){
-  if(!state.followFloor||!state.player||state.player.mapKey!==state.mapKey||!state.mapDoc)return false;
+  if(!state.followFloor||!state.player||state.player.mapKey!==state.mapKey||(!state.mapDoc&&!cfg()?.floorAssets))return false;
   const result=classifyLocationFloor(state.player,cfg()||{});
   if(!result.known||result.ambiguous||result.ids.length!==1||!state.floorOptions?.some(o=>o.id===result.ids[0]&&o.available)||state.floor===result.ids[0])return false;
   state.floor=result.ids[0];if(redraw){renderFloorControls();updateFloor();}return true;
 }
 function updateFloor(fit=false){
+  if(cfg()?.floorAssets){loadBundledFloor(fit);return;}
   if(!state.mapDoc)return;const config=cfg();const clone=state.mapDoc.cloneNode(true);const visibility=floorGroupVisibility(config,state.floor,{context:true});
   // Only declared floor planes and their companions are managed. Other SVG
   // groups (roads, legends, labels and definitions) retain their source styling.
@@ -213,6 +223,20 @@ function updateFloor(fit=false){
   for(const group of foreground)clone.documentElement.append(group);
   const blob=new Blob([new XMLSerializer().serializeToString(clone)],{type:'image/svg+xml'});const next=URL.createObjectURL(blob);if(state.mapURL)URL.revokeObjectURL(state.mapURL);state.mapURL=next;
   const seq=state.mapSequence,revision=++state.floorImageSequence;const img=$('map-image');img.onload=()=>{if(seq!==state.mapSequence||revision!==state.floorImageSequence)return;state.imageReady=true;state.mapDisplayMode='layered';img.style.visibility='visible';$('map-loading').hidden=true;const stage=$('map-stage');stage.style.width=state.imageWidth+'px';stage.style.height=state.imageHeight+'px';img.style.width='100%';img.style.height='100%';if(fit)fitMap();renderFloorControls();renderMarkers();renderLocation();renderExitList();};img.onerror=()=>{if(revision===state.floorImageSequence)loadDirectMapImage(config,seq);};img.src=next;
+}
+function loadBundledFloor(fit=false){
+  const config=cfg(),source=config.floorAssets[state.floor];if(!source)return;
+  const seq=state.mapSequence,revision=++state.floorImageSequence,img=$('map-image');
+  state.imageReady=false;img.style.visibility='hidden';setMapLoading('최신 지도 도면을 불러오고 있어요');
+  img.onload=()=>{
+    if(seq!==state.mapSequence||revision!==state.floorImageSequence)return;
+    if(!img.naturalWidth||!img.naturalHeight){mapImageFailed(seq);return;}
+    state.imageReady=true;state.mapDisplayMode='layered';img.style.visibility='visible';$('map-loading').hidden=true;
+    const stage=$('map-stage');stage.style.width=state.imageWidth+'px';stage.style.height=state.imageHeight+'px';img.style.width='100%';img.style.height='100%';
+    if(fit)fitMap();renderFloorControls();renderMarkers();renderLocation();renderExitList();
+  };
+  img.onerror=()=>{if(seq===state.mapSequence&&revision===state.floorImageSequence)mapImageFailed(seq);};
+  img.src=source+'?rev='+encodeURIComponent(config.assetRevision);
 }
 function fitMap(){const el=$('map-viewport');if(!el.clientWidth||!el.clientHeight)return;state.fitZoom=Math.min(el.clientWidth/state.imageWidth,el.clientHeight/state.imageHeight)*0.95;state.zoom=state.fitZoom;state.panX=(el.clientWidth-state.imageWidth*state.zoom)/2;state.panY=(el.clientHeight-state.imageHeight*state.zoom)/2;applyTransform();}
 function applyTransform(){const el=$('map-viewport');if(el.clientWidth&&el.clientHeight){const clamped=clampCamera({panX:state.panX,panY:state.panY,zoom:state.zoom,imageWidth:state.imageWidth,imageHeight:state.imageHeight,viewportWidth:el.clientWidth,viewportHeight:el.clientHeight});state.panX=clamped.panX;state.panY=clamped.panY;}$('map-stage').style.transform=`translate(${state.panX}px,${state.panY}px) scale(${state.zoom})`;$('map-stage').style.setProperty('--marker-scale',1/state.zoom);$('map-stage').dataset.intelDetail=(state.fitZoom>0&&state.zoom/state.fitZoom>=1.75)?'full':'overview';}

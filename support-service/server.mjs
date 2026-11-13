@@ -45,7 +45,11 @@ function finish(res,error){if(error)fail(res,400,error.message||String(error));}
 function publicSummary(){return {mode:'shared',online:true,seq:db.seq,updatedAt:new Date().toISOString(),total:db.threads.length};}
 function headersForSSE(res){res.writeHead(200,{'Content-Type':'text/event-stream; charset=utf-8','Cache-Control':'no-cache, no-transform','Connection':'keep-alive','X-Accel-Buffering':'no'});}
 
-await prepareOCR();
+await prepareOCR({installDependencies:true});
+// OCR preparation installs the pinned production packages on this existing
+// service (its build command is node --version). Load image tooling afterwards.
+const {prepareMaps}=await import('../scripts/build-maps.mjs');
+await prepareMaps();
 try{const raw=JSON.parse(await fs.readFile(STORE,'utf8'));if(raw.version===1 && Array.isArray(raw.threads)){db=raw;}}catch{}
 const srv=http.createServer(async(req,res)=>{
   if(!cors(req,res)){fail(res,403,'허용되지 않은 웹사이트 Origin');return;}
