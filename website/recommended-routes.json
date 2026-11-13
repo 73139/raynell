@@ -1,0 +1,390 @@
+{
+  "coordinateSource": "https://github.com/the-hideout/tarkov-dev/blob/main/src/data/maps.json",
+  "note": "공략을 종합한 방문 순서 예시입니다. 안내선은 실제 통행 가능한 길이나 안전 경로를 보장하지 않습니다.",
+  "routes": [
+    {
+      "id": "customs-center",
+      "map": "customs",
+      "name": "의무동·요새·창고",
+      "risk": "높음",
+      "why": "의료품과 상자 위주로 중앙 구역을 짧게 도는 방문 순서입니다.",
+      "note": "크랙하우스와 요새는 보스·교전 위험이 큽니다. 필요하면 요새를 건너뛰세요.",
+      "keys": "잠긴 방은 해당 열쇠 필요",
+      "points": [
+        {
+          "label": "Crackhouse",
+          "x": 83,
+          "z": -153
+        },
+        {
+          "label": "Fortress",
+          "x": 201,
+          "z": -127
+        },
+        {
+          "label": "Warehouse 4",
+          "x": 333,
+          "z": -67
+        }
+      ],
+      "sources": [
+        {
+          "title": "Customs loot routes guide",
+          "url": "https://topgamecarry.com/guides/escape-from-tarkov-customs-loot-routes/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "customs-dorms",
+      "map": "customs",
+      "name": "기숙사·신골조 옆 주유소",
+      "risk": "높음",
+      "why": "기숙사 열쇠방과 신 주유소를 이어 확인하는 주요 파밍 구역입니다.",
+      "note": "기숙사와 신 주유소는 르샬라 및 PMC 교전 구역입니다. 스폰에 따라 역방향으로 이용하세요.",
+      "keys": "기숙사 잠긴 방·마크방 열쇠 별도",
+      "points": [
+        {
+          "label": "Dorms",
+          "x": 200,
+          "z": 150
+        },
+        {
+          "label": "New Gas",
+          "x": 404,
+          "z": 31
+        },
+        {
+          "label": "Military Checkpoint",
+          "x": 572,
+          "z": 0
+        }
+      ],
+      "sources": [
+        {
+          "title": "Customs loot routes guide",
+          "url": "https://topgamecarry.com/guides/escape-from-tarkov-customs-loot-routes/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "woods-north",
+      "map": "woods",
+      "name": "북쪽 호송대·USEC 캠프",
+      "risk": "중간",
+      "why": "호송대와 USEC 보급품을 시작으로 북쪽 전리품을 확인하는 동선입니다.",
+      "note": "맵 바깥 지뢰·저격수 경계와 USEC 캠프 주변을 주의하세요. 마을까지 무리해서 횡단하지 마세요.",
+      "keys": "기본 동선은 열쇠 없이 가능",
+      "points": [
+        {
+          "label": "Convoy",
+          "x": 200,
+          "z": -606
+        },
+        {
+          "label": "USEC Camp",
+          "x": 290,
+          "z": -475
+        },
+        {
+          "label": "Ponds",
+          "x": -5,
+          "z": -515
+        },
+        {
+          "label": "Scav Town",
+          "x": -485,
+          "z": -390
+        }
+      ],
+      "sources": [
+        {
+          "title": "Woods money routes guide",
+          "url": "https://timesaver.gg/blog/tarkov-woods-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "shoreline-west",
+      "map": "shoreline",
+      "name": "서쪽 마을·별장·늪지",
+      "risk": "중간",
+      "why": "리조트에 진입하지 않고 서쪽 주택과 별장 주변 상자를 확인합니다.",
+      "note": "별장에는 세니타가 등장할 수 있습니다. Tunnel·Path to Lighthouse가 실제 배정됐는지 확인하세요.",
+      "keys": "잠긴 별장 방은 열쇠 별도",
+      "points": [
+        {
+          "label": "Village",
+          "x": 418.4,
+          "z": 118
+        },
+        {
+          "label": "Cottages",
+          "x": 128,
+          "z": 93
+        },
+        {
+          "label": "Swamp",
+          "x": 326,
+          "z": -118.5
+        }
+      ],
+      "sources": [
+        {
+          "title": "Guided Shoreline loot and navigation guide",
+          "url": "https://guided.news/en/guides/escape-from-tarkov-shoreline-map-spawns-exits-loot-boss/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "shoreline-resort",
+      "map": "shoreline",
+      "name": "리조트 양쪽 동·관리동",
+      "risk": "높음",
+      "why": "의료품과 열쇠방을 노리는 리조트 집중 방문 순서입니다.",
+      "note": "동과 층을 정하고 짧게 확인하세요. 건물 안 이동·계단 위치는 지도 층과 현장에서 확인해야 합니다.",
+      "keys": "선택한 리조트 방 열쇠 필요",
+      "points": [
+        {
+          "label": "West Wing",
+          "x": -171,
+          "z": -83
+        },
+        {
+          "label": "Admin",
+          "x": -252,
+          "z": -146
+        },
+        {
+          "label": "East Wing",
+          "x": -329,
+          "z": -83
+        }
+      ],
+      "sources": [
+        {
+          "title": "Guided Shoreline loot and navigation guide",
+          "url": "https://guided.news/en/guides/escape-from-tarkov-shoreline-map-spawns-exits-loot-boss/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "interchange-supplies",
+      "map": "interchange",
+      "name": "발전소·고샨·올리",
+      "risk": "중간",
+      "why": "발전소 상자·서류함을 확인한 뒤 고샨 식품과 올리 보급품 구역을 잇습니다.",
+      "note": "실내외 이동 중 PMC·킬라를 주의하세요. EMERCOM 또는 Railway가 실제 배정됐는지 확인하세요.",
+      "keys": "기본 매장 동선은 열쇠 없이 가능",
+      "points": [
+        {
+          "label": "Power Station",
+          "x": -186.4,
+          "z": -318.7
+        },
+        {
+          "label": "Goshan",
+          "x": -115,
+          "z": -45
+        },
+        {
+          "label": "OLI",
+          "x": -28,
+          "z": 140
+        }
+      ],
+      "sources": [
+        {
+          "title": "GGRecon Interchange loot and Scav route guide",
+          "url": "https://www.ggrecon.com/guides/escape-from-tarkov-interchange-map-best-loot-extractions/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "interchange-tech",
+      "map": "interchange",
+      "name": "라스무센·텍소·테크라이트",
+      "risk": "높음",
+      "why": "공략에서 반복해 소개되는 전자제품 매장을 확인하는 방문 순서입니다.",
+      "note": "테크라이트는 상층입니다. 에스컬레이터 이동과 층을 확인하세요. 고가품 출현과 수익은 보장되지 않습니다.",
+      "keys": "기본 매장은 열쇠 없이 가능",
+      "points": [
+        {
+          "label": "Rasmussen",
+          "x": 19.5,
+          "z": 26
+        },
+        {
+          "label": "Texho",
+          "x": 61,
+          "z": 50
+        },
+        {
+          "label": "TECHLIGHT",
+          "x": 91,
+          "z": 54,
+          "floor": "2층"
+        }
+      ],
+      "sources": [
+        {
+          "title": "GGRecon Interchange loot and Scav route guide",
+          "url": "https://www.ggrecon.com/guides/escape-from-tarkov-interchange-map-best-loot-extractions/"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "lighthouse-chalets",
+      "map": "lighthouse",
+      "name": "남쪽 샬레·언덕 마을",
+      "risk": "중간",
+      "why": "남쪽 두 샬레와 마을을 확인하며 정수장 진입을 피하는 예시입니다.",
+      "note": "샬레 주변 보스와 저격 사선을 주의하세요. 등대 섬이나 정수장 안전을 보장하는 동선은 아닙니다.",
+      "keys": "샬레 금고 등 잠긴 곳은 열쇠 별도",
+      "points": [
+        {
+          "label": "Grand Chalet",
+          "x": -133,
+          "z": 100
+        },
+        {
+          "label": "Pikes Peak Resort",
+          "x": -107,
+          "z": -53
+        },
+        {
+          "label": "Hillside",
+          "x": -151,
+          "z": -243
+        },
+        {
+          "label": "Convenience",
+          "x": -55,
+          "z": -288
+        }
+      ],
+      "sources": [
+        {
+          "title": "Lighthouse money routes guide",
+          "url": "https://timesaver.gg/blog/tarkov-lighthouse-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "lighthouse-treatment",
+      "map": "lighthouse",
+      "name": "정수장 건물·기차역",
+      "risk": "매우 높음",
+      "why": "로그 대응이 가능한 플레이어를 위한 정수장 건물별 방문 순서입니다.",
+      "note": "로그·기관총·지뢰가 위험합니다. 사전에 교전 경로를 익힌 경우에만 선택하세요.",
+      "keys": "잠긴 방은 해당 열쇠 필요",
+      "points": [
+        {
+          "label": "Plant 1",
+          "x": 40,
+          "z": -618
+        },
+        {
+          "label": "Plant 2",
+          "x": -97,
+          "z": -737
+        },
+        {
+          "label": "Plant 3",
+          "x": -189,
+          "z": -665
+        },
+        {
+          "label": "Train Yard",
+          "x": -30,
+          "z": -882
+        }
+      ],
+      "sources": [
+        {
+          "title": "Lighthouse money routes guide",
+          "url": "https://timesaver.gg/blog/tarkov-lighthouse-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "reserve-buildings",
+      "map": "reserve",
+      "name": "퀸·킹·비숍 건물",
+      "risk": "높음",
+      "why": "여러 주요 건물을 짧게 확인하는 건물 중심 동선입니다.",
+      "note": "지하 이동은 별도 층 확인이 필요하며 레이더·글루하르를 주의하세요. D-2 등 탈출 조건을 먼저 확인하세요.",
+      "keys": "잠긴 방은 해당 열쇠 필요",
+      "points": [
+        {
+          "label": "White Queen",
+          "x": -25,
+          "z": 180
+        },
+        {
+          "label": "White King",
+          "x": -49.5,
+          "z": 15.5
+        },
+        {
+          "label": "White Bishop",
+          "x": -67,
+          "z": -30
+        },
+        {
+          "label": "Black Bishop",
+          "x": -140,
+          "z": -14.5
+        }
+      ],
+      "sources": [
+        {
+          "title": "Loot route examples by map",
+          "url": "https://www.ludo.guide/guide/escape-from-tarkov/the-ultimate-survival-guide/maps-locations/9-14-best-loot-routes-for-each-map"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    },
+    {
+      "id": "streets-concordia",
+      "map": "streets-of-tarkov",
+      "name": "콩코르디아·렉소스·타르뱅크",
+      "risk": "높음",
+      "why": "공략에 소개된 아파트·차량 정비소·은행 전리품 구역을 잇습니다.",
+      "note": "렉소스는 카반 구역입니다. 건물 진입로와 탈출구를 미리 정하고 가방이 차면 중간에 이탈하세요.",
+      "keys": "콩코르디아·은행·차량점 잠긴 방 열쇠 별도",
+      "points": [
+        {
+          "label": "Concordia",
+          "x": 140,
+          "z": 362
+        },
+        {
+          "label": "Lexos",
+          "x": 66,
+          "z": 305
+        },
+        {
+          "label": "Tarbank",
+          "x": 67,
+          "z": 230
+        }
+      ],
+      "sources": [
+        {
+          "title": "Streets loot cluster guide",
+          "url": "https://timesaver.gg/blog/tarkov-streets-money-guide"
+        }
+      ],
+      "verifiedOn": "2026-11-13"
+    }
+  ]
+}

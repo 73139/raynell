@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101512">
   <meta name="description" content="타르코프 스크린샷으로 촬영 당시 위치를 확인하고, 퀘스트를 검색하고 정리하는 개인용 필드 가이드.">
-  <title>타르코프 지도 · 퀘스트 · 가방 가격</title>
+  <title>타르코프 지도 · 퀘스트 · 경매장 · 가방 가격</title>
   <link rel="stylesheet" href="./styles.css">
   <link rel="stylesheet" href="./simple.css">
 </head>
@@ -45,6 +45,7 @@
     <nav class="top-nav" aria-label="주요 화면">
       <button class="top-nav-btn active" data-view="map"><svg class="icon"><use href="#i-map"/></svg> 지도</button>
       <button class="top-nav-btn" data-view="quests"><svg class="icon"><use href="#i-quests"/></svg> 퀘스트</button>
+      <button id="open-market-top" class="top-nav-btn" data-view="market"><svg class="icon"><use href="#i-market"/></svg> 경매장</button>
       <button id="open-loot-top" class="top-nav-btn" aria-haspopup="dialog" aria-controls="loot-dialog"><svg class="icon"><use href="#i-image"/></svg> 가방 가격</button>
     </nav>
     <div class="topbar-tools">
@@ -168,7 +169,7 @@
     </section>
 
     <section id="market-view" class="market-view" aria-labelledby="market-title" hidden>
-      <div class="market-heading"><div><p class="eyebrow">MARKET WATCH <span>/</span> 공개 아이템 시세</p><h1 id="market-title">아이템 시세</h1><p class="market-description">이름으로 아이템을 찾고, 선택한 게임 모드의 가격을 확인하세요.</p></div><span class="market-heading-emblem"><svg class="icon"><use href="#i-market"/></svg></span></div>
+      <div class="market-heading"><div><p class="eyebrow">MARKET WATCH <span>/</span> 공개 아이템 시세</p><h1 id="market-title">실시간 경매장</h1><p class="market-description">아이템 최저 등록가·24시간 평균·상인 판매가를 60초마다 확인합니다. 각 항목의 가격 시각을 함께 확인하세요.</p></div><span class="market-heading-emblem"><svg class="icon"><use href="#i-market"/></svg></span></div>
       <div class="market-toolbar"><label class="market-search-field"><svg class="icon"><use href="#i-search"/></svg><input id="market-search" type="search" placeholder="아이템 이름 검색 · 한국어 / 영어" aria-label="아이템 이름 검색" autocomplete="off"></label><label class="market-auto"><input id="auto-market" type="checkbox" checked><span>60초 자동 갱신</span></label><button id="refresh-market" class="btn btn-primary"><svg class="icon"><use href="#i-refresh"/></svg>가격 새로고침</button></div>
       <section class="loot-entry"><div><span class="eyebrow">ITEM VALUATION / 캡처 분석</span><strong>가방·인벤토리 사진으로 아이템 가격표 만들기</strong><p>사진 속 <b>읽을 수 있는 아이템 이름</b>을 찾아 개별 시세와 총액으로 정리해요. 아이콘만 있는 물품은 직접 이름을 선택해야 해요.</p></div><button id="open-loot-scan" class="btn btn-primary"><svg class="icon"><use href="#i-scan"/></svg>아이템 사진 분석</button></section>
       <div class="r14-market-chips" id="r14-market-chips" aria-label="빠른 아이템 종류 필터"><span>QUICK FILTER</span><button class="r14-chip active" data-market-chip="all" type="button">전체</button></div>

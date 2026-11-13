@@ -29,7 +29,7 @@ function publicFixture(url) {
   const objective = `fixture/${mode}/objective`;
   const fixture = {
     tasks: {tasks: [{id: `fixture-${mode}-task`, name: taskName,
-      normalizedName: `startup-${mode}-quest`, trader: '54cb50c76803fa8b248b4571',
+      kappaRequired:true, normalizedName: `startup-${mode}-quest`, trader: '54cb50c76803fa8b248b4571',
       map: 'fixture-customs', minPlayerLevel: 1,
       objectives: [{id: `fixture-${mode}-objective`, type: 'visit',
         description: objective, maps: ['fixture-customs']}]}]},
@@ -179,9 +179,9 @@ process.on('unhandledRejection', error => {
     assert.match(document.getElementById('data-status').textContent, /PvP · 1개/);
     assert.equal(document.querySelector('[data-task]').dataset.task, 'fixture-regular-task');
     console.log(`PASS PvP startup: ${online.moduleCount} modules, translated quest card and data status`);
-    assert.deepEqual([...document.querySelectorAll('.top-nav button')].map(b=>b.textContent.trim()), ['지도','퀘스트','가방 가격']);
+    assert.deepEqual([...document.querySelectorAll('.top-nav button')].map(b=>b.textContent.trim()), ['지도','퀘스트','경매장','가방 가격']);
     assert.equal(document.getElementById('map-options').open, false);
-    assert.equal(document.getElementById('map-options').previousElementSibling.className, 'map-frame');
+    assert.equal(document.getElementById('map-options').previousElementSibling.id, 'active-route-note');
     assert.equal(document.querySelector('[data-intel-toggle="container"]').checked, false);
     const wheel=new online.window.WheelEvent('wheel',{deltaY:500,cancelable:true,bubbles:true});
     document.getElementById('map-viewport').dispatchEvent(wheel);
@@ -196,6 +196,28 @@ process.on('unhandledRejection', error => {
     document.getElementById('close-detail').click();
     assert.equal(document.getElementById('quest-browser').hidden,false);
     console.log('PASS simple navigation, scroll wheel, optional markers and in-panel quest details');
+    assert.equal(document.querySelector('.kappa-card-mark').textContent,'K');
+    assert.equal(document.querySelector('#map-quick-layers [data-intel-toggle="boss"]').checked,true);
+    document.getElementById('open-kappa-line').click();
+    assert.equal(document.getElementById('kappa-dialog').open,true);
+    assert.ok(document.getElementById('kappa-progress').textContent.includes('필수 0 / 1'));
+    document.querySelector('[data-kappa-complete]').click();
+    assert.ok(document.getElementById('kappa-progress').textContent.includes('필수 1 / 1'));
+    document.querySelector('[data-kappa-complete]').click();
+    document.getElementById('close-kappa-line').click();
+    document.getElementById('open-recommended-routes').click();
+    await waitFor(()=>document.querySelectorAll('[data-apply-route]').length===2,'Customs recommended routes must load');
+    document.querySelector('[data-apply-route]').click();
+    assert.equal(document.getElementById('routes-dialog').open,false);
+    assert.equal(document.getElementById('active-route-note').hidden,false);
+    assert.match(document.getElementById('active-route-text').textContent,/Crackhouse/);
+    document.getElementById('clear-recommended-route').click();
+    assert.equal(document.getElementById('active-route-note').hidden,true);
+    document.getElementById('open-market-top').click();
+    assert.equal(document.body.dataset.view,'market');
+    assert.equal(document.getElementById('market-view').hidden,false);
+    document.querySelector('.top-nav [data-view="map"]').click();
+    console.log('PASS red K badges, Kappa progress editing, sourced route selection and market navigation');
     document.getElementById('open-loot-top').click();
     assert.equal(document.body.dataset.view,'map','Bag prices must preserve the current map');
     assert.equal(document.getElementById('loot-dialog').open,true);

@@ -15,6 +15,7 @@ import { initializeR13 } from './r13-ui.mjs';
 import { initializeR14Shell } from './r14-shell.mjs';
 import { initializeMapIntel } from './map-intel-ui.mjs';
 import { initializeSimpleUI } from './simple-ui.mjs';
+import { initializeGuideExtras } from './guide-extras.mjs';
 
 const $ = (id) => document.getElementById(id);
 // Keep quest details in the same panel so the map retains its width.
@@ -33,7 +34,8 @@ Object.assign(state,{companionMode:false,companion:null,companionConnected:false
 Object.assign(state,{mapDataset:null,mapDetailsStatus:'loading',floorOptions:[],floorImageSequence:0,followFloor:false,showOtherFloors:false,exitFilters:{pmc:true,scav:true,shared:true,unknown:true,transit:true},showExitLabels:false,exitSearch:'',selectedExit:null});
 let opsRoute=[],opsExit=null,opsController=null,lastAutoMapRev=0;
 let fieldKitController=null,r12Controller=null,r13Controller=null;
-let mapIntelController=null,verifiedIntelLabels={};
+let mapIntelController=null,verifiedIntelLabels={},extrasController=null;
+Object.assign(state,{kappaOnly:false,guideRoute:null});
 let companionClient=null;
 let questOcrController=null,ocrCompanionCursor='',ocrBrowserTimer=null,ocrBrowserTicket=0,ocrSourceEpoch=0;
 const companionCursor=createCaptureCursor();
@@ -60,7 +62,7 @@ function mapKeyFor(id){return baseMapKey(mapById(id)?.normalizedName||id);}
 function matchesMap(task,key){return (task.mapIds||[]).some(id=>mapKeyFor(id)===key);}
 function locationsFor(task,key=state.mapKey){return (task.objectives||[]).flatMap((o,index)=>(o.locations||[]).filter(l=>l.mapId&&mapKeyFor(l.mapId)===key&&Number.isFinite(l.x)&&Number.isFinite(l.z)).map((l,li)=>({...l,objective:o,objectiveIndex:index,locationIndex:li,task})));}
 function pinCount(){return Object.entries(progress()).filter(([id,p])=>p?.pinned&&state.dataset?.tasks.some(t=>t.id===id)).length;}
-function renderSummary(){const tasks=state.dataset?.tasks||[];text('total-count',tasks.length?fmt.format(tasks.length):'—');text('done-count',fmt.format(tasks.filter(t=>statusOf(t.id)==='done').length));text('pin-count',pinCount());}
+function renderSummary(){extrasController?.refresh();const tasks=state.dataset?.tasks||[];text('total-count',tasks.length?fmt.format(tasks.length):'—');text('done-count',fmt.format(tasks.filter(t=>statusOf(t.id)==='done').length));text('pin-count',pinCount());}
 function configEntries(input){const groups=Array.isArray(input)?input:Array.isArray(input?.maps)?input.maps:Object.values(input?.data||input||{});const out=[];for(const group of groups){if(!group||typeof group!=='object')continue;const c=Array.isArray(group.maps)?group.maps.find(v=>v.projection==='interactive'&&v.svgPath):group.svgPath?group:null;if(!c||!Array.isArray(c.svgBounds||c.bounds))continue;const key=baseMapKey(group.normalizedName||c.key);if(!key||out.some(x=>x.key===key))continue;out.push({...c,key,name:MAP_LABELS[key]||group.name||key,sourceGroup:group.normalizedName});}return out;}
 async function fetchTimed(url,ms=22000){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),ms);try{const r=await fetch(url,{signal:controller.signal});if(!r.ok)throw new Error(`HTTP ${r.status}`);return r;}finally{clearTimeout(timer);}}
 async function loadMapConfigs(){
@@ -105,7 +107,7 @@ async function selectMap(key,change=true){
   if(changed&&state.watchHandle)stopWatching('맵을 바꿨어요. 새 맵에서 찍은 스크린샷만 읽도록 폴더를 다시 연결해 주세요.');
   if(changed){state.player=null;state.capture=null;opsRoute=[];opsExit=null;if(state.companionMode)waitForCompanionCapture();}
   state.mapDisplayMode='loading';
-  closeExitDetail();renderFloorControls();renderExitList();
+  closeExitDetail();renderFloorControls();renderExitList();extrasController?.refresh();
   const config=cfg();renderMapList();text('map-title',mapName(key));text('map-subtitle',key.replaceAll('-',' ').toUpperCase()+' / TACTICAL MAP');renderQuests();renderLocation();
   $('map-image').style.visibility='hidden';$('map-markers').innerHTML='';setMapLoading('지도를 불러오고 있어요');
   const author=safeURL(config.authorLink);$('map-attribution').innerHTML=`지도 ${author?`<a href="${esc(author)}" target="_blank" rel="noopener noreferrer">${esc(config.author||'tarkov.dev')}</a>`:esc(config.author||'tarkov.dev')} · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0</a> · <a href="https://tarkov.dev/map/${esc(key)}" target="_blank" rel="noopener noreferrer">원본</a>`;
@@ -243,8 +245,15 @@ function renderMarkers(){
     el.setAttribute('aria-label',el.title);el.onclick=()=>r12Controller.open('threats');fragment.append(el);
     if(marker.type==='hazard'&&marker.outline?.length>2){const pts=marker.outline.map(project).filter(v=>v?.inBounds);if(pts.length>=3){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 1000 1000');svg.setAttribute('preserveAspectRatio','none');svg.setAttribute('class','r12-hazard-overlay');const poly=document.createElementNS('http://www.w3.org/2000/svg','polygon');poly.setAttribute('points',pts.map(v=>`${(v.u*1000).toFixed(2)},${(v.v*1000).toFixed(2)}`).join(' '));svg.append(poly);box.append(svg);}}
   }}
+  renderGuideRoute(fragment);
   mapIntelController?.renderMarkers(fragment);
   box.append(fragment);text('pin-count',pinCount());
+}
+function renderGuideRoute(fragment){
+ const route=state.guideRoute;if(!route||route.map!==state.mapKey)return;
+ const points=route.points.map(point=>({point,pos:project(point)})).filter(p=>p.pos?.inBounds);
+ if(points.length>1){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','recommended-route-line');svg.setAttribute('viewBox','0 0 1000 1000');svg.setAttribute('preserveAspectRatio','none');const line=document.createElementNS('http://www.w3.org/2000/svg','polyline');line.setAttribute('points',points.map(p=>(p.pos.u*1000)+','+(p.pos.v*1000)).join(' '));svg.append(line);fragment.append(svg);}
+ points.forEach(({point,pos},i)=>{const button=document.createElement('button');button.type='button';button.className='guide-waypoint';button.textContent=String(i+1);button.style.left=(pos.u*100)+'%';button.style.top=(pos.v*100)+'%';button.title=(i+1)+'. '+point.label+(point.floor?' · '+point.floor:'')+' · 방문 순서';button.setAttribute('aria-label',button.title);button.addEventListener('click',event=>{event.stopPropagation();centerOn(point);});fragment.append(button);});
 }
 function currentExits(){return exitsForMap(mapRecords(),state.mapKey,{items:state.dataset?.items||[]});}
 function exitCategory(entry){return ({pmc:'PMC',scav:'Scav',shared:'공용',unknown:'진영 미확인',transit:'지도 이동'})[entry.category]||'진영 미확인';}
@@ -601,12 +610,12 @@ function renderFilters(){
   if(!$('trader-filter').value){state.trader='all';$('trader-filter').value='all';}
   renderMapList();
 }
-function filteredTasks(){const query=state.search.toLocaleLowerCase().replace(/\s/g,'');const map=state.mapFilter==='current'?state.mapKey:state.mapFilter;return (state.dataset?.tasks||[]).filter(t=>(map!=='captured'||state.capturedQuestIds.includes(t.id))&&(!query||[t.name,t.nameEn,t.traderName,...t.objectives.map(o=>o.description)].join(' ').toLocaleLowerCase().replace(/\s/g,'').includes(query))&&(state.trader==='all'||t.traderId===state.trader)&&(state.status==='all'||statusOf(t.id)===state.status)&&(map==='all'||map==='captured'||matchesMap(t,map))).sort((a,b)=>(taskProgress(b.id).pinned?1:0)-(taskProgress(a.id).pinned?1:0)||(statusOf(a.id)==='active'?-1:0)-(statusOf(b.id)==='active'?-1:0)||(a.minPlayerLevel||0)-(b.minPlayerLevel||0)||a.name.localeCompare(b.name,'ko'));}
+function filteredTasks(){const query=state.search.toLocaleLowerCase().replace(/\s/g,'');const map=state.mapFilter==='current'?state.mapKey:state.mapFilter;return (state.dataset?.tasks||[]).filter(t=>(!state.kappaOnly||t.kappaRequired===true)&&(map!=='captured'||state.capturedQuestIds.includes(t.id))&&(!query||[t.name,t.nameEn,t.traderName,...t.objectives.map(o=>o.description)].join(' ').toLocaleLowerCase().replace(/\s/g,'').includes(query))&&(state.trader==='all'||t.traderId===state.trader)&&(state.status==='all'||statusOf(t.id)===state.status)&&(map==='all'||map==='captured'||matchesMap(t,map))).sort((a,b)=>(taskProgress(b.id).pinned?1:0)-(taskProgress(a.id).pinned?1:0)||(statusOf(a.id)==='active'?-1:0)-(statusOf(b.id)==='active'?-1:0)||(a.minPlayerLevel||0)-(b.minPlayerLevel||0)||a.name.localeCompare(b.name,'ko'));}
 function renderQuests(){
   const list=$('quest-list');if(!state.dataset)return;
   const tasks=filteredTasks();text('quest-count',`${fmt.format(tasks.length)}개`);text('quest-panel-title',state.view==='quests'?'전체 퀘스트':'이번 레이드의 퀘스트');
   if(!tasks.length){list.innerHTML='<div class="empty-state"><span class="empty-symbol">⌕</span><strong>조건에 맞는 퀘스트가 없어요</strong><p>검색어를 줄이거나 지도·상인 필터를 바꿔 보세요.</p><button class="btn btn-small" data-action="reset-filters">필터 초기화</button></div>';return;}
-  list.innerHTML=tasks.slice(0,state.renderLimit).map(task=>{const status=statusOf(task.id);const p=taskProgress(task.id);const points=locationsFor(task);const maps=[...new Set(task.mapIds.map(mapKeyFor))].map(mapName);return `<article class="quest-card ${state.selected===task.id?'selected':''} ${status==='done'?'is-complete':''}"><button class="quest-open" data-task="${esc(task.id)}"><div class="quest-meta"><span>${esc(task.traderName||'상인 확인 필요')}</span><span>요구 Lv.${Number(task.minPlayerLevel)||1}</span></div><h3 class="quest-title">${esc(task.name)}</h3>${task.nameEn&&task.nameEn!==task.name?`<p class="quest-name-en">${esc(task.nameEn)}</p>`:''}<div class="quest-card-bottom"><span class="badge status-${status}">${STATUS_LABELS[status]}</span>${task.kappaRequired?'<span class="badge badge-kappa">KAPPA</span>':''}<span class="quest-map-label">${esc(maps.slice(0,2).join(' · ')||'여러 지역 / 위치 미등록')}${maps.length>2?' 외':''}</span></div></button><button class="quest-pin ${p.pinned?'pinned':''}" data-pin="${esc(task.id)}" aria-label="${esc(task.name)} ${p.pinned?'지도 표시 해제':'지도 표시'}" title="${p.pinned?'지도 표시 해제':'지도에 목표 표시'}" aria-pressed="${!!p.pinned}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 3h8l-1 7 4 4v2H5v-2l4-4-1-7zM12 16v6"/></svg></button></article>`;}).join('')+(tasks.length>state.renderLimit?`<button class="btn load-more" data-action="load-more">퀘스트 더 보기 (${fmt.format(tasks.length-state.renderLimit)}개)</button>`:'');
+  list.innerHTML=tasks.slice(0,state.renderLimit).map(task=>{const status=statusOf(task.id);const p=taskProgress(task.id);const points=locationsFor(task);const maps=[...new Set(task.mapIds.map(mapKeyFor))].map(mapName);return `<article class="quest-card ${state.selected===task.id?'selected':''} ${status==='done'?'is-complete':''}"><button class="quest-open" data-task="${esc(task.id)}"><div class="quest-meta"><span>${esc(task.traderName||'상인 확인 필요')}</span><span>요구 Lv.${Number(task.minPlayerLevel)||1}</span></div><h3 class="quest-title">${esc(task.name)}</h3>${task.nameEn&&task.nameEn!==task.name?`<p class="quest-name-en">${esc(task.nameEn)}</p>`:''}<div class="quest-card-bottom"><span class="badge status-${status}">${STATUS_LABELS[status]}</span>${task.kappaRequired?'<span class="kappa-card-mark" aria-label="카파 필수 퀘스트" title="카파 필수 퀘스트">K</span>':''}<span class="quest-map-label">${esc(maps.slice(0,2).join(' · ')||'여러 지역 / 위치 미등록')}${maps.length>2?' 외':''}</span></div></button><button class="quest-pin ${p.pinned?'pinned':''}" data-pin="${esc(task.id)}" aria-label="${esc(task.name)} ${p.pinned?'지도 표시 해제':'지도 표시'}" title="${p.pinned?'지도 표시 해제':'지도에 목표 표시'}" aria-pressed="${!!p.pinned}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M8 3h8l-1 7 4 4v2H5v-2l4-4-1-7zM12 16v6"/></svg></button></article>`;}).join('')+(tasks.length>state.renderLimit?`<button class="btn load-more" data-action="load-more">퀘스트 더 보기 (${fmt.format(tasks.length-state.renderLimit)}개)</button>`:'');
 }
 function openTask(id){const task=state.dataset?.tasks.find(t=>t.id===id);if(!task)return;state.selected=id;$('quest-browser').hidden=true;$('quest-detail').hidden=false;$('intel-blank').hidden=true;$('quest-panel').classList.add('has-detail');renderDetail();renderQuests();renderMarkers();}
 function closeDetail(){state.selected=null;$('quest-detail').hidden=true;$('intel-blank').hidden=false;$('quest-browser').hidden=false;$('quest-panel').classList.remove('has-detail');renderQuests();renderMarkers();}
@@ -776,6 +785,7 @@ $('filename-input').addEventListener('keydown',event=>{if(event.key==='Enter')$(
 $('export-progress').addEventListener('click',exportProgress);$('import-progress').addEventListener('click',()=>$('progress-file').click());$('progress-file').addEventListener('change',e=>{importProgress(e.target.files[0]);e.target.value='';});
 $('quest-search').addEventListener('input',()=>{state.search=$('quest-search').value;state.renderLimit=70;renderQuests();});
 for(const [id,key]of [['trader-filter','trader'],['quest-state-filter','status'],['map-filter','mapFilter']])$(id).addEventListener('change',()=>{state[key]=$(id).value;state.renderLimit=70;renderQuests();});
+$('kappa-only').addEventListener('change',()=>{state.kappaOnly=$('kappa-only').checked;state.renderLimit=70;renderQuests();});
 $('close-detail').addEventListener('click',closeDetail);
 document.addEventListener('click',event=>{
   const target=event.target.closest('button,a');if(!target)return;
@@ -791,7 +801,7 @@ document.addEventListener('click',event=>{
   if(target.dataset.action==='retry-data')loadData(true);
   if(target.dataset.action==='load-items')loadItemNames(true);
   if(target.dataset.action==='load-more'){state.renderLimit+=100;renderQuests();}
-  if(target.dataset.action==='reset-filters'){state.search='';state.trader='all';state.status='all';state.mapFilter='all';$('quest-search').value='';$('trader-filter').value='all';$('quest-state-filter').value='all';$('map-filter').value='all';renderQuests();}
+  if(target.dataset.action==='reset-filters'){state.kappaOnly=false;$('kappa-only').checked=false;state.search='';state.trader='all';state.status='all';state.mapFilter='all';$('quest-search').value='';$('trader-filter').value='all';$('quest-state-filter').value='all';$('map-filter').value='all';renderQuests();}
 });
 document.addEventListener('change',event=>{const el=event.target;if(el.id==='detail-status'&&state.selected)updateProgress(state.selected,{status:el.value});if(el.dataset.objective&&state.selected){const p=taskProgress(state.selected);updateProgress(state.selected,{objectives:{...(p.objectives||{}),[el.dataset.objective]:el.checked}});}});
 let dragDepth=0;
@@ -843,9 +853,11 @@ r12Controller=initializeR12({getMode:()=>state.mode,getMap:()=>state.mapKey,getM
 r13Controller=initializeR13({getMode:()=>state.mode,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),getTasks:()=>state.dataset?.tasks||[],getCatalog:()=>marketController.getCatalog(),getStatus:statusOf,getRoutes:()=>fieldKitController?.getRoutes()||[],getExits:currentExits,getDataState:()=>({maps:mapRecords(),tasks:state.dataset?.tasks||[],items:marketController.getCatalog()?.items||[],fetchedAt:state.dataset?.fetchedAt}),refreshData:()=>loadData(true),refreshMarket:()=>marketController.refresh(),notify:toast,onApplyQuests:ids=>{applyRecognizedQuests(ids);showCapturedBatch(ids,0);},onOpenQuest:id=>{setView('quests');openTask(id);},onOpenMarket:()=>setView('market')});
 questOcrController=initializeQuestOcr({getTasks:()=>state.dataset?.tasks||[],getMode:()=>state.mode,getTaskInfo:questOcrTaskInfo,onApply:applyRecognizedQuests,onBatchReady:showCapturedBatch,onOpen:showRecognizedQuest,onMap:async(key,id)=>{if(!state.configs.some(c=>c.key===key)){toast('이 지역은 보정된 지도 이미지가 아직 없어요.',true);return;}setView('map',{keepFilter:true});await selectMap(key);showRecognizedQuest(id);},onNotify:toast,onAutoChange:()=>{resetQuestOcrSource();renderOcrConnection();}});
 mapIntelController=initializeMapIntel({getMap:()=>state.mapKey,getMode:()=>state.mode,getConfig:cfg,getRecord:()=>mapRecords().find(m=>baseMapKey(m.normalizedName)===state.mapKey),getFallbackLabels:()=>verifiedIntelLabels,project,getFloorState:point=>{const f=floorMarkerState(point);return {...f,visible:f.visible||state.showOtherFloors};},getZoomRatio:()=>state.fitZoom>0?state.zoom/state.fitZoom:1,centerOn,refreshMarkers:()=>renderMarkers(),notify:toast});
+extrasController=initializeGuideExtras({getTasks:()=>state.dataset?.tasks||[],getStatus:statusOf,getMap:()=>state.mapKey,getMapName:()=>mapName(state.mapKey),onOpenQuest:id=>{setView('quests');openTask(id);},onComplete:(id,status)=>updateProgress(id,{status}),onRoute:route=>{state.guideRoute=route;renderMarkers();}});
 fetch('./verified-labels.json').then(r=>r.ok?r.json():null).then(data=>{if(data?.maps){verifiedIntelLabels=data.maps;mapIntelController?.refresh();}}).catch(()=>{});
 initializeR14Shell();
 initializeCompanion();renderSummary();renderLocation();renderFloorControls();renderExitList();
+const initialView=new URLSearchParams(location.search).get('view');if(['market','quests'].includes(initialView))setView(initialView);
 Promise.allSettled([loadMapConfigs(),loadData()]);
 
 // Static shell and previously visited map images can be used without a network connection.

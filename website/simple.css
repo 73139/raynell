@@ -7,7 +7,7 @@ body.simple-guide .top-nav-btn{font-size:15px!important;min-height:42px;padding:
 body.simple-guide .topbar-tools{width:auto;gap:8px;margin:0}
 body.simple-guide .topbar-tools #data-status,body.simple-guide #open-quest-ocr,body.simple-guide #tactical-tools-menu,body.simple-guide #open-help,body.simple-guide .tool-divider{display:none!important}
 body.simple-guide .workspace{height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;grid-template-rows:auto!important;align-items:start}
-body.simple-guide .sidebar,body.simple-guide .intel-panel,body.simple-guide #market-view,body.simple-guide .r14-intel-strip,body.simple-guide #companion-panel,body.simple-guide #capture-diagnostics,body.simple-guide .map-actions,body.simple-guide .map-topline,body.simple-guide .map-page-footer,body.simple-guide .quest-import-zone,body.simple-guide #open-quest-ocr-panel,body.simple-guide .quest-heading-icon{display:none!important}
+body.simple-guide .sidebar,body.simple-guide .intel-panel,body.simple-guide .r14-intel-strip,body.simple-guide #companion-panel,body.simple-guide #capture-diagnostics,body.simple-guide .map-actions,body.simple-guide .map-topline,body.simple-guide .map-page-footer,body.simple-guide .quest-import-zone,body.simple-guide #open-quest-ocr-panel,body.simple-guide .quest-heading-icon{display:none!important}
 body.simple-guide[data-view="map"] .workspace{display:grid!important;grid-template-columns:320px minmax(0,1fr)!important}
 body.simple-guide[data-view="map"] .quest-panel{grid-column:1!important;grid-row:1!important;position:sticky;top:0;height:100dvh!important;max-height:100dvh!important;min-height:0!important;overflow:hidden!important}
 body.simple-guide[data-view="map"] .map-view{grid-column:2!important;grid-row:1!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:visible!important;padding:14px 18px 24px!important;gap:10px;display:flex;flex-direction:column}
@@ -57,6 +57,7 @@ body.simple-guide .loot-result-wrap{max-height:none;overflow-x:auto}
  body.simple-guide .map-view-buttons .btn{font-size:12px!important}
  body.simple-guide .map-heading h1{display:none}
 }
+
 @media(max-width:700px){
  body.simple-guide .topbar{padding:8px 12px}
  body.simple-guide .brand-type strong{font-size:13px}
@@ -70,4 +71,64 @@ body.simple-guide .loot-result-wrap{max-height:none;overflow-x:auto}
  body.simple-guide[data-view="quests"] .workspace{padding:10px}
  body.simple-guide[data-view="quests"] .quest-list{grid-template-columns:1fr}
  body.simple-guide .loot-dialog-content{display:flex;flex-direction:column}
+}
+
+/* Flea prices, visible spawn controls, Kappa progression and researched routes. */
+body.simple-guide[data-view="market"] .workspace{display:block!important;max-width:1580px;margin:0 auto;padding:20px 22px 32px}
+body.simple-guide[data-view="market"] #market-view{display:flex!important;flex-direction:column;gap:12px;grid-area:auto!important;height:auto!important;min-height:calc(100dvh - 110px)!important;overflow:visible!important;padding:0!important}
+body.simple-guide .market-view .loot-entry,body.simple-guide .market-view .loot-auto-line,body.simple-guide .support-board{display:none!important}
+body.simple-guide .market-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;position:sticky;top:0;z-index:8;background:#152219;padding:12px;border:1px solid #415c43}
+body.simple-guide .market-search-field{flex:1 1 280px;min-width:0}
+body.simple-guide .market-search-field input{font-size:15px;min-width:0;width:100%}
+body.simple-guide .market-category-bar{flex-wrap:wrap;gap:12px;margin:0}
+body.simple-guide .market-category-bar label,body.simple-guide .market-sort-label,body.simple-guide .market-auto{font-size:13px}
+body.simple-guide .market-category-bar select,body.simple-guide #market-sort{font-size:14px;min-width:0;max-width:100%}
+body.simple-guide .market-table-frame{max-height:none!important;height:auto!important;overflow-x:auto!important;flex:0 0 auto}
+body.simple-guide .market-table{font-size:14px;min-width:680px}
+body.simple-guide .market-table th,body.simple-guide .market-table td{padding:13px 12px}
+body.simple-guide .market-status-line{flex-wrap:wrap;gap:8px}
+body.simple-guide .market-description,body.simple-guide .market-footer{font-size:13px;line-height:1.6}
+body.simple-guide .top-nav{flex-wrap:wrap}
+.map-quick-layers{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;background:#17251b;border:1px solid #496348;padding:7px 10px;flex:none}
+.map-quick-layers>span{color:#9db390;font-size:12px}.map-quick-layers label{display:inline-flex;align-items:center;gap:5px;font-size:13px;color:#dcebd4;cursor:pointer;white-space:nowrap}
+.map-quick-layers input{accent-color:#a7cd88;width:15px;height:15px}
+body.simple-guide .map-viewport{height:max(440px,calc(100dvh - 255px))!important}
+#map-stage[data-intel-detail="overview"] .intel-map-pin:is(.intel-pmc,.intel-scav,.intel-other){min-width:9px;min-height:9px;width:9px;height:9px;padding:0;font-size:0;border-radius:50%;box-shadow:0 1px 3px #0009}
+.intel-map-pin.intel-boss{background:#a83a30;color:#fff0dc;border-color:#ed8e75;font-size:14px;min-width:21px;min-height:21px;z-index:7}
+.quest-scope-tools{display:flex;gap:8px;justify-content:space-between;align-items:center;padding:8px 13px 12px;flex-wrap:wrap}
+.quest-scope-tools label{display:flex;align-items:center;gap:6px;font-size:13px;color:#dfe9d8}
+.kappa-inline{font-family:ui-sans-serif,system-ui,sans-serif;color:#ff4b47;font-size:20px;font-weight:800;line-height:1}
+.kappa-card-mark{position:absolute;bottom:12px;right:15px;color:#ff3936;font-family:ui-sans-serif,system-ui,sans-serif;font-size:27px;font-weight:700;line-height:1;transform:rotate(-5deg);pointer-events:none}
+.quest-card:has(.kappa-card-mark) .quest-card-bottom{padding-right:35px}
+.guide-dialog{width:min(1080px,96vw);max-height:92dvh;overflow:auto;background:#142018;color:#e5efdc;border:1px solid #67805d;padding:0;border-radius:5px}
+.guide-dialog::backdrop{background:#071009d9}
+.guide-dialog>header{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;background:#203024;padding:18px 22px;position:sticky;top:0;z-index:2;border-bottom:1px solid #4b6546}
+.guide-dialog>header h2{font-size:22px}.guide-dialog>header p{color:#b4c8a9;font-size:13px;margin-top:6px}
+.guide-dialog-body{padding:18px 22px}.guide-note{font-size:13px;color:#b3c5a8;line-height:1.7;margin-bottom:14px}
+#kappa-search{width:100%;padding:11px 12px;font-size:14px;margin-bottom:14px}
+.kappa-flow-list{display:flex;flex-direction:column;gap:9px}
+.kappa-flow-row{display:grid;grid-template-columns:32px minmax(0,1fr) auto;gap:10px;padding:13px 12px;border:1px solid #3e5839;border-left:3px solid #a45c48;background:#19291d}
+.kappa-flow-row.is-done{border-left-color:#8eb975}.kappa-step{align-self:start;text-align:center;border:1px solid #697d52;border-radius:50%;font-size:12px;padding:4px}
+.kappa-quest-link{display:block;text-align:left;background:transparent;color:#edf4e7;font-size:16px;font-weight:650;padding:0 0 5px}.kappa-flow-row small{color:#a9be9c;font-size:12px}
+.kappa-prereqs{display:flex;gap:5px;flex-wrap:wrap;margin-top:9px}.kappa-prereqs button,.kappa-prereqs>span{padding:3px 7px;background:#243824;color:#c5d9b8;font-size:12px;border:1px solid #3b5436}.kappa-prereqs button.done{color:#9bce82}
+.recommended-route-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.recommended-route-card{border:1px solid #4c6544;background:#1b2a1d;padding:17px;display:flex;flex-direction:column;gap:12px}
+.route-card-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.route-card-heading h3{font-size:17px}.route-card-heading>span{font-size:12px;color:#f0c78c;white-space:nowrap}
+.recommended-route-card p,.recommended-route-card li{font-size:13px;line-height:1.65}.recommended-route-card ol{padding-left:23px;margin:0}.recommended-route-card small{color:#adc19f;font-size:12px}
+.recommended-route-card .route-caution{color:#ddbe91}.route-card-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:auto}.route-card-actions a{font-size:12px;text-decoration:underline}
+.active-route-note{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:#edd69a;border:1px solid #77633e;background:#292a19;padding:9px 12px}
+.recommended-route-line{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none;z-index:2}.recommended-route-line polyline{stroke:#ffcf68;stroke-width:4;fill:none;stroke-dasharray:10 5;vector-effect:non-scaling-stroke;filter:drop-shadow(0 1px 2px #000)}
+.guide-waypoint{position:absolute;z-index:9;pointer-events:auto;transform:translate(-50%,-50%) scale(var(--marker-scale,1));transform-origin:center;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;border:2px solid #fff0c6;background:#c8952e;color:#121a0b;font-size:14px;font-weight:800;box-shadow:0 2px 5px #000a}
+@media(max-width:700px){
+ body.simple-guide[data-view="market"] .workspace{padding:12px 10px 24px}
+ body.simple-guide .top-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));width:100%;gap:2px}
+ body.simple-guide .top-nav-btn{padding:9px 3px!important;font-size:13px!important}
+ body.simple-guide .market-search-field{flex:1 0 100%}
+ body.simple-guide .market-category-bar label{display:flex;flex:1 1 100%;justify-content:space-between}
+ body.simple-guide .market-category-bar select{max-width:65%}
+ body.simple-guide .market-table{min-width:640px}
+ .map-quick-layers{gap:7px 10px}.map-quick-layers label{font-size:12px}
+ body.simple-guide .map-viewport{height:max(420px,calc(100dvh - 285px))!important}
+ .recommended-route-list{grid-template-columns:1fr}.guide-dialog-body{padding:13px}.guide-dialog>header{padding:14px}
+ .kappa-flow-row{grid-template-columns:27px minmax(0,1fr)}.kappa-flow-row>.btn{grid-column:2;justify-self:start}
 }

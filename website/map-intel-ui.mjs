@@ -1,11 +1,11 @@
 import {INTEL_KINDS,collectMapIntel,describeBosses,filterIntel,intelCounts} from './map-intel-core.mjs';
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const DEFAULT={landmark:true,container:false,loose:false,boss:false,pmc:false,scav:false,other:false};
+const DEFAULT={landmark:true,container:false,loose:false,boss:true,pmc:true,scav:true,other:true};
 const kindIcon={landmark:'◆',container:'▣',loose:'◇',boss:'B',pmc:'P',scav:'S',other:'?'};
 export function initializeMapIntel({getMap,getMode,getConfig,getRecord,getFallbackLabels,project,getFloorState,getZoomRatio,centerOn,refreshMarkers,notify}={}){
  const folder=$('intel-marker-panel'),btn=$('intel-marker-toggle'),results=$('intel-marker-results'),search=$('intel-marker-search');
- const load=()=>{try{return {...DEFAULT,...JSON.parse(localStorage.getItem('tfg-simple-layer-v1-'+getMode())||'{}')};}catch{return {...DEFAULT}};};
+ const load=()=>{try{return {...DEFAULT,...JSON.parse(localStorage.getItem('tfg-guide-layer-v2-'+getMode())||'{}')};}catch{return {...DEFAULT}};};
  let enabled=load(),term='',category='all',selection='',rows=[],bosses=[],mapKey='';
  function data(){const fallback=getFallbackLabels()?.[getMap()]||[];return collectMapIntel(getRecord()||{},getConfig()||{},fallback);}
  function update(){mapKey=getMap();rows=data();bosses=describeBosses(getRecord()||{});updateControls();renderPanel();}
@@ -45,7 +45,7 @@ export function initializeMapIntel({getMap,getMode,getConfig,getRecord,getFallba
    el.setAttribute('aria-label',el.title);el.addEventListener('click',event=>{event.stopPropagation();select(r.id);});fragment.append(el);
   }
  }
- function setKind(kind,checked){enabled[kind]=!!checked;try{localStorage.setItem('tfg-simple-layer-v1-'+getMode(),JSON.stringify(enabled));}catch{}
+ function setKind(kind,checked){enabled[kind]=!!checked;try{localStorage.setItem('tfg-guide-layer-v2-'+getMode(),JSON.stringify(enabled));}catch{}
   updateControls();renderPanel();refreshMarkers();}
  document.querySelectorAll('[data-intel-toggle]').forEach(input=>input.addEventListener('change',event=>setKind(event.target.dataset.intelToggle,event.target.checked)));
  btn.addEventListener('click',()=>{folder.hidden=!folder.hidden;btn.setAttribute('aria-expanded',String(!folder.hidden));if(!folder.hidden){renderPanel();search?.focus();}});

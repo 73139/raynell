@@ -11,6 +11,7 @@ const toPoint=raw=>{
 };
 export const INTEL_KINDS={landmark:'주요 지역',container:'파밍 컨테이너',loose:'루즈 루트',boss:'보스 후보',pmc:'PMC 스폰 후보',scav:'Scav 스폰 후보',other:'기타 스폰'};
 const slug=s=>name(s).toLowerCase().normalize('NFKC').replace(/[^\p{L}\p{N}]+/gu,'');
+const bossAreaLabels={customs:{ZoneDormitory:'Dorms',ZoneGasStation:'New Gas'},shoreline:{ZonePort:'Pier',ZoneSanatorium1:'West Wing',ZoneSanatorium2:'East Wing'}};
 export function normalizeMapLabels(config={},verifiedFallback=[]){
   const labels=list(config.labels).length?config.labels:verifiedFallback;
   const seen=new Set(),out=[];
@@ -49,13 +50,21 @@ export function collectMapIntel(map={},config={},fallbackLabels=[]){
     if(classed.unknown)push('other',label,s.position,{source:'tarkov-dev-maps',detail:'진영 정보가 없는 스폰 후보'});
   }
   for(const b of list(map.bosses)){
-    for(const loc of list(b.locations))push('boss',`${name(b.name)||'보스'} · ${name(loc.name)||'후보'}`,loc.position,{source:'tarkov-dev-maps',detail:'보스 출현 후보 · 출현 확정 아님'});
+    for(const loc of list(b.locations)){
+      const positions=list(loc.positions).length?loc.positions:loc.position?[loc.position]:[];
+      for(const position of positions)push('boss',`${name(b.name)||'보스'} · ${name(loc.name)||'후보'}`,position,{source:'tarkov-dev-maps',detail:'공개 데이터의 보스 출현 후보 좌표 · 현재 레이드 출현 확정 아님'});
+      if(!positions.length){
+        const areaName=bossAreaLabels[config.key||map.normalizedName]?.[loc.zoneKey||loc.name];
+        const area=rows.find(r=>r.type==='landmark'&&r.label===areaName);
+        if(area)push('boss',`${name(b.name)||'보스'} · ${areaName}`,area.position,{area:true,source:'tarkov-dev-boss-zone-and-map-label',detail:'보스 출현 구역의 중심 표시 · 정확한 개별 스폰 좌표나 현재 레이드 출현은 미확인'});
+      }
+    }
     if(b.position)push('boss',name(b.name)||'보스 출현 후보',b.position,{source:'tarkov-dev-maps',detail:'보스 출현 후보 · 출현 확정 아님'});
   }
   return rows;
 }
 export function describeBosses(map={}){
-  return list(map.bosses).map(b=>({name:name(b.name)||'보스 정보 미등록',locations:list(b.locations).map(x=>name(x.name)).filter(Boolean),hasCoordinates:!!b.position||list(b.locations).some(x=>valid(x.position)),spawnTrigger:name(b.spawnTrigger)}));
+  return list(map.bosses).map(b=>({name:name(b.name)||'보스 정보 미등록',locations:list(b.locations).map(x=>name(x.name)).filter(Boolean),hasCoordinates:!!b.position||list(b.locations).some(x=>valid(x.position)||list(x.positions).some(valid)),spawnTrigger:name(b.spawnTrigger)}));
 }
 export function filterIntel(rows=[],{enabled={},term='',type='all'}={}){
   const needle=String(term||'').normalize('NFKC').toLocaleLowerCase('ko');

@@ -206,7 +206,7 @@ function normalizedMaps(bundle, fetchedAt) {
       minPlayerLevel: countValue(map.minPlayerLevel), maxPlayerLevel: countValue(map.maxPlayerLevel),
       raidDuration: countValue(map.raidDuration), wikiLink: safeUrl(map.wiki),
       sourceURL, fetchedAt, switches: rawSwitches.map(switchDetails), extracts, transits,
-      bosses: extractBossIntel(map).map(b=>({...b,name:textPair(b.name,ko,en,b.name).value,locations:b.locations.map(l=>({...l,name:textPair(l.name,ko,en,l.name).value}))})),
+      bosses: extractBossIntel(map,payload(bundle.maps).mobs).map(b=>({...b,name:textPair(b.name,ko,en,b.name).value,locations:b.locations.map(l=>({...l,name:textPair(l.name,ko,en,l.name).value}))})),
       hazards: extractHazards(map).map(h=>({...h,name:textPair(h.name,ko,en,h.name).value})),
       spawns: extractSpawns(map).map(s=>({...s,name:textPair(s.name,ko,en,s.name).value})),
       lootContainers: references(map.lootContainers).map(row=>({position:point(row.position),lootContainer:{name:textPair(row.lootContainer?.name,ko,en,row.lootContainer?.normalizedName||'파밍 컨테이너').value}})).filter(row=>row.position),

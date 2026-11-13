@@ -8,11 +8,14 @@ const id=x=>typeof x==='string'?x:obj(x)?txt(x.id||x._id||x.itemId):'';
 const key=x=>txt(x).normalize('NFKC').toLocaleLowerCase('ko').replace(/[^\p{L}\p{N}]/gu,'');
 export const R12_VERSION='2026.11.13-r12';
 export const safeCount=x=>Math.max(1,Math.min(50,Math.floor(Number(x)||1)));
-export function extractBossIntel(map={}){
+export function extractBossIntel(map={},mobCatalog={}){
  return recs(map.bosses).map((r,i)=>{
-   const mob=obj(r.boss)?r.boss:{};
-   const locations=arr(r.spawnLocations).map((l,j)=>({id:id(l)||String(j),name:txt(l.name||l.spawnKey)||'위치 이름 미등록',position:point(l.position),sourceChance:num(l.chance)}));
-   return {id:id(mob)||id(r)||`boss-${i}`,name:txt(mob.name||r.name||mob.normalizedName||r.normalizedName)||'보스 이름 미등록',sourceChance:num(r.spawnChance),spawnTrigger:txt(r.spawnTrigger),spawnTime:num(r.spawnTime),locations,position:point(r.position),escorts:arr(r.escorts).map(e=>({name:txt(e?.boss?.name||e?.name)||'호위 NPC',amount:arr(e.amount).map(q=>q.count).filter(v=>num(v)!==null)}))};
+   const mob=obj(r.boss)?r.boss:mobCatalog[id(r.mob)||id(r.boss)]||{};
+   const locations=arr(r.spawnLocations||r.locations).map((l,j)=>{
+     const positions=[...arr(l.positions).map(point).filter(Boolean),...(point(l.position)?[point(l.position)]:[])];
+     return {id:id(l)||String(j),name:txt(l.name||l.spawnKey)||'위치 이름 미등록',zoneKey:txt(l.spawnKey||l.zoneKey||l.name),positions,position:point(l.position),sourceChance:num(l.chance??l.sourceChance)};
+   });
+   return {id:id(mob)||id(r)||id(r.mob)||`boss-${i}`,name:txt(mob.name||r.name||mob.normalizedName||r.normalizedName||r.mob)||'보스 이름 미등록',sourceChance:num(r.spawnChance??r.sourceChance),spawnTrigger:txt(r.spawnTrigger),spawnTime:num(r.spawnTime),locations,position:point(r.position),escorts:arr(r.escorts).map(e=>({name:txt(e?.boss?.name||e?.name||mobCatalog[id(e.mob)]?.name||e.mob)||'호위 NPC',amount:arr(e.amount).map(q=>q.count).filter(v=>num(v)!==null)}))};
  });
 }
 export function point(p){if(!obj(p))return null;const x=num(p.x),y=num(p.y),z=num(p.z);return x===null||y===null||z===null?null:{x,y,z};}
