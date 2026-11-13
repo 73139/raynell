@@ -87,11 +87,15 @@ jobs:
           TXT
           printf 'Source commit: %s\nNative version: 2026.11.13-r16-latest-maps\n' "$GITHUB_SHA" > BUILD_INFO.txt
           zip -9 TarkovFieldGuide_Windows.zip TarkovFieldGuide.exe START_HERE.txt BUILD_INFO.txt
-          sha256sum TarkovFieldGuide_Windows.zip > SHA256SUMS.txt
+          printf '%s\n' "$GITHUB_SHA" > website/maps/latest/BUILD_COMMIT.txt
+          tar -czf TarkovFieldGuide_Maps.tar.gz -C website maps/latest MAP_SOURCES.txt
+          sha256sum TarkovFieldGuide_Windows.zip TarkovFieldGuide_Maps.tar.gz > SHA256SUMS.txt
+      - name: Verify reusable public map archive
+        run: node scripts/test-built-maps.mjs TarkovFieldGuide_Maps.tar.gz
       - name: Publish Windows download
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh release view tfg-r16-windows >/dev/null 2>&1 || gh release create tfg-r16-windows --target "$GITHUB_SHA" --title 'Tarkov Field Guide Windows' --notes 'Standalone Windows x64 companion. No Node.js installer. Source on tarkov-r16-free branch.'
-          gh release upload tfg-r16-windows TarkovFieldGuide_Windows.zip SHA256SUMS.txt --clobber
+          gh release upload tfg-r16-windows TarkovFieldGuide_Windows.zip TarkovFieldGuide_Maps.tar.gz SHA256SUMS.txt --clobber
           gh release edit tfg-r16-windows --notes "Standalone Windows x64 companion. Source commit: $GITHUB_SHA on tarkov-r16-free. 13 complete calibrated maps and current detailed artwork, boss names and cultist windows, dual game clocks, BTR reference timetables and stops, 28 recommended routes and editable personal routes. Includes quest photos, Kappa lines, flea and bag prices. No automatic keypress or screenshot capture."

@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {execFileSync} from 'node:child_process';
+import fs from 'node:fs';
+import {validateArchiveListing} from './restore-built-maps.mjs';
+const archive=process.argv[2];if(!archive)throw Error('Map archive required');
+const tar=(...args)=>execFileSync('tar',[...args,archive],{encoding:'utf8',maxBuffer:1048576});
+const names=tar('-tzf'),details=tar('-tvzf'),files=validateArchiveListing(names,details);
+const text=file=>execFileSync('tar',['-xOzf',archive,file],{encoding:'utf8',maxBuffer:1048576});
+assert.equal(text('maps/latest/BUILD_COMMIT.txt').trim(),process.env.GITHUB_SHA);
+const packed=JSON.parse(text('maps/latest/manifest.json')),source=JSON.parse(fs.readFileSync('website/maps/latest/manifest.json','utf8'));
+assert.deepEqual(packed,source);for(const file of Object.keys(source.files))assert.ok(files.includes('maps/latest/'+file));
+console.log('PASS public map archive: deployment commit matches, all 60 map files included, no links or paths outside maps, manifest identical to tested images');

@@ -7,6 +7,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { randomUUID, timingSafeEqual } from 'node:crypto';
 import {prepareOCR} from '../scripts/build-ocr.mjs';
+import {restoreBuiltMaps} from '../scripts/restore-built-maps.mjs';
 
 const PORT = Number(process.env.TFG_SUPPORT_PORT || process.env.PORT || 43910);
 const HOST = process.env.TFG_SUPPORT_HOST || (process.env.PORT ? '0.0.0.0' : '127.0.0.1');
@@ -49,6 +50,7 @@ await prepareOCR({installDependencies:true});
 // OCR preparation installs the pinned production packages on this existing
 // service (its build command is node --version). Load image tooling afterwards.
 const {prepareMaps}=await import('../scripts/build-maps.mjs');
+await restoreBuiltMaps();
 await prepareMaps();
 try{const raw=JSON.parse(await fs.readFile(STORE,'utf8'));if(raw.version===1 && Array.isArray(raw.threads)){db=raw;}}catch{}
 const srv=http.createServer(async(req,res)=>{
