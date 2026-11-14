@@ -1,6 +1,7 @@
 import {locationReliability,compareSaleOptions,rankFarmingRoutes,diagnose,usableExits} from './r17-core.mjs';
 import {classifyLocationFloor} from './floor-core.mjs';
-import {planRaid,normalizeHideout,materialsCost} from './ops-core.mjs';
+import {planRaid} from './ops-core.mjs';
+import {collectMapIntel} from './map-intel-core.mjs';
 import {compareAmmo,compareArmor} from './field-kit-core.mjs';
 
 const esc = v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
@@ -81,11 +82,17 @@ export function initializeR17(ctx){
  const renderFarming=()=>{
    const available=routes.filter(r=>r.map===ctx.getMap().key);
    // Source routes have qualitative risk and no measured loot value/time: do not fabricate returns.
+   const p=observedPosition(ctx);
+   const intel=collectMapIntel(ctx.getMapIntel()||{},ctx.getConfig()||{},ctx.getFallbackLabels()||[]);
+   const nearby=p?intel.filter(r=>['boss','cultist','pmc'].includes(r.type)&&r.position&&finite(r.position.x)&&finite(r.position.z))
+      .map(r=>({...r,meters:Math.round(Math.hypot(r.position.x-p.x,r.position.z-p.z))}))
+      .filter(r=>r.meters<=150).sort((a,b)=>a.meters-b.meters).slice(0,8):[];
    return blocks('맵별 파밍 동선 · 검증된 수익률 아님',entry('추천 동선 자료',available.length+'개')+
    (available.length?available.map(r=>entry(r.name,'위험 '+(r.risk||'미확인')+' · '+(r.points||[]).length+'곳')).join(''):note('현재 맵의 추천 동선 정보가 없습니다.'))+
    note('수익/분 계산에는 예상 아이템 가치, 플레이 시간, 위험도 실측값이 필요합니다. 이 값이 없어 실제 수익률 순위를 생성하지 않습니다.')+
    '<div class="r17-inline"><button data-r17-action="open-routes">기존 파밍 루트 목록 열기</button></div>')+
-   blocks('보스·교전 위험 알림',note('기존 지도 위험 구역과 보스 출현 후보를 표시합니다. 실시간 플레이어 탐지 기능이나 보스 실시간 출현 확인 기능이 아닙니다.')+
+   blocks('보스·교전 위험 알림',note('마지막 촬영 위치 기준 150m 이내의 등록된 보스·PMC 스폰 후보를 표시합니다. 실시간 위치 탐지나 보스 출현 확인이 아닙니다.')+
+   (nearby.length?nearby.map(r=>entry(r.label,fmt(r.meters)+'m · 후보 위치')).join(''):note(p?'반경 150m 안에 등록된 위험 후보가 없습니다. 데이터 누락 가능성이 있습니다.':'새 스크린샷을 찍으면 주변 후보를 표시할 수 있습니다.'))+
    '<div class="r17-inline"><button data-r17-action="open-intel">지도 위험 마커 보기</button></div>');
  };
  const renderDiagnostics=()=>{
