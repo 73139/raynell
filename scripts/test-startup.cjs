@@ -223,7 +223,7 @@ process.on('unhandledRejection', error => {
     document.getElementById('open-loot-top').click();
     assert.equal(document.body.dataset.view,'map','Bag prices must preserve the current map');
     assert.equal(document.getElementById('loot-dialog').open,true);
-    await waitFor(()=>document.getElementById('loot-price-time').textContent.includes('공개 시세 확인'),'Bag view must load the item price catalog');
+    await waitFor(()=>document.getElementById('loot-price-time').textContent.includes('시세 조회'),'Bag view must load the item price catalog');
     const search=document.getElementById('loot-add-name');
     search.value='검증용 물품';search.dispatchEvent(new online.window.Event('input'));
     await waitFor(()=>document.getElementById('loot-add-select').options.length>1,'Optional manual price lookup');
@@ -231,6 +231,10 @@ process.on('unhandledRejection', error => {
     const qty=document.querySelector('[data-loot-qty]');qty.value=2;qty.dispatchEvent(new online.window.Event('change',{bubbles:true}));
     assert.match(document.getElementById('loot-total-flea').textContent,/20,000/);
     assert.match(document.getElementById('loot-total-trader').textContent,/8,000/);
+    assert.match(document.getElementById('loot-total-best').textContent,/20,000/);
+    assert.equal(document.querySelectorAll('[data-loot-edit]').length,1);
+    assert.equal(document.querySelectorAll('[data-loot-delete]').length,1);
+    assert.match(document.getElementById('loot-total-confidence').textContent,/직접 1/);
     document.getElementById('loot-close').click();
     assert.equal(document.getElementById('loot-dialog').open,false);
     console.log('PASS optional manual bag price lookup and editable quantity, flea 20,000 and trader 8,000');
