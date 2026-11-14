@@ -31,13 +31,91 @@ var assets embed.FS
 const port = "43873"
 const maxImage = 20 << 20
 const appName = "tarkov-field-guide-companion"
-const version = "2026.11.13-r16-bag-icons"
+const version = "2026.11.14-r16-auto-map"
 
 var screenshotRe = regexp.MustCompile(`(?i)^(\d{4}-\d{2}-\d{2}\[\d{2}-\d{2}\])_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)(?:_([+-]?[0-9.]+))?\s+\((\d+)\)\.png$`)
 var safeImageRe = regexp.MustCompile(`(?i)^[^/\\:\x00-\x1f\x7f]{1,255}\.(png|jpg|jpeg|webp|bmp)$`)
 var logMapRe = regexp.MustCompile(`(?i)scene\s+preset[^\r\n]*?maps[\\/]([a-z0-9_-]+)\.bundle`)
 var networkRe = regexp.MustCompile(`(?i)Location:\s*([a-z0-9_-]+)`)
-var maps = map[string]string{"bigmap": "customs", "customs": "customs", "woods": "woods", "shoreline": "shoreline", "interchange": "interchange", "rezervbase": "reserve", "reserve": "reserve", "lighthouse": "lighthouse", "tarkovstreets": "streets-of-tarkov", "city": "streets-of-tarkov", "city_preset": "streets-of-tarkov", "streets": "streets-of-tarkov", "factory4_day": "factory", "factory4_night": "factory", "factory": "factory", "factory_preset": "factory", "sandbox": "ground-zero", "sandbox_high": "ground-zero", "groundzero": "ground-zero", "laboratory": "the-lab", "laboratory_preset": "the-lab", "lab": "the-lab", "labyrinth": "labyrinth", "terminal": "terminal"}
+var applicationLogRe = regexp.MustCompile(`(?i)^application(?:_\d+)?\.logpackage main
+
+import (
+	"crypto/rand"
+	"embed"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"io/fs"
+	"log"
+	"math"
+	"net"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"regexp"
+	"runtime"
+	"sort"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+)
+
+//go:embed dist
+var assets embed.FS
+
+const port = "43873"
+const maxImage = 20 << 20
+const appName = "tarkov-field-guide-companion"
+const version = "2026.11.14-r16-auto-map"
+
+var screenshotRe = regexp.MustCompile(`(?i)^(\d{4}-\d{2}-\d{2}\[\d{2}-\d{2}\])_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)(?:_([+-]?[0-9.]+))?\s+\((\d+)\)\.png$`)
+var safeImageRe = regexp.MustCompile(`(?i)^[^/\\:\x00-\x1f\x7f]{1,255}\.(png|jpg|jpeg|webp|bmp)$`)
+var logMapRe = regexp.MustCompile(`(?i)scene\s+preset[^\r\n]*?maps[\\/]([a-z0-9_-]+)\.bundle`)
+)
+var registryInstallRe = regexp.MustCompile(`(?im)^\s*InstallLocation\s+REG_\w+\s+(.+?)\s*package main
+
+import (
+	"crypto/rand"
+	"embed"
+	"encoding/hex"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"io/fs"
+	"log"
+	"math"
+	"net"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"regexp"
+	"runtime"
+	"sort"
+	"strconv"
+	"strings"
+	"sync"
+	"time"
+)
+
+//go:embed dist
+var assets embed.FS
+
+const port = "43873"
+const maxImage = 20 << 20
+const appName = "tarkov-field-guide-companion"
+const version = "2026.11.14-r16-auto-map"
+
+var screenshotRe = regexp.MustCompile(`(?i)^(\d{4}-\d{2}-\d{2}\[\d{2}-\d{2}\])_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)(?:_([+-]?[0-9.]+))?\s+\((\d+)\)\.png$`)
+var safeImageRe = regexp.MustCompile(`(?i)^[^/\\:\x00-\x1f\x7f]{1,255}\.(png|jpg|jpeg|webp|bmp)$`)
+var logMapRe = regexp.MustCompile(`(?i)scene\s+preset[^\r\n]*?maps[\\/]([a-z0-9_-]+)\.bundle`)
+)
+var maps = map[string]string{"bigmap": "customs", "customs": "customs", "woods": "woods", "shoreline": "shoreline", "interchange": "interchange", "rezervbase": "reserve", "reserve": "reserve", "lighthouse": "lighthouse", "tarkovstreets": "streets-of-tarkov", "city": "streets-of-tarkov", "city_preset": "streets-of-tarkov", "streets": "streets-of-tarkov", "factory4_day": "factory", "factory4_night": "factory", "factory": "factory", "factory_preset": "factory", "sandbox": "ground-zero", "sandbox_high": "ground-zero", "groundzero": "ground-zero", "laboratory": "the-lab", "laboratory_preset": "the-lab", "lab": "the-lab", "labyrinth": "the-labyrinth", "labyrinth_preset": "the-labyrinth", "icebreaker": "icebreaker", "terminal": "terminal"}
 
 type FileStamp struct {
 	Name   string
@@ -62,6 +140,8 @@ type App struct {
 	logsLatest                                                                    map[string]any
 	logsOffset                                                                    int64
 	logsSeen                                                                      bool
+	logAuto, logHistorical                                                       bool
+	logPartial, logError, logLastScan                                             string
 	lastScan                                                                      string
 	totalFiles, imageFiles                                                        int
 }
@@ -85,25 +165,69 @@ func tryFolder() string {
 	}
 	return ""
 }
+// Registry discovery covers BSG Launcher and Steam installations; no process
+// inspection, game modification, memory access or key simulation occurs.
 func detectLogs() string {
-	candidates := []string{os.Getenv("TFG_EFT_LOGS")}
-	for _, root := range []string{`C:\Battlestate Games`, `D:\Battlestate Games`, os.Getenv("PROGRAMFILES"), os.Getenv("PROGRAMFILES(X86)")} {
-		if root == "" {
-			continue
-		}
-		for _, base := range []string{"Escape from Tarkov", filepath.Join("Battlestate Games", "Escape from Tarkov")} {
-			for _, sub := range []string{"Logs", filepath.Join("build", "Logs")} {
-				candidates = append(candidates, filepath.Join(root, base, sub))
-			}
-		}
-	}
-	for _, p := range candidates {
-		if p != "" && isFolder(p) {
-			return p
-		}
-	}
-	return ""
+    roots := []string{os.Getenv("TFG_EFT_LOGS")}
+    for _, env := range []string{"TFG_EFT_HOME", "TFG_EFT_INSTALL"} {
+        if p:=os.Getenv(env);p!="" { roots=append(roots,p) }
+    }
+    for _, root := range []string{`C:\Battlestate Games`, `D:\Battlestate Games`,
+        `E:\Battlestate Games`, `C:\Games`, `D:\Games`,
+        os.Getenv("PROGRAMFILES"), os.Getenv("PROGRAMFILES(X86)")} {
+        if root=="" { continue }
+        roots=append(roots,filepath.Join(root,"Escape from Tarkov"))
+        roots=append(roots,filepath.Join(root,"Battlestate Games","Escape from Tarkov"))
+    }
+    if runtime.GOOS=="windows" {
+        for _, regKey := range []string{
+            `HKLM\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov`,
+            `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\EscapeFromTarkov`,
+            `HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 3932890`,
+        } {
+            output,err:=exec.Command("reg","query",regKey,"/v","InstallLocation").Output()
+            if err==nil { if m:=registryInstallRe.FindStringSubmatch(string(output));m!=nil { roots=append(roots,strings.TrimSpace(m[1])) } }
+        }
+        for _,drive:=range []string{`C:`,`D:`,`E:`,`F:`,`G:`} {
+            for _,stem:=range []string{`SteamLibrary`,`Steam`,`Program Files (x86)\Steam`,`Program Files\Steam`} {
+                roots=append(roots,filepath.Join(drive,stem,"steamapps","common","Escape from Tarkov"))
+            }
+        }
+    }
+    seen:=map[string]bool{}
+    for _,root:=range roots {
+        if root=="" { continue }
+        for _,p:=range []string{root, filepath.Join(root,"Logs"),filepath.Join(root,"build","Logs")} {
+            p=filepath.Clean(p);if seen[strings.ToLower(p)] {continue}; seen[strings.ToLower(p)]=true
+            if !isFolder(p) {continue}
+            if strings.EqualFold(filepath.Base(p),"Logs") {return p}
+        }
+    }
+    return ""
 }
+
+// Known aliases are intentionally explicit: unfamiliar game-map identifiers
+// must never trigger a guessed map switch.
+func mapForPreset(preset string) string {
+    raw:=strings.ToLower(strings.TrimSpace(preset))
+    if result:=maps[raw]; result!="" {return result}
+    raw=strings.TrimSuffix(raw,"_preset")
+    if result:=maps[raw];result!="" {return result}
+    if raw=="factory_day"||raw=="factory_night" {return "factory"}
+    return ""
+}
+func mapEventFromLine(line string)(mapKey,preset,source string) {
+    if m:=logMapRe.FindStringSubmatch(line);m!=nil {
+        preset=strings.ToLower(m[1]);return mapForPreset(preset),preset,"scene-preset"
+    }
+    if strings.Contains(line,"TRACE-NetworkGameCreate")||strings.Contains(line,"GameStarting")||strings.Contains(line,"GameStarted")||strings.Contains(line,"profileStatus") {
+        if m:=networkRe.FindStringSubmatch(line);m!=nil {
+            preset=strings.ToLower(m[1]);return mapForPreset(preset),preset,"network-game"
+        }
+    }
+    return "","",""
+}
+
 func configPath() string {
 	p := os.Getenv("LOCALAPPDATA")
 	if p == "" {
@@ -119,6 +243,7 @@ func tryConfig(a *App) {
 	var c struct {
 		Folder     string `json:"folder"`
 		LogsFolder string `json:"logsFolder"`
+		LogAuto *bool `json:"logAuto"`
 	}
 	if json.Unmarshal(b, &c) == nil {
 		if isFolder(c.Folder) {
@@ -127,10 +252,11 @@ func tryConfig(a *App) {
 		if isFolder(c.LogsFolder) {
 			a.logFolder = c.LogsFolder
 		}
+		if c.LogAuto!=nil {a.logAuto=*c.LogAuto}
 	}
 }
 func (a *App) saveConfig() {
-	b, _ := json.MarshalIndent(map[string]any{"version": 1, "folder": a.folder, "logsFolder": a.logFolder}, "", "  ")
+	b, _ := json.MarshalIndent(map[string]any{"version": 2, "folder": a.folder, "logsFolder": a.logFolder, "logAuto":a.logAuto}, "", "  ")
 	p := configPath()
 	_ = os.MkdirAll(filepath.Dir(p), 0700)
 	_ = os.WriteFile(p, b, 0600)
@@ -158,7 +284,7 @@ func (a *App) snapLocked() map[string]any {
 	if a.errorText != "" {
 		err = map[string]any{"code": "FOLDER_ERROR", "message": a.errorText}
 	}
-	return map[string]any{"app": appName, "version": version, "instanceId": a.instance, "generation": a.generation, "revision": a.revision, "diagnosticRevision": a.diagRevision, "eventRevision": a.eventRevision, "imageRevision": a.imageRevision, "folder": nullable(a.folder), "running": a.running, "status": a.status, "latest": a.latest, "latestRejected": a.latestRejected, "latestImage": a.latestImage, "imagePending": len(a.pending) > 0, "totalFiles": a.totalFiles, "imageFiles": a.imageFiles, "lastScanAt": nullable(a.lastScan), "readErrors": []any{}, "error": err, "intervalMs": 750, "logs": map[string]any{"folder": nullable(a.logFolder), "running": a.logFolder != "", "revision": a.logRevision, "latest": a.logsLatest, "error": nil, "lastScanAt": now(), "source": nullable(a.logSource)}, "configWarning": "", "pickerBusy": false, "capabilities": map[string]any{"folderPicker": runtime.GOOS == "windows", "captureImage": true, "maxCaptureImageBytes": maxImage}}
+	return map[string]any{"app": appName, "version": version, "instanceId": a.instance, "generation": a.generation, "revision": a.revision, "diagnosticRevision": a.diagRevision, "eventRevision": a.eventRevision, "imageRevision": a.imageRevision, "folder": nullable(a.folder), "running": a.running, "status": a.status, "latest": a.latest, "latestRejected": a.latestRejected, "latestImage": a.latestImage, "imagePending": len(a.pending) > 0, "totalFiles": a.totalFiles, "imageFiles": a.imageFiles, "lastScanAt": nullable(a.lastScan), "readErrors": []any{}, "error": err, "intervalMs": 750, "logs": map[string]any{"folder": nullable(a.logFolder), "running": a.logAuto && a.logFolder != "", "autoEnabled": a.logAuto, "revision": a.logRevision, "latest": a.logsLatest, "error": nullable(a.logError), "lastScanAt": nullable(a.logLastScan), "source": nullable(a.logSource)}, "configWarning": "", "pickerBusy": false, "capabilities": map[string]any{"folderPicker": runtime.GOOS == "windows", "captureImage": true, "maxCaptureImageBytes": maxImage}}
 }
 func nullable(v string) any {
 	if v == "" {
@@ -275,81 +401,77 @@ func (a *App) scan() {
 	}
 }
 func (a *App) pollLogs() {
-	a.mu.Lock()
-	defer a.mu.Unlock()
-	if a.logFolder == "" {
-		return
-	}
-	var candidates []string
-	_ = filepath.WalkDir(a.logFolder, func(p string, d fs.DirEntry, e error) error {
-		if e != nil {
-			return filepath.SkipDir
-		}
-		if d.IsDir() && p != a.logFolder {
-			if !strings.HasPrefix(strings.ToLower(d.Name()), "log_") {
-				return filepath.SkipDir
-			}
-			return nil
-		}
-		if !d.IsDir() && regexp.MustCompile(`(?i)^application(?:_\d+)?\.log$`).MatchString(d.Name()) {
-			candidates = append(candidates, p)
-		}
-		return nil
-	})
-	if len(candidates) == 0 {
-		return
-	}
-	sort.Slice(candidates, func(i, j int) bool {
-		a, _ := os.Stat(candidates[i])
-		b, _ := os.Stat(candidates[j])
-		return a.ModTime().After(b.ModTime())
-	})
-	p := candidates[0]
-	info, e := os.Stat(p)
-	if e != nil {
-		return
-	}
-	if a.logSource != p {
-		a.logSource = p
-		a.logsOffset = info.Size()
-		a.logsSeen = true
-		return
-	}
-	if info.Size() < a.logsOffset {
-		a.logsOffset = 0
-	}
-	if info.Size() == a.logsOffset {
-		return
-	}
-	f, e := os.Open(p)
-	if e != nil {
-		return
-	}
-	defer f.Close()
-	start := a.logsOffset
-	if info.Size()-start > 128*1024 {
-		start = info.Size() - 128*1024
-	}
-	_, _ = f.Seek(start, 0)
-	buf, _ := io.ReadAll(io.LimitReader(f, 128*1024))
-	a.logsOffset = start + int64(len(buf))
-	lines := strings.Split(string(buf), "\n")
-	for _, line := range lines {
-		var id, src string
-		if m := logMapRe.FindStringSubmatch(line); m != nil {
-			id = strings.ToLower(m[1])
-			src = "scene-preset"
-		} else if strings.Contains(line, "TRACE-NetworkGameCreate") || strings.Contains(line, "GameStarting") || strings.Contains(line, "profileStatus") {
-			if m := networkRe.FindStringSubmatch(line); m != nil {
-				id = strings.ToLower(m[1])
-				src = "network-game"
-			}
-		}
-		if mapID := maps[id]; mapID != "" {
-			a.logRevision++
-			a.logsLatest = map[string]any{"mapKey": mapID, "source": src, "preset": id, "historical": false, "observedAt": now()}
-		}
-	}
+    a.mu.Lock()
+    defer a.mu.Unlock()
+    a.logLastScan=now()
+    if !a.logAuto {return}
+    if a.logFolder=="" {
+        a.logError="타르코프 Logs 폴더를 찾지 못했어요. 게임이 설치된 Logs 폴더를 지정해 주세요."
+        return
+    }
+    candidates:=[]string{}
+    _=filepath.WalkDir(a.logFolder,func(p string,d fs.DirEntry,e error)error{
+        if e!=nil{return filepath.SkipDir}
+        if d.IsDir()&&p!=a.logFolder {
+            // The session directories are log_YYYY.MM.DD_... (including the
+            // later version suffix). The user can also select one directly.
+            if !strings.HasPrefix(strings.ToLower(d.Name()),"log_"){return filepath.SkipDir}
+            return nil
+        }
+        if !d.IsDir()&&applicationLogRe.MatchString(d.Name()) {candidates=append(candidates,p)}
+        return nil
+    })
+    if len(candidates)==0 {
+        a.logsSeen=true
+        a.logError="application_000.log를 찾지 못했어요. 게임 실행 후 Logs 폴더를 확인해 주세요."
+        return
+    }
+    sort.Slice(candidates,func(i,j int)bool{
+        ai,e1:=os.Stat(candidates[i]);aj,e2:=os.Stat(candidates[j])
+        if e1!=nil||e2!=nil{return candidates[i]>candidates[j]}
+        if ai.ModTime().Equal(aj.ModTime()){return candidates[i]>candidates[j]}
+        return ai.ModTime().After(aj.ModTime())
+    })
+    p:=candidates[0]
+    info,e:=os.Stat(p);if e!=nil{a.logError="게임 로그 파일을 열 수 없어요.";return}
+    newSource:=a.logSource!=p
+    if newSource {
+        a.logSource=p;a.logsOffset=0;a.logPartial=""
+        // Existing log lines predate the app launch and cannot prove that the
+        // player is still in that raid. New session logs can switch immediately.
+        a.logHistorical=!a.logsSeen
+        a.logsSeen=true
+    }
+    if info.Size()<a.logsOffset {a.logsOffset=0;a.logPartial=""}
+    if info.Size()==a.logsOffset {a.logError="";return}
+    f,e:=os.Open(p);if e!=nil{a.logError="게임 로그 파일 접근이 거부됐어요.";return}
+    defer f.Close()
+    start:=a.logsOffset
+    truncated:=false
+    if info.Size()-start>128*1024 {
+        start=info.Size()-128*1024;truncated=true;a.logPartial=""
+    }
+    if _,e=f.Seek(start,io.SeekStart);e!=nil{a.logError="게임 로그 읽기 오류";return}
+    buf,e:=io.ReadAll(io.LimitReader(f,128*1024))
+    if e!=nil {a.logError="게임 로그 읽기 오류";return}
+    a.logsOffset=start+int64(len(buf))
+    pending:=a.logPartial+string(buf)
+    if truncated {if index:=strings.IndexByte(pending,'\n');index>=0{pending=pending[index+1:]}else{pending=""}}
+    lines:=strings.Split(pending,"\n")
+    a.logPartial=lines[len(lines)-1]
+    if len(a.logPartial)>8192 {a.logPartial=""}
+    for _,line:=range lines[:len(lines)-1]{
+        mapKey,preset,source:=mapEventFromLine(line)
+        if mapKey=="" {continue}
+        priorKey,_:=a.logsLatest["mapKey"].(string)
+        priorHistorical,_:=a.logsLatest["historical"].(bool)
+        if priorKey==mapKey&&priorHistorical==a.logHistorical {continue}
+        a.logRevision++
+        a.logsLatest=map[string]any{"mapKey":mapKey,"source":source,"preset":preset,
+            "historical":a.logHistorical,"observedAt":now()}
+    }
+    if !newSource {a.logHistorical=false}
+    a.logError=""
 }
 func (a *App) image(w http.ResponseWriter, r *http.Request) {
 	a.mu.Lock()
@@ -472,6 +594,7 @@ func (a *App) serve(w http.ResponseWriter, r *http.Request) {
 		var req struct {
 			Folder  string `json:"folder"`
 			Running *bool  `json:"running"`
+			Enabled *bool `json:"enabled"`
 		}
 		if json.NewDecoder(r.Body).Decode(&req) != nil {
 			http.Error(w, "JSON 오류", 400)
@@ -493,9 +616,18 @@ func (a *App) serve(w http.ResponseWriter, r *http.Request) {
 			a.logSource = ""
 			a.logsOffset = 0
 			a.logsLatest = nil
+			a.logPartial = ""
+			a.logsSeen = false
+			a.logError = ""
 			a.saveConfig()
 			a.mu.Unlock()
-		case "api/running":
+		case "api/logs-auto":
+            if req.Enabled==nil {sendJSON(w,400,map[string]any{"error":"자동 전환 설정이 없어요."});return}
+            a.mu.Lock()
+            a.logAuto=*req.Enabled
+            a.saveConfig()
+            a.mu.Unlock()
+        case "api/running":
 			if req.Running == nil {
 				http.Error(w, "missing running", 400)
 				return
@@ -510,7 +642,23 @@ func (a *App) serve(w http.ResponseWriter, r *http.Request) {
 			a.mu.Unlock()
 		case "api/rescan":
 			a.scan()
-		case "api/choose-folder":
+		case "api/choose-logs-folder":
+            if runtime.GOOS!="windows" {sendJSON(w,400,map[string]any{"error":"Windows에서만 폴더 선택 지원"});return}
+            script:=`Add-Type -AssemblyName System.Windows.Forms; $dialog=New-Object System.Windows.Forms.FolderBrowserDialog; $dialog.Description='Escape from Tarkov Logs folder'; if($dialog.ShowDialog() -eq 'OK'){[Console]::WriteLine($dialog.SelectedPath)}`
+            out,e:=exec.Command("powershell.exe","-NoProfile","-STA","-Command",script).Output()
+            if e!=nil {sendJSON(w,400,map[string]any{"error":"폴더 선택 오류. 경로 직접 입력을 이용해 주세요."});return}
+            selected:=strings.TrimSpace(string(out))
+            if selected!="" {
+                if !isFolder(selected) {sendJSON(w,400,map[string]any{"error":"실제 Logs 폴더를 선택해 주세요."});return}
+                a.mu.Lock()
+                a.logFolder=filepath.Clean(selected);a.logSource="";a.logsOffset=0;a.logsLatest=nil
+                a.logPartial="";a.logsSeen=false;a.logError=""
+                a.saveConfig();a.mu.Unlock()
+            }
+            a.mu.Lock();snap:=a.snapLocked();a.mu.Unlock()
+            snap["cancelled"]=selected==""
+            sendJSON(w,200,snap);return
+        case "api/choose-folder":
 			if runtime.GOOS != "windows" {
 				sendJSON(w, 400, map[string]any{"error": "Windows 폴더 선택만 지원합니다."})
 				return
@@ -589,7 +737,7 @@ func main() {
 	if runtime.GOOS != "windows" {
 		log.Print("Windows 개발 대상: Linux smoke test mode")
 	}
-	a := &App{token: unique(32), instance: unique(12), seen: map[string]string{}, pending: map[string]time.Time{}, started: time.Now(), status: "not-configured"}
+	a := &App{token: unique(32), instance: unique(12), seen: map[string]string{}, pending: map[string]time.Time{}, started: time.Now(), status: "not-configured", logAuto: true}
 	tryConfig(a)
 	if a.folder == "" {
 		a.folder = tryFolder()
