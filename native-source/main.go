@@ -37,84 +37,8 @@ var screenshotRe = regexp.MustCompile(`(?i)^(\d{4}-\d{2}-\d{2}\[\d{2}-\d{2}\])_?
 var safeImageRe = regexp.MustCompile(`(?i)^[^/\\:\x00-\x1f\x7f]{1,255}\.(png|jpg|jpeg|webp|bmp)$`)
 var logMapRe = regexp.MustCompile(`(?i)scene\s+preset[^\r\n]*?maps[\\/]([a-z0-9_-]+)\.bundle`)
 var networkRe = regexp.MustCompile(`(?i)Location:\s*([a-z0-9_-]+)`)
-var applicationLogRe = regexp.MustCompile(`(?i)^application(?:_\d+)?\.logpackage main
-
-import (
-	"crypto/rand"
-	"embed"
-	"encoding/hex"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
-	"io/fs"
-	"log"
-	"math"
-	"net"
-	"net/http"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"regexp"
-	"runtime"
-	"sort"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
-)
-
-//go:embed dist
-var assets embed.FS
-
-const port = "43873"
-const maxImage = 20 << 20
-const appName = "tarkov-field-guide-companion"
-const version = "2026.11.14-r16-auto-map"
-
-var screenshotRe = regexp.MustCompile(`(?i)^(\d{4}-\d{2}-\d{2}\[\d{2}-\d{2}\])_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)(?:_([+-]?[0-9.]+))?\s+\((\d+)\)\.png$`)
-var safeImageRe = regexp.MustCompile(`(?i)^[^/\\:\x00-\x1f\x7f]{1,255}\.(png|jpg|jpeg|webp|bmp)$`)
-var logMapRe = regexp.MustCompile(`(?i)scene\s+preset[^\r\n]*?maps[\\/]([a-z0-9_-]+)\.bundle`)
-)
-var registryInstallRe = regexp.MustCompile(`(?im)^\s*InstallLocation\s+REG_\w+\s+(.+?)\s*package main
-
-import (
-	"crypto/rand"
-	"embed"
-	"encoding/hex"
-	"encoding/json"
-	"errors"
-	"fmt"
-	"io"
-	"io/fs"
-	"log"
-	"math"
-	"net"
-	"net/http"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"regexp"
-	"runtime"
-	"sort"
-	"strconv"
-	"strings"
-	"sync"
-	"time"
-)
-
-//go:embed dist
-var assets embed.FS
-
-const port = "43873"
-const maxImage = 20 << 20
-const appName = "tarkov-field-guide-companion"
-const version = "2026.11.14-r16-auto-map"
-
-var screenshotRe = regexp.MustCompile(`(?i)^(\d{4}-\d{2}-\d{2}\[\d{2}-\d{2}\])_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)_?([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+),\s*([+-]?[0-9.]+)(?:_([+-]?[0-9.]+))?\s+\((\d+)\)\.png$`)
-var safeImageRe = regexp.MustCompile(`(?i)^[^/\\:\x00-\x1f\x7f]{1,255}\.(png|jpg|jpeg|webp|bmp)$`)
-var logMapRe = regexp.MustCompile(`(?i)scene\s+preset[^\r\n]*?maps[\\/]([a-z0-9_-]+)\.bundle`)
-)
+var applicationLogRe = regexp.MustCompile(`(?i)^application(?:_\d+)?\.log$`)
+var registryInstallRe = regexp.MustCompile(`(?im)^\s*InstallLocation\s+REG_\w+\s+(.+?)\s*$`)
 var maps = map[string]string{"bigmap": "customs", "customs": "customs", "woods": "woods", "shoreline": "shoreline", "interchange": "interchange", "rezervbase": "reserve", "reserve": "reserve", "lighthouse": "lighthouse", "tarkovstreets": "streets-of-tarkov", "city": "streets-of-tarkov", "city_preset": "streets-of-tarkov", "streets": "streets-of-tarkov", "factory4_day": "factory", "factory4_night": "factory", "factory": "factory", "factory_preset": "factory", "sandbox": "ground-zero", "sandbox_high": "ground-zero", "groundzero": "ground-zero", "laboratory": "the-lab", "laboratory_preset": "the-lab", "lab": "the-lab", "labyrinth": "the-labyrinth", "labyrinth_preset": "the-labyrinth", "icebreaker": "icebreaker", "terminal": "terminal"}
 
 type FileStamp struct {
