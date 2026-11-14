@@ -819,3 +819,22 @@ body[data-view="market"] .market-table-frame{flex:0 0 auto;max-height:min(56vh,5
   .loot-totals strong{font-size:14px}
   .loot-result-table{min-width:860px}
 }
+
+/* Local, read-only EFT game-log auto map switching; never upload the logs. */
+.auto-map-panel{margin:8px 12px;padding:10px 13px;background:#1a281d;border:1px solid #526b4c;color:#d8e3ce;display:grid;gap:8px;font-size:11px}
+.auto-map-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.auto-map-toggle{display:inline-flex;align-items:center;gap:8px;color:#cce7b6;font-weight:650;white-space:nowrap;cursor:pointer}
+.auto-map-toggle input{accent-color:#a9ca72;width:16px;height:16px}
+#auto-map-status{flex:1;color:#b4c7ac;overflow-wrap:anywhere;font-size:11px}
+.auto-map-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.auto-map-actions details{flex:1;min-width:min(100%,330px)}
+.auto-map-actions details summary{cursor:pointer;color:#bcd6a5;padding:6px}
+.auto-map-path{display:flex;flex-wrap:wrap;gap:6px}
+.auto-map-path input{flex:1;min-width:200px;background:#0d1611;color:#e3ebd9;border:1px solid #5c7452;padding:7px}
+.auto-map-panel>small{font-size:10px;line-height:1.5;color:#93a98e}
+@media(max-width:630px){
+ .auto-map-panel{margin:7px;padding:9px}
+ .auto-map-toolbar{display:grid;grid-template-columns:1fr}
+ .auto-map-actions{flex-direction:column;align-items:stretch}
+ .auto-map-actions button{width:100%}
+}
