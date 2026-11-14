@@ -37,5 +37,17 @@ const market=normalizeMarketCatalog({
 });
 const valued=valuation([{id:one[0].candidates[0].id,quantity:2}],market);
 assert.equal(valued.flea,40000);assert.equal(valued.trader,15390);
+assert.equal(valued.best,40000);
+assert.equal(valued.rows[0].bestPrice,20000);
+assert.equal(valued.rows[0].bestSubtotal,40000);
+assert.equal(valued.pricedBest,1);
+const unavailable=valuation([{id:'not-in-price-catalog',quantity:3}],market);
+assert.equal(unavailable.pricedBest,0);
+assert.equal(unavailable.unpricedBest,1);
+assert.equal(unavailable.rows[0].bestPrice,null);
+const traderOnly=valuation([{id:kit,quantity:2}],normalizeMarketCatalog({items:{data:{items:{[kit]:{id:kit,name:'Salewa',lastLowPrice:null,sellToTrader:[{trader:vendor,price:7695,priceRUB:7695,currency:'RUB'}]}}}},traders:{data:{[vendor]:{id:vendor,name:'Therapist',normalizedName:'therapist'}}}}));
+assert.equal(traderOnly.best,15390);
+assert.equal(traderOnly.pricedFlea,0);
+assert.equal(traderOnly.unpricedFlea,1);
 assert.equal(market.items[0].bestTraderSell.traderName,'테라피스트');
 console.log('PASS '+atlas.names.size+' visual references, no-caption multi-item photo, repeated icons, rotated medicine, JPEG scaling, manual crop, identical-art review and empty photo');
