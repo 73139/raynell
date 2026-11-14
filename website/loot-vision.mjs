@@ -262,6 +262,72 @@ function nearest(lines, position, tolerance, from, to) {
   return line;
 }
 
+// Some item top labels interrupt their light rectangle outline. The strict
+// detector requires all four borders; this second pass tolerates one broken
+// edge, but NEVER silently marks those suggestions as confirmed.
+function edgeFraction(line, from, to) {
+  if(!line||to<=from)return 0;
+  let amount=0;
+  for(const [a,b] of line.segments)amount+=Math.max(0,Math.min(b,to)-Math.max(a,from));
+  return Math.min(1,amount/(to-from));
+}
+function nearestLoose(lines,at,tolerance){
+  let best=null;
+  for(const line of lines){
+    if(line.at<at-tolerance)continue;
+    if(line.at>at+tolerance)break;
+    if(!best||Math.abs(at-line.at)<Math.abs(at-best.at))best=line;
+  }
+  return best;
+}
+function incompleteGridBoxes(image,atlas,xLines,yLines,known){
+  const shapes=[...atlas.groups.values()].filter(g=>g.w*g.h<=12);
+  const pitchesFound=pitches(xLines,yLines).slice(0,2);
+  const added=[];
+  for(const pitch of pitchesFound){
+    const inset=Math.min(6,Math.ceil(pitch*.08));
+    for(const left of xLines)for(const top of yLines){
+      const x=left.at,y=top.at;
+      // Require a believable top-left single cell. Reject UI decorations.
+      if(edgeFraction(top,x+inset,x+pitch-inset)<.38||
+         edgeFraction(left,y+inset,y+pitch-inset)<.38)continue;
+      for(const g of shapes){
+        const endX=x+pitch*g.w,endY=y+pitch*g.h;
+        if(endX>=image.width||endY>=image.height)continue;
+        const right=nearestLoose(xLines,endX,Math.max(3,g.w*.75+1));
+        const bottom=nearestLoose(yLines,endY,Math.max(3,g.h*.75+1));
+        if(!right||!bottom)continue;
+        const box={x,y,w:right.at-x+1,h:bottom.at-y+1};
+        if(box.w<23||box.h<23)continue;
+        const key=[x,y,right.at,bottom.at].join(',');
+        if(known.has(key))continue;
+        const edges=[
+          edgeFraction(top,x+inset,right.at-inset),
+          edgeFraction(bottom,x+inset,right.at-inset),
+          edgeFraction(left,y+inset,bottom.at-inset),
+          edgeFraction(right,y+inset,bottom.at-inset)
+        ];
+        if(edges.filter(n=>n>=.47).length<3||edges.reduce((a,b)=>a+b,0)<2.35)continue;
+        let divided=false;
+        for(let n=1;n<g.w&&!divided;n++){
+          const interior=nearestLoose(xLines,x+(right.at-x)*n/g.w,2);
+          if(edgeFraction(interior,y+inset,bottom.at-inset)>.66)divided=true;
+        }
+        for(let n=1;n<g.h&&!divided;n++){
+          const interior=nearestLoose(yLines,y+(bottom.at-y)*n/g.h,2);
+          if(edgeFraction(interior,x+inset,right.at-inset)>.66)divided=true;
+        }
+        if(divided)continue;
+        if(!known.has(key)){
+          const entry={box,groups:new Set(),inferred:true};
+          known.set(key,entry);added.push(entry);
+        }
+        known.get(key).groups.add(g);
+      }
+    }
+  }
+  return added;
+}
 function gridBoxes(image, atlas) {
   const xLines = findLines(image,false), yLines = findLines(image,true);
   const boxes = new Map(), sizes = [...atlas.groups.values()];
@@ -287,6 +353,7 @@ function gridBoxes(image, atlas) {
       }
     }
   }
+  incompleteGridBoxes(image,atlas,xLines,yLines,boxes);
   return [...boxes.values()];
 }
 
@@ -318,7 +385,12 @@ export function recognizeInventory(image, atlas, {single = false} = {}) {
   for (const entry of boxes) {
     if (!hasPicture(image,entry.box)) continue;
     const match = classify(image,entry.box,entry.groups,atlas,false);
-    if (match) found.push(match);
+    if (match) {
+      // Broken-border suggestions need human confirmation to avoid billing
+      // a similar-looking item as an observed one.
+      if(entry.inferred)match.confirmed=false;
+      found.push(match);
+    }
   }
   if (single || !found.length) {
     const ratio = image.width/image.height;
