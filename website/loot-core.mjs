@@ -31,7 +31,29 @@ export function scanLootText(input,catalog){
   return {found:[...found.values()],uncertain,processedLines:String(input||'').split(/\r?\n/).filter(x=>x.trim()).length};
 }
 export function valuation(rows,catalog){
-  const index=new Map((catalog?.items||[]).map(x=>[x.id,x]));let flea=0,trader=0,unpricedFlea=0,unpricedTrader=0;
-  const detailed=rows.map(row=>{const item=index.get(row.id),quantity=Math.min(9999,Math.max(1,Number(row.quantity)||1));const fp=item?.flea?.priceStatus==='observed'&&Number(item.flea.currentPrice)>0?item.flea.currentPrice:null;const tp=item?.bestTraderSell?.priceRUB??(item?.bestTraderSell?.currency==='RUB'?item.bestTraderSell?.price:null);if(fp===null)unpricedFlea++;else flea+=fp*quantity;if(tp===null||!Number.isFinite(tp))unpricedTrader++;else trader+=tp*quantity;return {...row,quantity,item,fleaPrice:fp,traderPrice:tp,subtotal:fp===null?null:fp*quantity};});
-  return {rows:detailed,flea,trader,unpricedFlea,unpricedTrader};
+  const index=new Map((catalog?.items||[]).map(item=>[item.id,item]));
+  let flea=0,trader=0,best=0,unpricedFlea=0,unpricedTrader=0,unpricedBest=0;
+  let pricedFlea=0,pricedTrader=0,pricedBest=0;
+  const finiteRoubles=value=>Number.isFinite(Number(value))&&Number(value)>0?Number(value):null;
+  const detailed=rows.map(row=>{
+    const item=index.get(row.id);
+    const quantity=Math.min(9999,Math.max(1,Math.round(Number(row.quantity)||1)));
+    // Only observed RUB offers count. A trader's purchase price is NOT the
+    // price at which a player can sell that item.
+    const fleaPrice=item?.flea?.priceStatus==='observed'&&item.flea.currency==='RUB'
+      ?finiteRoubles(item.flea.currentPrice):null;
+    const offer=item?.bestTraderSell;
+    const traderPrice=finiteRoubles(offer?.priceRUB??(offer?.currency==='RUB'?offer?.price:null));
+    const bestPrice=fleaPrice!==null&&traderPrice!==null?Math.max(fleaPrice,traderPrice):fleaPrice??traderPrice;
+    const fleaSubtotal=fleaPrice===null?null:fleaPrice*quantity;
+    const traderSubtotal=traderPrice===null?null:traderPrice*quantity;
+    const bestSubtotal=bestPrice===null?null:bestPrice*quantity;
+    if(fleaSubtotal===null)unpricedFlea++;else {flea+=fleaSubtotal;pricedFlea++;}
+    if(traderSubtotal===null)unpricedTrader++;else {trader+=traderSubtotal;pricedTrader++;}
+    if(bestSubtotal===null)unpricedBest++;else {best+=bestSubtotal;pricedBest++;}
+    return {...row,quantity,item,fleaPrice,traderPrice,bestPrice,
+      fleaSubtotal,traderSubtotal,bestSubtotal,subtotal:fleaSubtotal};
+  });
+  return {rows:detailed,flea,trader,best,unpricedFlea,unpricedTrader,unpricedBest,
+    pricedFlea,pricedTrader,pricedBest};
 }
