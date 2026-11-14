@@ -360,7 +360,7 @@ func (a *App) pollLogs() {
     info,e:=os.Stat(p);if e!=nil{a.logError="게임 로그 파일을 열 수 없어요.";return}
     newSource:=a.logSource!=p
     if newSource {
-        a.logSource=p;a.logsOffset=0;a.logPartial=""
+        a.logSource=p;a.logsOffset=0;a.logPartial="";a.logsLatest=nil
         // Existing log lines predate the app launch and cannot prove that the
         // player is still in that raid. New session logs can switch immediately.
         a.logHistorical=!a.logsSeen
