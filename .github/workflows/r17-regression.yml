@@ -1,0 +1,19 @@
+name: R17 regression verification
+on:
+  push:
+    branches: [tarkov-r17-development]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  safety-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Run r17 safety regression tests
+        run: node scripts/test-r17-core.mjs
+      - name: Run existing native regression tests
+        run: cd native-source && go test ./...
