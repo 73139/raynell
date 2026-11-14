@@ -83,7 +83,7 @@ export function initializeR17(ctx){
    const available=routes.filter(r=>r.map===ctx.getMap().key);
    // Source routes have qualitative risk and no measured loot value/time: do not fabricate returns.
    const p=observedPosition(ctx);
-   const intel=collectMapIntel(ctx.getMapIntel()||{},ctx.getConfig()||{},ctx.getFallbackLabels()||[]);
+   const intel=collectMapIntel(ctx.getMapIntel?.()||{},ctx.getConfig()||{},ctx.getFallbackLabels?.()||[]);
    const nearby=p?intel.filter(r=>['boss','cultist','pmc'].includes(r.type)&&r.position&&finite(r.position.x)&&finite(r.position.z))
       .map(r=>({...r,meters:Math.round(Math.hypot(r.position.x-p.x,r.position.z-p.z))}))
       .filter(r=>r.meters<=150).sort((a,b)=>a.meters-b.meters).slice(0,8):[];
