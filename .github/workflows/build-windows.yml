@@ -1,24 +1,5 @@
 name: Build Windows companion
 on:
-  push:
-    branches: [tarkov-r16-free]
-    paths:
-      - 'native-source/**'
-      - 'website/**'
-      - 'scripts/build-ocr.mjs'
-      - 'scripts/*maps*'
-      - 'scripts/map-assets-core.mjs'
-      - 'scripts/test-startup.cjs'
-      - 'scripts/test-layout.cjs'
-      - 'scripts/test-guide-core.mjs'
-      - 'scripts/test-market.mjs'
-      - 'scripts/*loot*'
-      - 'scripts/fixtures/loot/**'
-      - 'scripts/test-quest-photos.mjs'
-      - 'scripts/test-raid.mjs'
-      - 'package.json'
-      - 'package-lock.json'
-      - '.github/workflows/build-windows.yml'
   workflow_dispatch:
 permissions:
   contents: write
