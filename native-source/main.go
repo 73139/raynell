@@ -460,6 +460,7 @@ func (a *App) pollLogs() {
     lines:=strings.Split(pending,"\n")
     a.logPartial=lines[len(lines)-1]
     if len(a.logPartial)>8192 {a.logPartial=""}
+    if !newSource {a.logHistorical=false}
     for _,line:=range lines[:len(lines)-1]{
         mapKey,preset,source:=mapEventFromLine(line)
         if mapKey=="" {continue}
@@ -470,7 +471,6 @@ func (a *App) pollLogs() {
         a.logsLatest=map[string]any{"mapKey":mapKey,"source":source,"preset":preset,
             "historical":a.logHistorical,"observedAt":now()}
     }
-    if !newSource {a.logHistorical=false}
     a.logError=""
 }
 func (a *App) image(w http.ResponseWriter, r *http.Request) {
