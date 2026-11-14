@@ -64,7 +64,8 @@ jobs:
           path: |
             TarkovFieldGuide_R17_Preview_Windows.zip
             R17_SHA256SUMS.txt
-      - name: Publish separate prerelease (never overwrite r16)
+      - name: Publish optional prerelease (requires explicitly enabled GitHub release permission)
+        if: ${{ vars.TFG_R17_RELEASE_ENABLED == 'true' }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
