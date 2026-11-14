@@ -801,3 +801,21 @@ body[data-view="market"] .market-table-frame{flex:0 0 auto;max-height:min(56vh,5
 @media(max-width:780px){
  body[data-view="map"].map-focus .intel-panel{display:none!important}
 }
+/* r16 inventory photo review: compact five-way totals and per-item correction. */
+.loot-totals{grid-template-columns:repeat(3,minmax(0,1fr))}
+.loot-totals .loot-total-primary{grid-column:span 2;border-color:#89976e}
+.loot-total-primary strong{font-variant-numeric:tabular-nums}
+.loot-result-table{min-width:920px;font-variant-numeric:tabular-nums}
+.loot-result-table td:nth-child(6) strong{white-space:nowrap;color:#e4eac7}
+.loot-result-table .loot-identified{min-width:200px}
+.loot-identified .loot-source-icon{width:36px;height:36px;object-fit:contain;border:1px solid #758568;background:#0b110d;flex:none}
+.loot-identified .loot-catalog-icon{width:30px;height:30px;object-fit:contain;flex:none}
+.loot-review-item .loot-choice small{color:#9bae99;font-size:10px;font-weight:normal}
+.loot-review-item .loot-choice span{min-width:0}
+@media(max-width:630px){
+  .loot-totals{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .loot-totals .loot-total-primary{grid-column:1 / -1;grid-row:1}
+  .loot-results-col{padding:10px}
+  .loot-totals strong{font-size:14px}
+  .loot-result-table{min-width:860px}
+}
