@@ -22,6 +22,8 @@ jobs:
         run: |
           node scripts/build-maps.mjs
           node scripts/build-ocr.mjs
+      - name: Restore dev dependencies after OCR asset preparation
+        run: npm ci --include=dev --ignore-scripts --no-audit --no-fund
       - name: Run all website regression tests
         run: npm test
       - name: Prepare native embedded frontend
