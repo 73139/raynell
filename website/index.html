@@ -90,7 +90,7 @@
       </div>
       <div class="r14-intel-strip" role="status" aria-label="현재 지도 요약"><div><small>현재 지역 / SECTOR</small><strong id="r14-region">지역 확인 중</strong></div><div><small>층 / LEVEL</small><strong id="r14-level">층 정보 준비 중</strong></div><div><small>좌표 추적 / POSITION</small><strong id="r14-position">촬영 대기</strong></div><div class="r14-static-label"><span class="r14-led"></span>직접 스크린샷 · 자동 촬영 사용 안 함</div></div>
       <section id="companion-panel" class="companion-panel" aria-label="Windows 자동 추적">
-        <div class="companion-intro"><span class="companion-emblem"><svg class="icon"><use href="#i-target"/></svg></span><div class="companion-copy"><div class="companion-heading-line"><span class="companion-kicker">WINDOWS AUTO TRACKER</span><span id="companion-status" class="companion-status" role="status">다운로드 후 실행</span></div><h2>게임에서 직접 촬영한 위치를 지도에 반영</h2><p>보조 프로그램이 촬영 기록을 전달해요. 현재 맵은 직접 선택하세요.</p></div></div>
+        <div class="companion-intro"><span class="companion-emblem"><svg class="icon"><use href="#i-target"/></svg></span><div class="companion-copy"><div class="companion-heading-line"><span class="companion-kicker">WINDOWS AUTO TRACKER</span><span id="companion-status" class="companion-status" role="status">다운로드 후 실행</span></div><h2>게임에서 직접 촬영한 위치를 지도에 반영</h2><p>보조 프로그램이 촬영 기록을 전달해요. 게임 로그를 읽어 레이드 지도도 자동 전환할 수 있어요.</p></div></div>
         <div class="companion-download"><a id="download-companion" class="btn btn-primary" href="https://github.com/73139/raynell/releases/download/tfg-r16-windows/TarkovFieldGuide_Windows.zip" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-download"/></svg>Windows 앱 다운로드 (ZIP)</a><small>Windows 64비트용 · ZIP을 압축 해제하고 TarkovFieldGuide.exe 실행 · Node.js 설치 불필요</small></div>
         <div id="companion-controls" class="companion-controls" hidden>
           <div class="companion-folder-line"><span>감시 폴더</span><code id="companion-folder">확인 중</code></div>
@@ -98,6 +98,22 @@
           <p id="companion-detail" class="companion-detail" role="status">로컬 프로그램의 연결 상태를 확인하고 있어요.</p>
         </div>
         <details id="companion-folder-entry" class="companion-folder-entry" hidden><summary>폴더 경로 직접 입력</summary><div class="companion-path-entry"><label for="companion-folder-path">원본 스크린샷이 저장되는 Screenshots 폴더</label><div class="companion-path-controls"><input id="companion-folder-path" type="text" placeholder="C:\Users\사용자\Documents\Escape from Tarkov\Screenshots" autocomplete="off" spellcheck="false"><button id="companion-set-folder" class="btn btn-small">경로 적용</button></div><p>탐색기에서 해당 폴더를 열고 주소 표시줄의 전체 경로를 복사해 붙여 넣으세요.</p></div></details>
+      </section>
+      <section id="auto-map-panel" class="auto-map-panel" aria-label="게임 로그로 지도 자동 전환">
+        <div class="auto-map-toolbar">
+          <label class="auto-map-toggle"><input type="checkbox" id="auto-map-enabled" checked><span>레이드 맵 자동 전환</span></label>
+          <span id="auto-map-status" role="status" aria-live="polite">게임 Logs 폴더 연결 대기 · 수동 지도 선택도 가능</span>
+        </div>
+        <div class="auto-map-actions">
+          <button id="auto-map-browser-connect" type="button" class="btn btn-small">브라우저에서 게임 Logs 폴더 연결</button>
+          <button id="auto-map-native-connect" type="button" class="btn btn-small" hidden>Windows 게임 Logs 폴더 찾기</button>
+          <details id="auto-map-native-path-wrap" hidden>
+            <summary>로그 폴더 경로 직접 입력</summary>
+            <label for="auto-map-native-path">게임 설치 위치의 Logs 폴더</label>
+            <div class="auto-map-path"><input id="auto-map-native-path" type="text" autocomplete="off" spellcheck="false" placeholder="C:\Battlestate Games\Escape from Tarkov\Logs"><button id="auto-map-native-set" type="button" class="btn btn-small">적용</button></div>
+          </details>
+        </div>
+        <small>Windows 앱은 로컬 게임 로그를 읽습니다. 웹사이트는 Chrome/Edge에서 사용자가 Logs 폴더 접근을 허용해야 합니다. 로그·좌표는 서버로 전송하지 않습니다.</small>
       </section>
       <div class="map-display-tools">
         <div class="layer-toggles" role="group" aria-label="지도 표시 설정">
