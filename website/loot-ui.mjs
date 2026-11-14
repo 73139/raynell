@@ -12,17 +12,17 @@ const sameIcon = (a,b) => {
 export function initializeLootScan({getCatalog,onOpenMarket=()=>{}}) {
   const dialog=$('loot-dialog'), preview=$('loot-preview'), surface=$('loot-photo'), progress=$('loot-progress');
   let rows=[], hits=[], file=null, photoURL='', bitmap=null, worker=null, ticket=0, busy=false;
-  let selectedArea=null, pickMode='', drag=null, autoEnabled=false;
+  let selectedArea=null, pickMode='', drag=null, autoEnabled=false, replaceIndex=-1, hitSequence=0;
   const names=new Map();
   function open(){onOpenMarket(); if(!dialog.open) dialog.showModal(); update();}
-  function add(id,quantity,source) {
-    const row=rows.find(r=>r.id===id);
-    if(row) row.quantity=Math.min(9999,row.quantity+quantity);
-    else rows.push({id,quantity,source});
+  // Keep one price row per pictured item; repeated identical icons must not
+  // collapse into one uneditable row.
+  function add(id,quantity,source,hitKey=null) {
+    rows.push({id,quantity,source,hitKey});
   }
-  function subtract(id) {
-    const row=rows.find(r=>r.id===id);
-    if(row && --row.quantity<=0) rows=rows.filter(r=>r!==row);
+  function removeHit(key) {
+    hits=hits.filter(hit=>hit.key!==key);
+    rows=rows.filter(row=>row.hitKey!==key);
   }
   function resetAnalysis() {
     ticket++;
@@ -61,26 +61,51 @@ export function initializeLootScan({getCatalog,onOpenMarket=()=>{}}) {
   }
   function update() {
     const catalog=getCatalog(), result=valuation(rows,catalog);
-    $('loot-total-flea').textContent=rub(result.flea)+(result.unpricedFlea?' · '+result.unpricedFlea+'종 미포함':'');
-    $('loot-total-trader').textContent=rub(result.trader)+(result.unpricedTrader?' · '+result.unpricedTrader+'종 미포함':'');
-    $('loot-total-count').textContent=number.format(rows.length)+'종 / '+number.format(rows.reduce((n,r)=>n+r.quantity,0))+'개';
-    $('loot-price-time').textContent=catalog?.fetchedAt?'공개 시세 확인 '+new Date(catalog.fetchedAt).toLocaleString('ko-KR'):'시세 데이터 대기';
-    $('loot-warning').textContent=catalog?'그림 한 개를 수량 1로 셉니다. 탄약·현금 등 겹친 물품은 수량을 수정하세요. 플리 합계는 관측된 등록가 기준이며 수수료를 포함하지 않습니다.':'아이콘 인식 후 시세가 연결되면 가격이 표시됩니다.';
-    $('loot-results').innerHTML=result.rows.length?result.rows.map((r,i)=>{
-      const name=r.item?.name||names.get(r.id)||r.id;
-      const image=r.item?.iconLink?'<img src="'+esc(r.item.iconLink)+'" width="34" height="34" loading="lazy" alt="">':'';
-      return '<tr><td data-label="아이템"><div class="loot-identified">'+image+'<div><strong>'+esc(name)+'</strong><small>'+esc(r.source)+'</small></div></div></td>'+
-        '<td data-label="수량"><input type="number" min="1" max="9999" value="'+r.quantity+'" data-loot-qty="'+i+'" aria-label="'+esc(name)+' 수량"></td>'+
-        '<td data-label="플리 1개">'+rub(r.fleaPrice)+'</td><td data-label="상인 1개">'+rub(r.traderPrice)+'</td><td data-label="플리 합계">'+rub(r.subtotal)+'</td>'+
-        '<td><button type="button" class="btn btn-small" data-loot-delete="'+i+'" aria-label="'+esc(name)+' 삭제">×</button></td></tr>';
-    }).join(''):'<tr><td colspan="6">확인된 아이템이 여기에 표시됩니다.</td></tr>';
+    const sum=(value,priced,missing)=>priced?rub(value)+(missing?' · '+missing+'개 가격 미확인':''):'가격 없음';
+    $('loot-total-flea').textContent=sum(result.flea,result.pricedFlea,result.unpricedFlea);
+    $('loot-total-trader').textContent=sum(result.trader,result.pricedTrader,result.unpricedTrader);
+    $('loot-total-best').textContent=sum(result.best,result.pricedBest,result.unpricedBest);
     const pending=hits.map((hit,i)=>({hit,i})).filter(({hit})=>!hit.id);
+    const auto=hits.filter(hit=>hit.id&&hit.confirmed&&!hit.userSelected).length;
+    const selected=hits.filter(hit=>hit.id&&(!hit.confirmed||hit.userSelected)).length+
+      rows.filter(row=>row.hitKey===null).length;
+    $('loot-total-confidence').textContent='자동 '+auto+' · 직접 '+selected+' · 확인 '+pending.length;
+    $('loot-total-count').textContent=number.format(rows.length)+'개 품목 / '+number.format(rows.reduce((n,r)=>n+r.quantity,0))+'개';
+    let time='마켓 데이터가 없습니다. 마켓 탭에서 시세를 불러오세요.';
+    if(catalog?.fetchedAt) {
+      const date=new Date(catalog.fetchedAt);
+      if(Number.isFinite(date.getTime())) {
+        const minutes=Math.max(0,Math.round((Date.now()-date.getTime())/60000));
+        time='시세 조회 '+date.toLocaleString('ko-KR')+' · '+minutes+'분 전 · '+(catalog.mode||'');
+      }
+    }
+    $('loot-price-time').textContent=time;
+    $('loot-warning').textContent=catalog?
+      '최고가는 현재 확인된 플리 표시가·상인 매입가 중 큰 값이며 실제 순수익이 아닙니다. 플리 수수료·FIR/거래 제한·내구도에 따라 실판매액이 달라집니다. 60/60, 1/3 등은 수량이 아니라 상태일 수 있으므로 직접 확인하세요.' :
+      '아이콘은 브라우저 안에서 비교합니다. 가격이 없는 품목은 합계에서 제외하며, 가격표가 0 ₽이라고 임의로 가정하지 않습니다.';
+    const rowHTML=(r,i)=>{
+      const name=r.item?.name||names.get(r.id)||r.id;
+      const original=r.hitKey===null?null:hits.find(hit=>hit.key===r.hitKey);
+      const image=r.item?.iconLink?'<img class="loot-catalog-icon" src="'+esc(r.item.iconLink)+'" width="34" height="34" loading="lazy" alt="아이템 도감">':'';
+      const photo=original?.thumb?'<img class="loot-source-icon" src="'+original.thumb+'" width="34" height="34" alt="캡처 원본">':'';
+      const source=r.source+(original&&Number.isFinite(original.score)?' · 비교 점수 '+original.score.toFixed(1):'');
+      return '<tr><td data-label="아이템"><div class="loot-identified">'+photo+image+'<div><strong>'+esc(name)+'</strong><small>'+esc(source)+'</small></div></div></td>'+
+        '<td data-label="수량"><input type="number" min="1" max="9999" value="'+r.quantity+'" data-loot-qty="'+i+'" aria-label="'+esc(name)+' 수량"></td>'+
+        '<td data-label="플리 개당">'+rub(r.fleaPrice)+'</td><td data-label="상인 개당">'+rub(r.traderPrice)+'</td>'+
+        '<td data-label="최고가 개당">'+rub(r.bestPrice)+'</td><td data-label="최고가 소계"><strong>'+rub(r.bestSubtotal)+'</strong></td>'+
+        '<td><button type="button" class="btn btn-small" data-loot-edit="'+i+'" aria-label="'+esc(name)+' 다른 아이템으로 수정">수정</button></td>'+
+        '<td><button type="button" class="btn btn-small" data-loot-delete="'+i+'" aria-label="'+esc(name)+' 삭제">×</button></td></tr>';
+    };
+    $('loot-results').innerHTML=result.rows.length?result.rows.map(rowHTML).join(''):
+      '<tr><td colspan="8">분석된 물품이 없습니다. 가방 사진을 올리거나 직접 추가하세요.</td></tr>';
     $('loot-review').hidden=!pending.length;
-    $('loot-review-count').textContent='그림 후보 확인 · '+pending.length+'칸';
+    $('loot-review-count').textContent='자동 확정하지 않은 그림 · '+pending.length+'칸';
     $('loot-review-list').innerHTML=pending.map(({hit,i})=>{
-      const buttons=hit.candidates.map(c=>'<button type="button" class="loot-choice" data-hit="'+i+'" data-id="'+esc(c.id)+'"><img loading="lazy" alt="" referrerpolicy="no-referrer" style="background-image:url('+c.swatch+')" src="https://assets.tarkov.dev/'+encodeURIComponent(c.id)+'-icon.webp"><span>'+esc(label(c.id,catalog))+'</span></button>').join('');
-      return '<div class="loot-review-item"><div class="loot-sample">'+(hit.thumb?'<img src="'+hit.thumb+'" alt="사진에서 잘라낸 아이콘">':'')+'<b>'+(i+1)+'번</b></div><div class="loot-choices">'+buttons+'<button type="button" class="btn btn-small" data-dismiss="'+i+'">제외</button></div></div>';
+      const buttons=hit.candidates.slice(0,3).map(c=>'<button type="button" class="loot-choice" data-hit="'+i+'" data-id="'+esc(c.id)+'"><img loading="lazy" alt="" referrerpolicy="no-referrer" style="background-image:url('+esc(c.swatch||'')+')" src="https://assets.tarkov.dev/'+encodeURIComponent(c.id)+'-icon.webp"><span>'+esc(label(c.id,catalog))+' <small>비교 점수 '+Number(c.score).toFixed(1)+'</small></span></button>').join('');
+      return '<div class="loot-review-item"><div class="loot-sample">'+(hit.thumb?'<img src="'+hit.thumb+'" alt="캡처 원본">':'')+'<b>'+(i+1)+'번</b></div><div class="loot-choices">'+buttons+'<button type="button" class="btn btn-small" data-dismiss="'+i+'">제외</button></div></div>';
     }).join('');
+    $('loot-add').textContent=replaceIndex>=0?'선택한 품목 교체':'추가';
+    $('loot-cancel-replace').hidden=replaceIndex<0;
     $('loot-analyze').disabled=busy||!bitmap;
     $('loot-tools').hidden=!bitmap;
     $('loot-full').disabled=!selectedArea;
@@ -96,17 +121,15 @@ export function initializeLootScan({getCatalog,onOpenMarket=()=>{}}) {
         if(c.picture){c.swatch=candidatePreview(c.picture);delete c.picture;}
       }
       const id=hit.confirmed?hit.candidates[0].id:null;
-      return {...hit,box,id,thumb:id?'':cropPreview(box)};
+      return {...hit,box,id,key:++hitSequence,userSelected:false,thumb:cropPreview(box)};
     });
-    if(!single){hits=[];rows=[];}
+    if(!single){hits=[];rows=[];replaceIndex=-1;}
     else if(converted.length){
-      hits=hits.filter(hit=>{
-        if(!sameIcon(hit.box,converted[0].box))return true;
-        if(hit.id)subtract(hit.id);
-        return false;
-      });
+      for(const oldHit of [...hits]){
+        if(converted.some(newHit=>sameIcon(oldHit.box,newHit.box)))removeHit(oldHit.key);
+      }
     }
-    for(const hit of converted){hits.push(hit);if(hit.id)add(hit.id,1,'그림 일치');}
+    for(const hit of converted){hits.push(hit);if(hit.id)add(hit.id,1,'자동 그림 일치',hit.key);}
     if(!converted.length)progress.textContent=single?'이 영역에서 일치하는 그림을 찾지 못했어요. 아이템 한 칸의 테두리에 맞춰 다시 선택해 주세요.':'아이콘을 찾지 못했어요. ‘가방 영역 지정’으로 가방만 선택하거나 ‘아이템 한 개 지정’으로 그림을 가까이 지정해 주세요.';
     else {
       const priced=converted.filter(hit=>hit.id).length;
@@ -143,7 +166,7 @@ export function initializeLootScan({getCatalog,onOpenMarket=()=>{}}) {
     if(!dialog.open)open();
     if(!newFile?.type?.startsWith('image/')){progress.textContent='사진 파일을 선택해 주세요.';return;}
     const task=resetAnalysis();
-    bitmap?.close();bitmap=null;file=newFile;rows=[];hits=[];selectedArea=null;pickMode='';drag=null;
+    bitmap?.close();bitmap=null;file=newFile;rows=[];hits=[];replaceIndex=-1;selectedArea=null;pickMode='';drag=null;
     if(photoURL)URL.revokeObjectURL(photoURL);
     photoURL=URL.createObjectURL(file);preview.src=photoURL;surface.hidden=true;
     progress.textContent='사진을 여는 중입니다.';update();
@@ -212,11 +235,21 @@ export function initializeLootScan({getCatalog,onOpenMarket=()=>{}}) {
   });
   dialog.addEventListener('click',event=>{
     const button=event.target.closest('button');if(!button)return;
-    const {hit,id,dismiss,lootDelete}=button.dataset;
+    const {hit,id,dismiss,lootDelete,lootEdit}=button.dataset;
     if(hit!==undefined&&hits[hit]&&!hits[hit].id&&hits[hit].candidates.some(c=>c.id===id)){
-      hits[hit].id=id;add(id,1,'그림 후보 선택');update();
-    } else if(dismiss!==undefined){hits.splice(Number(dismiss),1);update();}
-    else if(lootDelete!==undefined){const [row]=rows.splice(Number(lootDelete),1);if(row)hits=hits.filter(h=>h.id!==row.id);update();}
+      hits[hit].id=id;hits[hit].userSelected=true;add(id,1,'사용자 후보 확인',hits[hit].key);update();
+    } else if(dismiss!==undefined){const found=hits[Number(dismiss)];if(found)removeHit(found.key);update();}
+    else if(lootDelete!==undefined){
+      const [row]=rows.splice(Number(lootDelete),1);
+      if(row?.hitKey!==null&&row?.hitKey!==undefined)hits=hits.filter(h=>h.key!==row.hitKey);
+      if(replaceIndex>=rows.length)replaceIndex=-1;update();
+    } else if(lootEdit!==undefined && rows[Number(lootEdit)]) {
+      replaceIndex=Number(lootEdit);
+      $('loot-add-name').value=label(rows[replaceIndex].id,getCatalog());
+      $('loot-add-name').dispatchEvent(new Event('input'));
+      $('loot-add-name').focus();
+      update();
+    }
   });
   let searchTimer;
   $('loot-add-name').oninput=()=>{
@@ -226,14 +259,24 @@ export function initializeLootScan({getCatalog,onOpenMarket=()=>{}}) {
       $('loot-add-select').innerHTML='<option value="">아이템 선택</option>'+matches.map(i=>'<option value="'+esc(i.id)+'">'+esc(i.name)+'</option>').join('');
     },80);
   };
-  $('loot-add').onclick=()=>{const id=$('loot-add-select').value;if(id){add(id,1,'직접 추가');update();}};
+  $('loot-add').onclick=()=>{
+    const id=$('loot-add-select').value;
+    if(!id)return;
+    if(replaceIndex>=0 && rows[replaceIndex]){
+      const row=rows[replaceIndex];row.id=id;row.source='사용자가 인식 수정';
+      if(row.hitKey!==null){const hit=hits.find(h=>h.key===row.hitKey);if(hit){hit.id=id;hit.userSelected=true;}}
+      replaceIndex=-1;
+    } else add(id,1,'직접 추가');
+    update();
+  };
+  $('loot-cancel-replace').onclick=()=>{replaceIndex=-1;update();};
   $('loot-clear').onclick=()=>{
-    resetAnalysis();rows=[];hits=[];selectedArea=null;pickMode='';drag=null;
+    resetAnalysis();rows=[];hits=[];replaceIndex=-1;selectedArea=null;pickMode='';drag=null;
     progress.textContent=bitmap?'가격표를 비웠습니다. 사진을 다시 분석할 수 있어요.':'사진을 선택하세요.';update();
   };
   $('loot-csv').onclick=()=>{
     const priced=valuation(rows,getCatalog()).rows;
-    const table=[['아이템','영어명','수량','플리 개당 (₽)','상인 개당 (₽)','플리 소계 (₽)','시세 기록 시간'],...priced.map(r=>[r.item?.name||names.get(r.id)||r.id,r.item?.nameEn||'',r.quantity,r.fleaPrice??'',r.traderPrice??'',r.subtotal??'',r.item?.flea?.updatedAt||''])];
+    const table=[['아이템','영어명','수량','플리 개당 (₽)','상인 개당 (₽)','최고가 개당 (₽)','플리 소계 (₽)','상인 소계 (₽)','최고가 소계 (₽)','인식 출처','시세 기록 시간'],...priced.map(r=>[r.item?.name||names.get(r.id)||r.id,r.item?.nameEn||'',r.quantity,r.fleaPrice??'',r.traderPrice??'',r.bestPrice??'',r.fleaSubtotal??'',r.traderSubtotal??'',r.bestSubtotal??'',r.source,r.item?.flea?.updatedAt||''])];
     const link=document.createElement('a');
     link.href=URL.createObjectURL(new Blob(['\ufeff'+table.map(row=>row.map(csvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}));
     link.download='Tarkov_Loot_Valuation.csv';link.click();setTimeout(()=>URL.revokeObjectURL(link.href),2500);
