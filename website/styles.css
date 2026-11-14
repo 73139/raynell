@@ -841,7 +841,7 @@ body[data-view="market"] .market-table-frame{flex:0 0 auto;max-height:min(56vh,5
 
 /* Keep the map above the fold on desktops, even when auto-map is enabled. */
 @media(min-width:851px){
-  .auto-map-panel{display:flex;flex-direction:row;align-items:center;flex-wrap:nowrap;gap:8px;margin:0;padding:2px 8px;min-height:28px;border-width:1px}
+  .auto-map-panel{display:flex;flex-direction:row;align-items:center;flex-wrap:nowrap;gap:8px;margin:0 0 -18px;padding:2px 8px;min-height:28px;border-width:1px}
   .auto-map-toolbar{display:flex;flex:1;min-width:0;gap:8px;flex-wrap:nowrap}
   .auto-map-toggle{font-size:10px;gap:5px}
   .auto-map-toggle input{width:14px;height:14px}
