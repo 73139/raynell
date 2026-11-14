@@ -92,6 +92,9 @@ func tryFolder() string {
 // Registry discovery covers BSG Launcher and Steam installations; no process
 // inspection, game modification, memory access or key simulation occurs.
 func detectLogs() string {
+    // Explicit environment override is authoritative even when the folder
+    // has a custom name (common in tests and portable game installations).
+    if custom:=os.Getenv("TFG_EFT_LOGS"); custom!="" && isFolder(custom) {return filepath.Clean(custom)}
     roots := []string{os.Getenv("TFG_EFT_LOGS")}
     for _, env := range []string{"TFG_EFT_HOME", "TFG_EFT_INSTALL"} {
         if p:=os.Getenv(env);p!="" { roots=append(roots,p) }
