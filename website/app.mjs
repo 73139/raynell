@@ -987,6 +987,8 @@ const r17Controller=initializeR17({
  getCapture:()=>state.capture,
  getAutoMap:()=>state.autoMapEnabled,
  getExits:currentExits,
+ getMapIntel:intelMapRecord,
+ getFallbackLabels:()=>verifiedIntelLabels[state.mapKey]||[],
  getPoints:()=> (state.dataset?.tasks||[]).filter(t=>taskProgress(t.id).pinned).flatMap(task=>locationsFor(task).map(l=>({...l,taskId:task.id,taskName:task.name,objectiveId:l.objective?.id,objective:l.objective?.description}))),
  getCatalog:()=>marketController.getCatalog(),
  getLogStatus:()=>state.companionMode?state.companion?.logs:browserLogStatus,
