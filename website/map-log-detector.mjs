@@ -100,7 +100,7 @@ export function createBrowserLogWatcher({onMap=()=>{},onStatus=()=>{},intervalMs
     timer=setInterval(tick,Math.max(1500,intervalMs));
     return folder.name;
   }
-  function setEnabled(value){enabled=!!value;if(enabled&&root)void tick();}
+  function setEnabled(value){enabled=!!value;if(enabled&&root)return tick();return Promise.resolve();}
   function close(){closed=true;root=null;if(timer)clearInterval(timer);timer=null;}
   return {choose,setEnabled,close,tick,get connected(){return !!root},get folder(){return root?.name||''}};
 }
