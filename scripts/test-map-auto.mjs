@@ -46,7 +46,7 @@ watcher.setEnabled(false);
 file1.append('scene preset path:maps/woods_preset.bundle\n');
 await watcher.tick();
 assert.deepEqual(events,['shoreline'],'Disable must prevent auto scanning');
-watcher.setEnabled(true);
+await watcher.setEnabled(true);
 await watcher.tick();
 assert.deepEqual(events,['shoreline','woods']);
 const file2=file('scene preset path:maps/factory4_day.bundle\n');
