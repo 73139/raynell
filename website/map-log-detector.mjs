@@ -61,15 +61,16 @@ export function createBrowserLogWatcher({onMap=()=>{},onStatus=()=>{},intervalMs
     busy=true;
     try{
       const result=await newestApplication(root);
-      if(!result){onStatus({connected:true,folder:root.name,error:'application_000.log가 아직 없습니다. 게임을 실행해 주세요.'});return;}
+      if(!result){first=false;onStatus({connected:true,folder:root.name,error:'application_000.log가 아직 없습니다. 게임을 실행해 주세요.'});return;}
       const fresh=source!==result.source;
-      if(fresh){source=result.source;offset=0;tail='';}
+      if(fresh){source=result.source;offset=0;tail='';lastMap=null;}
       if(result.file.size<offset){offset=0;tail='';}
-      if(result.file.size===offset){onStatus({connected:true,folder:root.name,source,lastMap});return;}
+      if(result.file.size===offset){first=false;onStatus({connected:true,folder:root.name,source,lastMap});return;}
       let start=offset;
       if(result.file.size-start>128*1024){start=result.file.size-128*1024;tail='';}
-      const contents=await result.file.slice(start,Math.min(result.file.size,start+128*1024)).text();
-      offset=start+new TextEncoder().encode(contents).length;
+      const bytes=await result.file.slice(start,Math.min(result.file.size,start+128*1024)).arrayBuffer();
+      const contents=new TextDecoder().decode(bytes);
+      offset=start+bytes.byteLength;
       let complete=tail+contents;
       if(start>0&&!tail){const cut=complete.indexOf('\n');complete=cut<0?'':complete.slice(cut+1);}
       const lines=complete.split('\n');
@@ -80,9 +81,10 @@ export function createBrowserLogWatcher({onMap=()=>{},onStatus=()=>{},intervalMs
       for(const line of lines){
         const event=mapEventFromLogLine(line);
         if(!event||!event.mapKey)continue;
+        const changed=lastMap!==event.mapKey;
         lastMap=event.mapKey;
         // Never switch based on a previous raid at initial connection.
-        if(!initial && lastMap)onMap({...event,source:'browser-'+event.source});
+        if(!initial && changed)onMap({...event,source:'browser-'+event.source});
       }
       onStatus({connected:true,folder:root.name,source,lastMap,historical:initial});
     }catch(error){onStatus({connected:false,folder:root.name,error:String(error.message||error)})}
