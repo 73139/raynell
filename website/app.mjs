@@ -2,6 +2,7 @@ import * as geo from './geo-core.mjs';
 import {clampCamera,preserveCameraOnResize} from './map-camera.mjs';
 import { fetchQuestDataset, fetchItemCatalog, applyItemCatalog } from './data.mjs';
 import { scanScreenshotDirectory } from './capture-core.mjs';
+import {createBrowserLogWatcher} from './map-log-detector.mjs';
 import { readCompanionBootstrap, createCompanionClient, createCaptureCursor } from './companion-client.mjs';
 import { ALL_FLOORS_ID, buildFloorOptions, classifyLocationFloor, floorMatches, floorGroupVisibility } from './floor-core.mjs';
 import { exitsForMap } from './map-details.mjs';
@@ -33,9 +34,10 @@ const MODE_LABELS = {regular:'PvP',pve:'PvE','pvp-season':'시즌'};
 const STORAGE_KEY = 'tarkov-field-guide-progress-v1';
 const STATUS_LABELS = {todo:'미완료',active:'진행 중',done:'완료'};
 const state = {mode:'regular',mapKey:'customs',view:'map',dataset:null,configs:[],selected:null,progress:{},player:null,watchHandle:null,watchTimer:null,watchBusy:false,watchSeen:new Set(),watchStarted:0,mapSequence:0,dataSequence:0,mapDoc:null,mapURL:null,floor:'',imageReady:false,zoom:1,fitZoom:1,panX:0,panY:0,imageWidth:1000,imageHeight:700,search:'',trader:'all',status:'all',mapFilter:'current',renderLimit:70,watchSession:null,capture:null,mapDisplayMode:'loading',showPlayerMarker:true,showQuestMarkers:true,followPlayer:true,capturedQuestIds:[],capturedCandidateCount:0};
-Object.assign(state,{companionMode:false,companion:null,companionConnected:false,companionBusy:false,companionError:'',companionWaiting:false,companionGate:null});
+Object.assign(state,{companionMode:false,companion:null,companionConnected:false,companionBusy:false,companionError:'',companionWaiting:false,companionGate:null,autoMapEnabled:true});
 Object.assign(state,{mapDataset:null,mapDetailsStatus:'loading',floorOptions:[],floorImageSequence:0,followFloor:false,showOtherFloors:false,exitFilters:{pmc:true,scav:true,shared:true,unknown:true,transit:true},showExitLabels:false,exitSearch:'',selectedExit:null});
 let opsRoute=[],opsExit=null,opsController=null,lastAutoMapRev=0;
+let browserLogWatcher=null,browserLogStatus=null,pendingDetectedMap=null;
 let fieldKitController=null,r12Controller=null,r13Controller=null;
 let mapIntelController=null,verifiedIntelLabels={},extrasController=null,questPhotosController=null,raidIntelController=null;
 Object.assign(state,{kappaOnly:false,guideRoute:null});
@@ -45,6 +47,7 @@ const companionCursor=createCaptureCursor();
 try { const saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); if(saved&&typeof saved==='object') state.progress=saved; state.mode=localStorage.getItem('tfg-mode')||'regular'; state.mapKey=localStorage.getItem('tfg-map')||'customs'; } catch {}
 state.mapKey=baseMapKey(state.mapKey);
 if(!Object.hasOwn(MODE_LABELS,state.mode)) state.mode='regular';
+try{state.autoMapEnabled=localStorage.getItem('tfg-auto-map')!=='0';}catch{}
 let dbPromise;
 function database(){ return dbPromise ??= new Promise((resolve,reject)=>{const req=indexedDB.open('tarkov-field-guide',1);req.onupgradeneeded=()=>req.result.createObjectStore('cache');req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);}); }
 async function cachedGet(key){try{const db=await database();return await new Promise((res,rej)=>{const r=db.transaction('cache').objectStore('cache').get(key);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}catch{return null;}}
@@ -75,6 +78,9 @@ async function loadMapConfigs(){
   const local=fallback.status==='fulfilled'?configEntries(fallback.value):[];
   state.configs=local;state.mapKey=baseMapKey(state.mapKey);
   renderMapList();
+  if(pendingDetectedMap?.mapKey&&state.configs.some(c=>c.key===pendingDetectedMap.mapKey)){
+    const detected=pendingDetectedMap;pendingDetectedMap=null;void switchToDetectedMap(detected);
+  }
   // An image fetch must not delay loading other maps or accepting a screenshot.
   // Preserve the user's selected map while its full configuration is pending.
   // Coordinates must never be reassigned to a different fallback map.
@@ -90,6 +96,9 @@ async function loadMapConfigs(){
     if(!full.length||full.length<local.length)throw new Error('지도 구성 누락');
     const previous=JSON.stringify(cfg());state.configs=full;
     renderMapList();renderLocation();
+    if(pendingDetectedMap?.mapKey&&state.configs.some(c=>c.key===pendingDetectedMap.mapKey)){
+      const detected=pendingDetectedMap;pendingDetectedMap=null;void switchToDetectedMap(detected);
+    }
     if(cfg()&&JSON.stringify(cfg())!==previous)selectMap(state.mapKey,false);
   }catch{
     if(!state.configs.length)setMapLoading('지도 구성을 불러오지 못했어요. 스크린샷 좌표는 읽을 수 있어요.',true);
@@ -583,6 +592,61 @@ function acceptCompanionEvent(event){
     captureFailure(event.name,'새 이미지를 감지했지만 원본 좌표가 없어요. 타르코프 게임 자체의 스크린샷 키로 촬영해 주세요.','PC 자동 감시',false);
   }
 }
+function renderAutoMapStatus(){
+  const element=$('auto-map-status');
+  if(!element)return;
+  if(!state.autoMapEnabled){element.textContent='자동 전환 꺼짐 · 수동 지도 선택 가능';return;}
+  if(state.companionMode){
+    const logs=state.companion?.logs;
+    const details=logs?.latest;
+    if(!state.companionConnected)element.textContent='Windows 앱 연결 확인 중';
+    else if(!logs?.folder)element.textContent='게임 Logs 폴더를 찾지 못했어요. Windows 로그 폴더 찾기를 눌러 주세요.';
+    else if(!logs?.autoEnabled)element.textContent='Windows 로그 자동 감지 꺼짐';
+    else if(logs?.error)element.textContent=String(logs.error);
+    else if(details?.mapKey)element.textContent=(details.historical?'이전 로그 참고: ':'최근 감지: ')+mapName(details.mapKey)+' · '+(details.historical?'새 레이드 로그 대기':'로그 동기화 중');
+    else element.textContent='게임 로그 연결됨 · 레이드 입장 감지 대기';
+  }else if(browserLogStatus?.error)element.textContent=browserLogStatus.error;
+  else if(browserLogStatus?.connected)element.textContent='Logs 연결됨 · '+(browserLogStatus.lastMap?mapName(browserLogStatus.lastMap)+' 감지 · ':'')+'새 레이드 대기';
+  else element.textContent='Chrome/Edge에서 게임 Logs 폴더를 직접 선택하거나 Windows EXE를 실행하세요.';
+}
+async function switchToDetectedMap(event){
+  if(!state.autoMapEnabled||!event?.mapKey||event.historical)return false;
+  const next=baseMapKey(event.mapKey);
+  if(next===state.mapKey){renderAutoMapStatus();return true;}
+  if(!state.configs.some(c=>c.key===next)){
+    // A log event can arrive before the asynchronous map catalog.
+    pendingDetectedMap={...event,mapKey:next};
+    renderAutoMapStatus();return false;
+  }
+  pendingDetectedMap=null;
+  await selectMap(next);
+  toast('게임 로그: '+mapName(next)+' 진입 확인 · 지도 자동 전환');
+  renderAutoMapStatus();return true;
+}
+function initializeMapAutoControls(){
+  const checkbox=$('auto-map-enabled');
+  if(!checkbox)return;
+  checkbox.checked=state.autoMapEnabled;
+  browserLogWatcher=createBrowserLogWatcher({
+    onMap:event=>{if(state.autoMapEnabled)void switchToDetectedMap(event);},
+    onStatus:status=>{browserLogStatus=status;renderAutoMapStatus();}
+  });
+  checkbox.addEventListener('change',()=>{
+    state.autoMapEnabled=checkbox.checked;
+    try{localStorage.setItem('tfg-auto-map',state.autoMapEnabled?'1':'0');}catch{}
+    browserLogWatcher?.setEnabled(state.autoMapEnabled);
+    if(state.companionMode)void companionAction('logs-auto',{enabled:state.autoMapEnabled});
+    renderAutoMapStatus();
+  });
+  $('auto-map-browser-connect')?.addEventListener('click',async()=>{
+    try{await browserLogWatcher.choose();renderAutoMapStatus();}
+    catch(error){if(error.name!=='AbortError')toast('로그 폴더를 선택할 수 없어요: '+String(error.message||error),true);}
+  });
+  $('auto-map-native-connect')?.addEventListener('click',()=>companionAction('choose-logs-folder',{}));
+  $('auto-map-native-set')?.addEventListener('click',()=>companionAction('logs-folder',{folder:$('auto-map-native-path').value.trim()}));
+  $('auto-map-native-path')?.addEventListener('keydown',e=>{if(e.key==='Enter')$('auto-map-native-set').click();});
+  renderAutoMapStatus();
+}
 function applyCompanionSnapshot(snapshot){
   const previous=state.companion;
   state.companion=snapshot;state.companionConnected=true;state.companionError='';
@@ -597,23 +661,26 @@ function applyCompanionSnapshot(snapshot){
     else if(gate.source===`${snapshot.instanceId}:${snapshot.generation}`)companionCursor.waitForNext({...snapshot,eventRevision:gate.eventRevision,latest:null,latestRejected:null});
   }
   const log=snapshot.logs;
-  if(log?.revision>(typeof lastAutoMapRev==='undefined'?0:lastAutoMapRev)){lastAutoMapRev=log.revision;
-    if(!log.latest?.historical && log.latest?.mapKey && log.latest.mapKey!==state.mapKey && state.configs.some(c=>c.key===log.latest.mapKey)){
-      const next=log.latest.mapKey;
-      void selectMap(next).then(()=>{if(state.companion?.latest)acceptCompanionEvent(companionCursor.next(state.companion,{replay:true}));renderLocation();});
-      toast(`게임 로그에서 ${mapName(next)} 진입 감지 · 맵 자동 전환`);
-      renderCompanionStatus();return;
+  if(log?.revision>lastAutoMapRev){
+    lastAutoMapRev=log.revision;
+    if(state.autoMapEnabled&&!log.latest?.historical&&log.latest?.mapKey){
+      const next=baseMapKey(log.latest.mapKey);
+      if(next!==state.mapKey){
+        // A raid log can arrive while the asynchronous map catalog loads.
+        if(!state.configs.some(c=>c.key===next))pendingDetectedMap={...log.latest,mapKey:next};
+        else {void switchToDetectedMap({...log.latest,mapKey:next});renderCompanionStatus();return;}
+      }
     }
   }
   acceptCompanionEvent(companionCursor.next(snapshot));
   consumeCompanionQuestImage(snapshot);renderOcrConnection();
-  renderCompanionStatus();renderLocation();if(previous?.logs?.revision!==snapshot.logs?.revision&&typeof opsController!=='undefined')opsController?.refresh();
+  renderCompanionStatus();renderAutoMapStatus();renderLocation();if(previous?.logs?.revision!==snapshot.logs?.revision&&typeof opsController!=='undefined')opsController?.refresh();
 }
 async function companionAction(route,body){
   if(!companionClient||state.companionBusy)return;
   state.companionBusy=true;renderCompanionStatus();
   try{
-    const result=await companionClient.request(route,body,route==='choose-folder'?310000:10000);
+    const result=await companionClient.request(route,body,['choose-folder','choose-logs-folder'].includes(route)?310000:10000);
     if(result.cancelled)toast('폴더 선택을 취소했어요.');
     await companionClient.refresh();
   }catch(error){toast(error.message||'자동 추적 설정을 바꾸지 못했어요.',true);}
@@ -623,13 +690,16 @@ function initializeCompanion(){
   const bootstrap=readCompanionBootstrap(document,location);
   if(!bootstrap)return;
   state.companionMode=true;
+  $('auto-map-browser-connect').hidden=true;
+  $('auto-map-native-connect').hidden=false;
+  $('auto-map-native-path-wrap').hidden=false;
   document.body.classList.add('using-companion');$('capture-diagnostics').open=false;
   try{const gate=JSON.parse(sessionStorage.getItem('tfg-companion-map-gate')||'null');if(gate?.mapKey===state.mapKey){state.companionGate=gate;state.companionWaiting=true;}}catch{}
   $('companion-controls').hidden=false;$('companion-folder-entry').hidden=false;$('download-companion').hidden=true;
   $('connect-folder').hidden=true;$('disconnect-folder').hidden=true;
   text('companion-status','PC 연결 중');
   text('diagnostics-start-note','PC가 스크린샷 폴더를 감시');
-  text('diagnostics-instructions','현재 맵을 선택하고 게임에서 촬영하세요. 폴더 감시는 실행 창을 열어 둔 동안 계속돼요.');
+  text('diagnostics-instructions','게임 맵은 Logs 폴더로 자동 감지됩니다. 좌표는 직접 촬영한 스크린샷으로 갱신되며, 로그를 찾지 못하면 맵을 수동 선택할 수 있어요.');
   $('companion-choose-folder').addEventListener('click',()=>companionAction('choose-folder',{}));
   $('companion-set-folder').addEventListener('click',()=>companionAction('folder',{folder:$('companion-folder-path').value.trim()}));
   $('companion-folder-path').addEventListener('keydown',e=>{if(e.key==='Enter')$('companion-set-folder').click();});
@@ -909,7 +979,7 @@ $('finish-personal-route').addEventListener('click',()=>{fieldKitController.stop
 $('undo-personal-point').addEventListener('click',()=>{fieldKitController.undoPoint();renderMarkers();});
 fetch('./verified-labels.json').then(r=>r.ok?r.json():null).then(data=>{if(data?.maps){verifiedIntelLabels=data.maps;mapIntelController?.refresh();}}).catch(()=>{});
 initializeR14Shell();
-initializeCompanion();renderSummary();renderLocation();renderFloorControls();renderExitList();
+initializeMapAutoControls();initializeCompanion();renderSummary();renderLocation();renderFloorControls();renderExitList();
 const initialView=new URLSearchParams(location.search).get('view');if(['market','quests'].includes(initialView))setView(initialView);
 Promise.allSettled([loadMapConfigs(),loadData()]);
 
