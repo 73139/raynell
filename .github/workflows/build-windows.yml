@@ -80,14 +80,14 @@ jobs:
           Tarkov Field Guide - Windows x64
           1. Extract the ZIP into a folder.
           2. Run TarkovFieldGuide.exe (no Node.js required).
-          3. The app opens a local 127.0.0.1 page with Map, Quests, Flea Market and Bag Prices.
+          3. The app opens a local 127.0.0.1 page with Map, Quests, Flea Market and Bag Prices.\n          3a. Game Logs folder is discovered for auto map switching. If not found, click Windows Logs folder selector.
           4. Use the mouse wheel to scroll. Use +/- or Ctrl+wheel to zoom the map.
-          5. Open Bag Prices and upload a photo you took in the game.
+          5. Enter a raid: the app reads EFT application_000.log to switch maps automatically.\n          6. Open Bag Prices and upload a photo you took in the game.
           The app compares the pictures in inventory slots with its built-in item atlas.
           Select the bag region to limit totals. Review similar pictures and adjust stack amounts.
-          Does not automatically press game keys or read game memory.
+          Does not automatically take screenshots, press game keys, change game files, or read game memory.
           TXT
-          printf 'Source commit: %s\nNative version: 2026.11.13-r16-bag-icons\n' "$GITHUB_SHA" > BUILD_INFO.txt
+          printf 'Source commit: %s\nNative version: 2026.11.14-r16-auto-map\n' "$GITHUB_SHA" > BUILD_INFO.txt
           zip -9 TarkovFieldGuide_Windows.zip TarkovFieldGuide.exe START_HERE.txt BUILD_INFO.txt
           printf '%s\n' "$GITHUB_SHA" > website/maps/latest/BUILD_COMMIT.txt
           tar -czf TarkovFieldGuide_Maps.tar.gz -C website maps/latest MAP_SOURCES.txt
@@ -100,4 +100,4 @@ jobs:
         run: |
           gh release view tfg-r16-windows >/dev/null 2>&1 || gh release create tfg-r16-windows --target "$GITHUB_SHA" --title 'Tarkov Field Guide Windows' --notes 'Standalone Windows x64 companion. No Node.js installer. Source on tarkov-r16-free branch.'
           gh release upload tfg-r16-windows TarkovFieldGuide_Windows.zip TarkovFieldGuide_Maps.tar.gz SHA256SUMS.txt --clobber
-          gh release edit tfg-r16-windows --notes "Windows x64 field guide. Source commit: $GITHUB_SHA on tarkov-r16-free. Bag prices recognize inventory pictures using an included item atlas, support region selection, and let you review similar icons and edit quantities. Includes maps, quest photos, Kappa lines and flea prices. No automatic keypress or screenshot capture."
+          gh release edit tfg-r16-windows --notes "Windows x64 field guide. Source commit: $GITHUB_SHA on tarkov-r16-free. Bag prices recognize inventory pictures with item review and totals. The map auto-switches on EFT application logs using read-only local file access. No automatic screenshots or input. Includes maps, quest photos, Kappa lines and flea prices. No automatic keypress or screenshot capture."
