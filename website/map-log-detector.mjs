@@ -66,13 +66,13 @@ export function createBrowserLogWatcher({onMap=()=>{},onStatus=()=>{},intervalMs
       if(fresh){source=result.source;offset=0;tail='';lastMap=null;}
       if(result.file.size<offset){offset=0;tail='';}
       if(result.file.size===offset){first=false;onStatus({connected:true,folder:root.name,source,lastMap});return;}
-      let start=offset;
-      if(result.file.size-start>128*1024){start=result.file.size-128*1024;tail='';}
+      let start=offset, truncated=false;
+      if(result.file.size-start>128*1024){start=result.file.size-128*1024;tail='';truncated=true;}
       const bytes=await result.file.slice(start,Math.min(result.file.size,start+128*1024)).arrayBuffer();
       const contents=new TextDecoder().decode(bytes);
       offset=start+bytes.byteLength;
       let complete=tail+contents;
-      if(start>0&&!tail){const cut=complete.indexOf('\n');complete=cut<0?'':complete.slice(cut+1);}
+      if(truncated){const cut=complete.indexOf('\n');complete=cut<0?'':complete.slice(cut+1);}
       const lines=complete.split('\n');
       tail=lines.pop()||'';
       if(tail.length>8192)tail='';
