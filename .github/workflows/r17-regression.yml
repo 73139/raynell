@@ -13,7 +13,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
       - name: Run r17 safety regression tests
         run: node scripts/test-r17-core.mjs
+      - name: Prepare native embedded frontend
+        run: |
+          mkdir -p native-source/dist
+          cp -R website/. native-source/dist/
       - name: Run existing native regression tests
         run: cd native-source && go test ./...
