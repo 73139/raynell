@@ -22,6 +22,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: tfg-windows-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   windows-companion:
     runs-on: ubuntu-latest
