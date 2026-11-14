@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: tfg-r17-preview-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   safety-core:
     runs-on: ubuntu-latest
@@ -65,6 +68,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          CURRENT_SHA=$(git ls-remote origin refs/heads/tarkov-r17-development | cut -f1)
+          if [ "$CURRENT_SHA" != "$GITHUB_SHA" ]; then echo "Newer source exists; skip stale preview release"; exit 0; fi
           gh release view tfg-r17-preview >/dev/null 2>&1 || gh release create tfg-r17-preview --target "$GITHUB_SHA" --title 'Tarkov Field Guide r17 preview' --prerelease --notes 'Experimental preview. Existing r16 release remains unchanged. See included readme for limitations.'
           gh release upload tfg-r17-preview TarkovFieldGuide_R17_Preview_Windows.zip R17_SHA256SUMS.txt --clobber
           gh release edit tfg-r17-preview --target "$GITHUB_SHA" --prerelease --notes "Experimental r17 preview; source commit $GITHUB_SHA. Map log automation, screenshot filename location, floor metadata, economy and raid utilities. Does not guarantee live extraction availability, continuous positions, or fully safe traversal. r16 release is unchanged."
