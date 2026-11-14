@@ -20,6 +20,7 @@ import { initializeGuideExtras } from './guide-extras.mjs';
 import { initializeQuestPhotos } from './quest-photos.mjs';
 import { initializeRaidIntel } from './raid-intel-ui.mjs';
 import { isCultist } from './raid-core.mjs';
+import { initializeR17 } from './r17-ui.mjs';
 
 const $ = (id) => document.getElementById(id);
 // Keep quest details in the same panel so the map retains its width.
@@ -979,6 +980,20 @@ $('finish-personal-route').addEventListener('click',()=>{fieldKitController.stop
 $('undo-personal-point').addEventListener('click',()=>{fieldKitController.undoPoint();renderMarkers();});
 fetch('./verified-labels.json').then(r=>r.ok?r.json():null).then(data=>{if(data?.maps){verifiedIntelLabels=data.maps;mapIntelController?.refresh();}}).catch(()=>{});
 initializeR14Shell();
+const r17Controller=initializeR17({
+ getMap:()=>({key:state.mapKey,name:mapName(state.mapKey)}),
+ getConfig:()=>cfg(),
+ getPlayer:()=>state.player,
+ getCapture:()=>state.capture,
+ getAutoMap:()=>state.autoMapEnabled,
+ getExits:currentExits,
+ getPoints:()=> (state.dataset?.tasks||[]).filter(t=>taskProgress(t.id).pinned).flatMap(task=>locationsFor(task).map(l=>({...l,taskId:task.id,taskName:task.name,objectiveId:l.objective?.id,objective:l.objective?.description}))),
+ getCatalog:()=>marketController.getCatalog(),
+ getLogStatus:()=>state.companionMode?state.companion?.logs:browserLogStatus,
+ openOperations:tab=>opsController?.open(tab),
+ showMap:()=>setView('map'),
+ refreshData:()=>document.getElementById('refresh-data')?.click()
+});
 initializeMapAutoControls();initializeCompanion();renderSummary();renderLocation();renderFloorControls();renderExitList();
 const initialView=new URLSearchParams(location.search).get('view');if(['market','quests'].includes(initialView))setView(initialView);
 Promise.allSettled([loadMapConfigs(),loadData()]);
