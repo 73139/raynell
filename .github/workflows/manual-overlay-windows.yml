@@ -1,0 +1,52 @@
+name: Build manual-only map overlay
+on:
+  push:
+    branches: [tarkov-r17-development]
+    paths:
+      - 'manual-overlay/**'
+      - 'scripts/build-manual-overlay.mjs'
+      - 'scripts/test-manual-overlay.mjs'
+      - '.github/workflows/manual-overlay-windows.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: tfg-manual-overlay-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  offline-map-overlay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install pinned build dependencies
+        run: npm ci --include=dev --ignore-scripts --no-audit --no-fund
+      - name: Restore verified public map tiles
+        uses: actions/cache/restore@v4
+        with:
+          path: website/maps/latest
+          key: ${{ runner.os }}-tfg-maps-${{ hashFiles('scripts/maps-upstream.json', 'scripts/maps-assets-lock.json', 'scripts/map-assets-core.mjs', 'scripts/build-maps.mjs', 'website/floor-core.mjs') }}
+      - name: Prepare maps from verified sources
+        run: node scripts/build-maps.mjs
+      - name: Render manual offline PNG map bundle
+        run: node scripts/build-manual-overlay.mjs
+      - name: Verify all manual maps and static safety constraints
+        run: node scripts/test-manual-overlay.mjs
+      - name: Archive standalone manual overlay
+        run: |
+          cd manual-overlay
+          zip -q -r ../TarkovFieldGuide_ManualMapOverlay_Windows.zip ManualMapOverlay.ps1 START_MANUAL_MAP.cmd README.md maps.json assets
+          cd ..
+          unzip -t TarkovFieldGuide_ManualMapOverlay_Windows.zip | tail -n 2
+          sha256sum TarkovFieldGuide_ManualMapOverlay_Windows.zip > ManualOverlay_SHA256SUMS.txt
+      - name: Upload independent Windows package
+        uses: actions/upload-artifact@v4
+        with:
+          name: TarkovFieldGuide_ManualMapOverlay_Windows
+          path: |
+            TarkovFieldGuide_ManualMapOverlay_Windows.zip
+            ManualOverlay_SHA256SUMS.txt
+          retention-days: 30
