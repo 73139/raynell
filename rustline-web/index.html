@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.40</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.41</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -806,6 +806,15 @@
 
 #inside .route-deadline{margin:.35rem 0;color:#f0bc9c;font-size:.81rem;line-height:1.4}
 #inside .route-deadline[hidden]{display:none}
+
+#inside.large .route-compare h2,#inside.large .route-status h2{font-size:1.25rem}
+#inside.large .route-card h3{font-size:1.15rem}
+#inside.large .route-facts dt,#inside.large .route-facts dd,
+#inside.large .route-status-times dt,#inside.large .route-status-times dd,
+#inside.large .route-caption,#inside.large .route-card header p,
+#inside.large .route-pool p,#inside.large .route-pool h4,
+#inside.large .route-deadline,#inside.large .route-card .route-pin{font-size:1rem}
+@media(max-width:600px){#inside.large .route-grid{grid-template-columns:minmax(0,1fr)}}
 
 .pw-workshop{--pw-line:#45514e;--pw-panel:#192123;--pw-muted:#b9c3b9;--pw-key:#ded4a8;--pw-warn:#f1b09c;max-width:1150px;margin:0 auto;color:#e8ebe2;font-size:1rem}
 .pw-workshop *{box-sizing:border-box}
@@ -1830,27 +1839,35 @@ const CONTACTS = [
 ];
 // A container item keeps its zone-box-slot UID while it is carried in the raid.
 // Warehouse and loadout entries receive new UIDs, including after a successful return.
-function matchesOrderRecovery(unit,{zone,landmark,item}){
+function matchesOrderRecovery(unit,{item,sources}){
   if(unit.g!==item)return false;
   const parts=/^(0|[1-9]\d*)-(0|[1-9]\d*)-(?:0|[1-9]\d*)$/.exec(unit.uid);
-  if(!parts || Number(parts[1])!==zone)return false;
-  const box=Number(parts[2]);
-  return LANDMARKS[zone][landmark].boxes.includes(box)&&field.found[zone].includes(box);
+  if(!parts)return false;
+  const zone=Number(parts[1]), box=Number(parts[2]);
+  return sources.some(site=>{
+    if(site.zone!==zone||!field.found[zone].includes(box))return false;
+    const boxes=LANDMARKS[zone][site.landmark].boxes;
+    return site.boxOrdinal===undefined?boxes.includes(box):boxes[site.boxOrdinal]===box;
+  });
 }
 function countOrderRecovery(order){
   return field.bag.filter(unit=>matchesOrderRecovery(unit,order.recovery)).length;
 }
 const ORDERS = [
-  {id:'scout', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
+  {id:'scout', image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
     goal:'서로 다른 지역 방문', target:2, progress:()=>new Set(field.visited||[raid.zone]).size},
-  {id:'stores', issuer:'보급 담당관', title:'보급품 위치 확인', text:'한 레이드에서 컨테이너 두 개를 끝까지 수색하고 정상 탈출하세요.', cr:32000, xp:120,
+  {id:'stores', image:'bunker-stash', issuer:'보급 담당관', title:'보급품 위치 확인', text:'한 레이드에서 컨테이너 두 개를 끝까지 수색하고 정상 탈출하세요.', cr:32000, xp:120,
     goal:'컨테이너 수색 완료', target:2, progress:()=>Object.values(field.boxes).filter(box=>box.complete).length},
-  {id:'signals', issuer:'현장 정비반', title:'고장 난 경비망', text:'한 레이드에서 경비 기체 한 대를 무력화하고 정상 탈출하세요.', cr:42000, xp:150,
+  {id:'signals', image:'bunker-security', issuer:'현장 정비반', title:'고장 난 경비망', text:'한 레이드에서 경비 기체 한 대를 무력화하고 정상 탈출하세요.', cr:42000, xp:150,
     goal:'경비 기체 무력화', target:1, progress:()=>field.victories||0},
-  {id:'tower-wire', issuer:'벙커 전력반', title:'단선 구간 표본 회수',
+  {id:'tower-wire', image:'bunker-tower', issuer:'벙커 전력반', title:'단선 구간 표본 회수',
     text:'송전탑 선로를 수리하려면 현장 전선의 규격이 필요합니다. 벙커 외곽의 송전탑 점검소에서 전력반 자재 상자 또는 점검실 컴퓨터를 수색하세요. 이번 출격에서 그곳에서 찾은 전선 묶음 한 개를 가방에 넣고 정상 탈출하면 검사비를 지급합니다. 검사한 전선은 창고에 보관됩니다.',
     cr:36000, xp:130, goal:'송전탑 점검소에서 찾은 전선 묶음 휴대', target:1,
-    recovery:{zone:0,landmark:5,item:'wire'}, progress:countOrderRecovery}
+    recovery:{item:'wire',sources:[{zone:0,landmark:5}]}, progress:countOrderRecovery},
+  {id:'med-supply', image:'bunker-med', issuer:'벙커 의무반', title:'끊긴 의무품 보급선',
+    text:'마지막 의무품 수송이 끊긴 뒤, 두 곳에 남은 구급 붕대의 포장 상태를 확인하고 있습니다. 벙커 외곽 임시 진료소의 진료대 응급함은 열쇠 없이 열 수 있습니다. 폐쇄 검문소로 간다면 검역실 열쇠를 챙겨 검역 천막의 응급 케이스를 여세요. 둘 중 한 곳에서 찾은 구급 붕대 한 개를 가방에 넣어 정상 탈출하면 검사비를 지급합니다. 붕대는 본인 창고에 보관됩니다.',
+    cr:28000, xp:100, goal:'지정된 두 응급함 중 한 곳에서 찾은 구급 붕대 휴대', target:1,
+    recovery:{item:'bandage',sources:[{zone:0,landmark:7,boxOrdinal:0},{zone:1,landmark:1,boxOrdinal:0}]}, progress:countOrderRecovery}
 ];
 let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={}) {
@@ -3455,6 +3472,13 @@ function landmarkPanel(){
   const zi=raid.zone, area=FIELD_ZONES[zi], point=currentLandmark(), busy=!!field.action;
   const visible=point.boxes.filter(i=>field.found[zi].includes(i));
   const objective=resolveObjective();
+  const recovery=objective?.recovery;
+  const source=recovery&&recovery.carried<recovery.required&&recovery.sources.find(site=>
+    site.zone===zi&&LANDMARKS[zi][site.landmark]===point&&site.boxOrdinal!==undefined);
+  const targetBox=source?point.boxes[source.boxOrdinal]:null;
+  const lock=source?lootLockView(zi,targetBox):null;
+  const sourceHint=source?'<p class="obj-place" data-order-container><b>의뢰 수색 대상</b> '+
+    esc(area.boxes[targetBox][0])+' · '+esc(GOODS[recovery.item][0])+(lock&&!lock.unlocked?' · '+esc(lock.keyName)+' 필요':'')+'</p>':'';
   const options=LANDMARKS[zi].map((p,i)=>{
     const marker=objective?objectiveLocationLabel(objective.locations,zi,i):'';
     const completed=p.boxes.filter(k=>field.boxes[boxKey(zi,k)]?.complete).length;
@@ -3471,7 +3495,7 @@ function landmarkPanel(){
     <div class="landmark-header"><div><small>현재 랜드마크</small><h2 tabindex="-1">${point.name}</h2></div>
       <details class="landmark-picker"><summary>랜드마크 선택 · ${LANDMARKS[zi].length}곳</summary>
         <div class="landmark-list">${options}</div></details></div>
-    <p class="landmark-description">${point.description}</p>
+    <p class="landmark-description">${point.description}</p>${sourceHint}
     <button class="primary search-button" data-field="scan" ${busy||nextLandmarkBox()<0?'disabled':''}>${ico('search')} 주변 탐색 <small>${durationLabel('scan',4000)}</small></button>
     <h3 class="landmark-box-title">발견한 수색 대상 <small>${visible.length} / ${point.boxes.length}</small></h3>
     <div class="container-list">${cards||'<p class="empty-field">주변을 탐색해 이곳의 수색 대상을 발견하세요.</p>'}</div>
@@ -4583,7 +4607,7 @@ function ordersView(){
     const state=bunkerOrderState(q),disabled=!writer||state==='done'||!!raid||(!!career.order&&state!=='active');
     const action=state==='done'?'보상 지급 완료':raid?'귀환 후 변경 가능':state==='active'?'수락 취소':career.order?'다른 의뢰 진행 중':'의뢰 수락';
     detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>
-    ${bunkerPicture((q.id==='scout'||q.id==='tower-wire')?'bunker-tower':q.id==='stores'?'bunker-stash':'bunker-security',q.title+' 현장','bu-order-image')}
+    ${bunkerPicture(q.image,q.title+' 현장','bu-order-image')}
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
     <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
     ${state==='active'?objectiveControl({kind:'order',id:q.id}):''}
@@ -7550,8 +7574,10 @@ function resolveObjective(pin = objectivePin) {
     }
     const recovery=order.recovery&&isActive()
       ? {...order.recovery,carried:countOrderRecovery(order),required:order.target} : null;
+    const carried=recovery&&recovery.carried>=recovery.required;
+    const locations=order.recovery&&!carried?order.recovery.sources.map(({zone,landmark})=>({zone,landmark})):[];
     return {source, title:order.title, kindLabel:'벙커 의뢰', status:'정상 탈출 시 정산',
-      goals, materials:[], recovery, locations:order.recovery?[{zone:order.recovery.zone,landmark:order.recovery.landmark}]:[]};
+      goals, materials:[], recovery, locations};
   }
 
   const standingQuest = kind === 'contract';
