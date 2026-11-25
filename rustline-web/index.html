@@ -1326,6 +1326,10 @@ function selectLandmark(index) {
   field.landmarkByZone[raid.zone]=index;
   picked=null;notice='';
   persist();renderKeep();
+  // The open picker disappears on render. Keep the new location in view and in keyboard order.
+  const title=$('.landmark-header h2');
+  title?.focus?.({preventScroll:true});
+  title?.scrollIntoView?.({block:'center',inline:'nearest'});
 }
 
 function landmarkPanel(){
@@ -1341,7 +1345,7 @@ function landmarkPanel(){
     return `<button class="container-card" data-field="open" data-index="${i}" ${busy?'disabled':''}>${ico(icon)}<b>${name}</b><small>${label}</small></button>`;
   }).join('');
   return `<section class="field-section landmark-site">
-    <div class="landmark-header"><div><small>현재 랜드마크</small><h2>${point.name}</h2></div>
+    <div class="landmark-header"><div><small>현재 랜드마크</small><h2 tabindex="-1">${point.name}</h2></div>
       <details class="landmark-picker"><summary>랜드마크 선택 · ${LANDMARKS[zi].length}곳</summary>
         <div class="landmark-list">${options}</div></details></div>
     <p class="landmark-description">${point.description}</p>
