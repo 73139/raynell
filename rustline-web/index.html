@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.38</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.40</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -1700,9 +1700,33 @@ function objectiveTimeMilestone(now) {
 function updateRaidClock(){if(!field)return;updateHideoutClock();tickRecurringQuestUI();const changed=reconcile(),phase=raidPhase(),bar=$('#raid-status');const milestone=objectiveTimeMilestone(Date.now()),objectiveTimeChanged=milestone!==lastObjectiveTimeMilestone;lastObjectiveTimeMilestone=milestone;inside.classList.toggle('raid-visible',phase!=='idle');bar.hidden=phase==='idle';bar.classList.toggle('urgent',phase==='active'&&raidRemaining()<=300000);bar.classList.toggle('expired',phase==='expired'&&field.result!=='success');bar.classList.toggle('extracted',phase==='expired'&&field.result==='success');if(phase!=='idle'){$('#raid-clock').textContent=phase==='expired'&&field.result==='success'?'CLEAR':formatRaid(raidRemaining());$('#raid-label').textContent=phase==='expired'?(field.result==='success'?(lastSummary?.rating==='quick'?'조기 탈출':'탈출 성공'):field.result==='abandoned'?'레이드 포기':field.result==='kia'?'전투 불능':'시간 초과 · 레이드 종료'):'레이드 진행 중';$('#raid-zone').textContent=field.journey?FIELD_ZONES[field.journey.to].name+' 방면':FIELD_ZONES[raid.zone].name}const a=field.action;if(a){const p=Math.min(100,Math.max(0,(Date.now()-a.start)/(a.end-a.start)*100));const el=$('#field-progress');if(el)el.style.width=p+'%';const tile=$('#tile-progress-fill');if(tile)tile.style.width=p+'%';const t=$('#field-seconds');if(t)t.textContent=(Math.max(0,a.end-Date.now())/1000).toFixed(1)+'초'}const sig=phase==='active'?field.exits.map(id=>exitAvailability(exitBy(id),Date.now())).join('|'):'';const statusChanged=exitSig!==sig;exitSig=sig;if((changed||objectiveTimeChanged||phase!==lastRaidPhase||(statusChanged&&page==='raid'&&!field.open))&&page!=='settings'&&!rendering){lastRaidPhase=phase;renderKeep()}else lastRaidPhase=phase;updateRouteDeadlineWarnings();refreshExitForecasts();tickSurvivorUI();tickWeatherUI()}
 function handleRaidAction(action){
   if(!writer)return;
+  const selectedRaid=raid;
   reconcile();
   const phase=raidPhase(), launchingFinale=action==='start' && phase==='idle' && finaleState.armed;
+  if(action==='ack'){
+    if(!selectedRaid)return;
+    raidAckFeedback='';
+    if(selectedRaid.startedAt!==raid?.startedAt){
+      raidAckFeedback='다른 탭의 최신 출격 기록을 불러왔습니다.';
+    }else if(phase==='expired'&&field.result){
+      const previousRaid=raid,previousField=field;
+      raid=null;field=freshField();
+      const clearedField=field;
+      if(!writeSession()){
+        if(field===clearedField){
+          raid=previousRaid;field=previousField;
+          raidAckFeedback='복귀 기록을 저장하지 못했습니다. 다시 시도하세요.';
+        }else raidAckFeedback='다른 탭의 최신 출격 기록을 불러왔습니다.';
+      }
+      picked=null;
+    }else if(phase==='expired'){
+      raidAckFeedback='정산 기록을 저장한 뒤 다시 시도하세요.';
+    }else return;
+    page=raid?'raid':'bunker';
+    save();renderKeep();return;
+  }
   if(action==='start'&&phase==='idle'){
+    raidAckFeedback='';
     let now=Date.now();
     const priorIds=new Set([lastSummary?.raidId,survivorState.last?.raidId,campaignState.returnId,finaleState.reply?.raidId,...campaignState.claimed]);
     while(priorIds.has(now)) now++;
@@ -1712,9 +1736,7 @@ function handleRaidAction(action){
     if(destination?.zone===raid.zone)field.landmarkByZone[raid.zone]=destination.index;
     prepareSortie();startEquipmentRaid();startFinaleRaid(raid.startedAt);startSurvivorRaid(raid.startedAt,raid.zone);seedContainers();
     picked=null;notice='';gearNotice='';page='raid';
-  }else if(action==='ack'&&phase==='expired'){
-    raid=null;field=freshField();picked=null;page='bunker';
-  }
+  }else return;
   const startedField=field;
   if(!persist() && action==='start' && phase==='idle'){
     if(field===startedField)readSession();
@@ -1725,7 +1747,7 @@ function handleRaidAction(action){
   }
   save();renderKeep();
 }
-function gridMarkup(items,size,side){const unknown=side==='loot',objective=unknown?resolveObjective():null;let cells='';for(let y=0;y<size[1];y++)for(let x=0;x<size[0];x++)cells+=`<button class="slot" data-cell="${side}" data-x="${x}" data-y="${y}" aria-label="${side==='bag'?'가방':'상자'} ${x+1}열 ${y+1}행" style="grid-column:${x+1};grid-row:${y+1}"></button>`;return `<div class="spatial-grid" data-grid="${side}" style="--cols:${size[0]};--rows:${size[1]}">${cells}${items.map(o=>{const g=GOODS[o.g],hidden=unknown&&!o.revealed,searching=hidden&&field.action?.uid===o.uid,selected=picked?.uid===o.uid&&picked?.side===side;const hint=unknown&&!hidden?objectiveLootHint(o,objective):'';return `<button class="loot-tile ${hidden?'unknown':''} ${searching?'searching':''} ${selected?'chosen':''}" style="grid-column:${o.x+1}/span ${o.w};grid-row:${o.y+1}/span ${o.h}" ${hidden?(field.action?'disabled':`data-field="search" data-uid="${o.uid}"`):`draggable="true" data-pick="${o.uid}" data-side="${side}"`} aria-label="${hidden?(searching?'수색 중':'미확인 물품 수색'):esc(g[0]+hint)}" ${hint?'title="'+esc(g[0]+hint)+'"':''}>${hidden?ico('search','search-symbol')+(searching?'<span class="tile-progress" aria-hidden="true"><i id="tile-progress-fill"></i></span>':''):`${itemArt(o.g,'item-symbol')}<span>${o.g==='cr_notes'?money(o.amount):g[0]}</span><small>${o.w}×${o.h}</small>${unknown?objectiveLootBadge(o,objective)+huntBadge(o):''}`}</button>`}).join('')}</div>`}
+function gridMarkup(items,size,side){const unknown=side==='loot',objective=unknown?resolveObjective():null;let cells='';for(let y=0;y<size[1];y++)for(let x=0;x<size[0];x++)cells+=`<button class="slot" data-cell="${side}" data-x="${x}" data-y="${y}" aria-label="${side==='bag'?'가방':'상자'} ${x+1}열 ${y+1}행" style="grid-column:${x+1};grid-row:${y+1}"></button>`;return `<div class="spatial-grid" data-grid="${side}" style="--cols:${size[0]};--rows:${size[1]}">${cells}${items.map(o=>{const g=GOODS[o.g],hidden=unknown&&!o.revealed,searching=hidden&&field.action?.uid===o.uid,selected=picked?.uid===o.uid&&picked?.side===side;const hint=unknown&&!hidden?objectiveLootHint(o,objective):'';return `<button class="loot-tile ${hidden?'unknown':''} ${searching?'searching':''} ${selected?'chosen':''}" style="grid-column:${o.x+1}/span ${o.w};grid-row:${o.y+1}/span ${o.h}" ${hidden?(field.action?'disabled':`data-field="search" data-uid="${o.uid}"`):`draggable="true" data-pick="${o.uid}" data-side="${side}"`} aria-label="${hidden?(searching?'수색 중':'미확인 물품 수색'):esc(g[0]+hint)}" ${hint?'title="'+esc(g[0]+hint)+'"':''}>${hidden?ico('search','search-symbol')+(searching?'<span class="tile-progress" aria-hidden="true"><i id="tile-progress-fill"></i></span>':''):`${itemArt(o.g,'item-symbol')}<span>${o.g==='cr_notes'?money(o.amount):g[0]}</span><small>${o.w}×${o.h}</small>${unknown?objectiveLootBadge(hint)+huntBadge(o):''}`}</button>`}).join('')}</div>`}
 function fieldTileSelection(tile){
   const {pick:uid,side}=tile.dataset;
   const sameTile=picked?.uid===uid && picked.side===side;
@@ -1808,14 +1830,15 @@ const CONTACTS = [
 ];
 // A container item keeps its zone-box-slot UID while it is carried in the raid.
 // Warehouse and loadout entries receive new UIDs, including after a successful return.
+function matchesOrderRecovery(unit,{zone,landmark,item}){
+  if(unit.g!==item)return false;
+  const parts=/^(0|[1-9]\d*)-(0|[1-9]\d*)-(?:0|[1-9]\d*)$/.exec(unit.uid);
+  if(!parts || Number(parts[1])!==zone)return false;
+  const box=Number(parts[2]);
+  return LANDMARKS[zone][landmark].boxes.includes(box)&&field.found[zone].includes(box);
+}
 function countOrderRecovery(order){
-  const {zone,landmark,item}=order.recovery;
-  const origins=LANDMARKS[zone][landmark].boxes.filter(index=>field.found[zone].includes(index));
-  return field.bag.filter(unit=>{
-    if(unit.g!==item)return false;
-    const parts=/^(\d+)-(\d+)-(?:0|[1-9]\d*)$/.exec(unit.uid);
-    return parts&&Number(parts[1])===zone&&origins.includes(Number(parts[2]));
-  }).length;
+  return field.bag.filter(unit=>matchesOrderRecovery(unit,order.recovery)).length;
 }
 const ORDERS = [
   {id:'scout', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
@@ -1829,8 +1852,9 @@ const ORDERS = [
     cr:36000, xp:130, goal:'송전탑 점검소에서 찾은 전선 묶음 휴대', target:1,
     recovery:{zone:0,landmark:5,item:'wire'}, progress:countOrderRecovery}
 ];
-let career;
+let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={}) {
+  orderFeedback='';raidAckFeedback='';
   const number = n => Number.isSafeInteger(n) && n>=0 ? n : 0;
   const done = ORDERS.filter(q=>raw?.done?.includes(q.id)).map(q=>q.id);
   career = {xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
@@ -1881,11 +1905,15 @@ function pointStatus(e, time, starting){
   }
   return end>=raid.endsAt?'남은 레이드 시간 부족':'';
 }
+function exhaustionDamage(energy,water){
+  return energy>0&&water>0?0:8;
+}
 function sufferExhaustion(at){
-  if(field.energy>0&&field.water>0)return false;
-  field.hp=Math.max(0,field.hp-8);
+  const damage=exhaustionDamage(field.energy,field.water);
+  if(!damage)return false;
+  field.hp=Math.max(0,field.hp-damage);
   if(field.hp===0){finishRaid('kia',at);return true}
-  logField('탈진으로 체력 8 감소. 식량이나 물을 사용하세요.');
+  logField('탈진으로 체력 '+damage+' 감소. 식량이나 물을 사용하세요.');
   return false;
 }
 function encounterAfter(a){
@@ -1984,6 +2012,7 @@ function reconcileEnd(result,at,exit=null){
   }
   if(returned && exit?.rule==='radio')recordGearUse(workingRaidRadio(),0,1);
   const gearReport=sortieGearReport(returned);
+  const walletBeforeSettlement=wallet;
   if(returned){
     for(const unit of field.bag){
       if(unit.g==='rl_bp_dressing')receiveWardSheet(unit.uid);
@@ -2000,7 +2029,7 @@ function reconcileEnd(result,at,exit=null){
   delete field.gearUsage;delete field.legacyEngagement;
   const survivorSortie=survivorState.active?.raidId===raid.startedAt;
   if(survivorSortie)finishSurvivorRaid(raid.startedAt);
-  if (orderName || goods.includes('rl_bp_dressing') || carriedCash || campaignStage || finaleAttempt || survivorSortie || gearReport.length) settlementNeedsCommit=true;
+  settlementNeedsCommit=true;
   if (campaignStage) summary.campaignStage=campaignStage;
   if (finaleAttempt?.raidId===raid.startedAt) summary.finaleAttempt={zones:[...finaleAttempt.confirmed]};
   if (finaleReply) summary.finaleReply=true;
@@ -2010,7 +2039,7 @@ function reconcileEnd(result,at,exit=null){
   lastSummary=summary;
   career.history.unshift({
     rating, elapsed, xp:earned+missionXp, exit:summary.exit, at, zone:raid.zone,
-    visited, searched, victories, cash:commission-cost, goods:returned?goods.slice():[],
+    visited, searched, victories, carriedCash, cash:wallet-walletBeforeSettlement, goods:returned?goods.slice():[],
     commission, missionXp, orderName, cost
   });
   career.history.length=Math.min(12,career.history.length);
@@ -2018,8 +2047,11 @@ function reconcileEnd(result,at,exit=null){
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
 function resultPage(){
-  const r=lastSummary;
-  if(!r)return head('FIELD / ENDED','레이드 종료','정산 기록이 없습니다.')+'<button data-raid="ack">벙커 복귀</button>';
+  const r=field.result?lastSummary:null;
+  const status=raidAckFeedback||(!writer?'다른 탭에서 플레이 중입니다. 해당 탭에서 벙커로 복귀하세요.':'');
+  const ack=(status?'<p class="exit-warn" role="status">'+esc(status)+'</p>':'')+
+    '<button class="primary" data-raid="ack"'+(writer?'':' disabled')+'>벙커로 복귀</button>';
+  if(!r)return head('FIELD / ENDED','레이드 종료','정산 기록이 없습니다.')+ack;
   const returned=r.result==='success',rating=r.rating||r.result;
   const [code,label]=ENDINGS[rating]||ENDINGS.expired;
   const counts={};
@@ -2033,21 +2065,41 @@ function resultPage(){
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
     (r.orderName?'<p class="exit-ok">'+esc(r.orderName)+' 의뢰 완료 · '+money(r.commission)+'</p>':'')+
     '<h3>'+(returned?'회수한 물품':'잃은 물품')+'</h3><div class="db-list">'+(Object.entries(counts).map(([id,n])=>'<div class="stash-row">'+ico(GOODS[id][4])+'<span>'+GOODS[id][0]+'</span><b>×'+n+'</b></div>').join('')||'<p>휴대 물품 없음</p>')+'</div>'+equipmentSummary(r)+gearSettlementMarkup(r)+injurySummaryMarkup(r)+contractResultPanel(r.contractUpdates)+
-    '<button class="primary" data-raid="ack">벙커로 복귀</button></section>';
+    ack+'</section>';
 }
 function journalPage(){
   const lv=playerLevel();
   return head('03 / FIELD JOURNAL','작전 기록','대원 성장과 벙커에서 수신한 의뢰')+
     '<section class="panel"><h2>대원 Lv.'+lv+'</h2><p>'+career.xp+' XP · 다음 레벨 '+(150*lv*lv)+' XP · 출격 '+career.sorties+'회 · 귀환 '+career.returns+'회</p><p>레벨마다 교전 피해가 1 증가합니다. 최대 보너스는 10입니다.</p></section>'+
-    '<section class="field-section"><h2>벙커 의뢰</h2><p>출격 전에 한 건을 수락하세요. 정상 탈출 시 조건을 확인하고 보상을 지급합니다.</p><div class="orders">'+ORDERS.map(q=>{
+    '<section class="field-section"><h2>벙커 의뢰</h2><p>출격 전에 한 건을 수락하세요. 정상 탈출 시 조건을 확인하고 보상을 지급합니다.</p>'+orderStatus()+'<div class="orders">'+ORDERS.map(q=>{
       const done=career.done.includes(q.id),active=career.order===q.id;
-      return '<article class="panel"><small>'+q.issuer+'</small><h3>'+q.title+'</h3><p>'+q.text+'</p><p>'+money(q.cr)+' · '+q.xp+' XP</p><button data-order="'+q.id+'" '+(done||raid||(!active&&career.order)?'disabled':'')+'>'+(done?'완료':active?'수락 취소':'의뢰 수락')+'</button></article>';
+      return '<article class="panel"><small>'+q.issuer+'</small><h3>'+q.title+'</h3><p>'+q.text+'</p><p>'+money(q.cr)+' · '+q.xp+' XP</p><button data-order="'+q.id+'" '+(!writer||done||raid||(!active&&career.order)?'disabled':'')+'>'+(done?'완료':active?'수락 취소':'의뢰 수락')+'</button></article>';
     }).join('')+'</div></section><section class="field-section"><h2>최근 출격</h2>'+
     (career.history.map(row=>'<div class="sortie-row"><b>'+esc((ENDINGS[row.rating]||ENDINGS.expired)[1])+'</b><span>'+esc(row.exit||'귀환 실패')+' · '+formatRaid(row.elapsed)+' · '+Number(row.xp)+' XP</span></div>').join('')||'<p>첫 출격을 마치면 이곳에 결과가 기록됩니다.</p>')+'</section>';
 }
+function orderStatus(){
+  const status=orderFeedback||(!writer?'다른 탭에서 플레이 중입니다. 해당 탭에서 의뢰를 변경하세요.':'');
+  return status?'<p role="status" class="bu-minor">'+esc(status)+'</p>':'';
+}
 function changeOrder(id){
+  if(!writer)return;
+  const owner=career;
+  reconcile();
+  if(owner!==career){
+    orderFeedback='의뢰 기록을 다시 불러왔습니다. 현재 상태를 확인하세요.';
+    renderKeep();return;
+  }
   if(raid||!ORDERS.some(q=>q.id===id)||career.done.includes(id)||(career.order&&career.order!==id))return;
-  career.order=career.order===id?null:id;persist();renderKeep();
+  const previous=career.order;
+  career.order=previous===id?null:id;
+  orderFeedback='';
+  if(!writeSession()){
+    if(career===owner){
+      career.order=previous;
+      orderFeedback='의뢰 변경을 저장하지 못했습니다. 다시 시도하세요.';
+    }else orderFeedback='다른 탭의 최신 의뢰 기록을 불러왔습니다.';
+  }
+  renderKeep();
 }
 
 // Aggregate stock includes every item in the grid and in the incoming-goods queue.
@@ -3431,6 +3483,7 @@ function routeChoicesPanel(){
 }
 
 // Movement, previews and supply candidates share one record per directed route.
+const TRAVEL_ENERGY_PER_STEP = 3;
 function defineRoute(from, to, name, distance, stepMs, clear, supply, contact, weights) {
   const items = Object.entries(weights).map(([tpl, relativeProbability]) => ({tpl, relativeProbability}));
   return {from, to, name, distance, stepMs, clear, supply, contact, items};
@@ -3530,7 +3583,7 @@ function commitJourneyAction(change) {
   // also restores its evicted last entry if writing fails at its length limit.
   const current=field, oldRaidZone=raid.zone, oldZone=zone;
   const oldSelection={picked,dragged,notice,exitNotice};
-  const before={journey:field.journey && {...field.journey},action:field.action,open:field.open,
+  const before={journey:field.journey && {...field.journey},action:field.action,open:field.open,energy:field.energy,water:field.water,
     bag:field.bag.slice(),visited:field.visited.slice(),log:field.log.slice()};
   journeySaveNotice='';
   change();
@@ -3579,7 +3632,7 @@ function finishJourneyStep(action){
   field.action=null;
   if(!j)return;
   j.done++;
-  field.energy=Math.max(0,field.energy-3);
+  field.energy=Math.max(0,field.energy-TRAVEL_ENERGY_PER_STEP);
   if(sufferExhaustion(action.end))return;
   if(action.outcome==='supply'){
     j.event='supply';j.supply=action.supply;
@@ -3596,14 +3649,24 @@ function roadSupplyPlacement(id){
   const item=GOODS[id];
   return kitFit(field.bag,raidBagSize(),{g:id,x:0,y:0,w:item[1],h:item[2]});
 }
+function roadSupplyRecovery(id){
+  const effect=kitSupply(id);
+  if(!effect||!['energy','water'].includes(effect.stat))return null;
+  return {...effect,gain:Math.min(effect.gain,Math.max(0,100-field[effect.stat]))};
+}
 function handleJourneyField(d){
   const j=field.journey;
   if(!writer||!isActive()||!j||j.event!=='supply'||field.action||field.contact)return;
-  if(d.field!=='journey-take'&&d.field!=='journey-pass')return;
+  if(!['journey-take','journey-pass','journey-consume'].includes(d.field))return;
   const take=d.field==='journey-take', placement=take?roadSupplyPlacement(j.supply):null;
   if(take&&!placement)return;
+  const recovery=d.field==='journey-consume'?roadSupplyRecovery(j.supply):null;
+  if(d.field==='journey-consume'&&!recovery?.gain)return;
   commitJourneyAction(()=>{
-    if(take) {
+    if(recovery) {
+      field[recovery.stat]+=recovery.gain;
+      logField(GOODS[j.supply][0]+' 현장 사용 · '+recovery.label+' +'+recovery.gain+'.');
+    } else if(take) {
       field.bag.push({...kitUnit(j.supply),...placement});
       logField(GOODS[j.supply][0]+' 1개를 가방에 담았습니다.');
     } else logField('보급품을 두고 이동합니다 · '+GOODS[j.supply][0]+'.');
@@ -3618,12 +3681,15 @@ function journeyPage(){
   let eventPanel='';
   if(supply){
     const fitsInBag=Boolean(roadSupplyPlacement(j.supply));
+    const recovery=roadSupplyRecovery(j.supply), busy=Boolean(field.action);
+    const consumeButton=recovery?'<button data-field="journey-consume"'+(!recovery.gain||busy?' disabled':'')+'>'+
+      (recovery.stat==='water'?'마시고 이동':'먹고 이동')+' · '+recovery.label+(recovery.gain?' +'+recovery.gain:' 최대')+'</button>':'';
     eventPanel='<section class="panel road-supply"><div class="kit-heading"><h2>길에서 발견한 보급품</h2>'+ico(supply[4])+'</div>'+
       '<p><strong>'+supply[0]+'</strong> · '+supply[1]+'×'+supply[2]+'칸 · '+supply[3]+' kg</p>'+
       objectiveSelectedItem({g:j.supply,revealed:true})+
-      (!fitsInBag?'<p>가방 공간이 부족합니다. 가방을 정리하거나 보급품을 두고 진행하세요.</p>':'')+
-      '<div class="contact-buttons"><button class="primary" data-field="journey-take" '+(fitsInBag?'':'disabled')+'>가방에 담고 진행</button>'+
-      '<button data-field="journey-pass">두고 진행</button><button data-page="inventory">가방 확인</button></div></section>';
+      (!fitsInBag?'<p>이 보급품을 담을 가방 공간이 부족합니다.</p>':'')+
+      '<div class="contact-buttons"><button class="primary" data-field="journey-take" '+(fitsInBag&&!busy?'':'disabled')+'>가방에 담고 진행</button>'+
+      consumeButton+'<button data-field="journey-pass"'+(busy?' disabled':'')+'>두고 진행</button><button data-page="inventory">가방 확인</button></div></section>';
   }
   return head('FIELD / TRAVEL',FIELD_ZONES[j.to].name+' 방면',supply?'보급품을 어떻게 할지 선택하세요.':'다음 칸까지 이동하고 있습니다.')+
     weatherBrief('field',raid.zone)+journeyProgress()+actionMarkup()+eventPanel+objectivePanel('field')+
@@ -3710,9 +3776,21 @@ function previousCheckpoint(){
   return null;
 }
 let writer=false, revision=0, saveMessage='', settlementNeedsCommit=false;
-function readSession(){
+let lastCheckpointJSON=null;
+function readSession(current){
+  if(current===undefined){
+    try{
+      const raw=localStorage.getItem(SAVE_KEY);
+      current=JSON.parse(raw);
+      lastCheckpointJSON=raw;
+    }catch{
+      raidStorageOK=false;
+      if(!lastCheckpointJSON && field)return false;
+      current=lastCheckpointJSON?JSON.parse(lastCheckpointJSON):null;
+    }
+  }
   settlementNeedsCommit=false;
-  const current=getJSON(SAVE_KEY), previous=current?null:previousCheckpoint(), snap=current||previous||getJSON(SAVE09);
+  const previous=current?null:previousCheckpoint(), snap=current||previous||getJSON(SAVE09);
   revision=current?.revision||0;
   stash=Object.fromEntries(Object.entries(snap?.stash||{}).filter(([id,q])=>Object.hasOwn(GOODS,id)&&Number.isSafeInteger(q)&&q>0));
   wallet=Number.isSafeInteger(snap?.wallet)&&snap.wallet>=0?snap.wallet:30000;
@@ -3766,14 +3844,19 @@ function readSession(){
 function snapshot(){return {version:34,revision,marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...cashProjection(wallet),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
 function writeSession(){
   if(!writer)return false;
-  const disk=getJSON(SAVE_KEY);
-  if(disk&&disk.revision!==revision){
-    readSession();saveMessage='다른 탭에서 저장한 최신 기록을 불러왔습니다.';return false;
-  }
   const nextRevision = revision + 1;
   try {
+    // A failed revision read is a failed transaction, even if writes still work.
+    const raw=localStorage.getItem(SAVE_KEY),disk=JSON.parse(raw);
+    lastCheckpointJSON=raw;
+    if((disk?.revision||0)!==revision){
+      readSession(disk);saveMessage='다른 탭에서 저장한 최신 기록을 불러왔습니다.';return false;
+    }
     const next = {...snapshot(), revision:nextRevision};
-    localStorage.setItem(SAVE_KEY, JSON.stringify(next));
+    const serialized=JSON.stringify(next);
+    localStorage.setItem(SAVE_KEY,serialized);
+    lastCheckpointJSON=serialized;
+    raidStorageOK=true;
     applyCashProjection(next);
     objectivePin = next.objectivePin;
     onboardingState = next.onboarding;
@@ -3908,7 +3991,14 @@ function validateBackup(raw){
   const summary=s.lastSummary;
   if(summary&&(!dict(summary)||!Array.isArray(summary.goods)||!summary.goods.every(id)||!integer(summary.elapsed)||!integer(summary.cost)||!Object.hasOwn(ENDINGS,summary.result)))return false;
   if(summary?.worn&&(!Array.isArray(summary.worn)||!summary.worn.every(x=>dict(x)&&Object.hasOwn(KIT_SLOTS,x.slot)&&kitSlot(x.id)===x.slot && (x.module === undefined || PRESET_MODULES[x.id]?.includes(x.module)))))return false;
-  return Array.isArray(s.career.done)&&Array.isArray(s.career.history)&&s.career.history.every(row=>dict(row)&&Object.hasOwn(ENDINGS,row.rating)&&integer(row.elapsed)&&integer(row.xp));
+  function validHistoryRow(row){
+    if(!dict(row)||!Object.hasOwn(ENDINGS,row.rating)||!integer(row.elapsed)||!integer(row.xp))return false;
+    if(!Object.hasOwn(row,'carriedCash'))return true; // Older receipts omitted carried notes.
+    if(!integer(row.carriedCash)||!integer(row.commission)||!integer(row.cost)||!Number.isSafeInteger(row.cash))return false;
+    const returned=row.rating==='success'||row.rating==='quick';
+    return returned ? row.cash===row.carriedCash-row.cost+row.commission : row.cash===0&&row.commission===0&&row.cost===0;
+  }
+  return Array.isArray(s.career.done)&&Array.isArray(s.career.history)&&s.career.history.every(validHistoryRow);
 }
 async function importSave(file){
   if(!file||!writer)return;
@@ -4444,10 +4534,18 @@ function bunkerHistoryCash(value){
 function bunkerHistoryDetail(row){
   const stat=n=>Number.isSafeInteger(n)?n:'—';
   const items=new Map();
+  let cashDetail='';
+  if(Number.isSafeInteger(row.carriedCash)){
+    const returned=row.rating==='quick'||row.rating==='success';
+    cashDetail=`<p><b>정산 시 지갑 변동</b> ${bunkerHistoryCash(row.cash)} · 휴대 지폐 ${returned?'회수':'손실'} ${money(row.carriedCash)} · 의뢰 보상 ${money(row.commission)} · 탈출 비용 ${money(row.cost)}</p>`;
+  }else if(Number.isSafeInteger(row.cash)){
+    cashDetail=`<p><b>이전 정산 기록</b> ${bunkerHistoryCash(row.cash)} · 당시 기록에는 휴대 지폐 금액이 없습니다.</p>`;
+  }
   for(const id of Array.isArray(row.goods)?row.goods:[]){
     if(Object.hasOwn(GOODS,id))items.set(id,(items.get(id)||0)+1);
   }
   return `<div class="bu-log-detail"><dl><div><dt>탈출구</dt><dd>${esc(row.exit||'—')}</dd></div><div><dt>방문 지역</dt><dd>${stat(row.visited)}</dd></div><div><dt>수색 완료</dt><dd>${stat(row.searched)}</dd></div><div><dt>교전 승리</dt><dd>${stat(row.victories)}</dd></div></dl>
+    ${cashDetail}
     ${Array.isArray(row.goods)?`<p><b>회수 물품</b> ${[...items].map(([id,n])=>esc(GOODS[id][0])+' ×'+n).join(' · ')||'없음'}</p>`:'<p>이전 버전에서 저장된 기록입니다. 당시 저장된 항목만 표시됩니다.</p>'}
     ${row.orderName?`<p><b>의뢰 완료</b> ${esc(row.orderName)} · ${bunkerHistoryCash(row.commission)} · +${Number(row.missionXp)} XP</p>`:''}</div>`;
 }
@@ -4456,7 +4554,7 @@ function recordsView(){
   const xp=career.xp, percent=Math.floor((xp-start)/(ceiling-start)*100), history=career.history;
   const rows=history.slice(0,bunkerHistoryLimit).map((row,i)=>{
     const rating=Object.hasOwn(ENDINGS,row.rating)?row.rating:'expired';
-    return `<tr><td>${bunkerHistoryDate(row.at)}</td><td>${Number.isInteger(row.zone)&&FIELD_ZONES[row.zone]?esc(FIELD_ZONES[row.zone].name):'—'}</td><td><span class="bu-result ${rating}">${ENDINGS[rating][1]}</span></td><td>${formatRaid(row.elapsed)}</td><td>${bunkerHistoryCash(row.cash)}</td><td>+${Number(row.xp)||0} XP</td><td><button class="bu-row-open" data-bui="history" data-index="${i}" aria-expanded="${bunkerHistoryRow===i}" aria-label="출격 기록 ${i+1} 상세">${bunkerHistoryRow===i?'−':'≡'}</button></td></tr>${bunkerHistoryRow===i?`<tr><td colspan="7">${bunkerHistoryDetail(row)}</td></tr>`:''}`;
+    return `<tr><td>${bunkerHistoryDate(row.at)}</td><td>${Number.isInteger(row.zone)&&FIELD_ZONES[row.zone]?esc(FIELD_ZONES[row.zone].name):'—'}</td><td><span class="bu-result ${rating}">${ENDINGS[rating][1]}</span></td><td>${formatRaid(row.elapsed)}</td><td>${Number.isSafeInteger(row.carriedCash)?bunkerHistoryCash(row.cash):'이전 기록'}</td><td>+${Number(row.xp)||0} XP</td><td><button class="bu-row-open" data-bui="history" data-index="${i}" aria-expanded="${bunkerHistoryRow===i}" aria-label="출격 기록 ${i+1} 상세">${bunkerHistoryRow===i?'−':'≡'}</button></td></tr>${bunkerHistoryRow===i?`<tr><td colspan="7">${bunkerHistoryDetail(row)}</td></tr>`:''}`;
   }).join('');
   return `<div class="bu-screen">${bunkerHeading('07','대원 기록','B-04 벙커 대원 파일')}
     <div class="bu-record-layout"><figure class="bu-portrait">${bunkerPicture('bunker-operator','B-04 현장 대원')}<figcaption>대원 Lv. ${level}</figcaption></figure>
@@ -4465,7 +4563,7 @@ function recordsView(){
     <h2>작전 기록 <small>전체</small></h2><div class="bu-stats">
     ${[['출격',career.sorties,'↗'],['귀환',career.returns,'⇥'],['교전 승리',career.victories||0,'⌖']].map(([title,n,icon])=>`<div><b aria-hidden="true">${icon}</b><span>${title}</span><strong>${n} <small>회</small></strong></div>`).join('')}</div>
     ${career.victoriesFrom?'<p class="bu-minor">교전 승리는 '+(career.victoriesFrom+1)+'번째 출격부터 집계됩니다.</p>':''}
-    ${survivorNavLink()}${injurySummaryMarkup(lastSummary,'최근 출격 부상·치료 기록')}<h2>최근 출격 기록 <small>${history.length}회</small></h2>${rows?`<div class="bu-table-wrap"><table><thead><tr>${['일시','지역','작전 결과','경과 시간','정산 CR','획득 XP','상세'].map(s=>'<th scope="col">'+s+'</th>').join('')}</tr></thead><tbody>${rows}</tbody></table></div>${history.length>5?`<button class="bu-more" data-bui="history-limit">${bunkerHistoryLimit===5?'이전 기록 보기':'최근 5회만 보기'}</button>`:''}`:'<div class="bu-empty">첫 출격을 마치면 작전 결과가 이곳에 기록됩니다.</div>'}</div></div></div>`;
+    ${survivorNavLink()}${injurySummaryMarkup(lastSummary,'최근 출격 부상·치료 기록')}<h2>최근 출격 기록 <small>${history.length}회</small></h2>${rows?`<div class="bu-table-wrap"><table><thead><tr>${['일시','지역','작전 결과','경과 시간','정산 시 지갑 변동','획득 XP','상세'].map(s=>'<th scope="col">'+s+'</th>').join('')}</tr></thead><tbody>${rows}</tbody></table></div>${history.length>5?`<button class="bu-more" data-bui="history-limit">${bunkerHistoryLimit===5?'이전 기록 보기':'최근 5회만 보기'}</button>`:''}`:'<div class="bu-empty">첫 출격을 마치면 작전 결과가 이곳에 기록됩니다.</div>'}</div></div></div>`;
 }
 function bunkerOrderState(q){
   return career.done.includes(q.id)?'done':career.order===q.id?'active':'new';
@@ -4482,7 +4580,7 @@ function ordersView(){
   const q=visible.find(v=>v.id===bunkerOrderSelected)||visible[0];
   let detail='<div class="bu-empty">이 상태의 의뢰가 없습니다.</div>';
   if(q){
-    const state=bunkerOrderState(q),disabled=state==='done'||!!raid||(!!career.order&&state!=='active');
+    const state=bunkerOrderState(q),disabled=!writer||state==='done'||!!raid||(!!career.order&&state!=='active');
     const action=state==='done'?'보상 지급 완료':raid?'귀환 후 변경 가능':state==='active'?'수락 취소':career.order?'다른 의뢰 진행 중':'의뢰 수락';
     detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>
     ${bunkerPicture((q.id==='scout'||q.id==='tower-wire')?'bunker-tower':q.id==='stores'?'bunker-stash':'bunker-security',q.title+' 현장','bu-order-image')}
@@ -4491,7 +4589,7 @@ function ordersView(){
     ${state==='active'?objectiveControl({kind:'order',id:q.id}):''}
     <p class="bu-minor">목표를 달성하고 정상 탈출하면 정산 시 보상을 받습니다.</p>`;
   }
-  return `<div class="bu-screen">${bunkerHeading('08','벙커 의뢰','의뢰를 선택해 목표와 보상을 확인하세요.')}<div class="bu-orders"><section class="bu-box bu-order-list"><h2>의뢰 목록 <small>${visible.length}</small></h2><div class="bu-filter" role="group" aria-label="의뢰 상태">${Object.entries({all:'전체',...states}).map(([id,s])=>`<button data-bui="order-filter" data-id="${id}" aria-pressed="${bunkerOrderFilter===id}">${s}</button>`).join('')}</div>${visible.map(v=>`<button class="bu-order-choice" data-bui="order" data-id="${v.id}" aria-pressed="${v.id===q?.id}"><i>▤</i><span><b>${v.title}</b><small>${v.issuer}</small></span><em>${states[bunkerOrderState(v)]}</em></button>`).join('')||'<p class="bu-minor">표시할 의뢰 없음</p>'}</section><article class="bu-box bu-order-panel">${detail}</article></div></div>`;
+  return `<div class="bu-screen">${bunkerHeading('08','벙커 의뢰','의뢰를 선택해 목표와 보상을 확인하세요.')}<div class="bu-orders"><section class="bu-box bu-order-list"><h2>의뢰 목록 <small>${visible.length}</small></h2><div class="bu-filter" role="group" aria-label="의뢰 상태">${Object.entries({all:'전체',...states}).map(([id,s])=>`<button data-bui="order-filter" data-id="${id}" aria-pressed="${bunkerOrderFilter===id}">${s}</button>`).join('')}</div>${visible.map(v=>`<button class="bu-order-choice" data-bui="order" data-id="${v.id}" aria-pressed="${v.id===q?.id}"><i>▤</i><span><b>${v.title}</b><small>${v.issuer}</small></span><em>${states[bunkerOrderState(v)]}</em></button>`).join('')||'<p class="bu-minor">표시할 의뢰 없음</p>'}</section><article class="bu-box bu-order-panel">${orderStatus()}${detail}</article></div></div>`;
 }
 function bunkerFacilityState(id){
   const job=hideout.builds[id]||hideout.production[id];
@@ -7450,8 +7548,10 @@ function resolveObjective(pin = objectivePin) {
         goals[1].projected = 1;
       }
     }
+    const recovery=order.recovery&&isActive()
+      ? {...order.recovery,carried:countOrderRecovery(order),required:order.target} : null;
     return {source, title:order.title, kindLabel:'벙커 의뢰', status:'정상 탈출 시 정산',
-      goals, materials:[], locations:order.recovery?[{zone:order.recovery.zone,landmark:order.recovery.landmark}]:[]};
+      goals, materials:[], recovery, locations:order.recovery?[{zone:order.recovery.zone,landmark:order.recovery.landmark}]:[]};
   }
 
   const standingQuest = kind === 'contract';
@@ -7682,19 +7782,30 @@ function objectivePanel(context,objective=resolveObjective()){
     '<span class="obj-status">'+esc(o.status)+'</span></header>'+body+'</section>';
 }
 
+function recoveryLootHint(unit,objective){
+  const recovery=objective.recovery;
+  if(!recovery||recovery.carried>=recovery.required)return '';
+  if(!matchesOrderRecovery(unit,recovery)||!openBox()?.items.includes(unit))return '';
+  return '현장 가방 '+recovery.carried+'개 / 필요 '+recovery.required+'개 · 가방에 넣고 정상 탈출하면 의뢰에 반영됩니다.';
+}
+
 function objectiveLootHint(unit,objective){
   if(!unit?.revealed||!objective)return '';
+  const recovery=recoveryLootHint(unit,objective);
+  if(recovery)return ' · 의뢰 회수품 · '+recovery;
   const m=objective.materials.find(row=>row.id===unit.g);
   return m?' · 목표 물품 · 필요 '+m.required+' · 보유 '+m.owned+' · 부족 '+m.missing:'';
 }
 
-function objectiveLootBadge(unit,objective=resolveObjective()){
-  if(!unit?.revealed||!objective?.materials.some(m=>m.id===unit.g))return '';
+function objectiveLootBadge(hint){
+  if(!hint)return '';
   return '<i class="obj-tile-mark" aria-hidden="true" title="목표 물품">'+commandIcon('pin')+'</i>';
 }
 
 function objectiveSelectedItem(unit,objective=resolveObjective()){
   if(!unit?.revealed||!objective)return '';
+  const recovery=recoveryLootHint(unit,objective);
+  if(recovery)return '<section class="obj-item" data-objective-item="'+esc(unit.g)+'"><h3>'+commandIcon('pin')+'의뢰 회수품 · '+esc(objective.title)+'</h3><p>'+esc(recovery)+'</p></section>';
   const material=objective.materials.find(m=>m.id===unit.g);
   if(!material)return '';
   return '<section class="obj-item" data-objective-item="'+esc(unit.g)+'"><h3>'+commandIcon('pin')+'목표 물품</h3>'+
@@ -8192,6 +8303,32 @@ function routeSeconds(ms) {
   return (ms / 1000).toLocaleString('ko-KR',{maximumFractionDigits:3})+'초';
 }
 
+function routeEnergyFacts(distance,mode) {
+  const cost=TRAVEL_ENERGY_PER_STEP*distance;
+  if (mode!=='live') return '<div><dt>이동 기력 소모</dt><dd data-route-energy>'+cost+'</dd></div>';
+
+  // Project walking alone. Optional supplies, treatment and contact outcomes
+  // depend on the player's next choices, so no upcoming rolls are inspected.
+  let energy=field.energy, hp=field.hp, firstExhausted=0, fatalStep=0;
+  for (let step=1;step<=distance;step++) {
+    energy=Math.max(0,energy-TRAVEL_ENERGY_PER_STEP);
+    const damage=exhaustionDamage(energy,field.water);
+    if (damage && !firstExhausted) firstExhausted=step;
+    hp=Math.max(0,hp-damage);
+    if (!hp) {fatalStep=step;break;}
+  }
+  const energyRow='<div><dt>이동 기력</dt><dd data-route-energy>'+field.energy+' → '+energy+'</dd></div>';
+  if (!firstExhausted) return energyRow;
+  const effect=fatalStep?fatalStep+'칸째 전투 불능':firstExhausted+'칸째부터 체력 −'+(field.hp-hp)+' (합계)';
+  return energyRow+'<div><dt>회복 없이 이동 시</dt><dd class="route-risk-high" data-route-exhaustion>'+effect+'</dd></div>';
+}
+
+function routeTripChance(perCellPercent, distance) {
+  // Each leg gets its own roll at departure. These odds use only the public route profile.
+  const none = (1 - perCellPercent / 100) ** distance;
+  return (1 - none).toLocaleString('ko-KR', {style:'percent', maximumFractionDigits:1});
+}
+
 function routeDeadlineWarning(revealAt) {
   if (revealAt===null) return '';
   return '<p class="route-deadline" data-route-deadline="'+revealAt+'"'+
@@ -8238,9 +8375,11 @@ function routeOption(profile,mode,objective) {
     '<header><h3>'+esc(target)+'</h3><p>'+esc(name)+'</p></header>'+
     '<dl class="route-facts"><div><dt>이동</dt><dd data-route-time>'+routeTimeLabel(from,to)+'</dd></div>'+
     (adjusted===stepMs?'':'<div><dt>기본 시간</dt><dd>'+routeSeconds(stepMs*distance)+'</dd></div>')+
+    '<div><dt>경로 전체 조우</dt><dd data-route-trip-risk>'+routeTripChance(contact,distance)+'</dd></div>'+
+    '<div><dt>경로 전체 보급</dt><dd data-route-trip-supply>'+routeTripChance(supply,distance)+'</dd></div>'+
     '<div><dt>칸당 조우</dt><dd class="route-risk-'+riskClass+'" data-route-risk>'+contact+'%</dd></div>'+
     '<div><dt>칸당 보급</dt><dd data-route-supply>'+supply+'%</dd></div>'+
-    '<div><dt>칸당 무사 통과</dt><dd data-route-clear>'+clear+'%</dd></div></dl>'+
+    '<div><dt>칸당 무사 통과</dt><dd data-route-clear>'+clear+'%</dd></div>'+routeEnergyFacts(distance,mode)+'</dl>'+
     '<div class="route-pool"><h4>길목 보급 후보</h4><p data-route-sources>'+candidateNames+'</p></div>'+
     routeObjectiveNote(objective,to)+routeDeadlineWarning(mode==='live'?raid.endsAt-adjusted*distance:null)+move+'</article>';
 }
@@ -8259,7 +8398,7 @@ function routeComparison(from,mode,objective) {
   }).join('');
   return '<section class="route-compare" data-route-compare tabindex="-1" data-from="'+from+'" aria-label="이동 경로 비교">'+
     '<header><h2>이동 경로 비교</h2><span>'+esc(FIELD_ZONES[from].name)+' 출발</span></header>'+
-    '<p class="route-caption">조우·보급 확률은 이동 한 칸 기준입니다. 이동 시간은 교전과 보급 선택 대기를 제외합니다.</p>'+
+    '<p class="route-caption">경로 전체 확률은 모든 칸을 이동할 때 조우나 보급이 각각 한 번 이상 발생할 확률입니다. 이동 시간은 교전과 보급 선택 대기를 제외합니다.</p>'+
     '<div class="route-grid">'+cards+'</div>'+journeyFailureMarkup()+'</section>';
 }
 
@@ -11979,7 +12118,9 @@ function render(){
     const cartFocus=marketCartFocusSelector();
     const weatherFocus=weatherFocusSelector();
     const routeFocus=document.activeElement?.matches?.('[data-route-compare], [data-route-status]');
-    content.innerHTML=onboardingPanel(page)+(page==='raid' && raid && !field.result ? finaleFieldPanel()+survivorFieldPanel() : '')+(screenViews[page]||commandHome)();
+    const returnStatus=raidAckFeedback&&(page==='bunker'||(page==='raid'&&isActive()))?
+      '<p role="status">'+esc(raidAckFeedback)+'</p>':'';
+    content.innerHTML=onboardingPanel(page)+returnStatus+(page==='raid' && raid && !field.result ? finaleFieldPanel()+survivorFieldPanel() : '')+(screenViews[page]||commandHome)();
     if(scrollAreas?.size)restoreStashScroll(scrollAreas);
     restorePossessionEditor(possessionEditor);
     restoreOnboardingFocus(guideFocus);
