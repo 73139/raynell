@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.29</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.30</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -706,6 +706,18 @@
 .obj-sources summary{padding:6px 0;cursor:pointer;font-size:.94rem;color:#d6dcbb}.obj-sources ul{padding-left:1.2em;margin:4px 0;color:#d6dccf}.obj-sources li{margin:3px 0}
 
 .obj-field-details>summary{width:fit-content;min-height:32px;margin:2px 0 0;padding:7px 0 3px;color:#d9dfc8;cursor:pointer;font-size:.94rem;line-height:1.35}.obj-field-details[open]>summary{margin-bottom:3px}
+
+.op-panel{margin:10px 0;border:1px solid #57604e;background:#181e1a;color:#e7eadc;font-size:14px;line-height:1.4}
+#inside .op-panel .op-summary{display:flex;align-items:center;gap:10px;width:100%;min-height:40px;padding:7px 10px;border:0;background:#2b3328;color:#edf1df;text-align:left}
+.op-summary span{display:flex;align-items:center;gap:7px;flex:1;font-weight:650}.op-summary .cmd-icon{width:16px;height:16px}.op-summary strong{color:#dfd5a5;font-variant-numeric:tabular-nums}.op-summary i{font-style:normal;color:#bbc4b0}
+.op-detail{padding:4px 10px 8px}.op-title{margin:5px 0 6px;font-weight:650;color:#e3e8ce}
+.op-group{padding:8px 0;border-top:1px solid #485241}.op-group-head,.op-line,.op-buttons{display:flex;align-items:center;justify-content:space-between;gap:6px 12px}
+.op-group-head h4{margin:0;font-size:1em}.op-group-head>span,.op-addend small,.op-line small,.op-settlement,.op-empty{font-size:12px;color:#c7cebd}.op-group-head b,.op-addend b{color:#e5d4a2;font-variant-numeric:tabular-nums}
+.op-group ul{margin:4px 0;padding:0;list-style:none}.op-line{padding:5px 6px;background:#20271f}.op-line+.op-line{border-top:1px solid #363e31}.op-line>div>span{display:flex;gap:2px 8px;flex-wrap:wrap;color:#c6cebd;font-size:12px}.op-line small,.op-addend b{display:block}.op-addend{text-align:right;white-space:nowrap}.op-buttons{justify-content:flex-start;flex-wrap:wrap}
+#inside .op-buttons button{min-height:36px;padding:6px 10px;font-size:13px;color:#e6eadc;border:1px solid #68745c;background:#2d352a}
+#inside .op-buttons .op-primary{background:#d4ca98;color:#22271e;border-color:#e4dbb7;font-weight:700}
+#inside .op-buttons button:disabled{opacity:.55;cursor:default}.op-all{padding-top:6px}.op-unavailable{display:flex;gap:4px 12px;flex-wrap:wrap;margin:7px 0;color:#e1c79b}.op-notice,.op-settlement,.op-empty{margin:6px 0 0}.op-notice{color:#dfd9b3}.op-notice:empty{display:none}
+@media(max-width:600px){#inside .op-panel .op-summary,#inside .op-buttons button{min-height:44px}.op-line{gap:5px}#inside .op-buttons button{flex:1 1 auto}.op-summary{flex-wrap:wrap}.op-detail{padding-left:8px;padding-right:8px}}
 
 .pos-panel{min-width:0;margin:0 0 .85rem;padding:.75rem .9rem;border:1px solid #525e56;border-radius:3px;background:#192224;color:#e4e8db}
 .pos-panel>label,.pos-alias>label{display:flex;align-items:center;gap:.45rem;font-size:.94rem;font-weight:650;color:#e2e6d8;margin:0 0 .4rem}
@@ -3637,7 +3649,7 @@ async function importSave(file){
   const originalRevision = revision;
   let data;
   try{if(file.size>4000000)throw Error();data=JSON.parse(await file.text());if(!validateBackup(data))throw Error()}
-  catch{saveMessage='읽을 수 없는 백업입니다. 러스트라인 v0.10~v0.29 백업 파일을 선택하세요.';renderKeep();return}
+  catch{saveMessage='읽을 수 없는 백업입니다. 러스트라인 게임에서 내보낸 호환 백업 파일을 선택하세요.';renderKeep();return}
   if(!writer)return;
   const disk = getJSON(SAVE_KEY);
   if (originalRevision !== revision || (disk && disk.revision !== revision)) {
@@ -4583,13 +4595,11 @@ function marketCartView(id) {
 function cartRecord(id,cart) {
   return {lastTrader:id,traders:{...marketCarts.traders,[id]:cart}};
 }
-function marketCartSet(id,item,quantity,token,position=null) {
-  if (!writer || raid) return cartFailure('벙커의 플레이 중인 탭에서 장바구니를 편집하세요.');
-  if (!findMarketTrader(id) || !marketIsUnlocked(id,item) || !cartMoney(quantity)) return cartFailure('상인의 판매 물품과 수량을 다시 확인하세요.');
-  const previous=marketCarts,cart=previous.traders[id]||emptyMarketCart();
-  if (cart.token!==token) return cartFailure('장바구니가 변경됐습니다. 최신 주문을 확인하세요.');
+// Prepare a line edit without mutating the active cart. Both manual and objective orders
+// use the same geometry, quantity rules and safe price calculation before a single save.
+function marketCartEdit(cart,item,quantity,position=null) {
   const old=cart.items.find(row=>row.item===item);
-  if (!position && (old?.quantity||0)===quantity) return {ok:true,reason:''};
+  if (!position && (old?.quantity||0)===quantity) return {ok:true,items:cart.items};
   const locations=marketCartTiles(cart.items);
   if (!locations) return cartFailure('기존 장바구니 배치를 확인하세요.');
   const items=cart.items.map(row=>{
@@ -4612,12 +4622,28 @@ function marketCartSet(id,item,quantity,token,position=null) {
   }
   const total=items.reduce((n,row)=>n+GOODS[row.item][6]*row.quantity,0);
   if (!cartMoney(total)) return cartFailure('안전하게 계산할 수 있는 주문 금액을 초과했습니다.');
-  const nextToken=items.length ? newStashUid()+'-'+revision.toString(36) : '';
-  const next=cartRecord(id,{...cart,items,token:nextToken});
+  return {ok:true,items};
+}
+function marketCartWithItems(cart,items) {
+  const token=items.length ? newStashUid()+'-'+revision.toString(36) : '';
+  return {...cart,items,token};
+}
+function storeMarketCarts(next) {
+  const previous=marketCarts;
   marketCarts=next;
   if (writeSession()) return {ok:true,reason:''};
   if (marketCarts!==next) return cartFailure('다른 탭에서 장바구니를 변경했습니다. 최신 주문을 확인하세요.');
   marketCarts=previous;return cartFailure('장바구니를 저장하지 못했습니다. 저장 공간을 확인하세요.');
+}
+function marketCartSet(id,item,quantity,token,position=null) {
+  if (!writer || raid) return cartFailure('벙커의 플레이 중인 탭에서 장바구니를 편집하세요.');
+  if (!findMarketTrader(id) || !marketIsUnlocked(id,item) || !cartMoney(quantity)) return cartFailure('상인의 판매 물품과 수량을 다시 확인하세요.');
+  const cart=marketCarts.traders[id]||emptyMarketCart();
+  if (cart.token!==token) return cartFailure('장바구니가 변경됐습니다. 최신 주문을 확인하세요.');
+  const change=marketCartEdit(cart,item,quantity,position);
+  if (!change.ok) return change;
+  if (change.items===cart.items) return {ok:true,reason:''};
+  return storeMarketCarts(cartRecord(id,marketCartWithItems(cart,change.items)));
 }
 function marketCartAdd(id,item,quantity,position=null) {
   if (!Number.isSafeInteger(quantity) || quantity<1 || !findMarketTrader(id)) return cartFailure('추가할 품목과 수량을 확인하세요.');
@@ -5821,7 +5847,7 @@ function marketView(){
   return '<div class="mk-screen tg-screen" data-mode="'+mode+'"><header class="mk-head"><h1>벙커 상점</h1>'+marketWorkspaceTabs(false)+
     '<div class="mc-head-actions">'+marketCartJump(trader.id,cart)+'<button data-page="stash">벙커 창고 ↗</button></div></header>'+
     marketTraderList()+lock+'<div class="tg-toolbar">'+marketModeBar()+'<div class="tg-standing"><strong>'+esc(trader.name)+'</strong><span>우호도 '+standing.tier+'단계 · '+standing.points+'점</span></div></div>'+
-    tradePaneLinks(mode)+'<div class="tg-workspace">'+stock+transaction+tradeWarehouse(trader)+'</div></div>';
+    (mode==='buy'&&objectivePin&&!raid?procurementPanel(trader.id):'')+tradePaneLinks(mode)+'<div class="tg-workspace">'+stock+transaction+tradeWarehouse(trader)+'</div></div>';
 
 }
 function handleMarketUI(d){
@@ -6961,6 +6987,76 @@ function resolveObjective(pin = objectivePin) {
     locations:objectiveHuntLocations(quest.goals, record.progress, materials)};
 }
 
+// Procurement uses the objective's eligible holdings and each merchant's live retail shelf.
+// Queued quantities represent future deliveries and never count as owned goods.
+function objectiveCartView(){
+  const objective=resolveObjective();
+  const view={source:objective?.source||null,title:objective?.title||'',goals:objective?.goals||[],
+    lines:[],groups:[],token:'',quantity:0,total:0,reason:'',ok:false};
+  if(!objective){view.reason='먼저 조달할 목표를 고정하세요.';return view;}
+  const shelves=MARKET_TRADERS.map(({id})=>({
+    trader:id,available:new Set(marketGoods(id,'buy')),draft:marketCarts.traders[id]?.items||[]
+  }));
+  for(const {id,required,owned,usable,missing} of objective.materials){
+    const sellers=shelves.filter(shop=>shop.available.has(id));
+    let inCart=0;
+    let seller=sellers[0];
+    for(const shop of sellers){
+      const quantity=shop.draft.find(row=>row.item===id)?.quantity||0;
+      if(quantity&&!inCart)seller=shop;
+      inCart+=quantity;
+    }
+    const remainder=Math.max(0,missing-inCart);
+    const add=seller?remainder:0;
+    const unit=seller?GOODS[id][6]:0;
+    const status=!missing?'ready':!remainder?'covered':seller?'available':'unavailable';
+    view.lines.push({item:id,required,owned,usable,missing,inCart,add,unit,subtotal:unit*add,trader:seller?.trader||null,status});
+  }
+  for(const shop of shelves){
+    const lines=view.lines.filter(row=>row.trader===shop.trader&&row.missing>0);
+    if(!lines.length)continue;
+    const quantity=lines.reduce((sum,row)=>sum+row.add,0),total=lines.reduce((sum,row)=>sum+row.subtotal,0);
+    view.groups.push({trader:shop.trader,lines,quantity,total});
+    view.quantity+=quantity;view.total+=total;
+  }
+  if(!writer||raid)view.reason='벙커의 플레이 중인 탭에서 목표 물품을 담을 수 있습니다.';
+  else if(!view.quantity)view.reason='지금 장바구니에 추가할 목표 물품이 없습니다.';
+  else if(!cartMoney(view.quantity)||!cartMoney(view.total))view.reason='조달 수량이나 금액을 확인하세요.';
+  view.ok=!view.reason;
+  if(view.ok){
+    view.token=JSON.stringify([revision,view.source,view.lines.map(row=>[row.item,row.missing,row.inCart,row.trader,row.unit])]);
+  }
+  return view;
+}
+function objectiveCartApply(token,traderId=null){
+  if(!writer||raid)return cartFailure('벙커의 플레이 중인 탭에서 목표 물품을 담을 수 있습니다.');
+  reconcile();
+  const view=objectiveCartView();
+  if(!view.ok)return cartFailure(view.reason);
+  if(!token||view.token!==token)return cartFailure('목표나 보유 물품이 바뀌었습니다. 최신 조달 수량을 확인하세요.');
+  const groups=view.groups.filter(group=>group.quantity>0&&(traderId===null||traderId===group.trader));
+  if(!groups.length)return cartFailure('선택한 상인에게 더 담을 목표 물품이 없습니다.');
+  const traders={...marketCarts.traders};
+  let quantity=0,total=0;
+  for(const group of groups){
+    const cart=traders[group.trader]||emptyMarketCart();
+    let items=cart.items;
+    for(const line of group.lines){
+      if(!line.add)continue;
+      const current=items.find(row=>row.item===line.item)?.quantity||0;
+      const amount=current+line.add;
+      if(!cartMoney(amount))return cartFailure('안전하게 담을 수 있는 수량을 초과했습니다.');
+      const change=marketCartEdit({items},line.item,amount);
+      if(!change.ok)return change;
+      items=change.items;
+    }
+    traders[group.trader]=marketCartWithItems(cart,items);
+    quantity+=group.quantity;total+=group.total;
+  }
+  const saved=storeMarketCarts({lastTrader:groups[0].trader,traders});
+  return saved.ok?{...saved,quantity,total}:saved;
+}
+
 // All displayed quantities come from the same objective model, including fog-of-war-safe map hints.
 function sameObjective(a,b){
   return Boolean(a && b && a.kind===b.kind && a.id===b.id && a.key===b.key && a.tier===b.tier);
@@ -6968,10 +7064,12 @@ function sameObjective(a,b){
 
 function objectiveControl(pin,selected=sameObjective(objectivePin,pin)){
   const extra=pin.key===undefined?'':' data-key="'+pin.key+'" data-trader="'+esc(pin.trader)+'"';
+  const review=selected&&!raid&&!['prep','map'].includes(page)&&resolveObjective()?.materials.length
+    ? '<button type="button" class="obj-pin" data-objective="procurement-review">부족품 조달표</button>' : '';
   return '<button type="button" class="obj-pin" data-objective="'+(selected?'clear':'pin')+'" data-kind="'+esc(pin.kind)+
     '" data-id="'+esc(pin.id)+'"'+extra+(pin.tier===undefined?'':' data-tier="'+pin.tier+'"')+
     ' aria-pressed="'+selected+'" '+(writer?'':'disabled')+'>'+commandIcon('pin')+
-    (selected?'목표 고정 해제':objectivePin?'이 목표로 교체':'출격 목표로 고정')+'</button>';
+    (selected?'목표 고정 해제':objectivePin?'이 목표로 교체':'출격 목표로 고정')+'</button>'+review;
 }
 
 function objectiveLocationLabel(locations,zone,landmark){
@@ -7059,7 +7157,8 @@ function objectivePanel(context,objective=resolveObjective()){
     esc(objectiveOpenLabel(o.source,context==='result'))+'</button>':'')+
     (context==='prep'||context==='field'?'<button type="button" data-page="map">작전 지도</button>':'')+
     objectiveControl(o.source,true)+'</div>';
-  let body=objectivePlaces(o.locations,context)+objectiveGoalRows(o.goals)+materialList+actions;
+  const procurement=!raid&&o.materials.length&&['prep','map'].includes(context)?procurementPanel():'';
+  let body=objectivePlaces(o.locations,context)+objectiveGoalRows(o.goals)+materialList+procurement+actions;
   if(facility&&(context==='field'||context==='loot')){
     const filled=o.materials.filter(m=>m.missing===0).length;
     body='<details class="obj-field-details" data-objective-details="field" '+(sameObjective(expandedFieldObjective,o.source)?'open':'')+
@@ -7119,6 +7218,7 @@ function openObjectiveSource(){
 }
 
 function handleObjectiveUI(d){
+  if(d.objective.startsWith('procurement-')){handleProcurementUI(d);return;}
   if(d.objective==='open'){openObjectiveSource();return;}
   if(!writer||!['pin','clear'].includes(d.objective))return;
   const pin={kind:d.kind,id:d.id};
@@ -7135,6 +7235,102 @@ function handleObjectiveUI(d){
     const source=Array.from(document.querySelectorAll('button[data-objective]')).find(el=>el.dataset.id===pin.id&&el.dataset.kind===pin.kind);
     (source||$('.content'))?.focus?.({preventScroll:true});
   }
+}
+
+// Purchases stay in the normal merchant checkout. This panel only changes pending quantities.
+let procurementExpanded='',procurementNotice=null;
+
+function procurementKey(source,trader=''){
+  return [source.kind,source.id,source.key??'',source.tier??'',source.trader??'',trader].join('|');
+}
+
+function procurementLine(line){
+  const name=GOODS[line.item][0];
+  const counts=[['필요',line.required],['보유',line.owned],['부족',line.missing],['장바구니',line.inCart]];
+  const usable=line.usable!==line.owned?'<small>목표에 사용 가능 '+line.usable+'개</small>':'';
+  return '<li class="op-line" data-procurement-item="'+esc(line.item)+'"><div><strong>'+esc(name)+'</strong>'+usable+
+    '<span>'+counts.map(([label,value])=>'<span>'+label+' <b>'+value+'</b></span>').join('')+'</span></div>'+
+    '<div class="op-addend"><b>추가 '+line.add+'개</b><small>'+money(line.subtotal)+'</small></div></li>';
+}
+
+function procurementGroup(group,quote){
+  const name=findMarketTrader(group.trader).name;
+  const hasCart=group.lines.some(row=>row.inCart>0);
+  const cartLink=hasCart?'<button type="button" data-objective="procurement-cart" data-trader="'+group.trader+'">'+
+    esc(name)+' 장바구니 열기</button>':'';
+  const add=group.quantity>0?'<button type="button" class="op-primary" data-objective="procurement-add" data-trader="'+
+    group.trader+'" data-token="'+esc(quote.token)+'" '+(!quote.ok?'disabled':'')+'>'+
+    esc(name)+' 장바구니에 '+group.quantity+'개 담기</button>':'';
+  return '<section class="op-group" data-procurement-trader="'+group.trader+'"><div class="op-group-head"><h4>'+esc(name)+'</h4>'+
+    '<span>추가 예정 <b>'+money(group.total)+'</b></span></div><ul>'+group.lines.map(procurementLine).join('')+'</ul>'+
+    '<div class="op-buttons">'+add+cartLink+'</div></section>';
+}
+
+function procurementPanel(trader=''){
+  const q=objectiveCartView();
+  if(!q.source||!q.lines.length||raid)return '';
+  const groups=trader?q.groups.filter(group=>group.trader===trader):q.groups;
+  const key=procurementKey(q.source,trader), open=key===procurementExpanded;
+  const quantity=trader?(groups[0]?.quantity||0):q.quantity;
+  const total=trader?(groups[0]?.total||0):q.total;
+  const inCart=groups.some(group=>group.lines.some(row=>row.inCart>0));
+  const short=quantity?quantity+'개 · '+money(total):inCart?'담은 물품 확인':'추가할 물품 없음';
+  const summary='<button type="button" class="op-summary" data-objective="procurement-toggle" data-trader="'+trader+
+    '" aria-controls="op-detail" aria-expanded="'+open+'"><span>'+commandIcon('pin')+
+    (trader?'고정 목표 부족품':'부족품 조달')+'</span><strong>'+short+'</strong><i aria-hidden="true">'+(open?'▴':'▾')+'</i></button>';
+  let body='<div id="op-detail" hidden></div>';
+  if(open){
+    const inactive=trader?[]:q.lines.filter(row=>!row.trader&&row.missing>0);
+    const unavailable=inactive.length?'<div class="op-unavailable"><b>현재 CR 구매 불가</b><span>'+
+      inactive.map(row=>esc(GOODS[row.item][0])+' '+row.missing+'개 부족').join(' · ')+'</span></div>':'';
+    let actions='';
+    if(!trader&&groups.filter(group=>group.quantity>0).length>1){
+      actions='<button type="button" class="op-primary" data-objective="procurement-add" data-trader="" data-token="'+
+        esc(q.token)+'" '+(!q.ok?'disabled':'')+'>모든 상인 장바구니에 '+quantity+'개 담기</button>';
+    }
+    if(trader)actions+='<button type="button" data-objective="procurement-review">전체 상인 조달표</button>';
+    const empty=!groups.length&&!inactive.length?'<p class="op-empty">'+
+      (trader?'이 상인의 장바구니에 추가할 목표 물품이 없습니다.':'현재 장바구니에 추가할 목표 물품이 없습니다.')+'</p>':'';
+    const notice=procurementNotice?.key===key&&procurementNotice.revision===revision&&procurementNotice.token===q.token?procurementNotice.text:'';
+    const reason=!q.ok&&quantity>0?q.reason:'';
+    body='<div id="op-detail" class="op-detail"><p class="op-title">'+esc(q.title)+'</p>'+
+      groups.map(group=>procurementGroup(group,q)).join('')+unavailable+empty+
+      (actions?'<div class="op-buttons op-all">'+actions+'</div>':'')+
+      (quantity?'<p class="op-settlement">결제는 각 상인의 장바구니에서 확정합니다.</p>':'')+
+      '<p role="status" class="op-notice" data-procurement-status>'+esc(notice||reason||'')+'</p></div>';
+  }
+  return '<section class="op-panel" data-procurement="'+(trader?'shop':'objective')+'" aria-label="고정 목표 물품 조달">'+summary+body+'</section>';
+}
+
+function handleProcurementUI(d){
+  const q=objectiveCartView();
+  if(!q.source||!q.lines.length||raid)return;
+  if(d.objective==='procurement-review'){
+    procurementExpanded=procurementKey(q.source);
+    if(page==='prep')renderKeep();else navigatePage('prep');
+    marketCartFocus($('[data-procurement] .op-summary'));return;
+  }
+  const trader=page==='trade'?marketUI.trader:'',key=procurementKey(q.source,trader);
+  if(d.objective==='procurement-toggle'){
+    procurementExpanded=procurementExpanded===key?'':key;
+    renderKeep();marketCartFocus($('[data-procurement] .op-summary'),false);return;
+  }
+  const group=q.groups.find(group=>group.trader===d.trader);
+  if(d.objective==='procurement-cart'){
+    if(!group||!marketSelectTrader(group.trader))return;
+    marketUI.mode='buy';navigatePage('trade');marketCartFocus($('[data-cart-panel]'));return;
+  }
+  if(d.objective!=='procurement-add'||(trader&&d.trader!==trader))return;
+  const result=objectiveCartApply(d.token,d.trader||null);
+  const text=result.ok?result.quantity+'개를 장바구니에 담았습니다.':result.reason;
+  procurementNotice={key,revision,token:objectiveCartView().token,text};
+  procurementExpanded=key;
+  renderKeep();
+  const panel=$('[data-procurement]');
+  const next=panel?.querySelector?.('[data-objective="procurement-cart"]:not(:disabled)'+(d.trader?'[data-trader="'+d.trader+'"]':''))||
+    panel?.querySelector?.('.op-summary');
+  marketCartFocus(next,false);
+  const announcer=$('#announce');if(announcer)announcer.textContent=text;
 }
 
 // The guide observes the same field and trader records as ordinary play.
