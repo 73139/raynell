@@ -56,7 +56,7 @@ def check_rotation(page, action):
         activate(a)
         rotate = page.locator('[data-field="rotate"]')
         activate(rotate)
-        assert rotate.get_attribute("aria-pressed") == "true"
+        rotation_pressed = rotate.get_attribute("aria-pressed")
     if action in ("rotated-drag", "bag-reposition"):
         a.drag_to(edge)
     elif action == "double-click":
@@ -80,6 +80,8 @@ def check_rotation(page, action):
 
     expected = [0, 0, 2, 1] if action in ("other-unit", "unrotated") else [cols-1, 0, 1, 2]
     assert locate() == [0, 1, expected], f"{action}: expected {expected}, got {locate()}"
+    if action != "unrotated":
+        assert rotation_pressed == "true"
     if action == "bag-reposition":
         moved = bag.locator(f'[data-pick="{A}"]')
         moved.click()
