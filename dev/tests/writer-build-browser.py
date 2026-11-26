@@ -18,9 +18,14 @@ URL=urldefrag(os.getenv('RUSTLINE_URL') or 'https://rustline-build-handoff.test/
 FIXTURES=ROOT/'tests/fixtures'
 BUILD=int(re.search(rb'const WRITER_BUILD=(\d+);',HTML)[1])
 FUTURE=HTML.replace(f'const WRITER_BUILD={BUILD};'.encode(),f'const WRITER_BUILD={BUILD+1};'.encode(),1)
-FUTURE=FUTURE.replace(b'writerBuild:WRITER_BUILD,revision,marketCarts',
-                      b'writerBuild:WRITER_BUILD,syntheticFutureField:"preserve-me",revision,marketCarts',1)
-assert b'syntheticFutureField' in FUTURE
+# Only the synthetic client writes this extra field. The production snapshot may grow or reorder its fields.
+FUTURE, snapshot_count = re.subn(
+    rb'\bfunction snapshot(?=\s*\(\s*\)\s*\{)',
+    b'function snapshot(){return {...futureWriterSnapshotForTest(),syntheticFutureField:"preserve-me"};}\n'
+    b'function futureWriterSnapshotForTest',
+    FUTURE,
+)
+assert snapshot_count == 1, 'The synthetic future client needs exactly one snapshot function.'
 
 
 def context(browser,clients):
