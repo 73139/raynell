@@ -21,7 +21,8 @@ function dockPlan(zone){
   const status=raid&&!field.result?(field.exits.includes('lift')?'이번 출격 배정':'이번 출격 미배정'):
     eligible?'다음 출격부터 상시 배정':'세 상자를 끝까지 수색하고 생환하면 다음 출격부터 배정';
   return '<details class="survey-map-journal" data-dock-plan><summary>하역 도크 화물 리프트 · 수색 기록 '+count+' / 3</summary>'+
-    '<p data-dock-status>'+status+'</p><ul>'+rows+'</ul><p>'+esc(exitBy('lift').desc)+' · 대기 '+exitBy('lift').sec+'초</p></details>';
+    '<p data-dock-status>'+status+'</p><ul>'+rows+'</ul><p>'+esc(exitBy('lift').desc)+' · 대기 '+exitBy('lift').sec+'초</p>'+
+    (eligible&&!raid?'<p data-dock-kit>출격 준비 가방 '+dockCapacityText(kitBagGrams(equipmentState.bag))+'</p>':'')+'</details>';
 }
 function dockLoadPanel(){
   const mass=kitBagGrams(field.bag);
@@ -57,4 +58,45 @@ function validDockBackup(s){
     if(receipt&&(!hasLift||!dockAtPlatform(f,r)||f.result!=='success'))return false;
   }
   return true;
+}
+
+function dockCapacityText(grams){
+  const delta=DOCK_LIFT_LIMIT-grams;
+  return dockWeight(grams)+' / '+dockWeight(DOCK_LIFT_LIMIT)+' · '+dockWeight(Math.abs(delta))+(delta<0?' 초과':' 여유');
+}
+function dockPackLabel(unit){
+  const name=unit.g==='cr_notes'?money(unit.amount)+' 지폐':kitName(unit.g);
+  return name+' · 가방 '+(unit.y+1)+'행 '+(unit.x+1)+'열';
+}
+function dockPrepManifest(kit,zoneId){
+  if(raid||zoneId!==2||!dockAccess(career.surveyedBoxes))return '';
+  const grams=kitBagGrams(kit.bag);
+  const rows=kit.bag.slice().sort((a,b)=>kitUnitGrams(b)-kitUnitGrams(a)||a.y-b.y||a.x-b.x).map(unit=>{
+    const label=esc(dockPackLabel(unit)),uid=esc(unit.uid);
+    return '<li><label><input type="checkbox" data-dock-omit="'+uid+'"><span>'+label+'<small>'+esc(kitUnitMassText(unit))+'</small></span></label>'+
+      '<button type="button" data-loadout="dock-review" data-uid="'+uid+'" aria-label="'+label+' 가방에서 보기">가방에서 보기</button></li>';
+  }).join('');
+  return '<details class="gm-readiness dock-manifest" data-dock-manifest><summary>출격 전 화물 리프트 · '+dockCapacityText(grams)+'</summary>'+
+    (rows?'<p>벙커에 두고 갈 물품을 체크하면 예상 중량을 계산합니다. 착용한 장비는 계량에서 제외합니다.</p><ul>'+rows+
+      '</ul><output aria-live="polite" data-dock-preview>예상 가방 '+dockCapacityText(grams)+'</output>':'<p>현재 가방이 비어 있습니다. 현장에서 더 담은 물품은 탑승 시 합산합니다.</p>')+'</details>';
+}
+function previewDockCargo(box){
+  if(page!=='prep'||raid||zone!==2||!dockAccess(career.surveyedBoxes))return;
+  const panel=box.closest('[data-dock-manifest]');
+  if(!panel)return;
+  const omitted=new Set(Array.from(panel.querySelectorAll('[data-dock-omit]:checked'),c=>c.dataset.dockOmit));
+  const remaining=equipmentState.bag.filter(u=>!omitted.has(u.uid));
+  panel.querySelector('[data-dock-preview]').textContent='예상 가방 '+dockCapacityText(kitBagGrams(remaining));
+}
+function reviewDockUnit(uid){
+  if(page!=='prep'||raid||zone!==2||!dockAccess(career.surveyedBoxes))return;
+  const unit=equipmentState.bag.find(item=>item.uid===uid);
+  if(!unit)return;
+  loMobilePanel.prep=1;
+  gearPick={uid,rot:false};
+  cashSelected=unit.g==='cr_notes'?uid:null;
+  renderKeep();
+  const tile=Array.from(document.querySelectorAll('[data-kit-grid] button')).find(b=>
+    b.dataset.gear==='select'&&b.dataset.unit===uid||b.dataset.cash==='select'&&b.dataset.uid===uid);
+  tile?.focus({preventScroll:true});tile?.scrollIntoView({block:'nearest'});
 }

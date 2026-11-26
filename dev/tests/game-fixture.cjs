@@ -29,7 +29,7 @@ const probe = `globalThis.game={
   onboarding:onboardingView, setGuide:setOnboardingMode,
   objective:resolveObjective, pin:setObjectivePin,
   searchOwned:searchPossessions, locateOwned:resolvePossession, renameCase:renameStorageCase,
-  cases:STORAGE_CASES,caseMove:caseTransfer,caseAllowed:caseAccepts,
+  cases:STORAGE_CASES,caseMove:caseTransfer,moveBetweenCases,caseAllowed:caseAccepts,
   periods:recurringPeriod, board:recurringBoard, cycleWork:recurringAction, draws:recurringLootFor,
   quests:TRADER_CONTRACTS, contract:contractAction, status:contractStatus, standing:traderStanding, goalLabel:contractGoalLabel,
   traders:MARKET_TRADERS, listed:marketGoods, quote:marketQuote, trade:marketTrade, accepts:marketBuys, get goods(){return GOODS},

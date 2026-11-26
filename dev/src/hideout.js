@@ -10,11 +10,16 @@ function wardRecord(record){
   return record!==null && typeof record==='object' && typeof record.registered==='boolean' &&
     Array.isArray(record.waiting) && record.waiting.every(wardUid) && new Set(record.waiting).size===record.waiting.length;
 }
-// Older profiles have three numbered recipes. The new named recipe can never reinterpret one of those jobs.
+// Numbered legacy jobs keep their indices. Earned recipes always store a name.
+function facilityRecipeKey(value){
+  return typeof value==='string'&&/^\d+$/.test(value)?Number(value):value;
+}
 function facilityRecipe(id,key){
+  if(id==='kitchen'&&isSurveyRecipe(key))return SURVEY_RECIPES[key];
   return id==='med' && key===WARD_RECIPE ? WARD_DRESSING : FACILITY_PRODUCTION[id]?.[key];
 }
 function facilityRecipeAvailable(id,key){
+  if(isSurveyRecipe(key))return id==='kitchen'&&surveyKitchenUnlocked(career.done,hideoutLevel('kitchen'));
   if(key===WARD_RECIPE)return id==='med' && hideout.wardManual.registered && hideoutLevel('med')>=1;
   return Number.isInteger(key) && key>=0 && key<hideoutLevel(id) && Boolean(facilityRecipe(id,key));
 }
@@ -216,9 +221,9 @@ function handleHideout(d) {
   }
   const building = d.hideout === 'build';
   if (!building && d.hideout !== 'produce') return;
-  const tier = Number(d.tier), index = d.recipe===WARD_RECIPE ? WARD_RECIPE : Number(d.recipe);
-  if (!building && index!==WARD_RECIPE && (!Number.isInteger(index) || index<0))return;
-  if (index===WARD_RECIPE && !writer){hideoutMessage='플레이 중인 탭에서 제작하세요.';renderKeep();return;}
+  const tier = Number(d.tier), index = facilityRecipeKey(d.recipe);
+  if (!building && !Number.isInteger(index) && index!==WARD_RECIPE && !isSurveyRecipe(index))return;
+  if (!building && !writer){hideoutMessage='플레이 중인 탭에서 제작하세요.';renderKeep();return;}
   const reason = building ? facilityBuildStatus(id,tier) : productionStatus(id,index);
   if (reason) {hideoutMessage=reason;renderKeep();return;}
   const job = building ? FACILITIES[id].levels[tier-1] : facilityRecipe(id,index);
@@ -287,12 +292,13 @@ function facilityProductionPanel(id) {
   if (!level || !list) return manual;
   const available=list.slice(0,level).map((recipe,i)=>[recipe,i]);
   if(id==='med' && hideout.wardManual.registered)available.push([WARD_DRESSING,WARD_RECIPE]);
+  if(id==='kitchen' && surveyKitchenUnlocked(career.done,level))available.push(...Object.entries(SURVEY_RECIPES).map(([key,recipe])=>[recipe,key]));
   const job = hideout.production[id];
   return manual+`<section class="facility-operations"><h3>시설 작업</h3>
     ${job ? `<p class="facility-current">${facilityRecipe(id,job.recipe).name} · ${facilityTimer(job.end)} 남음</p>` : ''}
     ${available.map(([r,i]) => {
       const status = productionStatus(id,i);
-      return `<div class="facility-recipe" data-production-recipe="${i}"><div><b>${r.name}</b>${productionIngredients(id,i,r.inputs)}<small>지급 · ${productionResult(r)}</small>${i===WARD_RECIPE?'<small>사용 시 체력 +'+(28+hideoutRecoveryBonus('hp'))+' · 한 칸에 휴대</small>':''}</div><button data-hideout="produce" data-id="${id}" data-recipe="${i}" ${status ? 'disabled' : ''}>${status || '시작'}<small>${hideoutTime(productionMs(r))}</small></button></div>`;
+      return `<div class="facility-recipe" data-production-recipe="${i}"><div><b>${r.name}</b>${productionIngredients(id,i,r.inputs)}<small>지급 · ${productionResult(r)}</small>${i===WARD_RECIPE?'<small>사용 시 체력 +'+(28+hideoutRecoveryBonus('hp'))+' · 한 칸에 휴대</small>':isSurveyRecipe(i)?surveyRecipeEffect(i):''}</div><button data-hideout="produce" data-id="${id}" data-recipe="${i}" ${status ? 'disabled' : ''}>${status || '시작'}<small>${hideoutTime(productionMs(r))}</small></button></div>`;
     }).join('')}
     <p class="mini-field">완료된 물품과 대금은 창고와 지갑에 자동 지급됩니다.</p></section>`;
 }

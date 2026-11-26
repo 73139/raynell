@@ -179,7 +179,7 @@ function prepView(){
   if(raid)return field.result?loResultLink():loHead('03','출격 준비','진행 중인 작전으로 복귀할 수 있습니다.')+'<button class="primary" data-page="raid">현장 복귀</button>'+objectivePanel('prep');
   const k=equipmentState,checks=[['주 장비',Boolean(k.worn.primary)],['방호복',Boolean(k.worn.armor)],['배낭',Boolean(k.worn.back)],['의료품',k.bag.some(u=>kitSupply(u.g)?.stat==='hp')],['수분 보급품',k.bag.some(u=>kitSupply(u.g)?.stat==='water')]];
   return '<div class="loadout-ui lo-prep"><button type="button" class="lo-deploy-shortcut" data-loadout="focus-deploy">출격 시작 버튼으로 이동</button>'+loHead('03','출격 준비','B-04 벙커 · '+FIELD_ZONES[zone].name,'<button data-page="presets">장비 프리셋·정비</button>')+loMsg()+
-    weatherBrief('prep',zone)+lootPlanLink(zone)+gearReadinessMarkup(k)+sortiePreflightMarkup(k,zone)+objectivePanel('prep')+loLayout('prep')+loWearPanel(k)+loBag(k,false)+'<section class="lo-pane lo-check">'+loTitle('출격 체크리스트')+
+    weatherBrief('prep',zone)+lootPlanLink(zone)+gearReadinessMarkup(k)+sortiePreflightMarkup(k,zone)+dockPrepManifest(k,zone)+objectivePanel('prep')+loLayout('prep')+loWearPanel(k)+loBag(k,false)+'<section class="lo-pane lo-check">'+loTitle('출격 체크리스트')+
     '<div class="lo-pane-body"><div class="lo-pair"><span>투입 지역</span><b>'+FIELD_ZONES[zone].name+'</b></div><div class="lo-pair"><span>작전 제한 시간</span><b>'+Math.round(RAID_DURATION_MS/60000)+'분</b></div>'+
     '<div class="lo-pair" data-prep-cash><span>반입 지폐</span><b>'+money(cashSum(k.bag))+'</b></div><h3>장비 상태</h3>'+
     '<ul>'+checks.map(([label,ok])=>'<li><span>'+label+'</span><b class="'+(ok?'ready':'')+'">'+(ok?'확보 ✓':'미휴대')+'</b></li>').join('')+'</ul><p>착용 장비와 가방을 현장에 반입합니다. 탈출 실패 시 반입품과 전리품을 잃습니다.</p>'+
@@ -237,6 +237,7 @@ function loUseQuick(i,keyboard=false){
   handleEquipment({gear:'consume',unit:unit.uid});
 }
 function handleLoadoutUI(d){
+  if(d.loadout==='dock-review')return reviewDockUnit(d.uid);
   if(d.loadout==='pin-position')return toggleStashPin(d.uid);
   const sortKeyboard=d.loadout==='sort'&&document.activeElement?.matches?.('[data-loadout="sort"]:focus-visible');
   if(d.loadout==='focus-deploy'){
@@ -415,3 +416,5 @@ inside.addEventListener('keydown',event=>{
   const y=Math.min(rows-1,Math.max(0,Number(cell.dataset.y)+offset[1]));
   focusFieldControl('button[data-cell="bag"][data-x="'+x+'"][data-y="'+y+'"]');
 });
+
+inside.addEventListener('change',event=>{if(event.target.matches?.('[data-dock-omit]'))previewDockCargo(event.target);});

@@ -29,6 +29,13 @@ function exitAvailability(exit, now) {
   if (active?.type === 'extract' && active.exit === exit.id) {
     return pointStatus(exit, active.end, false);
   }
+  if (raid.zone !== exit.zone && !field.journey) {
+    if (passageClosed(raid.zone, exit.zone)) return '직행로 차단';
+    const road = routeProfile(raid.zone, exit.zone);
+    const arrival = now + road.distance * routeStepDuration(road);
+    if (arrival >= raid.endsAt) return '도착 전 작전 종료';
+    return exitCondition(exit, arrival);
+  }
   return exitCondition(exit, now);
 }
 function exitForecast(exit, now) {
@@ -79,6 +86,7 @@ function exitPanel() {
     const waiting = field.action?.type === 'extract' && field.action.exit === exit.id;
     const window = exit.rule === 'train' ? trainWindow().map(t => formatRaid(raid.endsAt - t)).join(' → ') : '';
     const forecast = here ? exitForecast(exit, now) : '';
+    const status = (here ? '' : '직행 도착 기준 · ') + (reason || (waiting ? '탈출 대기 중' : '이용 가능'));
     let fare = exit.rule==='cargo'?dockLoadPanel():'';
     if (exit.rule === 'pay') {
       const carried = cashSum(field.bag);
@@ -88,9 +96,9 @@ function exitPanel() {
     }
     const closed=!here&&passageClosed(raid.zone,exit.zone);
     const data = here ? 'data-field="extract" data-exit="' + exit.id + '"' : 'data-field="move" data-index="' + exit.zone + '"';
-    return `<div class="exit-card"><div><span class="mono">EXIT / ${exit.id.toUpperCase()}</span><h3>${exit.name}</h3><p>${FIELD_ZONES[exit.zone].name} · ${exit.sec}초</p><p>${exit.desc}${window ? ' · 남은 레이드 시간 ' + window : ''}</p><b class="${reason ? 'exit-warn' : 'exit-ok'}">${reason || (waiting ? '탈출 대기 중' : '이용 가능')}</b>${fare}${here ? '<p data-exit-forecast="' + exit.id + '"' + (forecast ? '' : ' hidden') + '>' + esc(forecast) + '</p>' : ''}</div><button ${data} ${field.action || closed || (here && reason) ? 'disabled' : ''}>${here ? (waiting ? '탈출 대기 중' : '탈출 시작') : closed?'시험 차단 · 창고 경유 가능':'지역 이동 · ' + routeTimeLabel(raid.zone, exit.zone)}</button></div>`;
+    return `<div class="exit-card"><div><span class="mono">EXIT / ${exit.id.toUpperCase()}</span><h3>${exit.name}</h3><p>${FIELD_ZONES[exit.zone].name} · ${exit.sec}초</p><p>${exit.desc}${window ? ' · 남은 레이드 시간 ' + window : ''}</p><b class="${reason ? 'exit-warn' : 'exit-ok'}">${status}</b>${fare}${here ? '<p data-exit-forecast="' + exit.id + '"' + (forecast ? '' : ' hidden') + '>' + esc(forecast) + '</p>' : ''}</div><button ${data} ${field.action || closed || (here && reason) ? 'disabled' : ''}>${here ? (waiting ? '탈출 대기 중' : '탈출 시작') : closed?'시험 차단 · 창고 경유 가능':'지역 이동 · ' + routeTimeLabel(raid.zone, exit.zone)}</button></div>`;
   }).join('');
-  return `<section class="field-section"><h2>탈출구 <small>${field.exits.length}곳 배정</small></h2><p class="mini-field">탈출 위치로 이동한 뒤 대기 시간이 끝나야 귀환합니다. 탈출 비용은 성공 시 정산합니다.</p><div class="exit-list">${cards}</div>${exitNotice ? '<p class="exit-warn" role="status">' + exitNotice + '</p>' : ''}<button data-field="abandon" ${field.action ? 'disabled' : ''}>레이드 포기</button></section>`;
+  return `<section class="field-section"><h2>탈출구 <small>${field.exits.length}곳 배정</small></h2><p class="mini-field">탈출 위치로 이동한 뒤 대기 시간이 끝나야 귀환합니다. 다른 지역은 지금 직행할 때의 조건을 표시합니다. 길목에서 보급이나 교전으로 지체되면 도착이 늦어집니다. 탈출 비용은 성공 시 정산합니다.</p><div class="exit-list">${cards}</div>${exitNotice ? '<p class="exit-warn" role="status">' + exitNotice + '</p>' : ''}<button data-field="abandon" ${field.action ? 'disabled' : ''}>레이드 포기</button></section>`;
 }
 function summaryPage(){return resultPage()}
 function stashPage(){return storagePage()}
@@ -408,17 +416,32 @@ function catalogReturnButton(){
   if(constructionCatalogOrigin)return '<button type="button" data-db="plan-return">‹ 전체 건설 견적으로</button>';
   return reliefCatalogBack()||archiveCatalogBack();
 }
-function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${catalogReturnButton()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id||archiveCatalogOrigin===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
+function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${catalogReturnButton()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><button type="button" data-db="list-return">‹ 물품 목록으로</button><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id||archiveCatalogOrigin===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
 function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin||archiveCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
 function facilityDetail(){return bunkerFacilityDetail()}
 function bunkerPage(){return bunkerHubPage()}
 function handleDB(d){
   if(d.db==='prev'||d.db==='next'){
-    catalogOffset=Math.max(0,catalogOffset+(d.db==='next'?24:-24));$('#db-results').innerHTML=catalogResults();return;
+    catalogOffset=Math.max(0,catalogOffset+(d.db==='next'?24:-24));$('#db-results').innerHTML=catalogResults();
+    // Replacing the pager removes the active element. At either boundary use the still-enabled direction.
+    const next=$('#db-results [data-db="'+d.db+'"]:not(:disabled)')||$('#db-results [data-db="'+(d.db==='next'?'prev':'next')+'"]:not(:disabled)');
+    (next||$('#db-query'))?.focus?.({preventScroll:true});
+    return;
   }
-  if(d.db==='item'&&GOODS[d.id]){
+  if(d.db==='item'&&Object.hasOwn(GOODS,d.id)){
     procurementNote='';catalogSelected=d.id;$('#db-detail').innerHTML=catalogDetail();$('#db-results').innerHTML=catalogResults();
-    if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});return;
+    const heading=$('#db-detail .db-detail-title h2');
+    heading?.setAttribute?.('tabindex','-1');
+    heading?.focus?.({preventScroll:true});
+    if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});
+    else heading?.scrollIntoView?.({block:'nearest'});
+    return;
+  }
+  if(d.db==='list-return'&&page==='catalog'){
+    const tile=catalogSelected&&Object.hasOwn(GOODS,catalogSelected)?$('#db-results [data-db="item"][data-id="'+catalogSelected+'"]'):null;
+    const target=tile||$('#db-query');
+    target?.focus?.({preventScroll:true});target?.scrollIntoView?.({block:'nearest'});
+    return;
   }
   if(d.db==='archive-return'){
     if(archiveCatalogOrigin&&['catalog','lootplan'].includes(page))returnToArchiveItem(archiveCatalogOrigin);
@@ -470,7 +493,7 @@ function handleDB(d){
       reliefCatalogOrigin={kind:d.kind,item:d.id,filter:bunkerOrderFilter};
     }else reliefCatalogOrigin=null;
     if(d.db==='craft-ingredient'){
-      const recipe=d.recipe===WARD_RECIPE?WARD_RECIPE:Number(d.recipe);
+      const recipe=facilityRecipeKey(d.recipe);
       if(page!=='facility'||d.facility!==facilitySelected||!facilityRecipeAvailable(d.facility,recipe))return;
       const inputs=facilityRecipe(d.facility,recipe).inputs;
       if(!Object.hasOwn(inputs,d.id)||stashUnfittedCount(d.id)>=inputs[d.id])return;
@@ -478,7 +501,7 @@ function handleDB(d){
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
     page='catalog';save();render();
-    const back=$('#db-detail [data-db$="-return"]');
+    const back=$('#db-detail [data-db$="-return"]:not([data-db="list-return"])');
     if(back){back.focus({preventScroll:true});back.scrollIntoView({block:'start'});}
     else $('.content').scrollTop=0;
     return;
@@ -516,6 +539,7 @@ function render(){
     const scrollAreas=current===lastContentView&&(page==='inventory'||page==='stash'||page==='trade')?captureStashScroll():null;
     content.dataset.view=page;
     shellNavRender();
+    const relocationView=scrollAreas?captureCaseRelocation():null;
     const possessionEditor=capturePossessionEditor();
     const archiveView=page==='bunker'&&current===lastContentView?captureArchiveView():null;
     const guideFocus=captureOnboardingFocus();
@@ -533,6 +557,7 @@ function render(){
       '<p role="status">'+esc(raidAckFeedback)+'</p>':'';
     content.innerHTML=onboardingPanel(page)+returnStatus+(page==='raid' && raid && !field.result ? finaleFieldPanel()+survivorFieldPanel() : '')+(screenViews[page]||commandHome)();
     if(scrollAreas?.size)restoreStashScroll(scrollAreas);
+    restoreCaseRelocation(relocationView);
     restorePossessionEditor(possessionEditor);
     restoreOnboardingFocus(guideFocus);
     restorePresetFocus(presetFocus);

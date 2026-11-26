@@ -31,3 +31,5 @@ python3 pack_source.py
 ## 실제 시간으로 플레이하기
 
 Python Playwright와 Chromium을 설치한 뒤 저장소 루트에서 `python3 tests/live-exploration.py --state-dir <저장소 밖 전용 폴더> --until <시간대가 포함된 미래 ISO 시각>`을 실행하면 기본 시계와 난수로 현장 의뢰·거점 수색·거래를 반복하고 결과를 `events.jsonl`에 기록합니다. 같은 폴더와 종료 시각으로 재개할 수 있으며, 그 폴더에 `stop.request`를 만들면 현재 출격 정산 후 멈추고 `refresh.request`를 만들면 진행 중인 출격에서 공개 빌드를 다시 확인합니다.
+
+격리된 빌드 검증에는 같은 명령에 `--local-html rustline-web/index.html`을 추가합니다. 테스트 전용 대원의 브라우저는 오프라인으로 실행되며 요청한 게임 문서를 로컬 파일에서 읽습니다. 기본 시계와 난수, 수색과 탈출 시간은 실제 플레이와 같습니다. 새 빌드를 확인하려면 HTML을 교체한 뒤 `refresh.request`를 만듭니다. `release.json`에는 확인한 HTML의 SHA-256, `mission.json`에는 현재 출격, `events.jsonl`에는 재시작과 귀환 영수증이 기록됩니다. 인계 시 같은 상태 디렉터리와 종료 시각으로 재개하면 됩니다.

@@ -13,6 +13,10 @@ function lift(b){go(b,'extract',{exit:'lift'});}
 const allowed=b=>b.g.s.field.exits.includes('lift');
 async function main(){
   const unearned=openProfile([]),earned=openProfile();
+  unearned.g.moveNow(2);unearned.click({page:'prep'});assert.doesNotMatch(unearned.content(),/data-dock-manifest/);
+  for(const zone of [0,1]){
+    earned.g.moveNow(zone);earned.click({page:'prep'});assert.doesNotMatch(earned.content(),/data-dock-manifest/);
+  }
   for(const n of [0,.1,.33,.49,.66,.98]){
     unearned.setRandom(n);earned.setRandom(n);
     const a=clone(unearned.g.shuffle()),b=clone(earned.g.shuffle());
@@ -51,7 +55,14 @@ async function main(){
     [['rl_x_core','rl_01_08','rl_01_08','rl_01_06',...Array(9).fill('food'),'bandage'],4001],
     [[],0]
   ]){
-    const b=openProfile(registered,items),g=b.g;start(b);assert.ok(allowed(b));valid(g);
+    const b=openProfile(registered,items),g=b.g;
+    g.moveNow(2);const before=clone(g.s);b.click({page:'prep'});
+    const size=(grams/1000).toFixed(3)+' kg',margin=(Math.abs(4000-grams)/1000).toFixed(3)+' kg';
+    assert.ok(b.content().includes(size+' / 4.000 kg · '+margin+(grams>4000?' 초과':' 여유')));
+    assert.equal((b.content().match(/data-dock-omit=/g)||[]).length,items.length);
+    assert.deepEqual(clone(g.s),before);
+    start(b);assert.ok(allowed(b));valid(g);
+    b.click({page:'prep'});assert.doesNotMatch(b.content(),/data-dock-manifest/);
     assert.match(g.condition('lift'),/하역 도크/);site(b,1);
     assert.equal(g.s.field.bag.reduce((a,u)=>a+g.kitUnitGrams(u),0),grams);
     lift(b);
@@ -75,7 +86,9 @@ async function main(){
   {
     const b=openProfile(),g=b.g,kit=clone(g.s);
     const lamp=g.unit('flash');lamp.gear.module='battery';kit.equipment.bag=[{...lamp,x:0,y:0}];
-    const q=boot({[v12]:kit});start(q);site(q,1);lift(q);finish(q);
+    const q=boot({[v12]:kit});q.g.moveNow(2);q.click({page:'prep'});
+    assert.ok(q.content().includes('0.500 kg / 4.000 kg · 3.500 kg 여유'));
+    start(q);site(q,1);lift(q);finish(q);
     assert.equal(q.g.s.lastSummary.liftGrams,500);
     const restored=q.g.s.stashSlots.find(u=>u.g==='flash');assert.equal(restored.gear.module,'battery');
   }

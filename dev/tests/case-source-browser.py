@@ -9,7 +9,7 @@ KEY='rl-reboot-session-v36'
 
 def play(browser,width):
     mobile=width==390
-    with browser.new_context(viewport={'width':width,'height':850},is_mobile=mobile,has_touch=mobile,service_workers='block') as ctx:
+    with browser.new_context(viewport={'width':width,'height':850},is_mobile=mobile,has_touch=mobile,offline=True,service_workers='block') as ctx:
         data=(ROOT/'index.html').read_bytes()
         ctx.route('**/*',lambda r:r.fulfill(body=data,content_type='text/html; charset=utf-8') if r.request.url.split('#')[0]==GAME else r.abort())
         p=ctx.new_page();p.set_default_timeout(10000)
@@ -59,8 +59,27 @@ def play(browser,width):
         assert end['stash']==before['stash'] and end['wallet']==before['wallet']
         assert contents(end,case)==contents(before,case) and contents(end,other)==contents(before,other)
         expect(tile(uid)).to_be_visible()
+        # Transfer the selected bottle straight to another named case. Both cases hold water.
+        select(tile(other))
+        toggle=p.locator(f'[data-stash=case-open][data-box="{other}"]')
+        if toggle.count():select(toggle)
+        select(p.get_by_text('다른 보관함으로 옮기기',exact=True))
+        item_selector=p.locator(f'[data-case-source="{other}"]')
+        item_selector.select_option('s-water-a')
+        receiver=p.locator(f'[data-stash=case-relocate][data-from="{other}"][data-box="{case}"]')
+        expect(receiver).to_contain_text('비상 식수')
+        expect(receiver).to_have_attribute('data-unit','s-water-a')
+        select(receiver)
+        moved=p.locator(f'[data-stash=case-take][data-box="{case}"][data-unit="s-water-a"]')
+        expect(moved).to_be_focused()
+        expect(p.locator('.content [role=status]').filter(has_text='보관함 이동 완료').first).to_be_visible()
+        p.reload(wait_until='domcontentloaded')
+        final=saved()
+        assert final['wallet']==end['wallet'] and final['stash']==end['stash']
+        assert [v['uid'] for v in contents(final,other)]==['s-can']
+        assert [v['uid'] for v in contents(final,case)]==['s-tea','s-water-b','s-water-a']
         assert not errors,errors
-        print(f'PASS {width}px: selected original loose water despite two queued copies, chose named food case, preserved the other case, reloaded twice and recovered the same UID.',flush=True)
+        print(f'PASS {width}px: selected original loose water despite two queued copies, chose named food case, preserved the other case, recovered the same UID, then transferred a selected bottle directly between named cases and reloaded.',flush=True)
 
 if __name__=='__main__':
     with sync_playwright() as p,p.chromium.launch(executable_path=os.getenv('RUSTLINE_CHROMIUM')) as browser:

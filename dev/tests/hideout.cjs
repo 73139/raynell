@@ -5,9 +5,9 @@ const db = JSON.parse(fs.readFileSync('Rustline_Database_v10.json','utf8'));
 const html = fs.readFileSync('index.html','utf8').split('\n');
 const goods = JSON.parse(html.find(l=>l.startsWith('const GOODS=')).replace(/^const GOODS=/,'').replace(/;$/,''));
 const stashScript = (fs.readFileSync('src/stash.js','utf8')+'\n'+fs.readFileSync('src/gear-instances.js','utf8'));
-const hideoutScript = ['hideout','ward-trial'].map(name=>fs.readFileSync('src/'+name+'.js','utf8')).join('\n');
+const hideoutScript = ['hideout','ward-trial','ration-survey'].map(name=>fs.readFileSync('src/'+name+'.js','utf8')).join('\n');
 const ctx = vm.createContext({console, assert, GOODS:goods, FACILITIES:db.hideout.facilities, FACILITY_PRODUCTION:db.hideout.production,
-  inside:{addEventListener(){}}, crypto:require('node:crypto').webcrypto});
+  inside:{addEventListener(){}}, career:{done:[]}, writer:true, crypto:require('node:crypto').webcrypto});
 vm.runInContext(`let settlementNeedsCommit=false,stash={},raid=null,field={},wallet=0,now=10000;Date.now=()=>now;
   const money=n=>n+' CR',ico=()=>'',itemSources=()=>'',head=()=>'',esc=s=>s,renderKeep=()=>{},persist=()=>{};
   let facilitySelected='power',facilityTier=1;

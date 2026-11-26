@@ -21,3 +21,7 @@
 .sc-targets{margin:.55rem 0}
 .sc-targets>summary{cursor:pointer;min-height:44px;padding:.65rem 0}
 .sc-targets>.sc-stock{width:100%;min-height:44px;margin:.2rem 0}
+
+.sc-source,.sc-target-list{display:grid;gap:.35rem}
+.sc-source{color:#dce2d6;font-size:.84rem;margin-bottom:.45rem}
+.sc-source select{width:100%;min-width:0;min-height:44px;color:inherit;background:#202a2a;border:1px solid #687567}

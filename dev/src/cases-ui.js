@@ -1,19 +1,75 @@
 // A case opens in the same detail pane as its physical warehouse item.
 let openedCaseUid=null;
 
+function otherCasesFor(unit,sourceUid) {
+  return stashSlots.filter(box=>box.uid!==sourceUid && caseAccepts(box.g,unit.g));
+}
+function caseDestinationButtons(unit,boxes,sourceUid) {
+  return boxes.map(box=>{
+    const fits=kitFit(box.contents||[],STORAGE_CASES[box.g].size,unit);
+    const label=esc(caseDisplayName(box))+' · '+(box.y+1)+'행 '+(box.x+1)+'열';
+    const action=sourceUid?'case-relocate':'case-pack-selected';
+    const source=sourceUid?' data-from="'+esc(sourceUid)+'"':'';
+    return '<button type="button" class="sc-stock" data-stash="'+action+'" data-box="'+esc(box.uid)+'" data-unit="'+esc(unit.uid)+'"'+source+
+      (fits?'':' disabled')+'><span>'+label+'</span><b>'+(fits?(sourceUid?'옮기기':'넣기'):'공간 부족')+'</b></button>';
+  }).join('');
+}
 function caseDestinations(unit){
   if(!writer||raid||unit.uid==='overflow'||unit.g==='cr_notes')return '';
-  const boxes=stashSlots.filter(box=>caseAccepts(box.g,unit.g));
+  const boxes=otherCasesFor(unit,null);
   if(!boxes.length)return '';
-  const name=esc(kitName(unit.g));
-  const destinations=boxes.map(box=>{
-    const size=STORAGE_CASES[box.g].size,contents=box.contents||[];
-    const fits=firstFit(contents,size,unit.w,unit.h)||(unit.w!==unit.h&&firstFit(contents,size,unit.h,unit.w));
-    const label=esc(caseDisplayName(box))+' · '+(box.y+1)+'행 '+(box.x+1)+'열';
-    return '<button type="button" class="sc-stock" data-stash="case-pack-selected" data-box="'+esc(box.uid)+'" data-unit="'+esc(unit.uid)+'"'+
-      (fits?'':' disabled')+'><span>'+label+'</span><b>'+(fits?'넣기':'공간 부족')+'</b></button>';
-  }).join('');
-  return '<details class="sc-targets" data-case-destinations><summary>보관함에 넣기 · '+name+'</summary>'+destinations+'</details>';
+  return '<details class="sc-targets" data-case-destinations><summary>보관함에 넣기 · '+esc(kitName(unit.g))+'</summary>'+
+    caseDestinationButtons(unit,boxes,null)+'</details>';
+}
+function caseRelocationPanel(box) {
+  const items=(box.contents||[]).filter(unit=>otherCasesFor(unit,box.uid).length);
+  if(!items.length)return '';
+  const options=items.map(unit=>'<option value="'+esc(unit.uid)+'">'+esc(kitName(unit.g))+' · '+(unit.y+1)+'행 '+(unit.x+1)+'열</option>').join('');
+  return '<details class="sc-targets"><summary>다른 보관함으로 옮기기</summary><label class="sc-source">옮길 물품'+
+    '<select data-case-source="'+esc(box.uid)+'">'+options+'</select></label><div class="sc-target-list" data-case-receivers>'+
+    caseDestinationButtons(items[0],otherCasesFor(items[0],box.uid),box.uid)+'</div></details>';
+}
+function refreshCaseReceivers(select) {
+  const box=selectedStashUnit();
+  if(!box||!writer||raid||box.uid!==select.dataset.caseSource||openedCaseUid!==box.uid)return;
+  const item=box.contents?.find(unit=>unit.uid===select.value);
+  select.closest('details').querySelector('[data-case-receivers]').innerHTML=item
+    ?caseDestinationButtons(item,otherCasesFor(item,box.uid),box.uid)
+    :'<p role="status">선택한 물품을 옮길 수 없습니다. 물품을 다시 선택하세요.</p>';
+}
+inside.addEventListener('change',event=>{
+  if(event.target.dataset.caseSource)refreshCaseReceivers(event.target);
+});
+
+function captureCaseRelocation() {
+  const select=$('select[data-case-source]');
+  if(!select?.dataset.caseSource)return null;
+  const details=select.closest('details'),active=document.activeElement;
+  return {source:select.dataset.caseSource,item:select.value,open:details.open,
+    focus:details.contains(active)?(active.dataset.box||active.tagName):null};
+}
+function restoreCaseRelocation(view) {
+  if(!view||view.source!==openedCaseUid||selectedStashUnit()?.uid!==view.source)return;
+  const select=$('select[data-case-source]');
+  if(select?.dataset.caseSource!==view.source){
+    if(view.focus)$('[data-stash="case-close"][data-box="'+view.source+'"]')?.focus({preventScroll:true});
+    return;
+  }
+  const details=select.closest('details');
+  details.open=view.open;
+  if(select.value!==view.item){
+    select.value=view.item;
+    if(!select.value){
+      select.insertAdjacentHTML('afterbegin','<option disabled value="">물품을 다시 선택하세요</option>');
+      select.value='';
+    }
+    refreshCaseReceivers(select);
+  }
+  if(view.focus){
+    const target=view.focus==='SUMMARY'?details.querySelector('summary'):
+      [...details.querySelectorAll('[data-stash="case-relocate"]:enabled')].find(button=>button.dataset.box===view.focus);
+    (target||select).focus({preventScroll:true});
+  }
 }
 function packSelectedCase(d,unit){
   if(!unit||unit.uid==='overflow'||unit.uid!==d.unit||!writer||raid)return;
@@ -63,7 +119,7 @@ function casePanelMarkup(unit){
     body+='<div class="sc-scroll" tabindex="0" role="region" aria-label="'+esc(gridLabel)+'" data-scroll-key="case-grid-'+box+'">'+
       '<div class="sc-grid" style="--sc-cols:'+cols+';--sc-rows:'+rows+'">'+tiles+'</div></div>';
     if(canMove){
-      if(contents.length)body+='<p>내부 물품을 누르면 창고로 꺼냅니다.</p>';
+      if(contents.length)body+='<p>내부 물품을 누르면 창고로 꺼냅니다.</p>'+caseRelocationPanel(unit);
       const ids=Object.keys(stash).filter(id=>stashCount(id)>0&&caseAccepts(unit.g,id));
       ids.sort((a,b)=>GOODS[a][0].localeCompare(GOODS[b][0],'ko'));
       const choices=ids.map(id=>{
@@ -85,6 +141,21 @@ function handleCaseUI(d){
   if(page!=='stash'&&page!=='inventory')return;
   const unit=selectedStashUnit();
   if(d.stash==='case-pack-selected')return packSelectedCase(d,unit);
+  if(d.stash==='case-relocate'){
+    if(!unit||unit.uid!==d.from||openedCaseUid!==d.from||!writer||raid||
+      $('select[data-case-source]')?.value!==d.unit)return;
+    const result=moveBetweenCases(d.from,d.box,d.unit);
+    stashNotice=result.message;
+    if(result.ok){
+      const to=stashSlots.find(box=>box.uid===d.box);
+      stashSelection={id:to.g,uid:to.uid,rot:false};
+      openedCaseUid=to.uid;
+    }
+    renderKeep();
+    const target=result.ok?$('[data-stash="case-take"][data-box="'+d.box+'"][data-unit="'+d.unit+'"]'):$('[data-case-uid="'+unit.uid+'"]');
+    target?.focus?.({preventScroll:true});target?.scrollIntoView?.({block:'nearest'});
+    return;
+  }
   if(!unit||unit.uid==='overflow'||unit.uid!==d.box||!Object.hasOwn(STORAGE_CASES,unit.g))return;
   const keyboard=document.activeElement?.matches?.(':focus-visible');
   switch(d.stash){

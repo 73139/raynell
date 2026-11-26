@@ -156,7 +156,7 @@ const ORDERS = [
     get cr(){return passageRate().cr;},get xp(){return passageRate().xp;},goal:'방향 확정 후 다음 출격에서 통행 복구',target:2,
     progress:()=>Number(Boolean(career.gateTest))+Number(Boolean(field.gateTest?.fix))},
   {id:'ration-survey',after:'scout',image:'bunker-kitchen',issuer:'벙커 급양반',title:'원정 급양표',
-    text:'서로 다른 두 권역의 거점에서, 가방이나 주머니의 식량과 음료를 한 번씩 사용해 회복량을 측정하세요. 각각 실제로 5 이상, 두 번 합쳐 20 이상 회복하고 정상 탈출하면 수당을 받습니다. 같은 권역의 같은 종류는 가장 높은 기록 한 건만 남습니다. 길 위 보급은 측정하지 않습니다. 어느 권역에서 먼저 먹거나 마실지는 자유입니다.',
+    text:'서로 다른 두 권역의 거점에서, 가방이나 주머니의 식량과 음료를 한 번씩 사용해 회복량을 측정하세요. 각각 실제로 5 이상, 두 번 합쳐 20 이상 회복하고 정상 탈출하면 수당을 받습니다. 같은 권역의 같은 종류는 가장 높은 기록 한 건만 남습니다. 길 위 보급은 측정하지 않습니다. 완료하면 조리 시설 Lv.1에서 귀리죽과 식염 음료를 두 개씩 소분할 수 있습니다.',
     cr:36000,xp:125,goal:'서로 다른 두 권역에서 식량·음료로 회복한 합계',target:20,progress:()=>rationPair(field.rationUses)?.gain||0}
 ];
 let career,orderFeedback='',raidAckFeedback='';

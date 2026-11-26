@@ -85,7 +85,10 @@ def play(browser, width):
             expect(panel).to_contain_text('4.000 kg')
             assert panel.evaluate('e=>e.scrollWidth<=e.clientWidth+1')
         def start():
-            select_map();press('.command-deploy[data-page=prep]');press('.lo-deploy[data-raid=start]')
+            select_map();press('.command-deploy[data-page=prep]')
+            if not page.locator('.lo-deploy[data-raid=start]:visible').count():
+                press('[data-loadout=mobile-tab][data-screen=prep][data-index="2"]')
+            press('.lo-deploy[data-raid=start]')
             assert saved()['raid']['zone']==2
         def site(index):
             if saved()['field']['landmarkByZone'][2]==index:return
@@ -121,6 +124,37 @@ def play(browser, width):
         page.goto(URL+'#stash');stock=[u['uid'] for u in saved()['stashSlots'] if u['g']=='rl10_vest']
         for uid in stock:
             press(f'[data-stash=select][data-uid="{uid}"]');press(f'[data-gear=pack][data-unit="{uid}"]')
+        select_map()
+        map_card=page.locator('[data-dock-plan]')
+        if not map_card.evaluate('e=>e.open'):press('[data-dock-plan] summary')
+        expect(map_card.locator('[data-dock-kit]')).to_contain_text('4.200 kg / 4.000 kg · 0.200 kg 초과')
+        press('.command-deploy[data-page=prep]')
+        manifest=page.locator('[data-dock-manifest]')
+        press('[data-dock-manifest] summary')
+        expect(manifest.locator('summary')).to_contain_text('0.200 kg 초과')
+        before=saved()
+        copies=[u['uid'] for u in before['equipment']['bag'] if u['g']=='rl10_vest']
+        assert len(copies)==2
+        boxes=manifest.locator('input[type=checkbox]')
+        boxes.nth(0).check()
+        expect(manifest.locator('output')).to_contain_text('2.100 kg / 4.000 kg · 1.900 kg 여유')
+        screenshot(manifest,'preflight-one-vest')
+        boxes.nth(1).check()
+        expect(manifest.locator('output')).to_contain_text('0.000 kg')
+        boxes.nth(0).uncheck()
+        assert saved()==before
+        chosen=copies[1]
+        press(f'[data-loadout=dock-review][data-uid="{chosen}"]')
+        expect(page.locator(f'[data-kit-grid] [data-gear=select][data-unit="{chosen}"]')).to_be_focused()
+        assert saved()==before
+        press('[data-gear=unpack]')
+        now=saved()
+        assert now['stash']['rl10_vest']==1 and [u['uid'] for u in now['equipment']['bag']]==[copies[0]]
+        expect(page.locator('[data-dock-manifest] summary')).to_contain_text('2.100 kg')
+        page.goto(URL+'#stash',wait_until='domcontentloaded')
+        packed=next(u for u in saved()['stashSlots'] if u['g']=='rl10_vest')
+        press(f'[data-stash=select][data-uid="{packed["uid"]}"]')
+        press(f'[data-gear=pack][data-unit="{packed["uid"]}"]')
         start();initial=saved();ids=[u['uid'] for u in initial['field']['bag'] if u['g']=='rl10_vest']
         assert len(ids)==2 and initial['raid']['startedAt']!=first and initial['field']['exits'].count('lift')==1
         press_lift='[data-field=extract][data-exit=lift]'

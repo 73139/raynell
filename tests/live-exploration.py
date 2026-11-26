@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
-"""Play alternating Rustline sorties on the public client using its own clock and RNG.
+"""Play alternating Rustline sorties with the game's own clock and RNG.
 
 Use a dedicated empty state directory outside the repository. Resume with the
-same directory, URL and absolute cutoff. RUSTLINE_CHROMIUM may name an installed
+same directory, source mode and absolute cutoff. Pass --local-html for a fully
+offline run against a self-contained local build. RUSTLINE_CHROMIUM may name an installed
 Chromium, otherwise use Playwright's Chromium. RUSTLINE_PROXY and an explicit
 RUSTLINE_IGNORE_HTTPS_ERRORS=1 support local test proxies.
 Create stop.request to pause after the current sortie, then remove it to resume.
-Create refresh.request to navigate the running browser to the latest public build.
+Create refresh.request to load updated bytes from the same source.
 Exit 0 means a complete sortie was observed, 1 a game invariant failed, 2 invalid
 configuration or another running instance, and 3 incomplete observations.
 """
@@ -26,6 +27,7 @@ from urllib.parse import urlsplit
 from uuid import uuid4
 
 DEFAULT_URL = "https://rustline-protocol-web.onrender.com/"
+OFFLINE_URL = "https://rustline-exploration.invalid/"
 MARKER = "exploration-owner.json"
 MARKER_FORMAT = "rustline-live-exploration-1"
 PROFILE_TAG = "rustline-profile-owner.json"
@@ -144,8 +146,9 @@ def exclusive(path, url, end):
 
 
 class Journal:
-    def __init__(self, root, url, end):
+    def __init__(self, root, url, end, local_html=None):
         self.root, self.url, self.end = root, url, end
+        self.local_html = local_html
         owner = self.read(MARKER)
         if not (root / MARKER).exists():
             owner = dict(format=MARKER_FORMAT, token=uuid4().hex, url=url, cutoff=end)
@@ -249,15 +252,15 @@ class Exploration:
         raise Verdict("No visible navigation to "+page)
 
     def load(self):
-        # Once per 15 minutes and on reconnect, check actual public bytes. In between,
+        # Once per 15 minutes and on reconnect, check the selected build. In between,
         # hash navigation and reads stay inside this loaded document.
         live_before=self.state() if self.current else None
         r=self.p.goto(self.j.url+"?qa=exploration-"+str(time.time_ns())+"#map",wait_until="domcontentloaded",timeout=self.j.budget(70000))
         if not r or not r.ok:
-            raise Access("Public navigation HTTP "+str(r.status if r else "no response"))
+            raise Access("Game navigation HTTP "+str(r.status if r else "no response"))
         data=r.body()
         key=KEY.search(data)
-        check(key and "RUSTLINE" in self.p.title(), "Unrecognized public HTML or save key")
+        check(key and "RUSTLINE" in self.p.title(), "Unrecognized game HTML or save key")
         self.key=key.group(1).decode()
         self.p.wait_for_function("k=>!!localStorage.getItem(k)",arg=self.key,timeout=self.j.budget(12000))
         sha=hashlib.sha256(data).hexdigest()
@@ -285,13 +288,17 @@ class Exploration:
             active=self.state()
             old_id=live_before["raid"]["startedAt"]
             reached=(active["summary"] or {}).get("raidId")==old_id
-            check((active["raid"] or {}).get("startedAt")==old_id or reached,"Public reload lost current sortie")
+            check((active["raid"] or {}).get("startedAt")==old_id or reached,"Reload lost current sortie")
             if not reached:
                 check(set(live_before["completed"]).issubset(active["completed"]),"Reload lost completed searches")
             self.j.emit("page-reload-in-raid",raidId=old_id,completedBefore=live_before["completed"],
                  completedAfter=active["completed"],settled=reached,release=sha)
         (self.j.root/"refresh.request").unlink(missing_ok=True)
-        self.j.emit("public-http",status=r.status,**self.current)
+        if self.j.local_html is not None:
+            check(not self.p.evaluate("navigator.onLine"), "Offline browser reports an active network")
+            self.j.emit("local-html", transport="offline-local-intercept", **self.current)
+        else:
+            self.j.emit("public-http", status=r.status, **self.current)
         mission=self.j.read("mission.json")
         if mission.get("ended"):
             state=self.state()
@@ -606,7 +613,8 @@ def observe(journal):
     executable = shutil.which(override) if override else None
     if override and not executable:
         raise ValueError("RUSTLINE_CHROMIUM must name a runnable Chromium executable")
-    proxy = os.getenv("RUSTLINE_PROXY") or os.getenv("HTTPS_PROXY")
+    offline = journal.local_html is not None
+    proxy = "http://127.0.0.1:9" if offline else (os.getenv("RUSTLINE_PROXY") or os.getenv("HTTPS_PROXY"))
     if proxy:
         address = urlsplit(proxy)
         if not address.hostname or address.username is not None or address.password is not None or address.query or address.fragment:
@@ -618,6 +626,21 @@ def observe(journal):
         address = urlsplit(request.url)
         query_ok = not address.query or (address.path == (endpoint.path or "/")
                    and re.fullmatch(r"qa=exploration-\d+", address.query))
+        if offline:
+            if (request.method == "GET" and request.is_navigation_request() and
+                    (address.scheme, address.netloc, address.path) == ("https", endpoint.netloc, "/") and query_ok):
+                try:
+                    data = journal.local_html.read_bytes()
+                except OSError:
+                    route.abort()
+                    return
+                if not data.rstrip().endswith(b"</html>"):
+                    route.abort()
+                    return
+                route.fulfill(body=data, content_type="text/html; charset=utf-8", headers={"Cache-Control":"no-store"})
+            else:
+                route.abort()
+            return
         if request.method in {"GET","HEAD"} and (address.scheme, address.netloc) == (endpoint.scheme, endpoint.netloc) and query_ok:
             route.continue_()
         else:
@@ -626,7 +649,8 @@ def observe(journal):
     if (journal.root / "failure.json").exists():
         journal.emit("unresolved-game-failure", failure=journal.read("failure.json"))
         return 1
-    journal.emit("runner-start", deadline=stamp(journal.end), clock="native", rng="native")
+    journal.emit("runner-start", deadline=stamp(journal.end), clock="native", rng="native",
+                 transport="offline-local-intercept" if offline else "public-http")
     failures = 0
     try:
         while journal.budget():
@@ -639,11 +663,13 @@ def observe(journal):
                         str(journal.profile), executable_path=executable, timeout=journal.budget(30000),
                         headless=True, viewport={"width":1280,"height":900}, reduced_motion="reduce",
                         proxy={"server":proxy} if proxy else None,
-                        ignore_https_errors=os.getenv("RUSTLINE_IGNORE_HTTPS_ERRORS")=="1",
+                        offline=offline, ignore_https_errors=not offline and os.getenv("RUSTLINE_IGNORE_HTTPS_ERRORS")=="1",
                         service_workers="block", args=["--disable-background-networking","--disable-extensions",
                                                      "--disable-dev-shm-usage","--disk-cache-size=12000000"],
                     ) as context:
                         context.route("**/*", allow_assets)
+                        if offline:
+                            context.route_web_socket("**/*", lambda websocket: websocket.close())
                         page = context.pages[0] if context.pages else context.new_page()
                         for extra in context.pages[1:]:
                             extra.close()
@@ -693,13 +719,21 @@ def main():
                         help="dedicated empty directory outside the repository, or this runner's existing directory")
     parser.add_argument("--until", type=until_arg, required=True,
                         help="future absolute deadline with UTC offset, e.g. YYYY-MM-DDTHH:MM:SS+09:00")
-    parser.add_argument("--url", type=url_arg, default=DEFAULT_URL, help="public HTTPS endpoint")
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument("--url", type=url_arg, help="public HTTPS endpoint (the default source)")
+    source.add_argument("--local-html", type=Path, help="self-contained local game HTML, run entirely offline")
     args = parser.parse_args()
     try:
-        with exclusive(args.state_dir, args.url, args.until) as root:
+        local_html = args.local_html.resolve(strict=True) if args.local_html is not None else None
+        if local_html is not None and not local_html.is_file():
+            raise ValueError("local HTML source must be a file")
+        url = OFFLINE_URL if local_html is not None else (args.url or DEFAULT_URL)
+        if local_html is None and url == OFFLINE_URL:
+            raise ValueError("the private test origin is reserved for --local-html")
+        with exclusive(args.state_dir, url, args.until) as root:
             if args.until <= time.time():
                 raise ValueError("the requested cutoff has already passed")
-            return observe(Journal(root,args.url,args.until))
+            return observe(Journal(root,url,args.until,local_html))
     except (OSError, ValueError) as exc:
         print(f"Exploration setup or local-state error: {exc}",file=sys.stderr)
         return 2

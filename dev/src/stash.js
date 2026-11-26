@@ -192,6 +192,32 @@ function caseTransfer(uid, action, item, sourceUid = null) {
   return {ok:true,message:GOODS[id][0]+' 1개를 '+destination};
 }
 
+function moveBetweenCases(fromUid, toUid, itemUid) {
+  const fail = message => ({ok:false,message});
+  if (!writer || raid || fromUid === toUid) return fail('벙커에서 서로 다른 두 보관함을 선택하세요.');
+  const from = stashSlots.find(box => box.uid === fromUid);
+  const to = stashSlots.find(box => box.uid === toUid);
+  const item = from?.contents?.find(unit => unit.uid === itemUid);
+  if (!item || !Object.hasOwn(STORAGE_CASES,from.g) || !to || !caseAccepts(to.g,item.g)) {
+    return fail('보관함과 옮길 물품의 위치를 다시 확인하세요.');
+  }
+  const fit = kitFit(to.contents || [], STORAGE_CASES[to.g].size, item);
+  if (!fit) return fail('받는 보관함에 물품이 들어갈 공간이 없습니다.');
+  const before = stashSlots;
+  const updated = before.map(box => {
+    if (box === from) return {...box,contents:from.contents.filter(unit => unit !== item)};
+    if (box === to) return {...box,contents:[...(to.contents || []),fit]};
+    return box;
+  });
+  stashSlots = updated;
+  if (!writeSession()) {
+    if (stashSlots !== updated) return fail('다른 탭의 최신 보관함을 불러왔습니다. 물품 위치를 확인하세요.');
+    stashSlots = before;
+    return fail('이동을 저장하지 못했습니다. 원래 보관함에 물품이 있습니다.');
+  }
+  return {ok:true,message:'보관함 이동 완료 · '+GOODS[item.g][0]+' 1개 → '+caseDisplayName(to)};
+}
+
 function stashSize(level = hideoutLevel('stash')) {
   return [6, 32 + 8 * level];
 }
@@ -523,7 +549,7 @@ function storagePage() {
     <div class="stash-layout">
       <section class="loot-panel"><div class="field-label"><span>STORAGE</span><span>Lv.${hideoutLevel('stash')}</span></div><h2>보관 격자 <small>${cols} × ${rows} · ${occupied} / ${capacity}칸</small></h2>${!raid&&stashSlots.length>1?'<button type="button" data-loadout="sort"'+(writer?'':' disabled')+'>크기순 정리</button>':''}${total ? '' : '<p class="mini-field">창고가 비어 있습니다. 레이드에서 물품을 가방에 넣고 탈출하면 이곳에 보관됩니다.</p>'}${stashViewport()}</section>
       <div class="stash-sidebar">
-        <section class="panel stash-detail">${stashSelectionMarkup()}<div class="stash-message" role="status">${stashNotice}</div></section>
+        <section class="panel stash-detail">${stashSelectionMarkup()}<div class="stash-message" role="status">${esc(stashNotice)}</div></section>
         <section class="panel" data-scroll-key="warehouse-overflow" tabindex="-1" aria-label="입고 대기 목록"><h2>입고 대기 <small>${(total - stashSlots.length).toLocaleString('ko-KR')}개</small></h2>${overflow.length ? '<p>창고에 자리가 부족해 대기 중인 물품입니다. 물품을 선택해 배치하거나 사용할 수 있습니다.</p><div class="db-list stash-overflow">' + overflow.map(([id, n]) => `<button data-stash="select" data-uid="overflow" data-id="${id}" aria-pressed="${stashSelection?.uid === 'overflow' && stashSelection.id === id}">${ico(GOODS[id][4])}<span>${GOODS[id][0]}</span><b>×${n.toLocaleString('ko-KR')}</b></button>`).join('') + '</div>' : '<p>입고를 기다리는 물품이 없습니다.</p>'}</section>
       </div></div>`;
 }

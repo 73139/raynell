@@ -1,5 +1,27 @@
 // Only an actual inventory use at a known landmark qualifies; road supplies may still be consumed normally.
 const RATION_ORDER='ration-survey',RATION_MIN=5,RATION_TOTAL=20;
+const SURVEY_RECIPES={
+  'oat-porridge':{name:'원정식 · 귀리죽 소분',minutes:3,inputs:{rl_09_16:1,water:1},outputs:{rl_09_10:2}},
+  'salt-drink':{name:'원정식 · 식염 음료 소분',minutes:2,inputs:{salt:1,water:1},outputs:{rl_10_16:2}}
+};
+function isSurveyRecipe(key){
+  return typeof key==='string'&&Object.hasOwn(SURVEY_RECIPES,key);
+}
+function surveyKitchenUnlocked(done,level){
+  return Array.isArray(done)&&done.includes('scout')&&done.includes(RATION_ORDER)&&Number.isInteger(level)&&level>=1&&level<=FACILITIES.kitchen.levels.length;
+}
+function validSurveyProduction(s){
+  return Object.entries(s.hideout?.production||{}).every(([room,job])=>{
+    if(typeof job?.recipe!=='string')return Number.isSafeInteger(job?.recipe);
+    if(!isSurveyRecipe(job.recipe))return true;
+    return room==='kitchen'&&surveyKitchenUnlocked(s.career?.done,s.hideout.levels?.kitchen)&&
+      Number.isSafeInteger(job.end)&&job.end>0;
+  });
+}
+function surveyRecipeEffect(key){
+  const recipe=SURVEY_RECIPES[key],item=Object.keys(recipe.outputs)[0],effect=kitSupply(item);
+  return '<small>한 개 사용 시 '+effect.label+' 최대 +'+effect.gain+' · 두 개로 나누어 출격 가방에 휴대</small>';
+}
 function rationPair(rows=[]){
   let best=null;
   for(const meal of rows.filter(row=>row.stat==='energy')){
@@ -43,7 +65,7 @@ function rationSurveyPanel(){
   return '<details class="pump-gauge" data-ration-survey><summary>이번 출격 급양표</summary>'+rationSheet(field.rationUses)+'</details>';
 }
 function rationReceipt(summary){
-  return summary?.rationUses?'<details class="field-section" data-ration-receipt><summary>원정 급양표 · 정산에 쓰인 두 기록</summary>'+rationSheet(summary.rationUses)+'</details>':'';
+  return summary?.rationUses?'<details class="field-section" data-ration-receipt><summary>원정 급양표 · 정산에 쓰인 두 기록</summary>'+rationSheet(summary.rationUses)+'<p>급양반이 귀리죽과 식염 음료 조리법을 전달했습니다. 귀환 후 조리 시설 Lv.1에서 만들 수 있습니다.</p></details>':'';
 }
 function validRationRows(rows,start,end,visited,levels){
   if(!Array.isArray(rows)||rows.length<1||rows.length>6)return false;

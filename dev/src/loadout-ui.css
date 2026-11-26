@@ -104,3 +104,10 @@
 
 .lo-loot [data-cell="bag"]:focus-visible{position:relative;z-index:3;outline:3px solid #f3dc9b;outline-offset:-3px}
 .lo-loot [data-field-placing] .loot-tile{pointer-events:none}
+
+.dock-manifest>summary{min-height:44px;padding:.65rem 0;cursor:pointer;font-weight:700;overflow-wrap:anywhere}
+.dock-manifest li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.3rem .75rem}
+.dock-manifest li label{display:flex;gap:.6rem;align-items:center;min-height:44px;flex:1}
+.dock-manifest li small{display:block;color:#bbc6b5}
+.dock-manifest li button{min-height:44px}
+.dock-manifest output{display:block;margin:.6rem 0;font-weight:700}
