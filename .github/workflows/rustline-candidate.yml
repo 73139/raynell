@@ -1,0 +1,59 @@
+name: Rustline candidate
+on:
+  pull_request:
+    branches: [rustline-web-reboot]
+    paths:
+      - 'dev/**'
+      - '.github/workflows/rustline-candidate.yml'
+  push:
+    branches: ['rustline-work/**']
+    paths:
+      - 'dev/**'
+      - '.github/workflows/rustline-candidate.yml'
+permissions:
+  contents: read
+concurrency:
+  group: rustline-candidate-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Build game and run engine regressions
+        working-directory: dev
+        run: |
+          python3 build.py
+          for test in tests/*.cjs; do
+            if [ "$test" != tests/game-fixture.cjs ]; then node "$test"; fi
+          done
+      - name: Verify two viewport sizes in Chromium
+        working-directory: dev
+        run: |
+          python3 -m venv "$RUNNER_TEMP/rustline-browser"
+          "$RUNNER_TEMP/rustline-browser/bin/pip" install 'playwright==1.56.0'
+          "$RUNNER_TEMP/rustline-browser/bin/python" -m playwright install --with-deps chromium
+          for test in catalog-budget pump-pipe backup-retry stash-keyboard; do
+            "$RUNNER_TEMP/rustline-browser/bin/python" "tests/${test}-browser.py"
+          done
+      - name: Package and reproduce the tested sources
+        run: |
+          cp dev/index.html rustline-web/index.html
+          python3 dev/pack_source.py
+          python3 development/check-release.py
+          sha256sum rustline-web/index.html development/Rustline-source.zip >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: rustline-tested-build-${{ github.sha }}
+          path: |
+            rustline-web/index.html
+            development/Rustline-source.zip
+          retention-days: 1
+          if-no-files-found: error
