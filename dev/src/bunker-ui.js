@@ -168,6 +168,7 @@ function bunkerOverviewView(){
     <div class="bu-deck-meter"><b>가동 시설 <strong>${running} / ${ids.length}</strong></b>${bunkerProgress(running,ids.length,'가동 중인 시설')}</div>
     ${BUNKER_ROOMS.map(id=>bunkerRoomButton(id,'bu-beacon bu-'+id)).join('')}</section>
     <div class="bu-room-strip">${BUNKER_ROOMS.map(id=>bunkerRoomButton(id)).join('')}</div>
+    ${recoveryArchivePanel()}
     <section class="bu-box bu-directory"><h2>전체 시설 <small>${ids.length}곳</small></h2><div class="bu-facilities">${ids.map(id=>`<button class="bu-facility-tile" data-bui="facility" data-id="${id}"><i>${BUNKER_GLYPHS[id]}</i><span>${FACILITIES[id].name}</span><small>${bunkerFacilityState(id)}</small></button>`).join('')}</div></section>
     ${working.length?`<section class="bu-box bu-jobs"><h2>진행 중인 작업</h2>${working.map(id=>`<button data-bui="facility" data-id="${id}"><b>${FACILITIES[id].name}</b><span>${bunkerFacilityState(id)}</span>${facilityTimer((hideout.builds[id]||hideout.production[id]).end)}</button>`).join('')}</section>`:''}
     ${hideout.history.length?`<section class="bu-box bu-receipts"><h2>최근 작업</h2>${hideout.history.map(s=>`<p>${esc(s)}</p>`).join('')}</section>`:''}</div>`;

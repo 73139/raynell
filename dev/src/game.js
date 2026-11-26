@@ -400,8 +400,13 @@ const money=n=>n.toLocaleString('ko-KR')+' CR';
 function itemSources(id){return ITEM_META[id].lootSources.map(t=>LOOT_TABLES[t].name).join(' · ')}
 function catalogRows(){return Object.entries(GOODS).filter(([id,g])=>(!catalogCategory||g[5]===catalogCategory)&&(!catalogQuery||[id,g[0],g[5],ITEM_META[id].usage,itemSources(id)].join(' ').toLowerCase().includes(catalogQuery.toLowerCase()))).sort((a,b)=>a[1][0].localeCompare(b[1][0],'ko'))}
 function catalogResults(){const rows=catalogRows(),max=Math.max(0,Math.floor((rows.length-1)/24)*24);catalogOffset=Math.min(catalogOffset,max);return `<div class="db-summary"><span>${rows.length}종 · ${rows.length?catalogOffset+1:0}–${Math.min(catalogOffset+24,rows.length)}</span><button data-db="prev" ${catalogOffset===0?'disabled':''}>이전</button><button data-db="next" ${catalogOffset+24>=rows.length?'disabled':''}>다음</button></div><div class="db-list">${rows.slice(catalogOffset,catalogOffset+24).map(([id,g])=>`<button data-db="item" data-id="${id}" aria-pressed="${catalogSelected===id}">${ico(g[4])}<span><b>${g[0]}</b><small>${g[5]} · ${g[1]}×${g[2]} · ${g[3]} kg</small></span><span>${money(g[6])}</span></button>`).join('')||'<p>검색 결과가 없습니다.</p>'}</div>`}
-function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:constructionCatalogOrigin?'<button type="button" data-db="plan-return">‹ 전체 건설 견적으로</button>':reliefCatalogBack()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
-function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
+function catalogReturnButton(){
+  if(craftCatalogOrigin)return `<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`;
+  if(constructionCatalogOrigin)return '<button type="button" data-db="plan-return">‹ 전체 건설 견적으로</button>';
+  return reliefCatalogBack()||archiveCatalogBack();
+}
+function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${catalogReturnButton()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id||archiveCatalogOrigin===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
+function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin||archiveCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
 function facilityDetail(){return bunkerFacilityDetail()}
 function bunkerPage(){return bunkerHubPage()}
 function handleDB(d){
@@ -411,6 +416,10 @@ function handleDB(d){
   if(d.db==='item'&&GOODS[d.id]){
     procurementNote='';catalogSelected=d.id;$('#db-detail').innerHTML=catalogDetail();$('#db-results').innerHTML=catalogResults();
     if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});return;
+  }
+  if(d.db==='archive-return'){
+    if(archiveCatalogOrigin&&['catalog','lootplan'].includes(page))returnToArchiveItem(archiveCatalogOrigin);
+    return;
   }
   if(d.db==='relief-return'){
     if(!['catalog','lootplan'].includes(page)||!reliefCatalogOrigin||!orderUnlocked(reliefOrder()))return;
@@ -443,7 +452,9 @@ function handleDB(d){
     if(input){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest'});}
     return;
   }
-  if(['lookup','craft-ingredient','relief-material','plan-material'].includes(d.db)&&Object.hasOwn(GOODS,d.id)){
+  if(['lookup','craft-ingredient','relief-material','plan-material','archive-item'].includes(d.db)&&Object.hasOwn(GOODS,d.id)){
+    if(d.db==='archive-item'&&(page!=='bunker'||!ARCHIVE_ITEMS.has(d.id)))return;
+    archiveCatalogOrigin=d.db==='archive-item'?d.id:null;
     if(d.db==='plan-material'){
       if(page!=='facility')return;
       const steps=facilityConstructionSteps(facilitySelected,facilityTier);
@@ -464,9 +475,9 @@ function handleDB(d){
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
     page='catalog';save();render();
-    if(craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin){
-      const back=$(craftCatalogOrigin?'[data-db="craft-return"]':constructionCatalogOrigin?'[data-db="plan-return"]':'[data-db="relief-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
-    }else $('.content').scrollTop=0;
+    const back=$('#db-detail [data-db$="-return"]');
+    if(back){back.focus({preventScroll:true});back.scrollIntoView({block:'start'});}
+    else $('.content').scrollTop=0;
     return;
   }
   if(d.db==='facility'&&FACILITIES[d.id])return openBunkerFacility(d.id,Number(d.tier));
@@ -495,7 +506,7 @@ function render(){
     if(activeTerminalLink && !terminalLinkMatches())releaseTerminalLink();
     rememberTerminalView();
     if(page!=='catalog'){craftCatalogOrigin=null;constructionCatalogOrigin=null;}
-    if(page!=='catalog'&&page!=='lootplan')reliefCatalogOrigin=null;
+    if(page!=='catalog'&&page!=='lootplan'){reliefCatalogOrigin=null;archiveCatalogOrigin=null;}
     if(page!=='orders')fundingDossier=null;
     inside.dataset.page=page;
     const content=$('.content'),current=contentView();
@@ -503,6 +514,7 @@ function render(){
     content.dataset.view=page;
     shellNavRender();
     const possessionEditor=capturePossessionEditor();
+    const archiveView=page==='bunker'&&current===lastContentView?captureArchiveView():null;
     const guideFocus=captureOnboardingFocus();
     const presetFocus=capturePresetFocus();
     const campaignFocus=captureCampaignFocus();
@@ -530,6 +542,7 @@ function render(){
     if(cartFocus)(content.querySelector?.(cartFocus)||content.querySelector?.('[data-cart-panel]'))?.focus?.({preventScroll:true});
     if(weatherFocus)content.querySelector?.(weatherFocus)?.focus?.({preventScroll:true});
     if(routeFocus)content.querySelector?.('[data-route-compare], [data-route-status]')?.focus?.({preventScroll:true});
+    if(archiveView)restoreArchiveView(archiveView);
     if(current!==lastContentView){content.scrollTop=0;lastContentView=current}
     updateRaidClock();
   }finally{rendering=false}
@@ -540,7 +553,7 @@ function setPower(){document.documentElement.classList.toggle('reduce-motion',re
 world.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;if(b.id==='sidekey'||b.hasAttribute('data-wake')||b.dataset.launch==='power')return powerToggle();const key=b.dataset.launch;if(key==='start')travel('in','home');else if(key==='bunker')travel('in','bunker');else if(key==='continue')travel('in',page);else if(key==='settings')travel('in','settings')});inside.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;const d=b.dataset;if(d.injury)return handleInjuryUI(d);if(d.maintenance)return handleMaintenanceUI(d);if(d.lootplan)return handleLootPlanUI(d);if(d.survivor)return handleSurvivorUI(d);if(d.finale)return handleFinaleUI(d);if(d.campaign)return handleCampaignUI(d);if(d.preset)return handlePresetUI(d);if(d.guide)return handleOnboardingUI(d);if(d.pos)return handlePossessionsUI(d);if(d.objective)return handleObjectiveUI(d);if(d.contract)return handleContractUI(d);if(d.bh)return handleBarterHuntUI(d);if(d.tg)return handleTradeGridUI(d);if(d.cart)return handleMarketCartUI(d);if(d.market)return handleMarketUI(d);if(d.loadout)return handleLoadoutUI(d);if(d.bui)return handleBunkerUI(d);if(d.cui)return handleCommandUI(d);if(d.gear)return handleEquipment(d);if(d.order)return changeOrder(d.order);if(d.hideout)return handleHideout(d);if(d.supply)return buyMaterial(d.supply);if(d.backup==='export')return exportSave();if(d.backup==='import')return $('#restore-file').click();if(d.db)return handleDB(d);if(d.raid)return handleRaidAction(d.raid,d);if(d.field)return handleField(d);if(d.pick){if(!isActive())return;if(picked?.uid===d.pick&&picked.side===d.side)return;picked={uid:d.pick,side:d.side,rot:false};notice='';renderKeep();return}if(d.cell==='bag'&&picked){transfer(Number(d.x),Number(d.y));return}if(d.action==='shutdown'){save();inside.hidden=true;world.hidden=false;view='photo';place();powerToggle();return}if(d.action==='return')return travel('out');if(d.action==='lock'){setLock(true);return}if(d.action==='unlock'){setLock(false);return}if(d.page&&pages.includes(d.page))return navigatePage(d.page);if(d.zone!==undefined&&!raid&&Number.isInteger(Number(d.zone))&&FIELD_ZONES[Number(d.zone)]){zone=Number(d.zone);save();render();$(`[data-zone="${zone}"]`).focus()}if(d.item!==undefined){item=Number(d.item);save();render();$(`[data-item="${item}"]`).focus()}if(d.setting){if(d.setting==='large')large=!large;else reduce=!reduce;save();render();$(`[data-setting="${d.setting}"]`).focus()}});inside.addEventListener('dblclick',e=>{const b=e.target.closest('[data-pick][data-side=loot]');if(b&&isActive()&&!field.contact){picked=fieldTileSelection(b);transfer()}});inside.addEventListener('dragstart',e=>{const b=e.target.closest('[data-pick]');if(!b||!isActive())return;dragged=fieldTileSelection(b);e.dataTransfer.setData('text/plain',b.dataset.pick);e.dataTransfer.effectAllowed='move'});inside.addEventListener('dragover',e=>{if(dragged&&e.target.closest('[data-grid=bag]')){e.preventDefault();e.dataTransfer.dropEffect='move'}});inside.addEventListener('drop',e=>{const g=e.target.closest('[data-grid=bag]');if(!g||!dragged)return;e.preventDefault();const r=g.getBoundingClientRect(),x=Math.floor((e.clientX-r.left-1)/(g.clientWidth/raidBagSize()[0])),y=Math.floor((e.clientY-r.top-1)/(g.clientHeight/raidBagSize()[1]));picked=dragged;dragged=null;transfer(x,y)});inside.addEventListener('dragend',()=>{dragged=null});function setLock(on){$('#lock').hidden=!on;for(const sel of ['.topbar','.body','.foot'])$(sel).inert=on;if(on)$('#lock button').focus();else $('.content').focus()}document.addEventListener('keydown',e=>{if(e.key==='Escape'&&view==='inside'&&!busy){if(!$('#lock').hidden){setLock(false)}else travel('out')}});setInterval(updateRaidClock,250);document.addEventListener('visibilitychange',updateRaidClock);window.addEventListener('focus',updateRaidClock);window.addEventListener('storage',e=>{if(e.key===SAVE_KEY||(!writer&&revision===0&&PREVIOUS_SAVE_KEYS.includes(e.key))||e.key===null){loadRaid();picked=null;updateRaidClock();if(view==='inside')renderKeep()}});startSession();
 function terminalLinkTarget(hash){
   if(hash==='#guide')return onboardingView().mode==='active'?(raid?'raid':'home'):'settings';
-  return {'#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt',
+  return {'#bunker':'bunker','#archive':'bunker','#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt',
     '#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map',
     '#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];
 }
@@ -634,6 +647,15 @@ function openTerminalLink(){
   if(target==='traderQuests')setTraderQuestMode(hash==='#daily'?'daily':hash==='#weekly'?'weekly':'standing');
   if(hash==='#cart')openMarketCartLink();
   navigatePage(target);
+  if(hash==='#archive'){
+    const panel=$('[data-recovery-archive]');
+    if(panel){
+      panel.open=true;
+      const heading=panel.querySelector('summary');
+      heading.focus({preventScroll:true});
+      heading.scrollIntoView({block:'start'});
+    }
+  }
   if(hash==='#cart')marketCartFocus($('[data-cart-panel]'));
   if(hash==='#routes')focusRouteOverview();
   if(hash==='#weather')focusWeatherBoard();

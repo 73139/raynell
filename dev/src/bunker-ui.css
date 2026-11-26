@@ -111,3 +111,21 @@
 .bu-plan-items{margin:8px 0 0;padding:0;list-style:none}
 .bu-plan-items li{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);align-items:center;gap:8px;border-top:1px solid var(--bu-line)}
 .bu-plan-items button{min-height:44px;text-align:left}.bu-plan-items small{display:block;color:var(--muted)}
+
+.recovery-archive>summary,.archive-series>summary{cursor:pointer;padding:.65rem 0;min-height:44px}
+.recovery-archive>summary{font-weight:700;color:#e3e7db}
+.recovery-archive>p,.archive-series li p,.archive-caption{line-height:1.6}
+.archive-series{border-top:1px solid #454e45}
+.archive-series ul{list-style:none;margin:0;padding:0}
+.archive-series li{border-top:1px dashed #41493e;padding:.6rem 0}
+.archive-series li div{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.25rem 1rem}
+.archive-series small{color:#b7c2ad}
+.archive-series li p{margin:.3rem 0;color:#d3d6cb}
+.archive-caption,.archive-return{padding:.65rem .8rem;border-left:3px solid #ac9d75;background:#222720;color:#e1ddc9}
+
+.archive-plate{display:grid;grid-template-columns:minmax(125px,28%) 1fr;align-items:stretch;margin:.6rem 0}
+.archive-plate .bu-picture{display:block;width:100%;height:100%;max-height:145px;object-fit:cover;object-position:center}
+.archive-plate figcaption{display:flex;align-items:center;margin:0}
+@media(max-width:520px){.archive-plate{grid-template-columns:1fr}.archive-plate .bu-picture{height:115px;max-height:115px}}
+
+.archive-series li [data-db="archive-item"]{min-height:44px;margin:.35rem 0 0;padding:.4rem .85rem}

@@ -164,7 +164,7 @@ function readCareer(raw={},reply=null,clinic=null) {
     (q.id!==SHUTTLE_ORDER || (wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)&&raw.shuttle.receipt)) &&
     (q.id!==WARD_FIELD_ID || wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)) &&
     (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
-  career = {...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)?{shuttle:{...raw.shuttle}}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  career = {...(raw?.archive?.length&&validArchiveRows(raw.archive)?{archive:raw.archive.map(row=>({...row}))}:{}),...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)?{shuttle:{...raw.shuttle}}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
     done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply,clinic))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
@@ -374,6 +374,8 @@ function reconcileEnd(result,at,exit=null){
   const summary={raidId:raid.startedAt,result,rating,exit:exit?.name||null,elapsed,goods,cost,visited,searched,victories,
     worn,earned,commission,missionXp,orderName,contractUpdates,gearReport,...(carriedCash?{carriedCash}:{})};
   if(returned){
+    const archiveItems=recordArchiveReturn(recoveredBag,at);
+    if(archiveItems.length)summary.archiveItems=archiveItems;
     const discoveries=recordReturnedSurveys(field);
     if(discoveries.length)summary.newSurveyBoxes=discoveries;
   }
@@ -444,7 +446,7 @@ function resultPage(){
   const counts={};
   for(const id of r.goods||[])if(Object.hasOwn(GOODS,id))counts[id]=(counts[id]||0)+1;
   return head('AFTER ACTION REPORT',label,returned?'휴대 물품을 벙커로 회수했습니다.':'이번 출격의 휴대 물품과 착용 장비를 잃었습니다.')+
-    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+rationReceipt(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
+    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+rationReceipt(r)+archiveReturnNote(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+

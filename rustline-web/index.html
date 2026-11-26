@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.85</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.86</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -496,6 +496,24 @@
 .bu-plan-items{margin:8px 0 0;padding:0;list-style:none}
 .bu-plan-items li{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);align-items:center;gap:8px;border-top:1px solid var(--bu-line)}
 .bu-plan-items button{min-height:44px;text-align:left}.bu-plan-items small{display:block;color:var(--muted)}
+
+.recovery-archive>summary,.archive-series>summary{cursor:pointer;padding:.65rem 0;min-height:44px}
+.recovery-archive>summary{font-weight:700;color:#e3e7db}
+.recovery-archive>p,.archive-series li p,.archive-caption{line-height:1.6}
+.archive-series{border-top:1px solid #454e45}
+.archive-series ul{list-style:none;margin:0;padding:0}
+.archive-series li{border-top:1px dashed #41493e;padding:.6rem 0}
+.archive-series li div{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:.25rem 1rem}
+.archive-series small{color:#b7c2ad}
+.archive-series li p{margin:.3rem 0;color:#d3d6cb}
+.archive-caption,.archive-return{padding:.65rem .8rem;border-left:3px solid #ac9d75;background:#222720;color:#e1ddc9}
+
+.archive-plate{display:grid;grid-template-columns:minmax(125px,28%) 1fr;align-items:stretch;margin:.6rem 0}
+.archive-plate .bu-picture{display:block;width:100%;height:100%;max-height:145px;object-fit:cover;object-position:center}
+.archive-plate figcaption{display:flex;align-items:center;margin:0}
+@media(max-width:520px){.archive-plate{grid-template-columns:1fr}.archive-plate .bu-picture{height:115px;max-height:115px}}
+
+.archive-series li [data-db="archive-item"]{min-height:44px;margin:.35rem 0 0;padding:.4rem .85rem}
 
 .mk-screen{--mk-border:#454d4a;--mk-line:#343d3a;--mk-paper:#d1cdab;--mk-sub:#a6afa7;--mk-panel:#141c1e;--mk-metal:linear-gradient(115deg,#222b2c,#141b1d);max-width:1520px;margin:0 auto;color:#e7e8df;font-variant-numeric:tabular-nums}
 .mk-screen h1,.mk-screen h2,.mk-screen h3,.mk-screen p,.mk-screen dl,.mk-screen dd{margin:0}
@@ -2205,7 +2223,7 @@ function readCareer(raw={},reply=null,clinic=null) {
     (q.id!==SHUTTLE_ORDER || (wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)&&raw.shuttle.receipt)) &&
     (q.id!==WARD_FIELD_ID || wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)) &&
     (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
-  career = {...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)?{shuttle:{...raw.shuttle}}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  career = {...(raw?.archive?.length&&validArchiveRows(raw.archive)?{archive:raw.archive.map(row=>({...row}))}:{}),...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)?{shuttle:{...raw.shuttle}}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
     done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply,clinic))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
@@ -2415,6 +2433,8 @@ function reconcileEnd(result,at,exit=null){
   const summary={raidId:raid.startedAt,result,rating,exit:exit?.name||null,elapsed,goods,cost,visited,searched,victories,
     worn,earned,commission,missionXp,orderName,contractUpdates,gearReport,...(carriedCash?{carriedCash}:{})};
   if(returned){
+    const archiveItems=recordArchiveReturn(recoveredBag,at);
+    if(archiveItems.length)summary.archiveItems=archiveItems;
     const discoveries=recordReturnedSurveys(field);
     if(discoveries.length)summary.newSurveyBoxes=discoveries;
   }
@@ -2485,7 +2505,7 @@ function resultPage(){
   const counts={};
   for(const id of r.goods||[])if(Object.hasOwn(GOODS,id))counts[id]=(counts[id]||0)+1;
   return head('AFTER ACTION REPORT',label,returned?'휴대 물품을 벙커로 회수했습니다.':'이번 출격의 휴대 물품과 착용 장비를 잃었습니다.')+
-    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+rationReceipt(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
+    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+rationReceipt(r)+archiveReturnNote(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
@@ -4436,7 +4456,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=85000; // Derived from the release title by build.py.
+const WRITER_BUILD=86000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4704,7 +4724,7 @@ function validateBackup(raw){
     if(!Array.isArray(done)||!orderUnlocked(ORDERS.find(q=>q.id==='courier-checkin'),done)||
        (s.career.order==='courier-checkin'&&done.includes('courier-checkin')))return false;
   }
-  if(!validRationSurvey(s)||!validSurveyBackup(s)||!validShuttleBackup(s)||!validWardFieldBackup(s)||!validReliefBackup(s)||!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
+  if(!validRecoveryArchive(s)||!validRationSurvey(s)||!validSurveyBackup(s)||!validShuttleBackup(s)||!validWardFieldBackup(s)||!validReliefBackup(s)||!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
   if(r!==null&&(!dict(r)||!integer(r.startedAt,1)||r.endsAt-r.startedAt!==RAID_DURATION_MS||!integer(r.zone,0,2)))return false;
   if(f.raidId!==(r?.startedAt||0)||!Array.isArray(f.bag)||!f.bag.every(tile)||!Array.isArray(f.found)||f.found.length!==3||!f.found.every((a,z)=>Array.isArray(a)&&a.every(i=>integer(i,0,FIELD_ZONES[z].boxes.length-1))))return false;
   if(!Array.isArray(f.log)||!f.log.every(x=>typeof x==='string')||!dict(f.boxes))return false;
@@ -5569,6 +5589,7 @@ function bunkerOverviewView(){
     <div class="bu-deck-meter"><b>가동 시설 <strong>${running} / ${ids.length}</strong></b>${bunkerProgress(running,ids.length,'가동 중인 시설')}</div>
     ${BUNKER_ROOMS.map(id=>bunkerRoomButton(id,'bu-beacon bu-'+id)).join('')}</section>
     <div class="bu-room-strip">${BUNKER_ROOMS.map(id=>bunkerRoomButton(id)).join('')}</div>
+    ${recoveryArchivePanel()}
     <section class="bu-box bu-directory"><h2>전체 시설 <small>${ids.length}곳</small></h2><div class="bu-facilities">${ids.map(id=>`<button class="bu-facility-tile" data-bui="facility" data-id="${id}"><i>${BUNKER_GLYPHS[id]}</i><span>${FACILITIES[id].name}</span><small>${bunkerFacilityState(id)}</small></button>`).join('')}</div></section>
     ${working.length?`<section class="bu-box bu-jobs"><h2>진행 중인 작업</h2>${working.map(id=>`<button data-bui="facility" data-id="${id}"><b>${FACILITIES[id].name}</b><span>${bunkerFacilityState(id)}</span>${facilityTimer((hideout.builds[id]||hideout.production[id]).end)}</button>`).join('')}</section>`:''}
     ${hideout.history.length?`<section class="bu-box bu-receipts"><h2>최근 작업</h2>${hideout.history.map(s=>`<p>${esc(s)}</p>`).join('')}</section>`:''}</div>`;
@@ -12418,7 +12439,7 @@ function lootPlanPage(){
   const z=lootPlanRegion??(raid?raid.zone:zone);
   return '<article class="lp-page" data-lootplan-page data-region="'+z+'"><header class="lp-cover" style="--lp-art:url(\''+
     esc(artURL(COMMAND_ZONES[z].art))+'\')"><div><h1>물자 수색 계획</h1><p>필요한 물자를 선택하고 출격할 권역과 랜드마크를 정하세요.</p></div>'+
-    '<button type="button" data-page="map">작전 지도</button></header>'+reliefCatalogBack()+
+    '<button type="button" data-page="map">작전 지도</button></header>'+(reliefCatalogBack()||archiveCatalogBack())+
     '<section class="lp-goals"><div class="lp-row"><h2>목표 물자</h2>'+
     (goal?'<button type="button" class="lp-clear" data-lootplan="clear">목표 해제</button>':'')+'</div>'+
     '<div class="lp-selector" role="group" aria-label="목표 물자">'+v.goals.map(g=>
@@ -14331,6 +14352,121 @@ function validRationSurvey(s){
     a.rationUses?.length===2&&validRationRows(a.rationUses,a.raidId,a.raidId+a.elapsed,null,s.hideout?.levels)&&(rationPair(a.rationUses)?.gain||0)>=RATION_TOTAL);
 }
 
+// The records describe the first physical specimen independently carried out of a discovered container.
+const ARCHIVE_SERIES=[
+  {name:'마지막 정비 당번',art:'bunker-workshop',alt:'정비반의 작업대 삽화',items:{
+    wire:'묶음 한쪽에 종이 꼬리표가 감겨 있다. 전력반은 같은 색 전선도 행선지를 적어 구분했다.',
+    wrench:'손잡이의 홈에는 흰 분필이 남아 있다. 공구를 제자리에 돌려놓기 위해 윤곽을 그리던 흔적이다.',
+    driver:'끝이 닳은 자루에는 작은 나사 세 개가 붙어 있다. 다음 교대조가 바로 일을 이을 수 있게 챙겨 둔 것이다.'
+  },complete:'세 공구의 표식을 겹쳐 보니 작업 순서가 읽힌다. 단선을 잇고, 덮개를 고정하고, 다음 사람이 찾을 자리에 공구를 놓았다.'},
+  {name:'인계 창구',art:'bunker-intel',alt:'자료실의 문서 단말 삽화',items:{
+    card:'모서리에 교대조 번호가 펀칭되어 있다. 기록 단말이 멎은 뒤에도 구멍의 위치는 읽을 수 있다.',
+    paper:'봉투 안쪽에 수령인 서명 칸이 한 번 더 인쇄되어 있다. 종이가 모자라면 뒤집어 재사용하던 양식이다.',
+    mapnote:'접힌 자리에 낡은 창구 도장이 걸쳐 있다. 지도를 완전히 펼쳐야 마지막 획이 맞는다.'
+  },complete:'카드의 교대조 번호와 봉투의 서명 칸, 지도 뒷면의 도장이 맞았다. 마지막 인계가 이루어진 날에도 창구는 평소 순서대로 문을 닫았다.'},
+  {name:'교대원의 사물함',art:'bunker-rest',alt:'교대원 숙소 삽화',items:{
+    lighter:'몸통에 세로 흠집 다섯 개가 나 있다. 그 위로 짧은 가로줄 하나가 긋다 만 채 남았다.',
+    coin:'가장자리가 한쪽만 유난히 닳았다. 셈을 할 때마다 같은 쪽을 엄지로 밀었던 모양이다.',
+    rl_14_34:'뒤표지 안쪽에 이름 대신 세탁표 번호가 적혀 있다. 작은 물건이 주인을 찾는 데 쓰이던 번호다.'
+  },complete:'물건 세 점에는 이름이 없다. 번호와 손때, 손으로 그은 표시만으로도 이곳에 누군가의 자리가 있었다는 것은 알 수 있다.'}
+];
+let archiveCatalogOrigin=null;
+const ARCHIVE_ITEMS=new Set(ARCHIVE_SERIES.flatMap(series=>Object.keys(series.items)));
+function archiveSite(item,key){
+  const site=surveySite(key);
+  if(!site||!ARCHIVE_ITEMS.has(item))return null;
+  const table=FIELD_ZONES[site.zone].boxes[site.index][2];
+  return ITEM_META[item].lootSources.includes(table)?site:null;
+}
+function validArchiveRecord(row){
+  return row&&typeof row==='object'&&!Array.isArray(row)&&archiveSite(row.item,row.source)&&
+    Number.isSafeInteger(row.raidId)&&row.raidId>0&&Number.isSafeInteger(row.returnedAt)&&
+    row.returnedAt>=row.raidId&&row.returnedAt-row.raidId<RAID_DURATION_MS;
+}
+function validArchiveRows(rows){
+  return Array.isArray(rows)&&rows.length<=ARCHIVE_ITEMS.size&&rows.every(validArchiveRecord)&&
+    new Set(rows.map(row=>row.item)).size===rows.length;
+}
+function validRecoveryArchive(s){
+  const rows=s.career?.archive,added=s.lastSummary?.archiveItems;
+  if(rows!==undefined&&!validArchiveRows(rows))return false;
+  if(added===undefined)return true;
+  const result=s.lastSummary;
+  return ['success','quick'].includes(result.rating)&&result.result==='success'&&Array.isArray(added)&&
+    added.length>0&&added.length<=ARCHIVE_ITEMS.size&&new Set(added).size===added.length&&
+    added.every(id=>result.goods?.includes(id)&&rows?.some(r=>r.item===id&&r.raidId===result.raidId&&r.returnedAt===result.raidId+result.elapsed));
+}
+function recordArchiveReturn(bag,returnedAt){
+  const known=new Set((career.archive||[]).map(row=>row.item)),added=[];
+  for(const unit of bag){
+    if(!unit.revealed||!ARCHIVE_ITEMS.has(unit.g)||known.has(unit.g))continue;
+    const source=/^([0-2]-(?:0|[1-9]\d*))-(?:0|[1-9]\d*)$/.exec(unit.uid)?.[1];
+    const site=archiveSite(unit.g,source);
+    if(!site||!field.found[site.zone]?.includes(site.index)||!field.boxes[source])continue;
+    added.push({item:unit.g,source,raidId:raid.startedAt,returnedAt});
+    known.add(unit.g);
+  }
+  if(added.length)career.archive=[...(career.archive||[]),...added];
+  return added.map(row=>row.item);
+}
+function archiveReturnNote(summary){
+  if(!summary?.archiveItems?.length)return '';
+  const labels=summary.archiveItems.map(id=>esc(kitName(id))).join(', ');
+  return '<p class="archive-return" data-archive-return>회수품 기록실에 첫 표본 등록 · '+labels+'</p>';
+}
+function recoveryArchivePanel(){
+  const catalog=new Map((career.archive||[]).map(row=>[row.item,row]));
+  const series=ARCHIVE_SERIES.map(set=>{
+    const ids=Object.keys(set.items),count=ids.filter(id=>catalog.has(id)).length;
+    const entries=ids.map(id=>{
+      const record=catalog.get(id),site=record&&surveySite(record.source);
+      const sources=ITEM_META[id]?.lootSources?.map(table=>LOOT_TABLES[table]?.name).filter(Boolean);
+      const meta=site?esc(FIELD_ZONES[site.zone].name)+' · '+esc(site.name):'미등록'+(sources?.length?' · '+esc(sources.join(', ')):'');
+      return '<li data-archive-item="'+id+'" data-recorded="'+Boolean(site)+'"><div><b>'+esc(kitName(id))+'</b><small>'+meta+'</small></div>'+
+        (site?'<p>'+esc(set.items[id])+'</p>':'<button type="button" data-db="archive-item" data-id="'+id+'" aria-label="'+esc(kitName(id))+' 수색처 보기">수색처 보기</button>')+'</li>';
+    }).join('');
+    return '<details class="archive-series"><summary>'+esc(set.name)+' · '+count+' / '+ids.length+'점</summary><ul>'+entries+'</ul>'+
+      (count===ids.length?'<figure class="archive-plate">'+bunkerPicture(set.art,set.alt)+
+        '<figcaption class="archive-caption" data-archive-caption>'+esc(set.complete)+'</figcaption></figure>':'')+'</details>';
+  }).join('');
+  const linked=typeof activeTerminalLink!=='undefined'&&activeTerminalLink?.hash==='#archive';
+  return '<details class="bu-box recovery-archive" data-recovery-archive'+(linked?' open':'')+'><summary>회수품 기록실 · '+catalog.size+' / '+ARCHIVE_ITEMS.size+'점</summary>'+
+    '<p>현장의 보관함에서 직접 찾아 가방에 담고 생환하면 첫 발견 장소와 해설이 남습니다. 등록한 원본은 창고에서 계속 사용할 수 있습니다.</p>'+series+'</details>';
+}
+
+function archiveCatalogBack(){
+  return archiveCatalogOrigin?'<button type="button" data-db="archive-return">‹ '+esc(kitName(archiveCatalogOrigin))+' 기록으로</button>':'';
+}
+function returnToArchiveItem(id){
+  navigatePage('bunker');
+  const row=$('[data-archive-item="'+id+'"]');
+  if(!row)return;
+  row.closest('[data-recovery-archive]').open=true;
+  const series=row.closest('.archive-series');
+  series.open=true;
+  const target=row.querySelector('[data-db="archive-item"]')||series.querySelector('summary');
+  target.focus({preventScroll:true});
+  target.scrollIntoView({block:'nearest'});
+}
+function archiveDisclosures(){
+  const panel=$('[data-recovery-archive]');
+  return panel?.querySelectorAll?[panel,...panel.querySelectorAll('.archive-series')]:[];
+}
+function captureArchiveView(){
+  const views=archiveDisclosures();
+  if(!views.length)return null;
+  const focus=document.activeElement;
+  const item=focus?.dataset?.db==='archive-item'?focus.dataset.id:null;
+  return {item,open:views.map(el=>el.open),focus:views.findIndex(el=>el.querySelector('summary')===document.activeElement)};
+}
+function restoreArchiveView(view){
+  if(!view)return;
+  const panels=archiveDisclosures();
+  panels.forEach((el,i)=>{el.open=Boolean(view.open[i]);});
+  const focus=view.item?$('[data-db="archive-item"][data-id="'+view.item+'"]'):panels[view.focus]?.querySelector('summary');
+  focus?.focus({preventScroll:true});
+}
+
 // Shared command terminal. The region, wallet and carried space are read directly from the session.
 const artCache=new Map();
 function artURL(key){
@@ -14428,8 +14564,13 @@ const money=n=>n.toLocaleString('ko-KR')+' CR';
 function itemSources(id){return ITEM_META[id].lootSources.map(t=>LOOT_TABLES[t].name).join(' · ')}
 function catalogRows(){return Object.entries(GOODS).filter(([id,g])=>(!catalogCategory||g[5]===catalogCategory)&&(!catalogQuery||[id,g[0],g[5],ITEM_META[id].usage,itemSources(id)].join(' ').toLowerCase().includes(catalogQuery.toLowerCase()))).sort((a,b)=>a[1][0].localeCompare(b[1][0],'ko'))}
 function catalogResults(){const rows=catalogRows(),max=Math.max(0,Math.floor((rows.length-1)/24)*24);catalogOffset=Math.min(catalogOffset,max);return `<div class="db-summary"><span>${rows.length}종 · ${rows.length?catalogOffset+1:0}–${Math.min(catalogOffset+24,rows.length)}</span><button data-db="prev" ${catalogOffset===0?'disabled':''}>이전</button><button data-db="next" ${catalogOffset+24>=rows.length?'disabled':''}>다음</button></div><div class="db-list">${rows.slice(catalogOffset,catalogOffset+24).map(([id,g])=>`<button data-db="item" data-id="${id}" aria-pressed="${catalogSelected===id}">${ico(g[4])}<span><b>${g[0]}</b><small>${g[5]} · ${g[1]}×${g[2]} · ${g[3]} kg</small></span><span>${money(g[6])}</span></button>`).join('')||'<p>검색 결과가 없습니다.</p>'}</div>`}
-function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:constructionCatalogOrigin?'<button type="button" data-db="plan-return">‹ 전체 건설 견적으로</button>':reliefCatalogBack()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
-function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
+function catalogReturnButton(){
+  if(craftCatalogOrigin)return `<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`;
+  if(constructionCatalogOrigin)return '<button type="button" data-db="plan-return">‹ 전체 건설 견적으로</button>';
+  return reliefCatalogBack()||archiveCatalogBack();
+}
+function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${catalogReturnButton()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id||archiveCatalogOrigin===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
+function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin||archiveCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
 function facilityDetail(){return bunkerFacilityDetail()}
 function bunkerPage(){return bunkerHubPage()}
 function handleDB(d){
@@ -14439,6 +14580,10 @@ function handleDB(d){
   if(d.db==='item'&&GOODS[d.id]){
     procurementNote='';catalogSelected=d.id;$('#db-detail').innerHTML=catalogDetail();$('#db-results').innerHTML=catalogResults();
     if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});return;
+  }
+  if(d.db==='archive-return'){
+    if(archiveCatalogOrigin&&['catalog','lootplan'].includes(page))returnToArchiveItem(archiveCatalogOrigin);
+    return;
   }
   if(d.db==='relief-return'){
     if(!['catalog','lootplan'].includes(page)||!reliefCatalogOrigin||!orderUnlocked(reliefOrder()))return;
@@ -14471,7 +14616,9 @@ function handleDB(d){
     if(input){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest'});}
     return;
   }
-  if(['lookup','craft-ingredient','relief-material','plan-material'].includes(d.db)&&Object.hasOwn(GOODS,d.id)){
+  if(['lookup','craft-ingredient','relief-material','plan-material','archive-item'].includes(d.db)&&Object.hasOwn(GOODS,d.id)){
+    if(d.db==='archive-item'&&(page!=='bunker'||!ARCHIVE_ITEMS.has(d.id)))return;
+    archiveCatalogOrigin=d.db==='archive-item'?d.id:null;
     if(d.db==='plan-material'){
       if(page!=='facility')return;
       const steps=facilityConstructionSteps(facilitySelected,facilityTier);
@@ -14492,9 +14639,9 @@ function handleDB(d){
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
     page='catalog';save();render();
-    if(craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin){
-      const back=$(craftCatalogOrigin?'[data-db="craft-return"]':constructionCatalogOrigin?'[data-db="plan-return"]':'[data-db="relief-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
-    }else $('.content').scrollTop=0;
+    const back=$('#db-detail [data-db$="-return"]');
+    if(back){back.focus({preventScroll:true});back.scrollIntoView({block:'start'});}
+    else $('.content').scrollTop=0;
     return;
   }
   if(d.db==='facility'&&FACILITIES[d.id])return openBunkerFacility(d.id,Number(d.tier));
@@ -14523,7 +14670,7 @@ function render(){
     if(activeTerminalLink && !terminalLinkMatches())releaseTerminalLink();
     rememberTerminalView();
     if(page!=='catalog'){craftCatalogOrigin=null;constructionCatalogOrigin=null;}
-    if(page!=='catalog'&&page!=='lootplan')reliefCatalogOrigin=null;
+    if(page!=='catalog'&&page!=='lootplan'){reliefCatalogOrigin=null;archiveCatalogOrigin=null;}
     if(page!=='orders')fundingDossier=null;
     inside.dataset.page=page;
     const content=$('.content'),current=contentView();
@@ -14531,6 +14678,7 @@ function render(){
     content.dataset.view=page;
     shellNavRender();
     const possessionEditor=capturePossessionEditor();
+    const archiveView=page==='bunker'&&current===lastContentView?captureArchiveView():null;
     const guideFocus=captureOnboardingFocus();
     const presetFocus=capturePresetFocus();
     const campaignFocus=captureCampaignFocus();
@@ -14558,6 +14706,7 @@ function render(){
     if(cartFocus)(content.querySelector?.(cartFocus)||content.querySelector?.('[data-cart-panel]'))?.focus?.({preventScroll:true});
     if(weatherFocus)content.querySelector?.(weatherFocus)?.focus?.({preventScroll:true});
     if(routeFocus)content.querySelector?.('[data-route-compare], [data-route-status]')?.focus?.({preventScroll:true});
+    if(archiveView)restoreArchiveView(archiveView);
     if(current!==lastContentView){content.scrollTop=0;lastContentView=current}
     updateRaidClock();
   }finally{rendering=false}
@@ -14568,7 +14717,7 @@ function setPower(){document.documentElement.classList.toggle('reduce-motion',re
 world.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;if(b.id==='sidekey'||b.hasAttribute('data-wake')||b.dataset.launch==='power')return powerToggle();const key=b.dataset.launch;if(key==='start')travel('in','home');else if(key==='bunker')travel('in','bunker');else if(key==='continue')travel('in',page);else if(key==='settings')travel('in','settings')});inside.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;const d=b.dataset;if(d.injury)return handleInjuryUI(d);if(d.maintenance)return handleMaintenanceUI(d);if(d.lootplan)return handleLootPlanUI(d);if(d.survivor)return handleSurvivorUI(d);if(d.finale)return handleFinaleUI(d);if(d.campaign)return handleCampaignUI(d);if(d.preset)return handlePresetUI(d);if(d.guide)return handleOnboardingUI(d);if(d.pos)return handlePossessionsUI(d);if(d.objective)return handleObjectiveUI(d);if(d.contract)return handleContractUI(d);if(d.bh)return handleBarterHuntUI(d);if(d.tg)return handleTradeGridUI(d);if(d.cart)return handleMarketCartUI(d);if(d.market)return handleMarketUI(d);if(d.loadout)return handleLoadoutUI(d);if(d.bui)return handleBunkerUI(d);if(d.cui)return handleCommandUI(d);if(d.gear)return handleEquipment(d);if(d.order)return changeOrder(d.order);if(d.hideout)return handleHideout(d);if(d.supply)return buyMaterial(d.supply);if(d.backup==='export')return exportSave();if(d.backup==='import')return $('#restore-file').click();if(d.db)return handleDB(d);if(d.raid)return handleRaidAction(d.raid,d);if(d.field)return handleField(d);if(d.pick){if(!isActive())return;if(picked?.uid===d.pick&&picked.side===d.side)return;picked={uid:d.pick,side:d.side,rot:false};notice='';renderKeep();return}if(d.cell==='bag'&&picked){transfer(Number(d.x),Number(d.y));return}if(d.action==='shutdown'){save();inside.hidden=true;world.hidden=false;view='photo';place();powerToggle();return}if(d.action==='return')return travel('out');if(d.action==='lock'){setLock(true);return}if(d.action==='unlock'){setLock(false);return}if(d.page&&pages.includes(d.page))return navigatePage(d.page);if(d.zone!==undefined&&!raid&&Number.isInteger(Number(d.zone))&&FIELD_ZONES[Number(d.zone)]){zone=Number(d.zone);save();render();$(`[data-zone="${zone}"]`).focus()}if(d.item!==undefined){item=Number(d.item);save();render();$(`[data-item="${item}"]`).focus()}if(d.setting){if(d.setting==='large')large=!large;else reduce=!reduce;save();render();$(`[data-setting="${d.setting}"]`).focus()}});inside.addEventListener('dblclick',e=>{const b=e.target.closest('[data-pick][data-side=loot]');if(b&&isActive()&&!field.contact){picked=fieldTileSelection(b);transfer()}});inside.addEventListener('dragstart',e=>{const b=e.target.closest('[data-pick]');if(!b||!isActive())return;dragged=fieldTileSelection(b);e.dataTransfer.setData('text/plain',b.dataset.pick);e.dataTransfer.effectAllowed='move'});inside.addEventListener('dragover',e=>{if(dragged&&e.target.closest('[data-grid=bag]')){e.preventDefault();e.dataTransfer.dropEffect='move'}});inside.addEventListener('drop',e=>{const g=e.target.closest('[data-grid=bag]');if(!g||!dragged)return;e.preventDefault();const r=g.getBoundingClientRect(),x=Math.floor((e.clientX-r.left-1)/(g.clientWidth/raidBagSize()[0])),y=Math.floor((e.clientY-r.top-1)/(g.clientHeight/raidBagSize()[1]));picked=dragged;dragged=null;transfer(x,y)});inside.addEventListener('dragend',()=>{dragged=null});function setLock(on){$('#lock').hidden=!on;for(const sel of ['.topbar','.body','.foot'])$(sel).inert=on;if(on)$('#lock button').focus();else $('.content').focus()}document.addEventListener('keydown',e=>{if(e.key==='Escape'&&view==='inside'&&!busy){if(!$('#lock').hidden){setLock(false)}else travel('out')}});setInterval(updateRaidClock,250);document.addEventListener('visibilitychange',updateRaidClock);window.addEventListener('focus',updateRaidClock);window.addEventListener('storage',e=>{if(e.key===SAVE_KEY||(!writer&&revision===0&&PREVIOUS_SAVE_KEYS.includes(e.key))||e.key===null){loadRaid();picked=null;updateRaidClock();if(view==='inside')renderKeep()}});startSession();
 function terminalLinkTarget(hash){
   if(hash==='#guide')return onboardingView().mode==='active'?(raid?'raid':'home'):'settings';
-  return {'#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt',
+  return {'#bunker':'bunker','#archive':'bunker','#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt',
     '#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map',
     '#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];
 }
@@ -14662,6 +14811,15 @@ function openTerminalLink(){
   if(target==='traderQuests')setTraderQuestMode(hash==='#daily'?'daily':hash==='#weekly'?'weekly':'standing');
   if(hash==='#cart')openMarketCartLink();
   navigatePage(target);
+  if(hash==='#archive'){
+    const panel=$('[data-recovery-archive]');
+    if(panel){
+      panel.open=true;
+      const heading=panel.querySelector('summary');
+      heading.focus({preventScroll:true});
+      heading.scrollIntoView({block:'start'});
+    }
+  }
   if(hash==='#cart')marketCartFocus($('[data-cart-panel]'));
   if(hash==='#routes')focusRouteOverview();
   if(hash==='#weather')focusWeatherBoard();
