@@ -49,6 +49,34 @@ function bunkerHistoryDetail(row){
     ${Array.isArray(row.goods)?`<p><b>회수 물품</b> ${[...items].map(([id,n])=>esc(GOODS[id][0])+' ×'+n).join(' · ')||'없음'}</p>`:'<p>이전 버전에서 저장된 기록입니다. 당시 저장된 항목만 표시됩니다.</p>'}
     ${row.orderName?`<p><b>의뢰 완료</b> ${esc(row.orderName)} · ${bunkerHistoryCash(row.commission)} · +${Number(row.missionXp)} XP</p>`:''}</div>`;
 }
+function recentSettlementPanel(history){
+  if (!history.length) return '';
+  const results = new Map();
+  let recovered = 0n, lost = 0n, commissions = 0n, fees = 0n, balanceChange = 0n;
+  let returned = 0, documented = 0;
+  for (const row of history) {
+    const survived = row.rating === 'success' || row.rating === 'quick';
+    if (survived) returned++;
+    results.set(row.rating, (results.get(row.rating) || 0) + 1);
+    if (![row.cash,row.carriedCash,row.commission,row.cost].every(Number.isSafeInteger)) continue;
+    documented++;
+    if (survived) recovered += BigInt(row.carriedCash);
+    else lost += BigInt(row.carriedCash);
+    commissions += BigInt(row.commission);
+    fees += BigInt(row.cost);
+    balanceChange += BigInt(row.cash);
+  }
+  const outcomes = Object.entries(ENDINGS).filter(([rating])=>results.has(rating))
+    .map(([rating,labels])=>labels[1]+' '+results.get(rating)+'회').join(' · ');
+  const moneyLine = (label,key,amount) => '<div><dt>'+label+'</dt><dd data-records-amount="'+key+'">'+money(amount)+'</dd></div>';
+  const details = documented ? '<p data-records-coverage>현금 내역이 남은 '+documented+' / '+history.length+'회 기준</p>'+
+    '<dl>'+moneyLine('귀환 시 지갑 순변동','net',balanceChange)+moneyLine('귀환한 휴대 지폐','recovered',recovered)+
+    moneyLine('벙커 의뢰 수당','orders',commissions)+moneyLine('탈출 비용','fees',fees)+
+    moneyLine('귀환 실패로 잃은 휴대 지폐','lost',lost)+'</dl><p>지갑 순변동은 출격 정산 때 기록한 금액입니다. 귀환 뒤 상점 거래는 별도로 정산됩니다.</p>' :
+    '<p data-records-coverage>이전 기록에는 휴대 지폐와 정산 금액의 세부 내역이 없습니다.</p>';
+  return '<details class="bu-recent-ledger" data-recent-settlements><summary>최근 '+history.length+'회 정산 분석 · 귀환 '+
+    returned+'회</summary><p data-records-outcomes>'+outcomes+'</p>'+details+'</details>';
+}
 function recordsView(){
   const level=playerLevel(), ceiling=150*level*level, start=150*(level-1)*(level-1);
   const xp=career.xp, percent=Math.floor((xp-start)/(ceiling-start)*100), history=career.history;
@@ -63,7 +91,7 @@ function recordsView(){
     <h2>작전 기록 <small>전체</small></h2><div class="bu-stats">
     ${[['출격',career.sorties,'↗'],['귀환',career.returns,'⇥'],['교전 승리',career.victories||0,'⌖']].map(([title,n,icon])=>`<div><b aria-hidden="true">${icon}</b><span>${title}</span><strong>${n} <small>회</small></strong></div>`).join('')}</div>
     ${career.victoriesFrom?'<p class="bu-minor">교전 승리는 '+(career.victoriesFrom+1)+'번째 출격부터 집계됩니다.</p>':''}
-    ${survivorNavLink()}${injurySummaryMarkup(lastSummary,'최근 출격 부상·치료 기록')}<h2>최근 출격 기록 <small>${history.length}회</small></h2>${rows?`<div class="bu-table-wrap"><table><thead><tr>${['일시','지역','작전 결과','경과 시간','정산 시 지갑 변동','획득 XP','상세'].map(s=>'<th scope="col">'+s+'</th>').join('')}</tr></thead><tbody>${rows}</tbody></table></div>${history.length>5?`<button class="bu-more" data-bui="history-limit">${bunkerHistoryLimit===5?'이전 기록 보기':'최근 5회만 보기'}</button>`:''}`:'<div class="bu-empty">첫 출격을 마치면 작전 결과가 이곳에 기록됩니다.</div>'}</div></div></div>`;
+    ${survivorNavLink()}${injurySummaryMarkup(lastSummary,'최근 출격 부상·치료 기록')}<h2>최근 출격 기록 <small>${history.length}회</small></h2>${recentSettlementPanel(history)}${rows?`<div class="bu-table-wrap"><table><thead><tr>${['일시','지역','작전 결과','경과 시간','정산 시 지갑 변동','획득 XP','상세'].map(s=>'<th scope="col">'+s+'</th>').join('')}</tr></thead><tbody>${rows}</tbody></table></div>${history.length>5?`<button class="bu-more" data-bui="history-limit">${bunkerHistoryLimit===5?'이전 기록 보기':'최근 5회만 보기'}</button>`:''}`:'<div class="bu-empty">첫 출격을 마치면 작전 결과가 이곳에 기록됩니다.</div>'}</div></div></div>`;
 }
 function bunkerOrderState(q){
   return career.done.includes(q.id)?'done':career.order===q.id?'active':'new';

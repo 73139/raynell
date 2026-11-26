@@ -64,7 +64,7 @@
 .bu-facilities{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:5px;margin-top:8px}.bu-screen .bu-facility-tile{display:grid;grid-template-columns:21px minmax(0,1fr);align-items:center;gap:1px 5px;text-align:left;padding:7px;font-size:13px}.bu-facility-tile i{grid-row:span 2;color:var(--bu-gold);font-size:20px;text-align:center}.bu-facility-tile small{font-size:11px}
 .bu-jobs,.bu-receipts{margin-top:9px}.bu-jobs button{width:100%;display:flex;justify-content:space-between;padding:6px 9px;margin-top:5px;gap:5px}.bu-receipts p{font-size:12px;line-height:1.6;padding:4px 8px}
 .bu-f-detail{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);gap:10px;align-items:start}
-.bu-f-left{min-width:0;background:#111716;border:1px solid var(--bu-border)}.bu-room-image{position:relative;aspect-ratio:1.05;min-height:190px;background:#252b28;overflow:hidden}
+.bu-f-left{min-width:0;background:#111716;border:1px solid var(--bu-border)}.bu-room-image{position:relative;width:100%;aspect-ratio:1.05;min-height:190px;background:#252b28;overflow:hidden}
 .bu-room-image .bu-picture{position:absolute;inset:0;object-position:50% 50%}.bu-screen .bu-back{position:absolute;left:9px;top:9px;background:#18201ddd;padding:6px 9px;font-size:12px}
 .bu-f-left .bu-room-strip{margin:0;padding:5px;gap:3px}.bu-f-left .bu-room-strip i{display:none}
 .bu-f-spec>header{display:flex;align-items:center;gap:10px;padding:3px 1px 12px}.bu-f-spec>header>i{font-size:30px;color:#d6c995;padding:2px 8px;background:#242821;border:1px solid #62604e}.bu-f-spec>header>div{flex:1}.bu-f-spec>header h2{font-size:20px}.bu-f-spec>header p{font-size:12px;color:var(--bu-muted);margin-top:3px}.bu-f-spec>header>b{border:1px solid #595d51;background:#272e27;padding:3px 7px;white-space:nowrap}
@@ -89,3 +89,11 @@
 .bu-construction-plan li{padding:3px 0;font-size:.875em;line-height:1.45}
 .bu-construction-plan li span:last-child{display:inline-block;margin-left:.8em}
 .bu-construction-plan p{margin:8px 12px 12px;font-size:.875em}
+
+.bu-recent-ledger{border:1px solid var(--line);margin:6px 0 12px;padding:0 10px}
+.bu-recent-ledger summary{padding:10px 0;cursor:pointer;font-weight:700}
+.bu-recent-ledger p{margin:4px 0 10px;color:var(--muted)}
+.bu-recent-ledger dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:6px;margin:8px 0}
+.bu-recent-ledger dl div{min-width:0;padding:6px 8px;border:1px solid var(--line)}
+.bu-recent-ledger dt{font-size:.85em;color:var(--muted)}
+.bu-recent-ledger dd{margin:3px 0 0;overflow-wrap:anywhere;font-weight:700}

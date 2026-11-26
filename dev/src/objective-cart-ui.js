@@ -48,7 +48,8 @@ function facilityProcurementBudget(q){
   const row=(name,id,text)=>`<div><dt>${name}</dt><dd data-budget-${id}>${text}</dd></div>`;
   const result=partial?'<p data-budget-unavailable>견적에서 제외한 자재 · '+
     budget.unavailable.map(line=>esc(GOODS[line.item][0])+' '+line.missing+'개'+
-      (line.reason?' ('+esc(line.reason)+')':' (현금 구매 경로 없음)')).join(' · ')+'</p>':
+      (line.reason?' ('+esc(line.reason)+')':' (현금 구매 경로 없음)')+
+      (ITEM_META[line.item]?.lootSources.length?' <button type="button" data-objective="procurement-field-source" data-id="'+esc(line.item)+'" aria-label="'+esc(GOODS[line.item][0]+' 현장 수급처')+'">현장 수급처</button>':'')).join(' · ')+'</p>':
     '<p data-budget-balance>'+ (budget.balance<0?'지갑에서 '+money(-budget.balance)+' 부족':
       budget.balance>0?'구매·착공 후 '+money(budget.balance)+' 남음':'구매·착공 후 잔액 0 CR')+'</p>';
   const orders=budget.catalog.length?'<ul class="op-catalog-orders" aria-label="도감에서 직접 주문할 자재">'+
@@ -121,6 +122,13 @@ function handleProcurementUI(d){
     bunkerOrderSelected=d.id;bunkerOrderFilter='all';navigatePage('orders');
     const heading=$('.bu-order-panel h2');
     if(heading){heading.setAttribute('tabindex','-1');marketCartFocus(heading);}
+    return;
+  }
+  if(d.objective==='procurement-field-source'){
+    if(!q.budget?.unavailable.some(line=>line.item===d.id) || !ITEM_META[d.id]?.lootSources.length)return;
+    handleDB({db:'lookup',id:d.id});
+    const details=$('[data-catalog-sources]');
+    if(details){details.open=true;marketCartFocus(details.querySelector('summary'));}
     return;
   }
   if(d.objective==='procurement-catalog'){

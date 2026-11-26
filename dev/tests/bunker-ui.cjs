@@ -24,6 +24,24 @@ vm.runInContext(`let raid=null,field={},page='bunker',wallet=20000,facilitySelec
   assert.ok(!recordsView().includes('휴대 지폐 회수'));
   readCareer({history:[{...previous,carriedCash:20000,cash:5000}]});
   assert.ok(recordsView().includes('정산 시 지갑 변동</b> +5000 CR · 휴대 지폐 회수 20000 CR'));
+  const mixed=[
+    {rating:'success',carriedCash:10000,cost:0,commission:12000,cash:22000},
+    {rating:'quick',carriedCash:5000,cost:15000,commission:0,cash:-10000},
+    {rating:'expired',carriedCash:7000,cost:0,commission:0,cash:0},
+    {rating:'kia',carriedCash:0,cost:0,commission:0,cash:0},
+    previous
+  ];
+  const report=recentSettlementPanel(mixed);
+  assert.ok(report.includes('최근 5회 정산 분석 · 귀환 3회'));
+  assert.ok(report.includes('현금 내역이 남은 4 / 5회'));
+  for(const [key,val] of Object.entries({net:12000,recovered:15000,orders:12000,fees:15000,lost:7000})){
+    assert.ok(report.includes('data-records-amount="'+key+'">'+val+' CR'));
+  }
+  assert.ok(recentSettlementPanel([previous]).includes('이전 기록'));
+  assert.ok(!recentSettlementPanel([previous]).includes('data-records-amount'));
+  assert.equal(recentSettlementPanel([]),'');
+  const enormous={rating:'success',carriedCash:Number.MAX_SAFE_INTEGER,cost:0,commission:0,cash:Number.MAX_SAFE_INTEGER};
+  assert.ok(recentSettlementPanel([enormous,enormous]).includes('18014398509481982 CR'));
   readCareer({xp:325,sorties:2,returns:2,victories:3,victoriesFrom:0,history:[]});
   assert.match(recordsView(),/대원 Lv. 2/);assert.ok(!recordsView().includes('번째 출격부터'));
   loadHideout(null);
