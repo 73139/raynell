@@ -128,9 +128,62 @@ def play(browser, width):
               "saved stock, native v28 migration, and secondary-tab/field purchase locks.", flush=True)
 
 
+
+def keyboard_catalog(browser, width):
+    """No network, no imported data: exercise catalog focus with actual key events."""
+    with browser.new_context(viewport={"width": width, "height": 844},
+                             offline=True, reduced_motion="reduce", has_touch=width<600) as ctx:
+        ctx.route("http://**/*", lambda route: route.abort())
+        ctx.route("https://**/*", lambda route: route.abort())
+        p = ctx.new_page()
+        errors = []
+        p.on("pageerror", lambda err: errors.append(str(err)))
+        p.goto((ROOT / "index.html").as_uri() + "#bunker", wait_until="domcontentloaded")
+        p.wait_for_function("k => !!localStorage.getItem(k)", arg=KEY)
+        p.locator('.nav [data-page="more"]').click()
+        p.locator('.shortcut-grid [data-page="catalog"]').click()
+        before = p.evaluate("k => JSON.parse(localStorage.getItem(k))", KEY)
+        nxt, prev = p.locator('[data-db="next"]'), p.locator('[data-db="prev"]')
+        nxt.focus()
+        p.keyboard.press("Enter")
+        expect(nxt).to_be_focused()
+        expect(prev).to_be_enabled()
+        prev.focus()
+        p.keyboard.press("Enter")
+        expect(prev).to_be_disabled()
+        expect(nxt).to_be_focused()
+        # Advance all the way to the last page. Focus must not disappear at the boundary.
+        for _ in range(40):
+            if nxt.is_disabled():
+                break
+            p.keyboard.press("Enter")
+        expect(nxt).to_be_disabled()
+        expect(prev).to_be_focused()
+        tile = p.locator('#db-results [data-db="item"]').first
+        selected = tile.get_attribute("data-id")
+        tile.focus()
+        p.keyboard.press("Enter")
+        expect(p.locator("#db-detail .db-detail-title h2")).to_be_focused()
+        back = p.locator('[data-db="list-return"]')
+        back.focus()
+        p.keyboard.press("Enter")
+        expect(p.locator(f'#db-results [data-db="item"][data-id="{selected}"]')).to_be_focused()
+        # If a filter removes the selected item, the return action targets the search input.
+        p.locator("#db-query").fill("no-such-rustline-item-987654321")
+        back.focus()
+        p.keyboard.press("Enter")
+        expect(p.locator("#db-query")).to_be_focused()
+        after = p.evaluate("k => JSON.parse(localStorage.getItem(k))", KEY)
+        for key in ("wallet", "stash", "stashSlots", "career", "raid"):
+            assert before[key] == after[key], key
+        assert not errors, errors
+        print(f"PASS {width}px offline catalog: keyboard paging boundaries, detail focus, list return, search fallback and unchanged game state", flush=True)
+
 if __name__ == "__main__":
     with sync_playwright() as playwright:
         proxy = {"server": os.environ["RUSTLINE_PROXY"]} if os.getenv("RUSTLINE_PROXY") else None
         with playwright.chromium.launch(executable_path=os.getenv("RUSTLINE_CHROMIUM"), proxy=proxy) as browser:
             play(browser, 390)
             play(browser, 1280)
+            keyboard_catalog(browser, 390)
+            keyboard_catalog(browser, 1280)
