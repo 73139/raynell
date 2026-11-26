@@ -21,8 +21,7 @@ function facilityFundingPlan(balance){
   const best=plans[0];
   return best?{orders:best.orders.map(order=>order.id),reward:best.reward,remaining:deficit-best.reward}:null;
 }
-function objectiveCartView(){
-  const objective=resolveObjective();
+function objectiveCartView(objective=resolveObjective()){
   const view={source:objective?.source||null,title:objective?.title||'',goals:objective?.goals||[],
     lines:[],groups:[],token:'',quantity:0,total:0,reason:'',ok:false,budget:null};
   if(!objective){view.reason='먼저 조달할 목표를 고정하세요.';return view;}

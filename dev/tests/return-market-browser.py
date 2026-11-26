@@ -50,9 +50,13 @@ def play(browser, width, outcome):
         tab = '[data-loadout="mobile-tab"][data-screen="loot"][data-index="2"]'
         if page.locator(tab + ":visible").count():
             click(tab)
+        appraisal = page.locator('[data-field-appraisal]:visible')
+        expect(appraisal).to_have_count(0)
         click('.lo-search[data-field="search"]')
         page.clock.fast_forward(10000)
         click('[data-side="loot"][aria-label^="구급 붕대"]')
+        expect(appraisal).to_have_text('귀환 후 상인 매입가 2,250 CR')
+        assert saved()['wallet'] == 30000 and not saved()['saleReceipts']
         click('[data-field="take"]')
         click('[data-field="close"]')
         assert [unit["g"] for unit in saved()["field"]["bag"]] == ["bandage"]
@@ -131,7 +135,7 @@ def play(browser, width, outcome):
         receipt()
         assert saved()["saleReceipts"]["medic"] == record and saved()["wallet"] == 32250
         assert not errors, errors
-        print(f"PASS {width}px {outcome}: quote 2,250 CR, same buyer, no automatic staging or sale, "
+        print(f"PASS {width}px {outcome}: field appraisal and return quote 2,250 CR, same buyer, no automatic staging or sale, "
               "explicit sale, physical balance and identical receipt after reload.", flush=True)
 
 

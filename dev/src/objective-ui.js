@@ -174,10 +174,12 @@ function objectivePanel(context,objective=resolveObjective()){
     esc(objectiveOpenLabel(o.source,context==='result'))+'</button>':'')+
     (context==='prep'||context==='field'?'<button type="button" data-page="map">작전 지도</button>':'')+
     objectiveControl(o.source,true)+'</div>';
-  const procurement=!raid&&o.materials.length&&['prep','map'].includes(context)?procurementPanel():'';
+  const quote=!raid&&o.materials.length&&['prep','map'].includes(context)?objectiveCartView(o):null;
+  const procurement=quote?procurementPanel('',quote):'';
+  const areaSearch=facility&&context==='map'?facilitySearchDisclosure(o,facilitySearchInputs(o,quote)):'';
   const preparation=['prep','map'].includes(context)?recoveryPreparationPanel(o.source):'';
   const routePlan=!raid&&['prep','map'].includes(context)&&o.source.id==='handover-ledgers'?inspectionReturnRoute(zone,o.inspections):null;
-  const places=o.inspections?inspectionChecklist(o.inspections,context,routePlan):preparation||objectivePlaces(o.locations,context);
+  const places=o.inspections?inspectionChecklist(o.inspections,context,routePlan):preparation||areaSearch||objectivePlaces(o.locations,context);
   let body=places+recoverySearchPanel(o)+objectiveGoalRows(o.goals)+materialList+procurement+actions;
   if(facility&&(context==='field'||context==='loot')){
     const filled=o.materials.filter(m=>m.missing===0).length;

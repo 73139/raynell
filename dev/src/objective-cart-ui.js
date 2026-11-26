@@ -65,8 +65,7 @@ function facilityProcurementBudget(q){
     '초과 수량·다른 주문·선행 공사비 제외.</small>'+facilityFundingMarkup(budget.funding)+'</section>';
 }
 
-function procurementPanel(trader=''){
-  const q=objectiveCartView();
+function procurementPanel(trader='',q=objectiveCartView()){
   if(!q.source||!q.lines.length||raid)return '';
   const groups=trader?q.groups.filter(group=>group.trader===trader):q.groups;
   const key=procurementKey(q.source,trader), open=key===procurementExpanded;
