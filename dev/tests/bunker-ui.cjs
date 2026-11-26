@@ -4,14 +4,14 @@ const vm=require('node:vm');
 const assert=require('node:assert/strict');
 const {boot,clone,epoch,extract,stamp}=require('./game-fixture.cjs');
 const db=JSON.parse(fs.readFileSync('Rustline_Database_v10.json','utf8'));
-const uiSource=['field','gear-instances','gear-service','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor','survivor-ui','objective','objective-ui','weather','postal'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
+const uiSource=['field','gear-instances','gear-service','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor','survivor-ui','objective','objective-ui','weather','postal','relief'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
 const ctx=vm.createContext({document:{activeElement:null},ITEM_META:{},LANDMARKS:clone(boot().g.places),lastSummary:null,campaignBunkerCard:()=>'',menuIcon:()=>'',assert,writer:true,commandIcon:()=>'',GOODS:Object.fromEntries(Object.entries(db.items).map(([k,item])=>[k,[item.name]])),
   FACILITIES:db.hideout.facilities,FACILITY_PRODUCTION:db.hideout.production,boxKey:(zone,index)=>zone+'-'+index,
   artURL:key=>{assert.ok(fs.existsSync('src/assets/ui/'+key+'.webp'),key);return key+'.webp'},
   itemArt:id=>'<img alt="" src="'+id+'">',esc:String, money:n=>n+' CR',formatRaid:n=>String(n),
   FIELD_ZONES:[{name:'벙커 외곽'},{name:'폐쇄 검문소'},{name:'군수 창고'}]});
 vm.runInContext(`let raid=null,field={},page='bunker',wallet=20000,facilitySelected='power',facilityTier=1;
-  const equipmentState={bag:[]};
+  const equipmentState={bag:[]},finaleState={reply:null},isActive=()=>Boolean(raid&&!field.result),kitName=id=>GOODS[id]?.[0]||id;
   const renderKeep=()=>{},save=()=>{},persist=()=>{},reconcile=()=>false,writeSession=()=>true,$=()=>({scrollTop:0}),inside={addEventListener(){}},stash={};
   ${uiSource}
   readCareer({sorties:5,returns:4,xp:177,history:[{rating:'quick',elapsed:1000,exit:'외곽',xp:25}]});
@@ -59,7 +59,9 @@ vm.runInContext(`let raid=null,field={},page='bunker',wallet=20000,facilitySelec
   advanceHideout(t);assert.equal(hideoutLevel('power'),1);
   for(const id of Object.keys(FACILITY_PRODUCTION)){hideout.levels[id]=3;openBunkerFacility(id);
     assert.equal((bunkerDetailView().match(/data-hideout="produce"/g)||[]).length,FACILITY_PRODUCTION[id].length)}
+  assert.ok(!ordersView().includes('data-id="external-relief"'));
   for(const q of ORDERS){
+    if(q.afterReply)finaleState.reply={raidId:1000};
     handleBunkerUI({bui:'order',id:q.id});assert.ok(ordersView().includes('data-order="'+q.id+'"'));
     changeOrder(q.id);assert.equal(bunkerOrderState(q),'active');assert.ok(ordersView().includes('수락 취소'));
     handleBunkerUI({bui:'order-filter',id:'active'});assert.equal((ordersView().match(/class="bu-order-choice"/g)||[]).length,1);
@@ -80,6 +82,7 @@ vm.runInContext(`let raid=null,field={},page='bunker',wallet=20000,facilitySelec
       field.boxes[boxKey(zone,index)]={complete:true,items:[]};
       field.bag.push({g:q.sample.item,uid:'p-pvc'});
     }
+    if(q.afterReply){raid.startedAt=2000;field.reliefDelivery={kind:'power',raidId:2000,at:2500};}
     if(q.id==='sealed-mail'){
       const at=Date.now()-2000;raid.startedAt=at;raid.endsAt=at+1800000;field.raidId=at;field.visited=[2,1];
       field.postal={raidId:at,issuedAt:at+1,stampedAt:at+1000};

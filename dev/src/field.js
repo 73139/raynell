@@ -54,10 +54,11 @@ function sampleInspection(order, sortie, bag) {
   const carried = (bag || []).some(unit => unit.g === order.sample.item);
   return {site, carried, count:Number(site.complete) + Number(carried)};
 }
-function orderUnlocked(order, done=career.done) {
+function orderUnlocked(order, done=career.done, reply) {
+  if(order.afterReply && !(reply===undefined?finaleState.reply:reply))return false;
   if(!order.after)return true;
   const prior=ORDERS.find(candidate=>candidate.id===order.after);
-  return Boolean(prior&&done.includes(prior.id)&&orderUnlocked(prior,done));
+  return Boolean(prior&&done.includes(prior.id)&&orderUnlocked(prior,done,reply));
 }
 const ORDERS = [
   {id:'scout',surveyFunding:true, image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
@@ -95,17 +96,21 @@ const ORDERS = [
     cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length},
   {id:'courier-checkin',after:'sealed-mail',image:'bunker-stash',issuer:'벙커 배차반',title:'배달 뒤의 소식',
     text:'회송한 우편낭이 수송망에 올랐습니다. 한 출격에서 서로 다른 두 권역에 정차한 기록 운반원 은서를 만나 소식을 확인하세요. 현장에서 흔적을 조사하고 따라간 뒤 말을 걸어야 만남이 기록됩니다. 물통 지원은 선택입니다. 정상 탈출하면 배차반이 수당을 지급합니다.',
-    cr:38000,xp:135,goal:'서로 다른 권역에서 운반원과 대화',target:2,progress:()=>courierCheckins().length}
+    cr:38000,xp:135,goal:'서로 다른 권역에서 운반원과 대화',target:2,progress:()=>courierCheckins().length},
+  {id:'external-relief',afterReply:true,image:'bunker-kitchen',issuer:'외부 벙커 연락반',title:'회신 뒤의 첫 보급',
+    text:'외부 벙커에서 첫 보급을 요청했습니다. 외곽 배급소 식당의 급식 보급, 또는 폐쇄 검문소 감시 통제실의 전원 부품 중 하나를 선택해 현장 가방에서 인계하고 정상 탈출하세요.',
+    cr:36000,xp:110,goal:'외부 벙커 보급 요청 한 건 인계',target:1,progress:()=>reliefProgress()}
 ];
 let career,orderFeedback='',raidAckFeedback='';
-function readCareer(raw={}) {
+function readCareer(raw={},reply=null) {
   orderFeedback='';raidAckFeedback='';pumpNotice=null;
   const number = n => Number.isSafeInteger(n) && n>=0 ? n : 0;
   const completed = Array.isArray(raw?.done) ? raw.done : [];
-  const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed)).map(q=>q.id);
-  career = {xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed,reply) &&
+    (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
+  career = {...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
-    done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done))?raw.order:null,
+    done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
       if(!row || (validHistoryGear(row) && historyGearMatches(row,lastSummary)))return row;
       const {gearReport,gearOmitted,...rest}=row;
@@ -286,6 +291,7 @@ function reconcileEnd(result,at,exit=null){
   const order=award?.order;
   if(award?.payable){
     commission=order.cr;missionXp=order.xp;orderName=order.title;
+    if(order.id===RELIEF_ORDER)career.reliefReceipt={...field.reliefDelivery};
     career.done.push(order.id);career.order=null;
   }
   if(returned && exit?.rule==='radio')recordGearUse(workingRaidRadio(),0,1);
@@ -321,7 +327,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost, ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }

@@ -27,7 +27,7 @@ function finaleRequirements(v) {
 function finaleReply(v) {
   return '<article class="rf-reply" data-finale-reply><header><span>수신 완료</span><h3>외부 벙커의 회신</h3></header>'+
     '<blockquote>'+esc(FINALE_REPLY_TEXT)+'</blockquote><p>B-04의 교신 기록에 영구 보관했습니다. 벙커 관리와 출격을 계속할 수 있습니다.</p>'+
-    '<div class="rc-actions"><button type="button" data-page="'+(raid?'raid':'map')+'">'+(raid?(field.result?'작전 결과 보기':'현장 복귀'):'작전 지도 열기')+'</button>'+
+    '<div class="rc-actions"><button type="button" data-bui="external-relief">'+(career.reliefReceipt?'첫 보급 인계 기록':'첫 보급 요청 보기')+'</button><button type="button" data-page="'+(raid?'raid':'map')+'">'+(raid?(field.result?'작전 결과 보기':'현장 복귀'):'작전 지도 열기')+'</button>'+
     '<button type="button" data-page="bunker">벙커 전경</button></div></article>';
 }
 

@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.76</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.77</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -2014,6 +2014,7 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(d.field==='relief-deliver')return handleReliefDelivery(d);
 if(d.field==='postal-pickup'||d.field==='postal-stamp')return handlePostal(d);
 if(d.field==='survey-observe')return handleWeatherObservation(d);
 if(d.field==='gauge-read'||d.field==='gauge-report')return handlePumpGauge(d);
@@ -2076,10 +2077,11 @@ function sampleInspection(order, sortie, bag) {
   const carried = (bag || []).some(unit => unit.g === order.sample.item);
   return {site, carried, count:Number(site.complete) + Number(carried)};
 }
-function orderUnlocked(order, done=career.done) {
+function orderUnlocked(order, done=career.done, reply) {
+  if(order.afterReply && !(reply===undefined?finaleState.reply:reply))return false;
   if(!order.after)return true;
   const prior=ORDERS.find(candidate=>candidate.id===order.after);
-  return Boolean(prior&&done.includes(prior.id)&&orderUnlocked(prior,done));
+  return Boolean(prior&&done.includes(prior.id)&&orderUnlocked(prior,done,reply));
 }
 const ORDERS = [
   {id:'scout',surveyFunding:true, image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
@@ -2117,17 +2119,21 @@ const ORDERS = [
     cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length},
   {id:'courier-checkin',after:'sealed-mail',image:'bunker-stash',issuer:'벙커 배차반',title:'배달 뒤의 소식',
     text:'회송한 우편낭이 수송망에 올랐습니다. 한 출격에서 서로 다른 두 권역에 정차한 기록 운반원 은서를 만나 소식을 확인하세요. 현장에서 흔적을 조사하고 따라간 뒤 말을 걸어야 만남이 기록됩니다. 물통 지원은 선택입니다. 정상 탈출하면 배차반이 수당을 지급합니다.',
-    cr:38000,xp:135,goal:'서로 다른 권역에서 운반원과 대화',target:2,progress:()=>courierCheckins().length}
+    cr:38000,xp:135,goal:'서로 다른 권역에서 운반원과 대화',target:2,progress:()=>courierCheckins().length},
+  {id:'external-relief',afterReply:true,image:'bunker-kitchen',issuer:'외부 벙커 연락반',title:'회신 뒤의 첫 보급',
+    text:'외부 벙커에서 첫 보급을 요청했습니다. 외곽 배급소 식당의 급식 보급, 또는 폐쇄 검문소 감시 통제실의 전원 부품 중 하나를 선택해 현장 가방에서 인계하고 정상 탈출하세요.',
+    cr:36000,xp:110,goal:'외부 벙커 보급 요청 한 건 인계',target:1,progress:()=>reliefProgress()}
 ];
 let career,orderFeedback='',raidAckFeedback='';
-function readCareer(raw={}) {
+function readCareer(raw={},reply=null) {
   orderFeedback='';raidAckFeedback='';pumpNotice=null;
   const number = n => Number.isSafeInteger(n) && n>=0 ? n : 0;
   const completed = Array.isArray(raw?.done) ? raw.done : [];
-  const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed)).map(q=>q.id);
-  career = {xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed,reply) &&
+    (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
+  career = {...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
-    done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done))?raw.order:null,
+    done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
       if(!row || (validHistoryGear(row) && historyGearMatches(row,lastSummary)))return row;
       const {gearReport,gearOmitted,...rest}=row;
@@ -2308,6 +2314,7 @@ function reconcileEnd(result,at,exit=null){
   const order=award?.order;
   if(award?.payable){
     commission=order.cr;missionXp=order.xp;orderName=order.title;
+    if(order.id===RELIEF_ORDER)career.reliefReceipt={...field.reliefDelivery};
     career.done.push(order.id);career.order=null;
   }
   if(returned && exit?.rule==='radio')recordGearUse(workingRaidRadio(),0,1);
@@ -2343,7 +2350,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost, ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
@@ -3992,7 +3999,7 @@ function landmarkPanel(){
     <div class="landmark-header"><div><small>현재 랜드마크</small><h2 tabindex="-1">${point.name}</h2></div>
       <details class="landmark-picker"><summary>랜드마크 선택 · ${LANDMARKS[zi].length}곳</summary>
         <div class="landmark-list">${options}</div></details></div>
-    <p class="landmark-description">${point.description}</p>${sourceHint}${pumpGaugePanel()}${surveyReadingPanel()}${postalPanel()}
+    <p class="landmark-description">${point.description}</p>${sourceHint}${pumpGaugePanel()}${surveyReadingPanel()}${postalPanel()}${reliefPanel(true)}
     <button class="primary search-button" data-field="scan" ${busy||nextLandmarkBox()<0?'disabled':''}>${ico('search')} 주변 탐색 <small>${durationLabel('scan',4000)}</small></button>
     <h3 class="landmark-box-title">발견한 수색 대상 <small>${visible.length} / ${point.boxes.length}</small></h3>
     <div class="container-list">${cards||'<p class="empty-field">주변을 탐색해 이곳의 수색 대상을 발견하세요.</p>'}</div>
@@ -4271,7 +4278,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=76000; // Derived from the release title by build.py.
+const WRITER_BUILD=77000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4347,7 +4354,8 @@ function readSession(current){
   if(raid)for(const box of Object.values(field.boxes)){
     if(!Array.isArray(box.size))box.size=BOX_SIZE.slice();
   }
-  readCareer(snap?.career);
+  readCareer(snap?.career,snap?.finale?.reply||null);
+  if(field.reliefDelivery&&!validReliefBackup({raid,field,career,finale:snap?.finale,lastSummary}))delete field.reliefDelivery;
   postalNotice='';
   if(!validPostalCargo(raid,field,career.order)){
     delete field.postal;field.bag=field.bag.filter(u=>u.g!==POSTAL_ITEM);
@@ -4530,7 +4538,7 @@ function validateBackup(raw){
     if(!Array.isArray(done)||!orderUnlocked(ORDERS.find(q=>q.id==='courier-checkin'),done)||
        (s.career.order==='courier-checkin'&&done.includes('courier-checkin')))return false;
   }
-  if(!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
+  if(!validReliefBackup(s)||!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
   if(r!==null&&(!dict(r)||!integer(r.startedAt,1)||r.endsAt-r.startedAt!==RAID_DURATION_MS||!integer(r.zone,0,2)))return false;
   if(f.raidId!==(r?.startedAt||0)||!Array.isArray(f.bag)||!f.bag.every(tile)||!Array.isArray(f.found)||f.found.length!==3||!f.found.every((a,z)=>Array.isArray(a)&&a.every(i=>integer(i,0,FIELD_ZONES[z].boxes.length-1))))return false;
   if(!Array.isArray(f.log)||!f.log.every(x=>typeof x==='string')||!dict(f.boxes))return false;
@@ -5326,6 +5334,7 @@ function ordersView(){
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
     <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
     ${q.id==='weather-survey'&&state!=='done'?'<div class="shell-actions"><button data-cui="forecast">세 권역 예보 비교</button></div>':''}
+    ${q.id===RELIEF_ORDER?reliefPanel():''}
     ${q.id==='courier-checkin'&&state!=='done'?courierCheckinPanel():''}
     ${q.sample&&state!=='done'&&!raid?'<div class="shell-actions"><button data-db="lookup" data-id="'+esc(q.sample.item)+'">PVC 배관 도감 · 수급처와 주문</button><button data-page="stash">창고에서 출격 가방에 담기</button></div>':''}
     ${state==='active'?objectiveControl({kind:'order',id:q.id}):''}
@@ -5417,6 +5426,10 @@ function openBunkerFacility(id,tier){
   const content=$('.content');if(content)content.scrollTop=0;
 }
 function handleBunkerUI(d){
+  if(d.bui==='external-relief'){
+    if(page!=='campaign'||!finaleState.reply)return;
+    bunkerOrderSelected=RELIEF_ORDER;bunkerOrderFilter='all';navigatePage('orders');return;
+  }
   if(d.bui==='order-followup'){
     const follow=nextBunkerOrder(lastSummary);
     if(!writer||page!=='raid'||!follow||follow.id!==d.id||String(raid.startedAt)!==d.returnId)return;
@@ -8471,7 +8484,7 @@ function resolveObjective(pin = objectivePin) {
     const sample=order.sample?sampleInspection(order,isActive()?field:null,isActive()?field.bag:equipmentState.bag):null;
     if(sample && !raid && sample.carried)goals[1].value=1;
     const observations=order.id==='weather-survey'&&isActive()?surveyObservations():[];
-    const locations=order.id==='sealed-mail'?postalLocations():order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
+    const locations=order.id===RELIEF_ORDER?reliefDirections():order.id==='sealed-mail'?postalLocations():order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
       ? inspections.filter(site=>!site.complete).map(({zone,landmark})=>({zone,landmark}))
       : order.id==='pump-gauge' && (!isActive()||!pumpGaugeProgress())?[PUMP_SITE]:recoveryDestinations(order,carried,search);
     return {source, title:order.title, kindLabel:'벙커 의뢰', status:'정상 탈출 시 정산',
@@ -12605,7 +12618,7 @@ function finaleRequirements(v) {
 function finaleReply(v) {
   return '<article class="rf-reply" data-finale-reply><header><span>수신 완료</span><h3>외부 벙커의 회신</h3></header>'+
     '<blockquote>'+esc(FINALE_REPLY_TEXT)+'</blockquote><p>B-04의 교신 기록에 영구 보관했습니다. 벙커 관리와 출격을 계속할 수 있습니다.</p>'+
-    '<div class="rc-actions"><button type="button" data-page="'+(raid?'raid':'map')+'">'+(raid?(field.result?'작전 결과 보기':'현장 복귀'):'작전 지도 열기')+'</button>'+
+    '<div class="rc-actions"><button type="button" data-bui="external-relief">'+(career.reliefReceipt?'첫 보급 인계 기록':'첫 보급 요청 보기')+'</button><button type="button" data-page="'+(raid?'raid':'map')+'">'+(raid?(field.result?'작전 결과 보기':'현장 복귀'):'작전 지도 열기')+'</button>'+
     '<button type="button" data-page="bunker">벙커 전경</button></div></article>';
 }
 
@@ -13506,6 +13519,85 @@ function handlePostal(d){
     postalNotice='운송 기록을 저장할 수 없습니다. 다시 시도하세요.';
   }
   renderKeep();$('[data-postal-stage] [role="status"]')?.focus?.({preventScroll:true});
+}
+
+// The first request from the external bunker has two mutually exclusive handover sites.
+const RELIEF_ORDER='external-relief';
+const RELIEF_REQUESTS={
+  meals:{name:'급식 보급',zone:0,landmark:3,items:{food:2,water:2}},
+  power:{name:'전원 부품',zone:1,landmark:3,items:{battery:1,rl_03_25:1}}
+};
+function validReliefRecord(record,reply){
+  return Boolean(record&&typeof record==='object'&&!Array.isArray(record)&&Object.keys(record).length===3&&
+    typeof record.kind==='string'&&Object.hasOwn(RELIEF_REQUESTS,record.kind)&&Number.isSafeInteger(reply?.raidId)&&Number.isSafeInteger(record.raidId)&&
+    record.raidId>reply.raidId&&Number.isSafeInteger(record.raidId+RAID_DURATION_MS)&&Number.isSafeInteger(record.at)&&
+    record.at<=Date.now()&&record.at>=record.raidId&&record.at<record.raidId+RAID_DURATION_MS);
+}
+function validReliefBackup(s){
+  const job=s.career?.order===RELIEF_ORDER,complete=Array.isArray(s.career?.done)&&s.career.done.includes(RELIEF_ORDER);
+  const delivery=s.field?.reliefDelivery,receipt=s.career?.reliefReceipt,reply=s.finale?.reply;
+  if(!job&&!complete&&delivery===undefined&&receipt===undefined)return true;
+  if(!reply||(job&&complete)||complete!==(receipt!==undefined))return false;
+  if(delivery!==undefined){
+    if(!job || !validReliefRecord(delivery,reply) || !s.raid || delivery.raidId!==s.raid.startedAt ||
+       delivery.raidId!==s.field.raidId || s.field.result || !Array.isArray(s.field.visited) ||
+       !s.field.visited.includes(RELIEF_REQUESTS[delivery.kind].zone))return false;
+  }
+  if(!complete)return true;
+  if(!validReliefRecord(receipt,reply))return false;
+  const recent=s.lastSummary;
+  if(recent?.raidId===receipt.raidId&&(recent.rating!=='success'||recent.orderName!==reliefOrder().title||
+     recent.commission!==reliefOrder().cr||recent.missionXp!==reliefOrder().xp))return false;
+  return true;
+}
+function reliefOrder(){return ORDERS.find(q=>q.id===RELIEF_ORDER);}
+function reliefAt(request){return isActive()&&raid.zone===request.zone&&field.landmarkByZone?.[raid.zone]===request.landmark;}
+function reliefProgress(){return Number(Boolean(raid&&!field.result&&career.order===RELIEF_ORDER&&field.reliefDelivery?.raidId===raid.startedAt));}
+function reliefMaterials(request,bag){
+  return Object.entries(request.items).map(([id,need])=>({id,need,units:bag.filter(unit=>unit.g===id).slice(0,need)}));
+}
+function reliefDirections(){
+  return field.reliefDelivery&&isActive()?[]:Object.values(RELIEF_REQUESTS).map(({zone,landmark})=>({zone,landmark}));
+}
+function reliefRequestMarkup(kind,fieldView){
+  const request=RELIEF_REQUESTS[kind],bag=isActive()?field.bag:equipmentState.bag;
+  const lines=reliefMaterials(request,bag),ready=lines.every(line=>line.units.length===line.need);
+  const area=FIELD_ZONES[request.zone].name+' · '+LANDMARKS[request.zone][request.landmark].name;
+  const items=lines.map(line=>esc(kitName(line.id))+' '+line.units.length+' / '+line.need).join(' · ');
+  const blocked=!ready||!writer||field.action||field.contact||field.open||field.journey;
+  return '<div data-relief-choice="'+kind+'"><h4>'+esc(request.name)+'</h4><p>'+esc(area)+'</p><p>가방에 준비한 수량 · '+items+'</p>'+
+    (fieldView?'<button type="button" data-field="relief-deliver" data-kind="'+kind+'" data-raid-id="'+raid.startedAt+'"'+(blocked?' disabled':'')+'>'+esc(request.name)+' 인계</button>':'')+'</div>';
+}
+function reliefPanel(fieldView=false){
+  const active=isActive()&&career.order===RELIEF_ORDER;
+  if(fieldView&&!active)return '';
+  const receipt=career.reliefReceipt||(active?field.reliefDelivery:null);
+  if(receipt){
+    const name=RELIEF_REQUESTS[receipt.kind].name;
+    if(fieldView&&!reliefAt(RELIEF_REQUESTS[receipt.kind]))return '';
+    return '<section class="pump-gauge" data-relief-stage="'+(career.reliefReceipt?'settled':'given')+'"><h3 tabindex="-1">'+esc(name)+' 인계 완료</h3><p>'+
+      (career.reliefReceipt?'외부 벙커에서 첫 보급품을 수령했습니다.':'정상 탈출하면 수당을 받습니다.')+'</p></section>';
+  }
+  const choices=Object.keys(RELIEF_REQUESTS).filter(kind=>!fieldView||reliefAt(RELIEF_REQUESTS[kind]));
+  if(!choices.length)return '';
+  return '<section class="pump-gauge" data-relief-stage="ready"><h3>첫 보급 요청</h3><p>두 요청 중 하나를 고르세요. 인계한 물품은 가방에서 즉시 빠지며 정상 탈출할 때 보상이 지급됩니다.</p>'+
+    choices.map(kind=>reliefRequestMarkup(kind,fieldView)).join('')+'</section>';
+}
+function handleReliefDelivery(d){
+  if(!writer||!isActive()||career.order!==RELIEF_ORDER||!finaleState.reply||d.raidId!==String(raid.startedAt)||
+     Date.now()>=raid.endsAt||field.reliefDelivery||field.contact||field.open||field.journey||field.action||!Object.hasOwn(RELIEF_REQUESTS,d.kind))return;
+  const request=RELIEF_REQUESTS[d.kind];
+  if(!reliefAt(request))return;
+  const before=field.bag,lines=reliefMaterials(request,before);
+  if(lines.some(line=>line.units.length!==line.need))return;
+  const given=new Set(lines.flatMap(line=>line.units)),owner=field;
+  field.bag=before.filter(unit=>!given.has(unit));field.reliefDelivery={kind:d.kind,raidId:raid.startedAt,at:Date.now()};
+  if(!writeSession()){
+    if(owner===field){field.bag=before;delete field.reliefDelivery;notice='보급 인계를 저장하지 못했습니다. 가방을 확인한 뒤 다시 시도하세요.';}
+    renderKeep();return;
+  }
+  if(picked?.side==='bag' && lines.some(line=>line.units.some(unit=>unit.uid===picked.uid)))picked=null;
+  renderKeep();$('[data-relief-stage="given"] h3')?.focus?.({preventScroll:true});
 }
 
 // Shared command terminal. The region, wallet and carried space are read directly from the session.

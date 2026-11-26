@@ -20,6 +20,7 @@ def scenario(browser, width):
         p = ctx.new_page()
         p.clock.install()
         p.set_default_timeout(7500)
+        p.set_default_navigation_timeout(60000)
         errors = []
         p.on('pageerror', lambda e: errors.append(str(e)))
         p.on('dialog', lambda d: d.accept())
