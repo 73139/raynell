@@ -7,7 +7,7 @@ const copies=g=>g.s.stashSlots.filter(u=>u.g===item),success=r=>assert.ok(r.ok,r
 const quota=(b,fn)=>{const set=b.storage.set;b.storage.set=()=>{throw Error('quota');};try{return fn();}finally{b.storage.set=set;}};
 const sameEconomy=g=>JSON.stringify({r:g.s.revision,t:g.s.hideout.wardTrial,slots:g.s.stashSlots,qty:g.stock(item),cash:g.s.cash,wallet:g.fee,xp:g.s.career.xp});
 async function run(){
-  assert.equal(g.s.hideout.levels.med,1);assert.equal(g.quests.length,64);assert.equal(g.s.hideout.wardManual.registered,false);
+  assert.equal(g.s.hideout.levels.med,1);assert.equal(g.quests.length,65);assert.equal(g.s.hideout.wardManual.registered,false);
   assert.equal(g.wardTrialView(),null);assert.equal(g.wardTrialPanel(),'');assert.ok(!g.wardTrialAction('accept').ok);
   const quest=g.quests.find(q=>q.trader==='medic'&&g.status(q.id).status==='available');
   success(g.contract(quest.id,'accept'));assert.ok(g.pin({kind:'contract',id:quest.id}));
@@ -81,7 +81,7 @@ async function run(){
   assert.equal(full.g.s.cash.pocket[0].amount,10000);assert.equal(full.g.level(),2);valid(full.g);
   const field=boot({[v12]:snap},b.clock);field.g.moveNow(0);field.g.start();assert.ok(!field.g.wardTrialAction('deliver',chosen).ok);
   assert.equal(field.g.wardTrialView().stage,'active');
-  console.log('PASS earned clinic + searched/recovered original → native registration/2 real timed crafts → choose second loose UID; full 64-contract/standing and objective isolation, +10,000 physical CR/+25 cumulative XP once.');
+  console.log('PASS earned clinic + searched/recovered original → native registration/2 real timed crafts → choose second loose UID; full 65-contract/standing and objective isolation, +10,000 physical CR/+25 cumulative XP once.');
   console.log('PASS durable JSON/legacy restoration, seven invalid receipts, lost writes, duplicate/racing tabs, full grid & empty drawer, exact/overflowing safe-integer boundaries, level crossing, raid lock.');
 }
 run().catch(e=>{console.error(e);process.exitCode=1});
