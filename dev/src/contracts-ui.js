@@ -54,13 +54,23 @@ function contractList(entries,trader){
       '"><strong>'+esc(quest.title)+'</strong><span class="cq-state" data-state="'+status+'">'+contractLabels[status]+'</span></button>').join('')+'</div>'+
     standingUnlockItems(trader,contractPanel.tier)+'</section>';
 }
+function deliveryStockMarkup(id){
+  if(!gearSpec(id))return '';
+  const {loose,bag,cases,fitted}=npcDeliveryStock(id);
+  const worn=Object.values(equipmentState.worn).filter(item=>item===id).length;
+  const details=['납품 가능 · 창고·입고 대기 '+loose+'개','준비 가방 '+bag+'개','보관함 '+cases+'개'];
+  if(fitted)details.push('모듈 장착 '+fitted+'개 제외 · 정비에서 모듈을 분리한 뒤 납품 가능');
+  if(worn)details.push('착용 중 '+worn+'개 제외');
+  return '<small class="obj-inventory" data-delivery-stock="'+esc(id)+'">'+details.join(' · ')+'</small>';
+}
+
 function contractGoalList(entry){
   const preview=['available','busy'].includes(entry.status),complete=entry.status==='claimed';
   return '<section class="cq-objectives"><h3>작전 목표</h3><ul>'+entry.quest.goals.map((goal,i)=>{
     const count=Math.min(goal.target,entry.goals[i]?.value||0);
     const value=complete?goal.target:count;
     const fulfilled=complete||(!preview&&value>=goal.target);
-    return '<li data-fulfilled="'+fulfilled+'"><span class="cq-check" aria-hidden="true">'+(fulfilled?'✓':'')+'</span><span>'+esc(goal.type==='delivery'?GOODS[goal.item][0]+' · '+findMarketTrader(entry.quest.trader).name+'에게 전달':contractGoalLabel(goal))+'</span>'+
+    return '<li data-fulfilled="'+fulfilled+'"><span class="cq-check" aria-hidden="true">'+(fulfilled?'✓':'')+'</span><span>'+esc(goal.type==='delivery'?GOODS[goal.item][0]+' · '+findMarketTrader(entry.quest.trader).name+'에게 전달':contractGoalLabel(goal))+(goal.type==='delivery'&&!complete?deliveryStockMarkup(goal.item):'')+'</span>'+
       '<b>'+(preview?(goal.type==='delivery'?'보유 '+value+' / '+goal.target:'목표 '+goal.target):value+' / '+goal.target)+'</b></li>';
   }).join('')+'</ul></section>';
 }

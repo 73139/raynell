@@ -47,10 +47,11 @@ function objectiveMaterial(id, required, forConstruction, outgoing=0) {
   const worn = countWorn(equipmentState);
   const cases = stashSlots.reduce((sum, unit) => sum + (unit.contents ? count(unit.contents) : 0), 0);
   const carried = isActive() ? count(field.bag) : 0;
+  const fieldUsable = isActive() ? field.bag.filter(unit => unit.g === id && !unit.gear?.module).length : 0;
   const fieldWorn = isActive() ? countWorn(field) : 0;
   const owned = loose + bag + cases + worn;
-  const usable = (forConstruction ? facilityMaterialCount(id) : stashRemovableCount(id) + bag + cases) - outgoing;
-  return {id, required, loose, bag, worn, cases, owned, usable, field:carried, fieldWorn, missing:Math.max(0, required - usable)};
+  const usable = (forConstruction ? stashUnfittedCount(id) : contractDeliveryCount(id)) - outgoing;
+  return {id, required, loose, bag, worn, cases, owned, usable, field:carried, fieldUsable, fieldWorn, missing:Math.max(0, required - usable)};
 }
 
 function objectiveRaidRating(searched) {
@@ -172,7 +173,7 @@ function recoveryMaterial(id,aid,construction,outgoing=0){
   const row=objectiveMaterial(id,aid+construction,false,outgoing);
   // Construction can use only loose warehouse stock. A unit reserved for construction
   // cannot also fill a relief delivery, even if both lines ask for the same kind.
-  const assignedBuild=Math.min(construction,Math.max(0,facilityMaterialCount(id)-outgoing));
+  const assignedBuild=Math.min(construction,Math.max(0,stashUnfittedCount(id)-outgoing));
   const assignedAid=Math.min(aid,Math.max(0,row.usable-assignedBuild));
   return {...row,aid,construction,usable:assignedBuild+assignedAid,missing:row.required-assignedBuild-assignedAid};
 }
@@ -265,7 +266,7 @@ function resolveObjective(pin = objectivePin) {
       [{label:recurringGoalText(goal, trader), value:record.progress[index], target:goal.target}]);
 
   const ready = materials.every(row => row.missing === 0) && goals.every(row => row.value >= row.target);
-  const returnReady = isActive() && !ready && materials.every(row => row.usable + row.field >= row.required) &&
+  const returnReady = isActive() && !ready && materials.every(row => row.usable + row.fieldUsable >= row.required) &&
     goals.every(row => (row.projected ?? row.value) >= row.target);
   let status = '진행 중';
   if (ready) status = (raid ? '귀환 후 ' : '') + trader.name + '에게 보고 가능';

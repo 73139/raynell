@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.66</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.67</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -2607,42 +2607,48 @@ function addStashGoods(id, amount = 1, gear = null, sourceUid = null) {
   return true;
 }
 
-// Facility bills accept loose hosts only. Untagged older overflow remains usable
+// Consumption protects assembled hosts. Untagged older overflow remains usable
 // alongside pristine batches; only physical instances with an installed module are reserved.
 function fittedQueueCount(id) {
   return gearOverflow.reduce((sum, gear) => sum + Number(gear.g === id && Boolean(gear.module)), 0);
 }
 
-function facilityMaterialCount(id) {
+function stashUnfittedCount(id) {
   const removable = stashRemovableCount(id);
   if (!removable || !gearSpec(id)) return removable;
   const fittedSlots = stashSlots.filter(unit => unit.g === id && unit.gear?.module).length;
   return removable - fittedSlots - fittedQueueCount(id);
 }
 
-function takeStashGoods(id, amount = 1, uid = null, facility = false) {
+function takeStashGoods(id, amount = 1, uid = null, purpose = 'move') {
   if(id==='cr_notes')return false;
   const count = stashCount(id);
-  const available = facility ? facilityMaterialCount(id) : stashRemovableCount(id);
+  const skipFitted = purpose === 'facility' || purpose === 'delivery';
+  const available = skipFitted ? stashUnfittedCount(id) : stashRemovableCount(id);
   if (!Number.isSafeInteger(amount) || amount < 1 || amount > available) return false;
-  const unplaced = stashOverflowCount(id) - (facility && gearSpec(id) ? fittedQueueCount(id) : 0);
+  const unplaced = stashOverflowCount(id) - (skipFitted && gearSpec(id) ? fittedQueueCount(id) : 0);
   if (uid === 'overflow') {
     if (amount > unplaced) return false;
   } else if (uid !== null) {
     const index = stashSlots.findIndex(unit => unit.uid === uid && unit.g === id);
-    if (amount !== 1 || index < 0 || stashSlots[index].contents?.length || (facility && stashSlots[index].gear?.module)) return false;
+    if (amount !== 1 || index < 0 || stashSlots[index].contents?.length || (skipFitted && stashSlots[index].gear?.module)) return false;
     stashSlots.splice(index, 1);
   } else {
     let remove = Math.max(0, amount - unplaced);
-    for (let i = stashSlots.length - 1; i >= 0 && remove; i--) {
-      if (stashSlots[i].g === id && !stashSlots[i].contents?.length && !(facility && stashSlots[i].gear?.module)) {
-        stashSlots.splice(i, 1);
-        remove--;
-      }
+    const eligible = unit => unit.g === id && !unit.contents?.length && !(skipFitted && unit.gear?.module);
+    const ordered = purpose === 'delivery' ? stashSlots : stashSlots.slice().reverse();
+    const removed = new Set();
+    for (const unit of ordered) {
+      if (!remove) break;
+      if (!eligible(unit)) continue;
+      removed.add(unit.uid);
+      remove--;
     }
+    if (remove) return false;
+    if (removed.size) stashSlots = stashSlots.filter(unit => !removed.has(unit.uid));
   }
   const queued=uid===null?Math.min(unplaced,amount):uid==='overflow'?amount:0;
-  if (queued && gearOverflow.length) gearQueueRemove(gearOverflow,id,queued,facility);
+  if (queued && gearOverflow.length) gearQueueRemove(gearOverflow,id,queued,skipFitted);
   if (amount === count) delete stash[id];
   else stash[id] = count - amount;
   return true;
@@ -2651,8 +2657,8 @@ function takeStashGoods(id, amount = 1, uid = null, facility = false) {
 function stashConsume(materials) {
   if (!materials || typeof materials !== 'object' || Array.isArray(materials)) return false;
   const entries = Object.entries(materials);
-  if (!entries.every(([id, n]) => id !== 'cr_notes' && Number.isSafeInteger(n) && n > 0 && facilityMaterialCount(id) >= n)) return false;
-  for (const [id, n] of entries) takeStashGoods(id, n, null, true);
+  if (!entries.every(([id, n]) => id !== 'cr_notes' && Number.isSafeInteger(n) && n > 0 && stashUnfittedCount(id) >= n)) return false;
+  for (const [id, n] of entries) takeStashGoods(id, n, null, 'facility');
   return true;
 }
 
@@ -3052,7 +3058,7 @@ function advanceHideout(now = Date.now()) {
   return changed;
 }
 function missingMaterials(inputs) {
-  return Object.entries(inputs).some(([id,qty]) => facilityMaterialCount(id) < qty);
+  return Object.entries(inputs).some(([id,qty]) => stashUnfittedCount(id) < qty);
 }
 function facilityBuildStatus(id, tier) {
   const f = FACILITIES[id];
@@ -3134,20 +3140,20 @@ function updateHideoutClock() {
     if (el.textContent !== time) el.textContent = time;
   }
 }
-function facilityFittedNote(id, available = facilityMaterialCount(id)) {
+function facilityFittedNote(id, available = stashUnfittedCount(id)) {
   const fitted = stashRemovableCount(id) - available;
   return fitted ? ' · 모듈 장착 '+fitted+'개 제외' : '';
 }
 
 function facilityMaterials(inputs) {
   return `<div class="db-list facility-materials">${Object.entries(inputs).map(([id,qty]) => {
-    const qtyHeld = facilityMaterialCount(id), g = GOODS[id];
+    const qtyHeld = stashUnfittedCount(id), g = GOODS[id];
     return `<button data-db="lookup" data-id="${id}">${ico(g[4])}<span><b>${g[0]}</b><small>${itemSources(id)}</small></span><span class="${qtyHeld < qty ? 'facility-deficit' : 'facility-ready'}">${qtyHeld} / ${qty}개${facilityFittedNote(id,qtyHeld)}</span></button>`;
   }).join('')}</div>`;
 }
 function productionIngredients(facility,recipe,inputs) {
   const rows=Object.entries(inputs).map(([item,need])=>{
-    const held=facilityMaterialCount(item),shortage=Math.max(0,need-held);
+    const held=stashUnfittedCount(item),shortage=Math.max(0,need-held);
     const info=`<span>${GOODS[item][0]} · ${held} / ${need}${facilityFittedNote(item,held)}</span>`;
     const attrs=`data-craft-input="${item}" data-shortage="${shortage}"`;
     if(!shortage)return `<span ${attrs} tabindex="-1">${info}<span>충족</span></span>`;
@@ -4120,7 +4126,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=66000; // Derived from the release title by build.py.
+const WRITER_BUILD=67000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -5105,7 +5111,7 @@ function bunkerDetailView(){
   <div class="bu-next-effect"><b>Lv.${tier} 효과</b> ${facilityEffect(id,tier)}</div>
   ${tier===level+1&&!job?objectiveControl({kind:'facility',id,tier}):''}
   <h3>필요 자재 <small>창고 사용 가능 / 필요</small></h3><div class="bu-materials">${Object.entries(step.materials).map(([g,qty])=>{
-    const n=facilityMaterialCount(g),note=facilityFittedNote(g,n),ok=n>=qty;
+    const n=stashUnfittedCount(g),note=facilityFittedNote(g,n),ok=n>=qty;
     return `<button data-db="lookup" data-id="${g}" aria-label="${GOODS[g][0]} 수급처, 사용 가능 ${n}개, 필요 ${qty}개${note}"><span class="bu-mat-image"><i class="${ok?'ready':'short'}">${ok?'✓':'×'}</i>${itemArt(g)}</span><b>${GOODS[g][0]}</b><small class="${ok?'ready':'short'}">${n} / ${qty}${note}</small></button>`;
   }).join('')}</div>
   <div class="bu-needs"><b>선행 시설</b><div>${step.requires.map(r=>`<button data-bui="facility" data-id="${r.facility}" data-tier="${r.level}">${hideoutLevel(r.facility)>=r.level?'✓':'□'} ${FACILITIES[r.facility].name} Lv.${r.level}</button>`).join('')||'없음'}</div></div>
@@ -6373,7 +6379,10 @@ function contractAction(id, action, pinIfEmpty = false) {
     }
     if (Object.keys(materials).length) {
       before.inventory = npcInventorySnapshot();
-      if (!consumeNPCDelivery(materials)) return fail('상인에게 건넬 물품이 부족합니다.');
+      if (!consumeNPCDelivery(materials)) {
+        restoreNPCInventory(before.inventory);
+        return fail('상인에게 건넬 물품이 부족합니다.');
+      }
     }
     record.done = [...record.done, id];
     record.active = null;
@@ -6401,10 +6410,27 @@ function contractAction(id, action, pinIfEmpty = false) {
   return {ok: true, message};
 }
 
-// Hand-ins use carried and loose warehouse goods first, then matching goods in personal cases.
+// Worn gear, installed modules and nonempty cases stay with the player.
+function npcDeliveryStock(id) {
+  const loose = stashUnfittedCount(id);
+  let bag = 0, cases = 0, fitted = stashRemovableCount(id) - loose;
+  for (const unit of equipmentState.bag) {
+    if (unit.g !== id) continue;
+    if (unit.gear?.module) fitted++;
+    else bag++;
+  }
+  for (const box of stashSlots) {
+    for (const unit of box.contents || []) {
+      if (unit.g !== id) continue;
+      if (unit.gear?.module) fitted++;
+      else cases++;
+    }
+  }
+  return {loose, bag, cases, fitted, usable:loose + bag + cases};
+}
+
 function contractDeliveryCount(id) {
-  return stashRemovableCount(id) + equipmentState.bag.filter(unit => unit.g === id).length +
-    stashSlots.reduce((n,box)=>n+(box.contents?.filter(unit=>unit.g===id).length||0),0);
+  return npcDeliveryStock(id).usable;
 }
 
 function npcInventorySnapshot() {
@@ -6424,25 +6450,25 @@ function consumeNPCDelivery(materials,reserveLoose={}) {
   for (const [id, count] of entries) {
     let remaining = count;
     equipmentState.bag = equipmentState.bag.filter(unit => {
-      if (unit.g !== id || remaining === 0) return true;
+      if (unit.g !== id || unit.gear?.module || remaining === 0) return true;
       remaining--;
       return false;
     });
-    const loose = Math.min(remaining,Math.max(0,stashRemovableCount(id)-(reserveLoose[id] || 0)));
-    if (loose) takeStashGoods(id,loose);
+    const loose = Math.min(remaining,Math.max(0,stashUnfittedCount(id)-(reserveLoose[id] || 0)));
+    if (loose && !takeStashGoods(id,loose,null,'delivery')) return false;
     remaining -= loose;
     for (let i=0; remaining && i<stashSlots.length; i++) {
       const box=stashSlots[i];
       if (!box.contents?.length) continue;
       const contents=box.contents.filter(unit=>{
-        if (unit.g!==id || !remaining) return true;
+        if (unit.g!==id || unit.gear?.module || !remaining) return true;
         remaining--;
         return false;
       });
       if (contents.length!==box.contents.length) stashSlots[i]={...box,contents};
     }
     // If cases and carried goods are exhausted, the player can still choose to donate loose construction stock.
-    if (remaining && !takeStashGoods(id,remaining)) return false;
+    if (remaining && !takeStashGoods(id,remaining,null,'delivery')) return false;
   }
   return true;
 }
@@ -7150,13 +7176,23 @@ function contractList(entries,trader){
       '"><strong>'+esc(quest.title)+'</strong><span class="cq-state" data-state="'+status+'">'+contractLabels[status]+'</span></button>').join('')+'</div>'+
     standingUnlockItems(trader,contractPanel.tier)+'</section>';
 }
+function deliveryStockMarkup(id){
+  if(!gearSpec(id))return '';
+  const {loose,bag,cases,fitted}=npcDeliveryStock(id);
+  const worn=Object.values(equipmentState.worn).filter(item=>item===id).length;
+  const details=['납품 가능 · 창고·입고 대기 '+loose+'개','준비 가방 '+bag+'개','보관함 '+cases+'개'];
+  if(fitted)details.push('모듈 장착 '+fitted+'개 제외 · 정비에서 모듈을 분리한 뒤 납품 가능');
+  if(worn)details.push('착용 중 '+worn+'개 제외');
+  return '<small class="obj-inventory" data-delivery-stock="'+esc(id)+'">'+details.join(' · ')+'</small>';
+}
+
 function contractGoalList(entry){
   const preview=['available','busy'].includes(entry.status),complete=entry.status==='claimed';
   return '<section class="cq-objectives"><h3>작전 목표</h3><ul>'+entry.quest.goals.map((goal,i)=>{
     const count=Math.min(goal.target,entry.goals[i]?.value||0);
     const value=complete?goal.target:count;
     const fulfilled=complete||(!preview&&value>=goal.target);
-    return '<li data-fulfilled="'+fulfilled+'"><span class="cq-check" aria-hidden="true">'+(fulfilled?'✓':'')+'</span><span>'+esc(goal.type==='delivery'?GOODS[goal.item][0]+' · '+findMarketTrader(entry.quest.trader).name+'에게 전달':contractGoalLabel(goal))+'</span>'+
+    return '<li data-fulfilled="'+fulfilled+'"><span class="cq-check" aria-hidden="true">'+(fulfilled?'✓':'')+'</span><span>'+esc(goal.type==='delivery'?GOODS[goal.item][0]+' · '+findMarketTrader(entry.quest.trader).name+'에게 전달':contractGoalLabel(goal))+(goal.type==='delivery'&&!complete?deliveryStockMarkup(goal.item):'')+'</span>'+
       '<b>'+(preview?(goal.type==='delivery'?'보유 '+value+' / '+goal.target:'목표 '+goal.target):value+' / '+goal.target)+'</b></li>';
   }).join('')+'</ul></section>';
 }
@@ -7324,7 +7360,7 @@ function recurringGoalRows(entry,trader){
     const done=current>=goal.target;
     const preview=goal.type==='delivery'&&entry.status==='available';
     return '<li data-fulfilled="'+done+'"><span class="cq-check" aria-hidden="true">'+(done?'✓':'')+'</span>'+
-      '<span>'+esc(recurringGoalText(goal,trader))+'</span><b>'+(preview?'보유 ':'')+current+' / '+goal.target+'</b></li>';
+      '<span>'+esc(recurringGoalText(goal,trader))+(goal.type==='delivery'&&entry.status!=='claimed'?deliveryStockMarkup(goal.item):'')+'</span><b>'+(preview?'보유 ':'')+current+' / '+goal.target+'</b></li>';
   }).join('')+'</ul></section>';
 }
 function recurringReward(entry,period){
@@ -7945,10 +7981,11 @@ function objectiveMaterial(id, required, forConstruction, outgoing=0) {
   const worn = countWorn(equipmentState);
   const cases = stashSlots.reduce((sum, unit) => sum + (unit.contents ? count(unit.contents) : 0), 0);
   const carried = isActive() ? count(field.bag) : 0;
+  const fieldUsable = isActive() ? field.bag.filter(unit => unit.g === id && !unit.gear?.module).length : 0;
   const fieldWorn = isActive() ? countWorn(field) : 0;
   const owned = loose + bag + cases + worn;
-  const usable = (forConstruction ? facilityMaterialCount(id) : stashRemovableCount(id) + bag + cases) - outgoing;
-  return {id, required, loose, bag, worn, cases, owned, usable, field:carried, fieldWorn, missing:Math.max(0, required - usable)};
+  const usable = (forConstruction ? stashUnfittedCount(id) : contractDeliveryCount(id)) - outgoing;
+  return {id, required, loose, bag, worn, cases, owned, usable, field:carried, fieldUsable, fieldWorn, missing:Math.max(0, required - usable)};
 }
 
 function objectiveRaidRating(searched) {
@@ -8070,7 +8107,7 @@ function recoveryMaterial(id,aid,construction,outgoing=0){
   const row=objectiveMaterial(id,aid+construction,false,outgoing);
   // Construction can use only loose warehouse stock. A unit reserved for construction
   // cannot also fill a relief delivery, even if both lines ask for the same kind.
-  const assignedBuild=Math.min(construction,Math.max(0,facilityMaterialCount(id)-outgoing));
+  const assignedBuild=Math.min(construction,Math.max(0,stashUnfittedCount(id)-outgoing));
   const assignedAid=Math.min(aid,Math.max(0,row.usable-assignedBuild));
   return {...row,aid,construction,usable:assignedBuild+assignedAid,missing:row.required-assignedBuild-assignedAid};
 }
@@ -8163,7 +8200,7 @@ function resolveObjective(pin = objectivePin) {
       [{label:recurringGoalText(goal, trader), value:record.progress[index], target:goal.target}]);
 
   const ready = materials.every(row => row.missing === 0) && goals.every(row => row.value >= row.target);
-  const returnReady = isActive() && !ready && materials.every(row => row.usable + row.field >= row.required) &&
+  const returnReady = isActive() && !ready && materials.every(row => row.usable + row.fieldUsable >= row.required) &&
     goals.every(row => (row.projected ?? row.value) >= row.target);
   let status = '진행 중';
   if (ready) status = (raid ? '귀환 후 ' : '') + trader.name + '에게 보고 가능';
@@ -8430,10 +8467,10 @@ function objectiveMaterialRow(m,facility){
   const inventory=[['창고·입고 대기',m.loose],['보관함',m.cases],['준비 가방',m.bag],['착용 중',m.worn]]
     .filter(([,qty])=>qty>0).map(([where,qty])=>where+' '+qty).join(' · ');
   const recovery=m.construction!==undefined;
-  const fitted=(facility||m.construction)?stashRemovableCount(m.id)-facilityMaterialCount(m.id):0;
-  const protectedHosts=fitted?'<span class="obj-rule">모듈 장착 '+fitted+'개 · 장비 정비에서 모듈을 분리하면 자재로 사용할 수 있습니다.</span>':'';
+  const fitted=facility?stashRemovableCount(m.id)-stashUnfittedCount(m.id):npcDeliveryStock(m.id).fitted;
+  const protectedHosts=fitted?'<span class="obj-rule">모듈 장착 '+fitted+'개 · 장비 정비에서 모듈을 분리하면 '+(facility||m.construction?'자재로 사용할':'납품할')+' 수 있습니다.</span>':'';
   const allocation=recovery?'<small class="obj-inventory">'+[m.aid?'구호 납품 '+m.aid+'개':'',m.construction?'시설 건설 '+m.construction+'개':''].filter(Boolean).join(' · ')+'</small>':'';
-  const atRisk=m.field>0?'<span class="obj-risk">현장 가방 '+m.field+'개 · 생환 후 부족 '+Math.max(0,m.missing-m.field)+'개</span>':'';
+  const atRisk=m.field>0?'<span class="obj-risk">현장 가방 '+m.field+'개 · 생환 후 부족 '+Math.max(0,m.missing-m.fieldUsable)+'개</span>':'';
   const relocate=(facility || m.construction) && m.missing>0 && (m.bag||m.cases)?'<span class="obj-rule">건설에 쓸 물품은 창고로 옮기세요.</span>':'';
   return '<li class="obj-material"'+flags+'><div class="obj-mat-heading"><strong>'+esc(GOODS[m.id][0])+'</strong>'+
     '<span class="'+(m.missing?'obj-short':'obj-ready')+'">'+(m.missing?'부족 '+m.missing:'부족 0 · 확보')+'</span></div>'+
@@ -11993,7 +12030,7 @@ function campaignFacility(v) {
     body='<p>시설 공사에는 아래 창고 자재와 건설비가 필요합니다.</p>'+
       '<table><caption>건설 자재</caption><thead><tr><th scope="col">물품</th><th scope="col">필요</th><th scope="col">창고</th><th scope="col">부족</th></tr></thead><tbody>'+
       Object.entries(step.materials).map(([item,required])=>{
-        const owned=facilityMaterialCount(item),missing=Math.max(0,required-owned);
+        const owned=stashUnfittedCount(item),missing=Math.max(0,required-owned);
         return '<tr data-campaign-material="'+item+'"><th scope="row">'+esc(kitName(item))+'</th><td>'+required+'</td><td>'+
           owned.toLocaleString('ko-KR')+'</td><td class="'+(missing?'rc-short':'rc-ok')+'">'+missing+'</td></tr>';
       }).join('')+'</tbody></table><dl class="rc-bill"><div><dt>건설비</dt><dd>'+money(step.costCR)+'</dd></div>'+
@@ -13010,7 +13047,7 @@ function handleDB(d){
       const recipe=d.recipe===WARD_RECIPE?WARD_RECIPE:Number(d.recipe);
       if(page!=='facility'||d.facility!==facilitySelected||!facilityRecipeAvailable(d.facility,recipe))return;
       const inputs=facilityRecipe(d.facility,recipe).inputs;
-      if(!Object.hasOwn(inputs,d.id)||facilityMaterialCount(d.id)>=inputs[d.id])return;
+      if(!Object.hasOwn(inputs,d.id)||stashUnfittedCount(d.id)>=inputs[d.id])return;
       craftCatalogOrigin={facility:d.facility,tier:facilityTier,recipe,item:d.id};
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
@@ -13100,10 +13137,42 @@ function replaceTerminalFragment(hash){
     activeTerminalLink=hash?{hash,target:terminalLinkTarget(hash)}:null;
   }catch{/* Embedded terminals may have restricted access to browser history. */}
 }
+// The address can leave a shared destination without losing how this browser entry was opened.
+const terminalReloadKey='rl-terminal-reload-v1';
+function terminalReloadLink(remember=''){
+  const {history,location,navigation,performance}=window;
+  if(!performance?.getEntriesByType)return '';
+  const key=navigation?.currentEntry?.key;
+  if(key){
+    try{
+      const name=terminalReloadKey+':'+key+':'+location.href;
+      if(remember){window.sessionStorage.setItem(name,remember);return remember;}
+      const saved=window.sessionStorage.getItem(name);
+      if(saved)return saved;
+    }catch{/* A storage-restricted tab can still use its own History entry. */}
+  }
+  try{
+    const state=history.state;
+    if(!remember)return state?.[terminalReloadKey]?.url===location.href?state[terminalReloadKey].hash:'';
+    if(state===null||Object.getPrototypeOf(state)===Object.prototype){
+      history.replaceState({...state,[terminalReloadKey]:{url:location.href,hash:remember}},'',location.href);
+    }
+  }catch{/* Restricted frames can continue using explicit links. */}
+  return '';
+}
+function restoreTerminalReloadLink(){
+  const kind=window.navigation?.activation?.navigationType||window.performance?.getEntriesByType?.('navigation')[0]?.type;
+  if(updateRequired||window.location?.hash||kind!=='reload')return;
+  const hash=terminalReloadLink();
+  if(typeof hash==='string'&&hash.startsWith('#')&&terminalLinkTarget(hash))replaceTerminalFragment(hash);
+}
 function releaseTerminalLink(){
   const previous=activeTerminalLink;
   activeTerminalLink=null;
-  if(previous && window.location?.hash===previous.hash)replaceTerminalFragment('');
+  if(previous && window.location?.hash===previous.hash){
+    replaceTerminalFragment('');
+    if(!window.location.hash)terminalReloadLink(previous.hash);
+  }
 }
 function markMapSection(hash){
   if(page==='map' && activeTerminalLink?.target==='map' && activeTerminalLink.hash!==hash)replaceTerminalFragment(hash);
@@ -13146,6 +13215,7 @@ function openTerminalLink(){
   if(hash==='#weather')focusWeatherBoard();
 }
 window.addEventListener('hashchange',openTerminalLink);
+restoreTerminalReloadLink();
 openTerminalLink();
 updateRaidClock();window.addEventListener('resize',place);document.documentElement.classList.toggle('reduce-motion',reduce);place();})();
 </script></body></html>

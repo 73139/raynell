@@ -26,7 +26,7 @@ function recurringGoalRows(entry,trader){
     const done=current>=goal.target;
     const preview=goal.type==='delivery'&&entry.status==='available';
     return '<li data-fulfilled="'+done+'"><span class="cq-check" aria-hidden="true">'+(done?'✓':'')+'</span>'+
-      '<span>'+esc(recurringGoalText(goal,trader))+'</span><b>'+(preview?'보유 ':'')+current+' / '+goal.target+'</b></li>';
+      '<span>'+esc(recurringGoalText(goal,trader))+(goal.type==='delivery'&&entry.status!=='claimed'?deliveryStockMarkup(goal.item):'')+'</span><b>'+(preview?'보유 ':'')+current+' / '+goal.target+'</b></li>';
   }).join('')+'</ul></section>';
 }
 function recurringReward(entry,period){

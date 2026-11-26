@@ -163,7 +163,7 @@ function advanceHideout(now = Date.now()) {
   return changed;
 }
 function missingMaterials(inputs) {
-  return Object.entries(inputs).some(([id,qty]) => facilityMaterialCount(id) < qty);
+  return Object.entries(inputs).some(([id,qty]) => stashUnfittedCount(id) < qty);
 }
 function facilityBuildStatus(id, tier) {
   const f = FACILITIES[id];
@@ -245,20 +245,20 @@ function updateHideoutClock() {
     if (el.textContent !== time) el.textContent = time;
   }
 }
-function facilityFittedNote(id, available = facilityMaterialCount(id)) {
+function facilityFittedNote(id, available = stashUnfittedCount(id)) {
   const fitted = stashRemovableCount(id) - available;
   return fitted ? ' · 모듈 장착 '+fitted+'개 제외' : '';
 }
 
 function facilityMaterials(inputs) {
   return `<div class="db-list facility-materials">${Object.entries(inputs).map(([id,qty]) => {
-    const qtyHeld = facilityMaterialCount(id), g = GOODS[id];
+    const qtyHeld = stashUnfittedCount(id), g = GOODS[id];
     return `<button data-db="lookup" data-id="${id}">${ico(g[4])}<span><b>${g[0]}</b><small>${itemSources(id)}</small></span><span class="${qtyHeld < qty ? 'facility-deficit' : 'facility-ready'}">${qtyHeld} / ${qty}개${facilityFittedNote(id,qtyHeld)}</span></button>`;
   }).join('')}</div>`;
 }
 function productionIngredients(facility,recipe,inputs) {
   const rows=Object.entries(inputs).map(([item,need])=>{
-    const held=facilityMaterialCount(item),shortage=Math.max(0,need-held);
+    const held=stashUnfittedCount(item),shortage=Math.max(0,need-held);
     const info=`<span>${GOODS[item][0]} · ${held} / ${need}${facilityFittedNote(item,held)}</span>`;
     const attrs=`data-craft-input="${item}" data-shortage="${shortage}"`;
     if(!shortage)return `<span ${attrs} tabindex="-1">${info}<span>충족</span></span>`;

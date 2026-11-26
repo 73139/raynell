@@ -123,10 +123,10 @@ function objectiveMaterialRow(m,facility){
   const inventory=[['창고·입고 대기',m.loose],['보관함',m.cases],['준비 가방',m.bag],['착용 중',m.worn]]
     .filter(([,qty])=>qty>0).map(([where,qty])=>where+' '+qty).join(' · ');
   const recovery=m.construction!==undefined;
-  const fitted=(facility||m.construction)?stashRemovableCount(m.id)-facilityMaterialCount(m.id):0;
-  const protectedHosts=fitted?'<span class="obj-rule">모듈 장착 '+fitted+'개 · 장비 정비에서 모듈을 분리하면 자재로 사용할 수 있습니다.</span>':'';
+  const fitted=facility?stashRemovableCount(m.id)-stashUnfittedCount(m.id):npcDeliveryStock(m.id).fitted;
+  const protectedHosts=fitted?'<span class="obj-rule">모듈 장착 '+fitted+'개 · 장비 정비에서 모듈을 분리하면 '+(facility||m.construction?'자재로 사용할':'납품할')+' 수 있습니다.</span>':'';
   const allocation=recovery?'<small class="obj-inventory">'+[m.aid?'구호 납품 '+m.aid+'개':'',m.construction?'시설 건설 '+m.construction+'개':''].filter(Boolean).join(' · ')+'</small>':'';
-  const atRisk=m.field>0?'<span class="obj-risk">현장 가방 '+m.field+'개 · 생환 후 부족 '+Math.max(0,m.missing-m.field)+'개</span>':'';
+  const atRisk=m.field>0?'<span class="obj-risk">현장 가방 '+m.field+'개 · 생환 후 부족 '+Math.max(0,m.missing-m.fieldUsable)+'개</span>':'';
   const relocate=(facility || m.construction) && m.missing>0 && (m.bag||m.cases)?'<span class="obj-rule">건설에 쓸 물품은 창고로 옮기세요.</span>':'';
   return '<li class="obj-material"'+flags+'><div class="obj-mat-heading"><strong>'+esc(GOODS[m.id][0])+'</strong>'+
     '<span class="'+(m.missing?'obj-short':'obj-ready')+'">'+(m.missing?'부족 '+m.missing:'부족 0 · 확보')+'</span></div>'+

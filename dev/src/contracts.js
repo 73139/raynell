@@ -178,7 +178,10 @@ function contractAction(id, action, pinIfEmpty = false) {
     }
     if (Object.keys(materials).length) {
       before.inventory = npcInventorySnapshot();
-      if (!consumeNPCDelivery(materials)) return fail('상인에게 건넬 물품이 부족합니다.');
+      if (!consumeNPCDelivery(materials)) {
+        restoreNPCInventory(before.inventory);
+        return fail('상인에게 건넬 물품이 부족합니다.');
+      }
     }
     record.done = [...record.done, id];
     record.active = null;
@@ -206,10 +209,27 @@ function contractAction(id, action, pinIfEmpty = false) {
   return {ok: true, message};
 }
 
-// Hand-ins use carried and loose warehouse goods first, then matching goods in personal cases.
+// Worn gear, installed modules and nonempty cases stay with the player.
+function npcDeliveryStock(id) {
+  const loose = stashUnfittedCount(id);
+  let bag = 0, cases = 0, fitted = stashRemovableCount(id) - loose;
+  for (const unit of equipmentState.bag) {
+    if (unit.g !== id) continue;
+    if (unit.gear?.module) fitted++;
+    else bag++;
+  }
+  for (const box of stashSlots) {
+    for (const unit of box.contents || []) {
+      if (unit.g !== id) continue;
+      if (unit.gear?.module) fitted++;
+      else cases++;
+    }
+  }
+  return {loose, bag, cases, fitted, usable:loose + bag + cases};
+}
+
 function contractDeliveryCount(id) {
-  return stashRemovableCount(id) + equipmentState.bag.filter(unit => unit.g === id).length +
-    stashSlots.reduce((n,box)=>n+(box.contents?.filter(unit=>unit.g===id).length||0),0);
+  return npcDeliveryStock(id).usable;
 }
 
 function npcInventorySnapshot() {
@@ -229,25 +249,25 @@ function consumeNPCDelivery(materials,reserveLoose={}) {
   for (const [id, count] of entries) {
     let remaining = count;
     equipmentState.bag = equipmentState.bag.filter(unit => {
-      if (unit.g !== id || remaining === 0) return true;
+      if (unit.g !== id || unit.gear?.module || remaining === 0) return true;
       remaining--;
       return false;
     });
-    const loose = Math.min(remaining,Math.max(0,stashRemovableCount(id)-(reserveLoose[id] || 0)));
-    if (loose) takeStashGoods(id,loose);
+    const loose = Math.min(remaining,Math.max(0,stashUnfittedCount(id)-(reserveLoose[id] || 0)));
+    if (loose && !takeStashGoods(id,loose,null,'delivery')) return false;
     remaining -= loose;
     for (let i=0; remaining && i<stashSlots.length; i++) {
       const box=stashSlots[i];
       if (!box.contents?.length) continue;
       const contents=box.contents.filter(unit=>{
-        if (unit.g!==id || !remaining) return true;
+        if (unit.g!==id || unit.gear?.module || !remaining) return true;
         remaining--;
         return false;
       });
       if (contents.length!==box.contents.length) stashSlots[i]={...box,contents};
     }
     // If cases and carried goods are exhausted, the player can still choose to donate loose construction stock.
-    if (remaining && !takeStashGoods(id,remaining)) return false;
+    if (remaining && !takeStashGoods(id,remaining,null,'delivery')) return false;
   }
   return true;
 }

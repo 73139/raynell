@@ -257,42 +257,48 @@ function addStashGoods(id, amount = 1, gear = null, sourceUid = null) {
   return true;
 }
 
-// Facility bills accept loose hosts only. Untagged older overflow remains usable
+// Consumption protects assembled hosts. Untagged older overflow remains usable
 // alongside pristine batches; only physical instances with an installed module are reserved.
 function fittedQueueCount(id) {
   return gearOverflow.reduce((sum, gear) => sum + Number(gear.g === id && Boolean(gear.module)), 0);
 }
 
-function facilityMaterialCount(id) {
+function stashUnfittedCount(id) {
   const removable = stashRemovableCount(id);
   if (!removable || !gearSpec(id)) return removable;
   const fittedSlots = stashSlots.filter(unit => unit.g === id && unit.gear?.module).length;
   return removable - fittedSlots - fittedQueueCount(id);
 }
 
-function takeStashGoods(id, amount = 1, uid = null, facility = false) {
+function takeStashGoods(id, amount = 1, uid = null, purpose = 'move') {
   if(id==='cr_notes')return false;
   const count = stashCount(id);
-  const available = facility ? facilityMaterialCount(id) : stashRemovableCount(id);
+  const skipFitted = purpose === 'facility' || purpose === 'delivery';
+  const available = skipFitted ? stashUnfittedCount(id) : stashRemovableCount(id);
   if (!Number.isSafeInteger(amount) || amount < 1 || amount > available) return false;
-  const unplaced = stashOverflowCount(id) - (facility && gearSpec(id) ? fittedQueueCount(id) : 0);
+  const unplaced = stashOverflowCount(id) - (skipFitted && gearSpec(id) ? fittedQueueCount(id) : 0);
   if (uid === 'overflow') {
     if (amount > unplaced) return false;
   } else if (uid !== null) {
     const index = stashSlots.findIndex(unit => unit.uid === uid && unit.g === id);
-    if (amount !== 1 || index < 0 || stashSlots[index].contents?.length || (facility && stashSlots[index].gear?.module)) return false;
+    if (amount !== 1 || index < 0 || stashSlots[index].contents?.length || (skipFitted && stashSlots[index].gear?.module)) return false;
     stashSlots.splice(index, 1);
   } else {
     let remove = Math.max(0, amount - unplaced);
-    for (let i = stashSlots.length - 1; i >= 0 && remove; i--) {
-      if (stashSlots[i].g === id && !stashSlots[i].contents?.length && !(facility && stashSlots[i].gear?.module)) {
-        stashSlots.splice(i, 1);
-        remove--;
-      }
+    const eligible = unit => unit.g === id && !unit.contents?.length && !(skipFitted && unit.gear?.module);
+    const ordered = purpose === 'delivery' ? stashSlots : stashSlots.slice().reverse();
+    const removed = new Set();
+    for (const unit of ordered) {
+      if (!remove) break;
+      if (!eligible(unit)) continue;
+      removed.add(unit.uid);
+      remove--;
     }
+    if (remove) return false;
+    if (removed.size) stashSlots = stashSlots.filter(unit => !removed.has(unit.uid));
   }
   const queued=uid===null?Math.min(unplaced,amount):uid==='overflow'?amount:0;
-  if (queued && gearOverflow.length) gearQueueRemove(gearOverflow,id,queued,facility);
+  if (queued && gearOverflow.length) gearQueueRemove(gearOverflow,id,queued,skipFitted);
   if (amount === count) delete stash[id];
   else stash[id] = count - amount;
   return true;
@@ -301,8 +307,8 @@ function takeStashGoods(id, amount = 1, uid = null, facility = false) {
 function stashConsume(materials) {
   if (!materials || typeof materials !== 'object' || Array.isArray(materials)) return false;
   const entries = Object.entries(materials);
-  if (!entries.every(([id, n]) => id !== 'cr_notes' && Number.isSafeInteger(n) && n > 0 && facilityMaterialCount(id) >= n)) return false;
-  for (const [id, n] of entries) takeStashGoods(id, n, null, true);
+  if (!entries.every(([id, n]) => id !== 'cr_notes' && Number.isSafeInteger(n) && n > 0 && stashUnfittedCount(id) >= n)) return false;
+  for (const [id, n] of entries) takeStashGoods(id, n, null, 'facility');
   return true;
 }
 

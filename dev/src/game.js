@@ -383,7 +383,7 @@ function handleDB(d){
       const recipe=d.recipe===WARD_RECIPE?WARD_RECIPE:Number(d.recipe);
       if(page!=='facility'||d.facility!==facilitySelected||!facilityRecipeAvailable(d.facility,recipe))return;
       const inputs=facilityRecipe(d.facility,recipe).inputs;
-      if(!Object.hasOwn(inputs,d.id)||facilityMaterialCount(d.id)>=inputs[d.id])return;
+      if(!Object.hasOwn(inputs,d.id)||stashUnfittedCount(d.id)>=inputs[d.id])return;
       craftCatalogOrigin={facility:d.facility,tier:facilityTier,recipe,item:d.id};
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
@@ -473,10 +473,42 @@ function replaceTerminalFragment(hash){
     activeTerminalLink=hash?{hash,target:terminalLinkTarget(hash)}:null;
   }catch{/* Embedded terminals may have restricted access to browser history. */}
 }
+// The address can leave a shared destination without losing how this browser entry was opened.
+const terminalReloadKey='rl-terminal-reload-v1';
+function terminalReloadLink(remember=''){
+  const {history,location,navigation,performance}=window;
+  if(!performance?.getEntriesByType)return '';
+  const key=navigation?.currentEntry?.key;
+  if(key){
+    try{
+      const name=terminalReloadKey+':'+key+':'+location.href;
+      if(remember){window.sessionStorage.setItem(name,remember);return remember;}
+      const saved=window.sessionStorage.getItem(name);
+      if(saved)return saved;
+    }catch{/* A storage-restricted tab can still use its own History entry. */}
+  }
+  try{
+    const state=history.state;
+    if(!remember)return state?.[terminalReloadKey]?.url===location.href?state[terminalReloadKey].hash:'';
+    if(state===null||Object.getPrototypeOf(state)===Object.prototype){
+      history.replaceState({...state,[terminalReloadKey]:{url:location.href,hash:remember}},'',location.href);
+    }
+  }catch{/* Restricted frames can continue using explicit links. */}
+  return '';
+}
+function restoreTerminalReloadLink(){
+  const kind=window.navigation?.activation?.navigationType||window.performance?.getEntriesByType?.('navigation')[0]?.type;
+  if(updateRequired||window.location?.hash||kind!=='reload')return;
+  const hash=terminalReloadLink();
+  if(typeof hash==='string'&&hash.startsWith('#')&&terminalLinkTarget(hash))replaceTerminalFragment(hash);
+}
 function releaseTerminalLink(){
   const previous=activeTerminalLink;
   activeTerminalLink=null;
-  if(previous && window.location?.hash===previous.hash)replaceTerminalFragment('');
+  if(previous && window.location?.hash===previous.hash){
+    replaceTerminalFragment('');
+    if(!window.location.hash)terminalReloadLink(previous.hash);
+  }
 }
 function markMapSection(hash){
   if(page==='map' && activeTerminalLink?.target==='map' && activeTerminalLink.hash!==hash)replaceTerminalFragment(hash);
@@ -519,5 +551,6 @@ function openTerminalLink(){
   if(hash==='#weather')focusWeatherBoard();
 }
 window.addEventListener('hashchange',openTerminalLink);
+restoreTerminalReloadLink();
 openTerminalLink();
 updateRaidClock();window.addEventListener('resize',place);document.documentElement.classList.toggle('reduce-motion',reduce);place();})();
