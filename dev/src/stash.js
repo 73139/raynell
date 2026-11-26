@@ -273,7 +273,7 @@ function stashUnfittedCount(id) {
 function takeStashGoods(id, amount = 1, uid = null, purpose = 'move') {
   if(id==='cr_notes')return false;
   const count = stashCount(id);
-  const skipFitted = purpose === 'facility' || purpose === 'delivery';
+  const skipFitted = purpose === 'facility' || purpose === 'delivery' || purpose === 'sale';
   const available = skipFitted ? stashUnfittedCount(id) : stashRemovableCount(id);
   if (!Number.isSafeInteger(amount) || amount < 1 || amount > available) return false;
   const unplaced = stashOverflowCount(id) - (skipFitted && gearSpec(id) ? fittedQueueCount(id) : 0);
