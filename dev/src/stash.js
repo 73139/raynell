@@ -442,15 +442,16 @@ function stashSelectionMarkup() {
   const g = GOODS[s.g], canEdit = stashAtBunker(), rot = stashSelection.rot;
   const w = rot ? s.h : s.w, h = rot ? s.w : s.h;
   const saleRestriction = canEdit ? stashSaleRestriction(s) : '';
+  const manualNote = canEdit && s.g===WARD_SHEET && !saleRestriction ? wardSaleNote(1,'direct') : '';
   return `<div class="db-detail-title">${ico(g[4])}<div><h2>${esc(caseDisplayName(s))}</h2><p>${s.alias ? esc(g[0]) + ' · ' : ''}${g[5]} · ${w} × ${h}칸 · ${g[3]} kg</p></div></div>
     <div class="stash-tools">${canEdit ? `
       ${s.w !== s.h ? '<button data-stash="rotate" aria-pressed="' + rot + '">90° 회전</button>' : ''}
       ${rot && s.uid !== 'overflow' ? '<button data-stash="rotate-here">현재 위치에 적용</button>' : ''}
       ${s.uid === 'overflow' ? '<button data-stash="auto">빈 공간에 배치</button>' : ''}
       ${equipmentStashActions(s.g, s.uid)}
-      <button data-stash="sell" ${saleRestriction ? 'disabled aria-describedby="stash-sale-reason"' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
+      <button data-stash="sell" ${saleRestriction ? 'disabled aria-describedby="stash-sale-reason"' : manualNote ? 'aria-describedby="ward-sale-direct"' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
       <button data-db="lookup" data-id="${s.g}">도감 보기</button><button data-stash="clear">선택 해제</button>
-    </div>${saleRestriction?'<p id="stash-sale-reason">'+esc(saleRestriction)+'</p>':''}${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
+    </div>${manualNote}${saleRestriction?'<p id="stash-sale-reason">'+esc(saleRestriction)+'</p>':''}${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
 }
 
 function storagePage() {

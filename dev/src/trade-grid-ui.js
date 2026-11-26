@@ -80,12 +80,15 @@ function tradeWarehouse(trader) {
     (marketUI.mode==='sell'&&tradeGridState.saleUid?tradeSelectedUnit(trader,true):'')+
     cashCompartmentMarkup()+tradeBoard('stash',tiles,cols,rows,'',cells)+'</section>';
 }
+function saleQuantityWithSelection(unit, traderId) {
+  const selling = new Set(tradeSaleDraft(traderId).map(row => row.uid));
+  selling.add(unit.uid);
+  return stashSlots.filter(row => row.g === unit.g && selling.has(row.uid)).length;
+}
 function saleConstructionUses(unit, quote, traderId) {
   const uses = ITEM_META[unit.g]?.hideoutUses;
   if (!quote.ok || !uses?.length) return '';
-  const selling = new Set(tradeSaleDraft(traderId).map(row => row.uid));
-  selling.add(unit.uid);
-  const quantity = stashSlots.filter(row => row.g === unit.g && selling.has(row.uid)).length;
+  const quantity = saleQuantityWithSelection(unit,traderId);
   const owned = stashCount(unit.g);
   const rows = uses.map(({facility, level, quantity:required}) => {
     let status = '건설에 ' + required + '개 필요';
@@ -101,12 +104,13 @@ function tradeSelectedUnit(trader,compact=false) {
   const unit=stashSlots.find(row=>row.uid===tradeGridState.saleUid);
   if(!unit)return compact?'':'<p class="tg-help">내 창고에서 판매할 물품을 선택하세요.</p>';
   const quote=saleQuote(trader.id,[unit.uid]),staged=(tradeGridState.sales.get(trader.id)||[]).some(row=>row.uid===unit.uid);
+  const manualNote=compact && quote.ok && unit.g===WARD_SHEET ? wardSaleNote(saleQuantityWithSelection(unit,trader.id),'preview') : '';
   return '<div class="tg-unit-detail'+(compact?' tg-unit-compact':'')+'">'+(compact?'':'<div class="tg-detail-art">'+itemArt(unit.g)+'</div>')+
     '<div><strong>'+esc(caseDisplayName(unit))+'</strong><small>창고 '+(unit.y+1)+'행 '+(unit.x+1)+'열 · '+unit.w+'×'+unit.h+'칸</small>'+
     (!compact?'<small>'+esc(GOODS[unit.g][5])+' · '+esc(ITEM_META[unit.g]?.rarity||'일반')+'</small>':'')+'</div>'+
-    (compact?'<button class="tg-minor" data-tg="sell-add" data-uid="'+esc(unit.uid)+'"'+(!quote.ok||staged?' disabled':'')+'>'+(staged?'판매 대기':'판매대에 올리기')+'</button>':
+    (compact?'<button class="tg-minor" data-tg="sell-add" data-uid="'+esc(unit.uid)+'"'+(manualNote?' aria-describedby="ward-sale-preview"':'')+(!quote.ok||staged?' disabled':'')+'>'+(staged?'판매 대기':'판매대에 올리기')+'</button>':
     '<div class="tg-unit-value">'+(quote.ok?'매입가 <b>'+money(quote.total)+'</b>':esc(quote.reason||'매입 대상 외'))+'</div>')+
-    (compact?saleConstructionUses(unit,quote,trader.id):'')+'</div>';
+    manualNote+(compact?saleConstructionUses(unit,quote,trader.id):'')+'</div>';
 }
 function tradeIntakePanel(trader) {
   const standing=traderStanding(trader.id);
@@ -129,6 +133,7 @@ function saleObjectiveMarkup(quote) {
 }
 function tradeSalePanel(trader) {
   const draft=tradeSaleDraft(trader.id),uids=draft.map(row=>row.uid),quote=saleQuote(trader.id,uids);
+  const manualNote=quote.ok ? wardSaleNote(quote.lines.filter(line=>line.item===WARD_SHEET).length,'tray') : '';
   const tiles=draft.map(row=>({...stashSlots.find(unit=>unit.uid===row.uid),x:row.x,y:row.y}));
   const board=tiles.map(tile=>tradeTile({...tile,item:tile.g},{name:caseDisplayName(tile),uid:tile.uid,action:'data-tg="sale-select"',
     chosen:tradeGridState.saleUid===tile.uid,badge:stashSalePrice(tile.g).toLocaleString('ko-KR'),drag:'sale',description:'판매 대기'})).join('');
@@ -142,8 +147,8 @@ function tradeSalePanel(trader) {
     (draft.length?'<ul class="tg-sale-lines">'+lines+'</ul>':'')+
     '<div class="tg-settle"><dl class="mc-sums"><div class="mc-grand"><dt>판매 합계</dt><dd data-sale-total>'+money(quote.total||0)+'</dd></div>'+
     '<div><dt>정산 후 잔액</dt><dd data-sale-balance>'+money(quote.after??wallet)+'</dd></div></dl>'+
-    saleObjectiveMarkup(quote)+
-    '<button class="tg-primary" data-tg="sell-confirm" data-trader="'+trader.id+'" data-token="'+esc(quote.token||'')+'"'+(!quote.ok?' disabled':'')+'>판매 확정</button>'+
+    saleObjectiveMarkup(quote)+manualNote+
+    '<button class="tg-primary" data-tg="sell-confirm" data-trader="'+trader.id+'" data-token="'+esc(quote.token||'')+'"'+(manualNote?' aria-describedby="ward-sale-tray"':'')+(!quote.ok?' disabled':'')+'>판매 확정</button>'+
     (!quote.ok&&draft.length?'<p class="tg-warning">'+esc(quote.reason||'')+'</p>':'')+
     '<p class="tg-status" role="status" data-sale-notice tabindex="-1">'+esc(tradeGridState.notice)+'</p></div>'+saleReceiptMarkup(trader,!draft.length)+'</section>';
 }
@@ -244,6 +249,14 @@ function handleTradeGridUI(d) {
   }
   if((d.tg==='recipe'&&innerWidth<=850)||(d.tg==='sell-add'&&(keyboard||innerWidth<=850)))
     marketCartFocus($('[data-trade-pane="order"]'));
+  if(keyboard && d.tg==='sell-remove'){
+    const next=$('[data-tg="sell-remove"]')||$('[data-trade-pane="order"]');
+    marketCartFocus(next,false);
+  }
+  if(keyboard && d.tg==='sale-select'){
+    const remove=[...document.querySelectorAll('[data-tg="sell-remove"]')].find(button=>button.dataset.uid===d.uid);
+    marketCartFocus(remove||$('[data-trade-pane="order"]'),false);
+  }
   if(keyboard&&d.tg==='sell-confirm')marketCartFocus($('[data-sale-notice]'));
 }
 function tradeDropPoint(board,e) {

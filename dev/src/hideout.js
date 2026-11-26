@@ -72,6 +72,19 @@ function updateWardManual(action,uid){
   owner.wardManual=book;stash=beforeStock;stashSlots=beforeSlots;
   return '저장할 수 없어 원본과 등록 상태를 복원했습니다.';
 }
+function wardSaleNote(quantity, context){
+  if(!quantity || raid || hideout.wardManual.registered)return '';
+  let owned=0;
+  for(const row of physicalPossessionLocations()){
+    if(row.id===WARD_SHEET)owned+=row.quantity;
+  }
+  if(quantity>owned)return '';
+  const remainder=owned-quantity;
+  const sale=context==='preview'?'선택한 원본 포함 ':context==='tray'?'판매대 원본 ':'원본 ';
+  return '<p class="mini-field ward-sale-note" id="ward-sale-'+context+'"><strong>의무실 등록 가능</strong> · '+
+    '원본 1장을 등록하면 의무실 Lv.1부터 야전 처치포를 만들 수 있습니다.<br>'+
+    sale+quantity+'장 판매 시 '+(remainder?'보유 원본 '+remainder+'장 남음':'마지막 보유 원본까지 판매')+'</p>';
+}
 function wardManualPanel(){
   const book=hideout.wardManual;
   const room=book.waiting.length>0 && Boolean(firstFit(stashSlots,stashSize(),1,1));
