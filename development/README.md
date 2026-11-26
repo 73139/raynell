@@ -26,7 +26,7 @@ python3 pack_source.py
 
 ## 작업 브랜치의 원격 검증
 
-`rustline-work/`로 시작하는 작업 브랜치에 게임 소스를 푸시하거나 `rustline-web-reboot`를 대상으로 소스 변경 PR을 열면 “Rustline candidate” 검사가 실행됩니다. GitHub의 Ubuntu 24.04 환경에서 모든 Node 엔진 테스트와 네 가지 Chromium 시나리오를 모바일·데스크톱 폭으로 실행합니다. 성공한 실행의 Artifacts에서 검증된 HTML과 소스 ZIP을 하루 동안 받을 수 있습니다. 두 파일의 SHA-256은 해당 실행의 요약에서 확인합니다.
+`rustline-work/`로 시작하는 작업 브랜치에 게임 소스를 푸시하거나 `rustline-web-reboot`를 대상으로 소스 변경 PR을 열면 “Rustline candidate” 검사가 실행됩니다. GitHub의 Ubuntu 24.04 환경에서 모든 Node 엔진 테스트와 도감·공사·복원·창고·현장 식량·버전 간 저장 권한에 관한 Chromium 시나리오를 모바일·데스크톱 폭으로 실행합니다. 성공한 실행의 Artifacts에서 검증된 HTML과 소스 ZIP을 하루 동안 받을 수 있습니다. 두 파일의 SHA-256은 해당 실행의 요약에서 확인합니다.
 
 ## 실제 시간으로 플레이하기
 

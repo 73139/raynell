@@ -65,6 +65,9 @@
 .lo-keys button kbd{position:absolute;left:3px;top:3px;background:#a6aba1;color:#1c2625;font:bold 9px var(--mono,monospace);padding:1px 3px;z-index:1}
 .lo-keys button .item-art,.lo-keys button img,.lo-keys button svg{object-fit:contain;max-height:95%;max-width:80%;mix-blend-mode:lighten}
 .lo-keys button small{position:absolute;right:3px;bottom:2px;font-size:9px;color:#c2c9bd}
+.lo-quick-focus,.lo-quick-risk{display:none;grid-column:1/-1;order:1;color:var(--lo-text,#ecebd8);font-size:.82rem;overflow-wrap:anywhere}
+.lo-keys button:focus-visible+.lo-quick-focus{display:block}
+@media(pointer:coarse),(max-width:650px){.lo-quick-risk{display:block}}
 .lo-msg{border-left:2px solid #a9aa83;background:#202825;padding:.4rem .65rem;margin:.4rem 0;font-size:.82rem}
 .lo-health-body{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1fr);gap:.45rem;padding:.62rem}
 .lo-body-art{min-height:180px;height:clamp(230px,27vw,364px);overflow:hidden}
