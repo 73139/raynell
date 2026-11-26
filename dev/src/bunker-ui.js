@@ -99,6 +99,7 @@ function bunkerOrderState(q){
 function bunkerOrderGoals(q){
   const state=bunkerOrderState(q);
   const active=state==='active'&&raid&&!field.result;
+  if(q.id===SHUTTLE_ORDER)return shuttleGoals();
   if(q.id==='sealed-mail'){
     const progress=state==='done'?2:active?postalProgress():0;
     return [['반송 화물실에서 우편낭 인수',Number(progress>=1),1],['통행증 발급소 접수 도장',Number(progress===2),1],['정상 탈출',Number(state==='done'),1]];
@@ -136,8 +137,9 @@ function ordersView(){
     detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>${fundingDossierReturn(q)}
     ${bunkerPicture(q.image,q.title+' 현장','bu-order-image')}
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
-    <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
+    <h3>보상</h3><div class="bu-reward"><strong>${q.id===SHUTTLE_ORDER&&!career.shuttle?'노선별 수당':money(q.cr)}</strong><strong>${q.id===SHUTTLE_ORDER&&!career.shuttle?'배차표 참조':'+'+q.xp+' XP'}</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
     ${q.id==='weather-survey'&&state!=='done'?'<div class="shell-actions"><button data-cui="forecast">세 권역 예보 비교</button></div>':''}
+    ${q.id===SHUTTLE_ORDER?shuttleDossier():''}
     ${q.id===WARD_FIELD_ID?wardPackingDossier():''}
     ${q.id===RELIEF_ORDER?reliefPanel():''}
     ${q.id==='courier-checkin'&&state!=='done'?courierCheckinPanel():''}
@@ -300,6 +302,12 @@ function openBunkerFacility(id,tier){
   const content=$('.content');if(content)content.scrollTop=0;
 }
 function handleBunkerUI(d){
+  if(d.bui==='shuttle-dossier'){
+    if(page!=='orders'||raid||bunkerOrderSelection().q?.id!==WARD_FIELD_ID||!career.wardCheckReceipt||career.done.includes(SHUTTLE_ORDER))return;
+    bunkerOrderFilter='all';bunkerOrderSelected=SHUTTLE_ORDER;renderKeep();
+    const heading=$('.bu-order-title h2');heading?.setAttribute?.('tabindex','-1');heading?.focus?.({preventScroll:true});
+    heading?.scrollIntoView?.({block:'nearest'});return;
+  }
   if(d.bui==='external-relief'){
     if(page!=='campaign'||!finaleState.reply)return;
     bunkerOrderSelected=RELIEF_ORDER;bunkerOrderFilter='all';navigatePage('orders');return;

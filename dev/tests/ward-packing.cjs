@@ -61,6 +61,7 @@ async function main(){
   assert.equal(q.fee,wallet+18000);assert.deepEqual(clone(q.s.career.wardCheckReceipt),rec);
   assert.ok(q.s.stashSlots.some(u=>u.uid===b&&u.g===ITEM));q.ack();
   const check=await restored.exportData();
+  if(!z && process.env.RUSTLINE_EXPORT_WARD_PACKED){fs.writeFileSync(process.env.RUSTLINE_EXPORT_WARD_PACKED,JSON.stringify(check));return;}
   const cold=boot({},restored.clock);await cold.g.importFile(new Blob([JSON.stringify(check)]));
   assert.deepEqual(clone(cold.g.s.career.wardCheckReceipt),rec);cold.g.order(JOB);assert.equal(cold.g.s.career.order,null);
   for(const mutate of [s=>delete s.career.wardCheckReceipt,s=>{s.career.wardCheckReceipt.uid=first},s=>delete s.hideout.wardTrial,s=>s.lastSummary.commission=0]){

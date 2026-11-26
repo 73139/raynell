@@ -48,7 +48,8 @@ function exitForecast(exit, now) {
   const reward=' · '+order.title+' · 의뢰 보상 ';
   if(award.payable)return summary+reward+money(order.cr)+' / '+order.xp+' XP';
   let detail='';
-  if(progress<order.target)detail+=' · 목표 미달 · '+order.goal+' '+progress+'/'+order.target;
+  if(order.id===SHUTTLE_ORDER && field.shuttle?.stage==='plan')detail+=normal?' · 배차 확정 예정 · 다음 출격 시운전 후 수당 지급':' · 조기 귀환 시 이번 배차 선택 취소';
+  else if(progress<order.target)detail+=' · 목표 미달 · '+order.goal+' '+progress+'/'+order.target;
   else if(!normal)detail+=' · 의뢰 목표 충족 '+progress+'/'+order.target;
   if(!normal){
     detail+=' · 정상 탈출까지 (대기 종료 기준) 생존 '+formatRaid(NORMAL_EXTRACTION.elapsedMs-elapsed)+
@@ -197,7 +198,7 @@ function updateRaidClock(){
   if((changed||objectiveTimeChanged||phase!==lastRaidPhase||(statusChanged&&page==='raid'&&!field.open))&&page!=='settings'&&!rendering){
     lastRaidPhase=phase;renderKeep();
   }else lastRaidPhase=phase;
-  updateRouteDeadlineWarnings();refreshExitForecasts();tickSurvivorUI();tickWeatherUI();
+  updateRouteDeadlineWarnings();refreshExitForecasts();tickSurvivorUI();tickWeatherUI();tickShuttle(now);
 }
 function handleRaidAction(action,data={}){
   if(!writer)return;
@@ -363,6 +364,7 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(d.field==='shuttle')return handleShuttle(d);
 if(d.field==='ward-compare')return compareWardPacking(d);
 if(d.field==='relief-deliver')return handleReliefDelivery(d);
 if(d.field==='postal-pickup'||d.field==='postal-stamp')return handlePostal(d);
