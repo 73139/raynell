@@ -17,3 +17,7 @@
 #inside .sc-case :is(.sc-stock,.sc-tile):disabled{opacity:.72}
 #inside .sc-case :is(.sc-stock,.sc-tile,.sc-toggle):focus-visible{outline:2px solid #eee0a2;outline-offset:-3px}
 @media(max-width:680px){#inside .sc-case :is(.sc-stock,.sc-toggle){min-height:44px}}
+
+.sc-targets{margin:.55rem 0}
+.sc-targets>summary{cursor:pointer;min-height:44px;padding:.65rem 0}
+.sc-targets>.sc-stock{width:100%;min-height:44px;margin:.2rem 0}

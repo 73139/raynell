@@ -147,7 +147,7 @@ function stashRemovableCount(id) {
   return total - stashSlots.filter(unit=>unit.g===id && unit.contents?.length).length;
 }
 
-function caseTransfer(uid, action, item) {
+function caseTransfer(uid, action, item, sourceUid = null) {
   const fail = message => ({ok:false,message});
   if (!writer || raid) return fail('벙커로 귀환한 뒤 플레이 중인 탭에서 옮기세요.');
   if (action!=='put' && action!=='take') return fail('물품 이동을 다시 선택하세요.');
@@ -155,22 +155,28 @@ function caseTransfer(uid, action, item) {
   if (index<0) return fail('창고에 배치한 보관함을 선택하세요.');
   const box=stashSlots[index], contents=box.contents||[];
   const oldStock=stash, oldSlots=stashSlots.slice(), oldOverflow=gearOverflow.slice();
-  let id, updated;
+  let id, updated, queued=false;
   if (action==='put') {
     id=item;
     if (!caseAccepts(box.g,id)) return fail('이 보관함에 넣을 수 없는 종류입니다.');
     const [,w,h]=GOODS[id];
-    const physical=wardPackUid(id,null)||newStashUid();
+    const slot=sourceUid?stashSlots.find(unit=>unit.g===id&&unit.uid===sourceUid):
+      stashOverflowCount(id)>0?null:stashSlots.findLast(unit=>unit.g===id);
+    if(sourceUid&&!slot)return fail('선택한 창고 물품을 다시 확인하세요.');
+    const physical=slot?.uid||newStashUid();
+    const choice=slot?.uid||'overflow';
     const fit=kitFit(contents,STORAGE_CASES[box.g].size,{uid:physical,g:id,x:0,y:0,w,h});
     if (!fit) return fail('보관함에 물품이 들어갈 공간이 없습니다.');
-    const gear=gearStashChoice(id,null); if (gear) fit.gear=gear;
-    if (!takeStashGoods(id)) return fail('창고에 해당 물품이 없습니다.');
+    const gear=gearStashChoice(id,choice); if (gear) fit.gear=gear;
+    if (!takeStashGoods(id,1,choice)) return fail('창고에 해당 물품이 없습니다.');
     updated=[...contents,fit];
   } else {
     const unit=contents.find(u=>u.uid===item);
     if (!unit) return fail('꺼낼 물품을 다시 선택하세요.');
     id=unit.g;
+    const oldStockCount=stashOverflowCount(id);
     if (!addStashGoods(id,1,unit.gear,unit.uid)) return fail('창고에 빈 칸이나 보유 한도가 부족합니다.');
+    queued=stashOverflowCount(id)>oldStockCount;
     updated=contents.filter(u=>u.uid!==item);
   }
   // Removing a loose unit can shift the position of the case in the array.
@@ -182,7 +188,8 @@ function caseTransfer(uid, action, item) {
     stashSlots=oldSlots;gearOverflow=oldOverflow;
     return fail('이동을 저장하지 못했습니다. 다시 시도하세요.');
   }
-  return {ok:true,message:GOODS[id][0]+' 1개를 '+(action==='put'?'보관함에 넣었습니다.':'창고로 꺼냈습니다.')};
+  const destination=action==='put'?'보관함에 넣었습니다.':queued?'입고 대기로 옮겼습니다.':'창고로 꺼냈습니다.';
+  return {ok:true,message:GOODS[id][0]+' 1개를 '+destination};
 }
 
 function stashSize(level = hideoutLevel('stash')) {
@@ -213,17 +220,17 @@ function wardPackUid(id,uid){
   if(uid==='overflow'||(!uid&&stashOverflowCount(id)>0))return newStashUid();
   return uid||stashSlots.findLast(unit=>unit.g===id)?.uid;
 }
-function placeIncomingGoods(id, amount, incoming = null, newStock = false, sourceUid = null) {
+function placeIncomingGoods(id, amount, incoming = null, newStock = false, sourceUid = null, layout = stashSlots) {
   const [, w, h] = GOODS[id];
   const size = stashSize();
   let placed=0;
   for (; placed < amount; placed++) {
     let width = w, height = h;
-    let pos = firstFit(stashSlots, size, width, height);
+    let pos = firstFit(layout, size, width, height);
     if (!pos && w !== h) {
       width = h;
       height = w;
-      pos = firstFit(stashSlots, size, width, height);
+      pos = firstFit(layout, size, width, height);
     }
     if (!pos) break;
     const unit={uid:placed===0&&sourceUid?sourceUid:newStashUid(),g:id,...pos,w:width,h:height};
@@ -232,6 +239,7 @@ function placeIncomingGoods(id, amount, incoming = null, newStock = false, sourc
     else if (!newStock && offset>=0) {unit.gear=gearQueuePhysical(gearOverflow[offset]);gearQueueRemove(gearOverflow,id,1);}
     gearEnsureUnit(unit);
     stashSlots.push(unit);
+    if (layout !== stashSlots) layout.push(unit);
   }
   if (incoming) {gearOverflow.push(incoming);placed++;}
   if (newStock) gearQueueNew(id,amount-placed);
@@ -278,22 +286,29 @@ function loadStashLayout(savedSlots, expandLegacy = false) {
   if (expandLegacy) refreshStashLayout();
 }
 
-function addStashGoods(id, amount = 1, gear = null, sourceUid = null) {
+function addStashGoods(id, amount = 1, gear = null, sourceUid = null, layout = stashSlots) {
   if(id==='cr_notes')return false;
   if (!Object.hasOwn(GOODS, id) || !Number.isSafeInteger(amount) || amount < 1) return false;
   const next = stashCount(id) + amount;
   if (!Number.isSafeInteger(next)) return false;
   if(id==='rl_bp_dressing'){
-    const uid=sourceUid??newStashUid(),pos=firstFit(stashSlots,stashSize(),1,1);
+    const uid=sourceUid??newStashUid(),pos=firstFit(layout,stashSize(),1,1);
     if(amount!==1 || !wardUid(uid) || !pos || stashSlots.some(unit=>unit.uid===uid))return false;
     stash[id]=next;
     stashSlots.push({uid,g:id,...pos,w:1,h:1});
     return true;
   }
   stash[id] = next;
-  const preserve=id===WARD_TRIAL_ITEM && amount===1 && wardUid(sourceUid) && !stashSlots.some(u=>u.uid===sourceUid);
-  placeIncomingGoods(id, amount, gear, true, preserve?sourceUid:null);
+  const preserve=amount===1 && typeof sourceUid==='string' && /^s-[a-z0-9-]{1,72}$/.test(sourceUid) && !stashSlots.some(u=>u.uid===sourceUid);
+  placeIncomingGoods(id, amount, gear, true, preserve?sourceUid:null, layout);
   return true;
+}
+
+// Banknotes spent from the grid free cells in the same transaction that receives the goods.
+// Retain the original cash units until writeSession commits the projected payment.
+function addPurchasedGoods(id, amount, total) {
+  const layout = cashProjection(wallet - total).stashSlots;
+  return addStashGoods(id, amount, null, null, layout);
 }
 
 // Consumption protects assembled hosts. Untagged older overflow remains usable
@@ -491,7 +506,7 @@ function stashSelectionMarkup() {
       ${stashPinButton(s)}${equipmentStashActions(s.g, s.uid)}
       <button data-stash="sell" ${saleRestriction ? 'disabled aria-describedby="stash-sale-reason"' : manualNote ? 'aria-describedby="ward-sale-direct"' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
       <button data-db="lookup" data-id="${s.g}">도감 보기</button><button data-stash="clear">선택 해제</button>
-    </div>${manualNote}${saleRestriction?'<p id="stash-sale-reason">'+esc(saleRestriction)+'</p>':''}${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
+    </div>${manualNote}${saleRestriction?'<p id="stash-sale-reason">'+esc(saleRestriction)+'</p>':''}${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):caseDestinations(s)}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
 }
 
 function storagePage() {

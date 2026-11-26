@@ -1,6 +1,34 @@
 // A case opens in the same detail pane as its physical warehouse item.
 let openedCaseUid=null;
 
+function caseDestinations(unit){
+  if(!writer||raid||unit.uid==='overflow'||unit.g==='cr_notes')return '';
+  const boxes=stashSlots.filter(box=>caseAccepts(box.g,unit.g));
+  if(!boxes.length)return '';
+  const name=esc(kitName(unit.g));
+  const destinations=boxes.map(box=>{
+    const size=STORAGE_CASES[box.g].size,contents=box.contents||[];
+    const fits=firstFit(contents,size,unit.w,unit.h)||(unit.w!==unit.h&&firstFit(contents,size,unit.h,unit.w));
+    const label=esc(caseDisplayName(box))+' · '+(box.y+1)+'행 '+(box.x+1)+'열';
+    return '<button type="button" class="sc-stock" data-stash="case-pack-selected" data-box="'+esc(box.uid)+'" data-unit="'+esc(unit.uid)+'"'+
+      (fits?'':' disabled')+'><span>'+label+'</span><b>'+(fits?'넣기':'공간 부족')+'</b></button>';
+  }).join('');
+  return '<details class="sc-targets" data-case-destinations><summary>보관함에 넣기 · '+name+'</summary>'+destinations+'</details>';
+}
+function packSelectedCase(d,unit){
+  if(!unit||unit.uid==='overflow'||unit.uid!==d.unit||!writer||raid)return;
+  const box=stashSlots.find(slot=>slot.uid===d.box);
+  if(!box||!caseAccepts(box.g,unit.g))return;
+  const result=caseTransfer(box.uid,'put',unit.g,unit.uid);
+  stashNotice=result.message;
+  if(result.ok){
+    stashSelection={id:box.g,uid:box.uid,rot:false};
+    openedCaseUid=box.uid;
+  }
+  renderKeep();
+  const target=result.ok?$('[data-stash="case-take"][data-box="'+box.uid+'"][data-unit="'+unit.uid+'"]'):$('[data-case-destinations]>summary');
+  target?.focus?.({preventScroll:true});target?.scrollIntoView?.({block:'nearest'});
+}
 function casePanelMarkup(unit){
   const spec=unit&&STORAGE_CASES[unit.g];
   if(!spec)return '';
@@ -56,6 +84,7 @@ function casePanelMarkup(unit){
 function handleCaseUI(d){
   if(page!=='stash'&&page!=='inventory')return;
   const unit=selectedStashUnit();
+  if(d.stash==='case-pack-selected')return packSelectedCase(d,unit);
   if(!unit||unit.uid==='overflow'||unit.uid!==d.box||!Object.hasOwn(STORAGE_CASES,unit.g))return;
   const keyboard=document.activeElement?.matches?.(':focus-visible');
   switch(d.stash){

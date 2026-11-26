@@ -138,7 +138,7 @@ function marketTrade(traderId, mode, itemId, qty = 1) {
   const before = {wallet, count: stashCount(itemId), slots: stashSlots.slice(), overflow:gearOverflow.slice(), revision};
   const stock = stash;
   const buy = mode === 'buy';
-  const changed = buy ? addStashGoods(itemId, qty) : takeStashGoods(itemId, qty, null, 'sale');
+  const changed = buy ? addPurchasedGoods(itemId, qty, quote.total) : takeStashGoods(itemId, qty, null, 'sale');
   if (!changed) return fail('창고 수량이 바뀌었습니다. 다시 선택하세요.');
   wallet += buy ? -quote.total : quote.total;
   persist();

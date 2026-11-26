@@ -39,7 +39,7 @@ function buyMaterial(id){
     return;
   }
   const stock=stash, count=stashCount(id), slots=stashSlots.slice(), balance=wallet;
-  if(!addStashGoods(id))return;
+  if(!addPurchasedGoods(id,1,GOODS[id][6]))return;
   wallet-=GOODS[id][6];
   if(writeSession()){
     procurementNote=GOODS[id][0]+' 1개를 창고에 받았습니다.';
