@@ -156,22 +156,52 @@ function gearSettlementMarkup(summary){
   }).join('')+'</div>';
 }
 
+// This exceeds the current 46 containers × 5 rolls, 60 bag cells and all 15 worn slots combined.
+const HISTORY_GEAR_LIMIT=320;
+const HISTORY_GEAR_FIELDS=['uid','g','ammoBefore','durabilityBefore','ammoUsed','wear','disposition'];
+function archiveGearReport(report){
+  if(report.length<=HISTORY_GEAR_LIMIT)return {gearReport:report};
+  return {gearReport:report.slice(0,HISTORY_GEAR_LIMIT),gearOmitted:report.length-HISTORY_GEAR_LIMIT};
+}
+function validGearRows(rows,reported,exact=false){
+  if(!Array.isArray(rows))return false;
+  const integer=(n,limit)=>Number.isSafeInteger(n)&&n>=0&&n<=limit;
+  const seen=new Set();
+  return rows.every(row=>{
+    if(!row || typeof row.g!=='string' || typeof row.uid!=='string'||!/^[a-z0-9_-]{1,140}$/i.test(row.uid)||seen.has(row.uid))return false;
+    if(exact && Object.keys(row).length!==HISTORY_GEAR_FIELDS.length)return false;
+    seen.add(row.uid);
+    const spec=gearSpec(row.g);
+    return Boolean(spec && integer(row.ammoBefore,spec.capacity)&&integer(row.durabilityBefore,spec.maxDurability)&&
+      integer(row.ammoUsed,row.ammoBefore)&&integer(row.wear,row.durabilityBefore)&&
+      (!reported || ['returned','lost','left'].includes(row.disposition)));
+  });
+}
+function validHistoryGear(row){
+  if(row.gearReport===undefined)return row.gearOmitted===undefined;
+  const rows=row.gearReport;
+  if(!Array.isArray(rows)||rows.length>HISTORY_GEAR_LIMIT||!validGearRows(rows,true,true))return false;
+  if(row.gearOmitted!==undefined && !(rows.length===HISTORY_GEAR_LIMIT&&Number.isSafeInteger(row.gearOmitted)&&row.gearOmitted>0))return false;
+  const returned=row.rating==='success'||row.rating==='quick';
+  return rows.every(gear=>gear.disposition!==(returned?'lost':'returned'));
+}
+function historyGearMatches(row,summary){
+  if(!row.gearReport || !Array.isArray(summary?.gearReport) || row.at-row.elapsed!==summary.raidId)return true;
+  const actual=archiveGearReport(summary.gearReport);
+  if(actual.gearReport.length!==row.gearReport.length || actual.gearOmitted!==row.gearOmitted)return false;
+  const byUid=new Map(actual.gearReport.map(gear=>[gear.uid,gear]));
+  return row.gearReport.every(gear=>HISTORY_GEAR_FIELDS.every(key=>gear[key]===byUid.get(gear.uid)?.[key]));
+}
+function historyGearMarkup(row){
+  if(row.gearReport===undefined)return '<p class="bu-minor">이전 출격의 개별 장비 내역은 보관되지 않았습니다.</p>';
+  if(!row.gearReport.length)return '<p>개별 정산 장비 없음</p>';
+  return gearSettlementMarkup(row)+(row.gearOmitted?'<p>개별 기록 한도 '+HISTORY_GEAR_LIMIT+'개 · 추가 '+row.gearOmitted+'개 생략</p>':'');
+}
+
 function validGearLedger(s){
   const integer=(n,limit)=>Number.isSafeInteger(n)&&n>=0&&n<=limit;
-  function validRows(rows,reported){
-    if(!Array.isArray(rows))return false;
-    const seen=new Set();
-    return rows.every(row=>{
-      if(!row || typeof row.uid!=='string'||!/^[a-z0-9_-]{1,140}$/i.test(row.uid)||seen.has(row.uid))return false;
-      seen.add(row.uid);
-      const spec=gearSpec(row.g);
-      return Boolean(spec && integer(row.ammoBefore,spec.capacity)&&integer(row.durabilityBefore,spec.maxDurability)&&
-        integer(row.ammoUsed,row.ammoBefore)&&integer(row.wear,row.durabilityBefore)&&
-        (!reported || ['returned','lost','left'].includes(row.disposition)));
-    });
-  }
   const f=s.field;
-  if(f.gearUsage!==undefined && (!s.raid || f.result || !validRows(f.gearUsage,false)))return false;
+  if(f.gearUsage!==undefined && (!s.raid || f.result || !validGearRows(f.gearUsage,false)))return false;
   if(f.gearUsage?.length){
     const carried=[...Object.values(f.instances||{}),...f.bag.map(unit=>unit.gear),
       ...(f.gearGround||[]).flat().map(unit=>unit.gear)].filter(Boolean);
@@ -183,7 +213,7 @@ function validGearLedger(s){
     }
   }
   const report=s.lastSummary?.gearReport;
-  if(report!==undefined && (!validRows(report,true) || report.some(row=>row.disposition===(s.lastSummary.result==='success'?'lost':'returned'))))return false;
+  if(report!==undefined && (!validGearRows(report,true) || report.some(row=>row.disposition===(s.lastSummary.result==='success'?'lost':'returned'))))return false;
   const a=f.action;
   const legacy=f.legacyEngagement;
   if(!a)return legacy===undefined;

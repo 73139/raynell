@@ -283,8 +283,9 @@ function validateBackup(raw){
   const summary=s.lastSummary;
   if(summary&&(!dict(summary)||!Array.isArray(summary.goods)||!summary.goods.every(id)||!integer(summary.elapsed)||!integer(summary.cost)||!Object.hasOwn(ENDINGS,summary.result)))return false;
   if(summary?.worn&&(!Array.isArray(summary.worn)||!summary.worn.every(x=>dict(x)&&Object.hasOwn(KIT_SLOTS,x.slot)&&kitSlot(x.id)===x.slot && (x.module === undefined || PRESET_MODULES[x.id]?.includes(x.module)))))return false;
-  function validHistoryRow(row){
+  function validHistoryRow(row,index){
     if(!dict(row)||!Object.hasOwn(ENDINGS,row.rating)||!integer(row.elapsed)||!integer(row.xp))return false;
+    if(!validHistoryGear(row) || (row.gearReport!==undefined && (s.version<36 || index>=12 || !integer(row.at,1) || row.at<=row.elapsed || !historyGearMatches(row,summary))))return false;
     if(!Object.hasOwn(row,'carriedCash'))return true; // Older receipts omitted carried notes.
     if(!integer(row.carriedCash)||!integer(row.commission)||!integer(row.cost)||!Number.isSafeInteger(row.cash))return false;
     const returned=row.rating==='success'||row.rating==='quick';

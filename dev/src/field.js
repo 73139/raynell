@@ -101,7 +101,11 @@ function readCareer(raw={}) {
   career = {xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
     done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done))?raw.order:null,
-    history:Array.isArray(raw?.history)?raw.history.slice(0,12):[]};
+    history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
+      if(!row || (validHistoryGear(row) && historyGearMatches(row,lastSummary)))return row;
+      const {gearReport,gearOmitted,...rest}=row;
+      return rest;
+    }):[]};
 }
 function playerLevel(){return 1+Math.floor(Math.sqrt(career.xp/150))}
 function shuffleExits(){
@@ -309,7 +313,7 @@ function reconcileEnd(result,at,exit=null){
   career.history.unshift({
     rating, elapsed, xp:earned+missionXp, exit:summary.exit, at, zone:raid.zone,
     visited, searched, victories, carriedCash, cash:wallet-walletBeforeSettlement, goods:returned?goods.slice():[],
-    commission, missionXp, orderName, cost
+    commission, missionXp, orderName, cost, ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
   delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;

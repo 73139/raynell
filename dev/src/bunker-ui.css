@@ -97,3 +97,9 @@
 .bu-recent-ledger dl div{min-width:0;padding:6px 8px;border:1px solid var(--line)}
 .bu-recent-ledger dt{font-size:.85em;color:var(--muted)}
 .bu-recent-ledger dd{margin:3px 0 0;overflow-wrap:anywhere;font-weight:700}
+
+@media(max-width:650px){
+  .bu-table-wrap{container-type:inline-size}
+  .bu-table-wrap .bu-log-detail{box-sizing:border-box;width:min(100%,calc(100cqi - 12px));position:sticky;left:0}
+  .bu-screen .bu-row-open{min-width:44px;min-height:44px}
+}

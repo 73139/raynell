@@ -14,7 +14,7 @@ const probe = `globalThis.game={
   facilityProductionPanel,kitSupply,facilitySearchInputs,facilitySearchPlan,facilitySearchMarkup,
   wardTrialView,wardTrialAction,wardTrialPanel,
   cashAction,cashBalance,cashCanCredit,
-  fieldAppraisal,
+  fieldAppraisal,kitUnitGrams,packMassLabel,
   huntCalculateOdds,huntContainerOdds,catalogFieldMarkup,catalogFieldDisclosure,
   saleObjectiveImpact,saleQuote,saleCommit,exchangeReload,makeBox,barterOffers,barterCommit,kitCapacity,kitSlot,gearDefenseBonus,gearAttackBonus,
   marketCartView,marketCartAdd,marketCartSet,marketCartCheckout,objectiveCartView,objectiveCartApply,

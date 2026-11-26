@@ -4,8 +4,8 @@ const vm=require('node:vm');
 const assert=require('node:assert/strict');
 const {boot,clone,epoch,extract,stamp}=require('./game-fixture.cjs');
 const db=JSON.parse(fs.readFileSync('Rustline_Database_v10.json','utf8'));
-const uiSource=['field','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor-ui','objective','objective-ui','weather','postal'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
-const ctx=vm.createContext({ITEM_META:{},LANDMARKS:clone(boot().g.places),lastSummary:null,campaignBunkerCard:()=>'',menuIcon:()=>'',assert,writer:true,commandIcon:()=>'',GOODS:Object.fromEntries(Object.entries(db.items).map(([k,item])=>[k,[item.name]])),
+const uiSource=['field','gear-instances','gear-service','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor-ui','objective','objective-ui','weather','postal'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
+const ctx=vm.createContext({document:{activeElement:null},ITEM_META:{},LANDMARKS:clone(boot().g.places),lastSummary:null,campaignBunkerCard:()=>'',menuIcon:()=>'',assert,writer:true,commandIcon:()=>'',GOODS:Object.fromEntries(Object.entries(db.items).map(([k,item])=>[k,[item.name]])),
   FACILITIES:db.hideout.facilities,FACILITY_PRODUCTION:db.hideout.production,boxKey:(zone,index)=>zone+'-'+index,
   artURL:key=>{assert.ok(fs.existsSync('src/assets/ui/'+key+'.webp'),key);return key+'.webp'},
   itemArt:id=>'<img alt="" src="'+id+'">',esc:String, money:n=>n+' CR',formatRaid:n=>String(n),

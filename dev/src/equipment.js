@@ -87,6 +87,18 @@ function kitUnit(id) {
   const unit={uid,g:id,x:0,y:0,w:g?.[1]||1,h:g?.[2]||1,revealed:true};
   gearEnsureUnit(unit);return unit;
 }
+// Catalog masses are expressed to the nearest gram. A fitted module travels with its host.
+function kitUnitGrams(unit){
+  const module=unit.gear?.module;
+  return Math.round(GOODS[unit.g][3]*1000)+(module?Math.round(GOODS[module][3]*1000):0);
+}
+function selectedMassMarkup(unit){
+  const module=unit.gear?.module;
+  return '<span data-selected-mass>'+kitUnitGrams(unit)/1000+' kg'+(module?' ('+esc(kitName(module))+' 포함)':'')+'</span>';
+}
+function packMassLabel(bag){
+  return bag.reduce((grams,unit)=>grams+kitUnitGrams(unit),0)/1000+' kg';
+}
 // Keep existing orientation and coordinates whenever possible.
 function kitFit(list,size,item) {
   if(fits(list,size,item.x,item.y,item.w,item.h))return {...item};
@@ -238,11 +250,11 @@ function kitPrepGrid(kit){
   for(let y=0;y<size[1];y++)for(let x=0;x<size[0];x++)cells+='<button class="slot" data-gear="cell" data-x="'+x+'" data-y="'+y+'" aria-label="가방 '+(x+1)+'열 '+(y+1)+'행" style="grid-column:'+(x+1)+';grid-row:'+(y+1)+'"></button>';
   const tiles=kit.bag.map(o=>o.g==='cr_notes'?cashTile(o,'bag'):'<button class="loot-tile '+(selected===o?'chosen':'')+'" data-gear="select" draggable="true" data-unit="'+esc(o.uid)+'" aria-label="'+esc(kitName(o.g))+'" style="grid-column:'+(o.x+1)+'/span '+o.w+';grid-row:'+(o.y+1)+'/span '+o.h+'">'+(typeof itemArt==='function'?itemArt(o.g,'item-symbol'):ico(GOODS[o.g][4],'item-symbol'))+'<span>'+esc(kitName(o.g))+'</span></button>').join('');
   return '<div class="spatial-grid" data-kit-grid style="--cols:'+size[0]+';--rows:'+size[1]+'">'+cells+tiles+'</div><p class="mini-field">물품을 선택한 후 빈 칸을 눌러 배치하세요.</p>'+
-    (selected?'<div class="kit-actions"><b>'+esc(kitName(selected.g))+'</b>'+gearButton('prep-rotate',gearPick.rot?'회전 취소':'회전 후 배치')+gearButton('unpack','창고로')+(kitSlot(selected.g)?gearButton('wear-bag','착용',{unit:selected.uid}):'')+'</div>':'');
+    (selected?'<div class="kit-actions"><b>'+esc(kitName(selected.g))+'</b>'+selectedMassMarkup(selected)+gearButton('prep-rotate',gearPick.rot?'회전 취소':'회전 후 배치')+gearButton('unpack','창고로')+(kitSlot(selected.g)?gearButton('wear-bag','착용',{unit:selected.uid}):'')+'</div>':'');
 }
 function kitPrepBag(kit){
   const size=kitCapacity(kit.worn);
-  return '<section class="loot-panel kit-bag"><div class="field-label"><span>출격 시 반입</span><span>'+kit.bag.reduce((n,o)=>n+GOODS[o.g][3],0).toFixed(1)+' kg</span></div><h2>'+(kit.worn.back?'출격 가방':'주머니')+' <small>'+size.join(' × ')+'</small></h2>'+kitPrepGrid(kit)+'</section>';
+  return '<section class="loot-panel kit-bag"><div class="field-label"><span>출격 시 반입</span><span>'+packMassLabel(kit.bag)+'</span></div><h2>'+(kit.worn.back?'출격 가방':'주머니')+' <small>'+size.join(' × ')+'</small></h2>'+kitPrepGrid(kit)+'</section>';
 }
 function kitStorePanel(){
   const rows=Object.entries(stash).filter(([id,n])=>GOODS[id]&&n>0&&(kitSlot(id)||kitSupply(id))).sort((a,b)=>kitName(a[0]).localeCompare(kitName(b[0]),'ko'));

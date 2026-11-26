@@ -58,6 +58,7 @@ async function run(){
   b.setRandom(.01);if(g.s.field.contact){go(b,'evade');finish(b);}
   extract(b);
   const row=g.s.lastSummary.gearReport.find(row=>row.uid===uid);
+  assert.deepEqual(clone(g.s.career.history[0].gearReport),clone(g.s.lastSummary.gearReport));
   assert.deepEqual(clone(row),{uid,g:'rl10_carbine',ammoBefore:30,durabilityBefore:100,ammoUsed:3,wear:2,disposition:'returned'});
   valid(g);g.ack();
   const before=g.fee,q=g.gearServiceQuote(uid,'repair');

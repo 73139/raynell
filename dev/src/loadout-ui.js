@@ -103,14 +103,13 @@ function loBindButton(id){
 function loBag(kit,active){
   const size=kitCapacity(kit.worn),sel=active?(picked?.side==='bag'?selectedItem():null):kit.bag.find(o=>o.uid===gearPick?.uid);
   const title=kit.worn.back?'내 가방':'주머니',used=loCellsUsed(kit.bag),cap=size[0]*size[1];
-  const weight=kit.bag.reduce((n,o)=>n+GOODS[o.g][3],0);
   const grid=active?gridMarkup(kit.bag,size,'bag'):kitPrepGrid(kit);
   return '<section class="lo-pane lo-bag">'+loTitle(title,used+' / '+cap+' 칸','bag')+
     '<div class="lo-pane-body">'+(active&&page==='raid'&&openBox()&&picked?'<p class="mini-field" data-field-placement-help id="field-placement-help">방향키로 칸 선택 · Enter로 배치</p>':'')+grid+
     (active&&page==='raid'&&openBox()&&picked?.placing?'<button data-field="unselect">배치 취소</button>':'')+
     (active&&page==='raid'&&openBox()&&picked?.side==='loot'&&notice?'<p role="status">'+esc(notice)+'</p>':'')+
     (active&&sel?selectionPanel():'')+(sel?loBindButton(sel.g):'')+
-    '<div class="lo-spec"><span>'+size.join(' × ')+' 격자</span><span>'+weight.toFixed(1)+' kg</span></div></div></section>';
+    '<div class="lo-spec"><span>'+size.join(' × ')+' 격자</span><span data-bag-mass>'+packMassLabel(kit.bag)+'</span></div></div></section>';
 }
 function loDepot(){
   const [cols,rows]=stashSize(), used=loCellsUsed(stashSlots);

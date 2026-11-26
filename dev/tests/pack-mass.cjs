@@ -1,0 +1,15 @@
+const {assert,boot,clone,valid,v12}=require('./game-fixture.cjs');
+const fresh=boot(),g=fresh.g;
+for(const [id,row] of Object.entries(g.goods))assert.equal(g.kitUnitGrams({g:id}),Math.round(row[3]*1000),id);
+assert.equal(g.packMassLabel([]),'0 kg');assert.equal(g.packMassLabel([{g:'cr_notes',amount:125}]),'0.01 kg');
+const lamp=g.unit('flash');lamp.gear.module='battery';
+const radio=g.unit('radio');radio.gear.module='rl_13_02';
+assert.equal(g.packMassLabel([lamp,radio]),'1.35 kg');
+const unmounted=[{g:'flash'},{g:'battery'},{g:'radio'},{g:'rl_13_02'}];assert.equal(g.packMassLabel(unmounted),g.packMassLabel([lamp,radio]));
+const tiny=Object.keys(g.goods).find(id=>g.goods[id][3]===.018);assert.ok(tiny);assert.equal(g.packMassLabel([{g:tiny},{g:'cr_notes',amount:1}]),'0.028 kg');
+const s=clone(g.s);s.equipment.bag=[{...lamp,x:0,y:0},{...radio,x:1,y:0}];const game=boot({[v12]:s}).g;valid(game);
+assert.equal(game.packMassLabel(game.s.equipment.bag),'1.35 kg');game.start();assert.equal(game.packMassLabel(game.s.field.bag),'1.35 kg');
+game.gear({gear:'drop',unit:lamp.uid});assert.equal(game.packMassLabel(game.s.field.bag),'0.85 kg');
+assert.ok(game.s.field.gearGround[0].some(x=>x.gear.uid===lamp.gear.uid&&x.gear.module==='battery'));
+game.gear({gear:'recover',unit:lamp.uid});assert.equal(game.packMassLabel(game.s.field.bag),'1.35 kg');valid(game);
+console.log('PASS 531 catalog base masses; 10 g physical note, 18 g loose item, 500 g fitted lamp and 850 g fitted radio; module weight conserved across drop, recovery and restored loadout.');
