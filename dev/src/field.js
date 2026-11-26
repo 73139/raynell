@@ -58,9 +58,9 @@ function orderUnlocked(order, done=career.done) {
   return !order.after || done.includes(order.after);
 }
 const ORDERS = [
-  {id:'scout', image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
+  {id:'scout',surveyFunding:true, image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
     goal:'서로 다른 지역 방문', target:2, progress:()=>new Set(field.visited||[raid.zone]).size},
-  {id:'stores', image:'bunker-stash', issuer:'보급 담당관', title:'보급품 위치 확인', text:'한 레이드에서 컨테이너 두 개를 끝까지 수색하고 정상 탈출하세요.', cr:32000, xp:120,
+  {id:'stores',surveyFunding:true, image:'bunker-stash', issuer:'보급 담당관', title:'보급품 위치 확인', text:'한 레이드에서 컨테이너 두 개를 끝까지 수색하고 정상 탈출하세요.', cr:32000, xp:120,
     goal:'컨테이너 수색 완료', target:2, progress:()=>Object.values(field.boxes).filter(box=>box.complete).length},
   {id:'signals', image:'bunker-security', issuer:'현장 정비반', title:'고장 난 경비망', text:'한 레이드에서 경비 기체 한 대를 무력화하고 정상 탈출하세요.', cr:42000, xp:150,
     goal:'경비 기체 무력화', target:1, progress:()=>field.victories||0},
@@ -72,12 +72,12 @@ const ORDERS = [
     text:'마지막 의무품 수송이 끊긴 뒤, 두 곳에 남은 구급 붕대의 포장 상태를 확인하고 있습니다. 벙커 외곽 임시 진료소의 진료대 응급함은 열쇠 없이 열 수 있습니다. 폐쇄 검문소로 간다면 검역실 열쇠를 챙겨 검역 천막의 응급 케이스를 여세요. 둘 중 한 곳에서 찾은 구급 붕대 한 개를 가방에 넣어 정상 탈출하면 검사비를 지급합니다. 붕대는 본인 창고에 보관됩니다.',
     cr:28000, xp:100, goal:'지정된 두 응급함 중 한 곳에서 찾은 구급 붕대 휴대', target:1,
     recovery:{item:'bandage',sources:[{zone:0,landmark:7,boxOrdinal:0},{zone:1,landmark:1,boxOrdinal:0}]}, progress:countOrderRecovery},
-  {id:'handover-ledgers',image:'bunker-stash',issuer:'벙커 배차반',title:'사라진 화물 인계표',
+  {id:'handover-ledgers',surveyFunding:true,image:'bunker-stash',issuer:'벙커 배차반',title:'사라진 화물 인계표',
     text:'외곽 폐선 승강장을 떠난 화물이 검문소에서 인계됐는지 확인해 주세요. 한 출격에서 폐선 승강장의 화물표 서랍과 검역 천막의 검역 접수 서랍을 끝까지 수색한 뒤 정상 탈출하세요. 두 서랍 모두 열쇠 없이 열 수 있습니다. 어느 쪽을 먼저 가도 되고, 안이 비어 있어도 확인한 기록은 인정됩니다.',
     cr:34000,xp:115,goal:'지정 서랍 수색 완료',target:2,
     inspections:[{zone:0,landmark:8,boxOrdinal:1},{zone:1,landmark:1,boxOrdinal:1}],
     progress:order=>orderInspectionSites(order).filter(site=>site.complete).length},
-  {id:'pump-gauge',image:'bunker-water',issuer:'벙커 배수반',title:'빗물 펌프장 수위 판독',
+  {id:'pump-gauge',surveyFunding:true,image:'bunker-water',issuer:'벙커 배수반',title:'빗물 펌프장 수위 판독',
     text:'외곽 빗물 펌프장 발판에 수위계가 남아 있습니다. 눈금을 직접 읽고 기준선과 비교해 이번 출격의 수위를 기록하세요. 장비나 물자는 필요 없습니다. 정상 탈출하면 배수반에서 판독 수당을 지급합니다. 조기 귀환하면 다음 출격에서 새로 판독해야 합니다.',
     cr:12000,xp:55,goal:'기준선과 비교한 수위 기록',target:1,progress:pumpGaugeProgress},
   {id:'pump-pipe',after:'pump-gauge',image:'bunker-water',issuer:'벙커 배수반',title:'배수관 규격 대조',
@@ -85,7 +85,7 @@ const ORDERS = [
     cr:18000,xp:65,goal:'규격표 확인 및 PVC 배관 휴대',target:2,
     sample:{site:{zone:0,landmark:6,boxOrdinal:0},item:'rl_08_15'},
     progress:order=>sampleInspection(order,field,field.bag).count},
-  {id:'weather-survey',image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
+  {id:'weather-survey',surveyFunding:true,image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
     text:'안개가 수송로의 거리 표식을 얼마나 가리는지 맑은 날과 비교합니다. 지도에서 세 권역의 예보를 보고 첫 관측지를 고르세요. 외곽 경계 울타리, 검문소 대기 차량 행렬, 군수 창고 하역 도크가 관측 지점입니다. 한 출격에서 서로 다른 두 권역의 맑음과 안개를 한 번씩 기록하고 정상 탈출하세요. 관측 버튼을 누른 시점의 현장 날씨가 기록됩니다. 두 날씨의 관측 순서는 자유입니다.',
     cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length}
 ];

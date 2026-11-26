@@ -88,6 +88,7 @@ function routeOption(profile,mode,objective) {
 function focusRouteOverview() {
   const panel=$('[data-route-compare], [data-route-status]');
   if (!panel) return;
+  markMapSection('#routes');
   panel.focus?.({preventScroll:true});
   panel.scrollIntoView?.({block:'start',inline:'nearest'});
 }
@@ -97,7 +98,7 @@ function routeComparison(from,mode,objective) {
     const profile=routeProfile(from,to);
     return profile?routeOption(profile,mode,objective):'';
   }).join('');
-  return '<section class="route-compare" data-route-compare tabindex="-1" data-from="'+from+'" aria-label="이동 경로 비교">'+
+  return '<section id="routes" class="route-compare" data-route-compare tabindex="-1" data-from="'+from+'" aria-label="이동 경로 비교">'+
     '<header><h2>이동 경로 비교</h2><span>'+esc(FIELD_ZONES[from].name)+' 출발</span></header>'+
     '<p class="route-caption">경로 전체 확률은 모든 칸을 이동할 때 조우나 보급이 각각 한 번 이상 발생할 확률입니다. 이동 시간은 교전과 보급 선택 대기를 제외합니다.</p>'+
     '<div class="route-grid">'+cards+'</div>'+journeyFailureMarkup()+'</section>';
@@ -124,7 +125,7 @@ function routeStatusPanel() {
     (field.action && field.action.end>=threshold?0:threshold);
   const situation=j.event==='contact'?'조우 대응 중':j.event==='supply'?'보급 선택 중':'이동 중';
   const waitNote=timing.remainingMs?'대응이 끝나면 남은 이동 '+routeSeconds(timing.remainingMs)+'를 이어갑니다.':'대응이 끝나면 목적지에 도착합니다.';
-  return '<section class="journey-track route-status" data-route-status tabindex="-1" data-from="'+j.from+'" data-to="'+j.to+
+  return '<section id="routes" class="journey-track route-status" data-route-status tabindex="-1" data-from="'+j.from+'" data-to="'+j.to+
     '" aria-label="진행 중인 경로"><header><h2>'+esc(timing.name)+'</h2><span>'+situation+'</span></header>'+
     '<div class="journey-endpoints"><b>'+esc(FIELD_ZONES[j.from].name)+'</b><span class="journey-dots">'+dots+
     '</span><b>'+esc(FIELD_ZONES[j.to].name)+'</b></div>'+

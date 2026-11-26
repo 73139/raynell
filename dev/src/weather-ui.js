@@ -35,7 +35,7 @@ function weatherBoard(selected){
     return '<article class="wx-card" '+weatherZoneAttributes(f)+'><h3>'+esc(zoneDef.name)+'</h3>'+
       '<div data-weather-readout>'+weatherReadout(f)+'</div>'+surveyCardHint(z,f)+weatherZoneButton(z,selected)+'</article>';
   }).join('');
-  return '<section class="wx-board" data-weather-board tabindex="-1" aria-label="권역별 기상 예보"><header>'+
+  return '<section id="weather" class="wx-board" data-weather-board tabindex="-1" aria-label="권역별 기상 예보"><header>'+
     '<h2>권역별 기상 예보</h2><span class="wx-clock">작전 시각 (KST) '+weatherTime(now,true)+'</span></header>'+
     '<p>장비·시설·부상 보정을 포함한 주변 탐색 시간입니다. 날씨는 2분마다 바뀝니다.</p>'+
     '<div class="wx-grid">'+cards+'</div>'+
@@ -57,6 +57,7 @@ function weatherBrief(mode,z){
 }
 function focusWeatherBoard(){
   if(page!=='map')navigatePage('map');
+  markMapSection('#weather');
   const board=$('[data-weather-board]');
   board?.focus?.({preventScroll:true});
   const content=$('.content');

@@ -25,9 +25,9 @@ function browser(profile={},initial='#clinic'){
   assert.ok(link('#clinic'));title(b,'의무실');
   for(const [hash,page] of [['#shop','trade'],['#map','map']]){
     assert.ok(link(hash));assert.equal(b.element('.content').dataset.view,page);assert.equal(location.href,base+hash);
-    b.click({page:'home'});assert.equal(location.href,base+hash);assert.ok(link('#clinic'));title(b,'의무실');
+    b.click({page:'home'});assert.equal(location.href,base);assert.ok(link('#clinic'));title(b,'의무실');
   }
-  assert.deepEqual(replacements,[base,base,base]);assert.deepEqual(clone(b.g.s),original);valid(b.g);
+  assert.deepEqual(replacements,[base,base,base,base,base]);assert.deepEqual(clone(b.g.s),original);valid(b.g);
 }
 {
   const seed=boot();seed.g.start();const live=clone(seed.g.s);

@@ -1,6 +1,7 @@
 // The same career, orders and facilities are used by the raid settlement and the terminal.
 let bunkerOrderSelected = 'scout';
 let bunkerOrderFilter = 'all';
+let fundingDossier = null;
 let bunkerHistoryRow = -1;
 let bunkerHistoryLimit = 5;
 const BUNKER_ROOMS = ['power','stash','workshop','rest'];
@@ -84,6 +85,11 @@ function bunkerOrderGoals(q){
   const count=state==='done'?q.target:active?Math.min(q.target,q.progress(q)):0;
   return [[q.goal,count,q.target],['정상 탈출',state==='done'?1:0,1]];
 }
+function fundingDossierReturn(order){
+  return fundingDossier?.order===order.id && !raid && sameObjective(fundingDossier.source,objectivePin)
+    ? '<button type="button" class="obj-pin" data-objective="procurement-funding-return">‹ 착공 예산으로 돌아가기</button>' : '';
+}
+
 function ordersView(){
   const states={new:'신규',active:'진행 중',done:'완료'};
   const visible=ORDERS.filter(q=>orderUnlocked(q) && (bunkerOrderFilter==='all'||bunkerOrderState(q)===bunkerOrderFilter));
@@ -92,7 +98,7 @@ function ordersView(){
   if(q){
     const state=bunkerOrderState(q),disabled=!writer||state==='done'||!!raid||(!!career.order&&state!=='active');
     const action=state==='done'?'보상 지급 완료':raid?'귀환 후 변경 가능':state==='active'?'수락 취소':career.order?'다른 의뢰 진행 중':'의뢰 수락';
-    detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>
+    detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>${fundingDossierReturn(q)}
     ${bunkerPicture(q.image,q.title+' 현장','bu-order-image')}
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
     <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>

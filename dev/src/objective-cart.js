@@ -1,5 +1,26 @@
 // Procurement uses the objective's eligible holdings and each merchant's live retail shelf.
 // Queued quantities represent future deliveries and never count as owned goods.
+// These site inspections can be completed without buying equipment or finding a particular item.
+function facilityFundingPlan(balance){
+  if(raid || !Number.isSafeInteger(balance) || balance>=0)return null;
+  const deficit=-balance;
+  const candidates=ORDERS.filter(order=>order.surveyFunding && orderUnlocked(order) && !career.done.includes(order.id))
+    .sort((a,b)=>a.cr-b.cr);
+  const active=candidates.find(order=>order.id===career.order);
+  if(career.order && !active)return null;
+  const plans=[];
+  for(const [index,first] of candidates.entries()){
+    if(active && first!==active)continue;
+    plans.push({orders:[first],reward:first.cr});
+    const others=active?candidates.filter(order=>order!==first):candidates.slice(index+1);
+    for(const second of others)plans.push({orders:[first,second],reward:first.cr+second.cr});
+  }
+  // Minimize the uncovered amount, then required sorties, then excess. Keep the cheaper first job on ties.
+  plans.sort((a,b)=>Math.max(0,deficit-a.reward)-Math.max(0,deficit-b.reward) ||
+    a.orders.length-b.orders.length || a.reward-b.reward);
+  const best=plans[0];
+  return best?{orders:best.orders.map(order=>order.id),reward:best.reward,remaining:deficit-best.reward}:null;
+}
 function objectiveCartView(){
   const objective=resolveObjective();
   const view={source:objective?.source||null,title:objective?.title||'',goals:objective?.goals||[],
@@ -41,6 +62,7 @@ function objectiveCartView(){
     const inCart=view.lines.reduce((sum,line)=>sum+Math.min(line.missing,line.inCart)*line.unit,0);
     const total=unavailable.length?null:materials+step.costCR;
     view.budget={materials,retail,direct,catalog,inCart,build:step.costCR,wallet,total,balance:total===null?null:wallet-total,unavailable};
+    view.budget.funding=facilityFundingPlan(view.budget.balance);
   }
   for(const shop of shelves){
     const lines=view.lines.filter(row=>row.trader===shop.trader&&row.missing>0);

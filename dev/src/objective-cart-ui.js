@@ -27,6 +27,20 @@ function procurementGroup(group,quote){
     '<div class="op-buttons">'+add+cartLink+'</div></section>';
 }
 
+function facilityFundingMarkup(plan){
+  if(!plan)return '';
+  const after=plan.remaining>0?'아직 '+money(plan.remaining)+' 부족':plan.remaining<0?'충당 후 '+money(-plan.remaining)+' 남음':'부족액 전액 충당';
+  const lines=plan.orders.map(id=>{
+    const order=ORDERS.find(row=>row.id===id);
+    const status=id===career.order?'진행 중':career.order?'진행 의뢰 완료 후':writer?'수락 가능':'플레이 탭에서 수락';
+    return '<li><button type="button" data-objective="procurement-order" data-id="'+esc(id)+'" aria-label="'+esc(order.title+' 의뢰 서류 보기')+'">'+esc(order.title)+' ›</button>'+
+      '<span>'+esc(status)+' · '+money(order.cr)+'</span></li>';
+  }).join('');
+  return '<details class="op-funding" data-order-funding><summary>의뢰로 자금 마련</summary>'+
+    '<p>준비 물품 없이 수행할 수 있습니다. 의뢰마다 별도로 수락·출격해 목표를 마치고 정상 탈출하면 한 번 지급됩니다.</p>'+
+    '<ul class="op-catalog-orders">'+lines+'</ul><strong data-funding-reward>예상 수당 '+money(plan.reward)+'</strong> · <span data-funding-balance>'+after+'</span></details>';
+}
+
 function facilityProcurementBudget(q){
   const budget=q.budget;
   if(!budget)return '';
@@ -47,7 +61,7 @@ function facilityProcurementBudget(q){
       row('구매·착공 합계','total',money(budget.total)))+row('현재 지갑','wallet',money(budget.wallet))+
     '</dl>'+orders+result+'<small>전체 상인 진열과 도감 직접 주문의 단가로 창고 부족분만 계산합니다. '+
     (budget.inCart?'담아 둔 목표 자재 '+money(budget.inCart)+' 포함. ':'')+
-    '초과 수량·다른 주문·선행 공사비 제외.</small></section>';
+    '초과 수량·다른 주문·선행 공사비 제외.</small>'+facilityFundingMarkup(budget.funding)+'</section>';
 }
 
 function procurementPanel(trader=''){
@@ -91,6 +105,24 @@ function procurementPanel(trader=''){
 function handleProcurementUI(d){
   const q=objectiveCartView();
   if(!q.source||!q.lines.length||raid)return;
+  if(d.objective==='procurement-funding-return'){
+    const origin=fundingDossier;
+    if(page!=='orders' || !origin || !sameObjective(q.source,origin.source))return;
+    procurementExpanded=procurementKey(q.source,origin.page==='trade'?marketUI.trader:'');
+    navigatePage(origin.page);
+    const details=$('[data-order-funding]');
+    if(details)details.open=true;
+    marketCartFocus($('[data-objective="procurement-order"][data-id="'+origin.order+'"]') ||
+      $('[data-order-funding] summary') || $('[data-procurement] .op-summary'));return;
+  }
+  if(d.objective==='procurement-order'){
+    if(!['map','prep','trade'].includes(page) || !q.budget?.funding?.orders.includes(d.id))return;
+    fundingDossier={page,source:q.source,order:d.id};
+    bunkerOrderSelected=d.id;bunkerOrderFilter='all';navigatePage('orders');
+    const heading=$('.bu-order-panel h2');
+    if(heading){heading.setAttribute('tabindex','-1');marketCartFocus(heading);}
+    return;
+  }
   if(d.objective==='procurement-catalog'){
     if(!q.budget?.catalog.some(line=>line.item===d.id))return;
     handleDB({db:'lookup',id:d.id});

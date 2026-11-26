@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.65</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.66</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -758,6 +758,10 @@
 .op-catalog-orders li{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 8px;padding:3px 0}
 .op-catalog-orders span{font-size:12px}
 #inside .op-catalog-orders button{min-height:40px;padding:5px 8px}
+
+.op-funding{margin-top:7px;border-top:1px solid #485241}.op-funding summary{display:list-item;box-sizing:border-box;min-height:44px;cursor:pointer;padding:11px 4px;font-weight:650}.op-funding summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.op-funding p{font-size:13px;line-height:1.5}.op-funding strong{font-variant-numeric:tabular-nums}
+#inside .op-funding button{min-height:44px;text-align:left}
 
 .pos-panel{min-width:0;margin:0 0 .85rem;padding:.75rem .9rem;border:1px solid #525e56;border-radius:3px;background:#192224;color:#e4e8db}
 .pos-panel>label,.pos-alias>label{display:flex;align-items:center;gap:.45rem;font-size:.94rem;font-weight:650;color:#e2e6d8;margin:0 0 .4rem}
@@ -2001,9 +2005,9 @@ function orderUnlocked(order, done=career.done) {
   return !order.after || done.includes(order.after);
 }
 const ORDERS = [
-  {id:'scout', image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
+  {id:'scout',surveyFunding:true, image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
     goal:'서로 다른 지역 방문', target:2, progress:()=>new Set(field.visited||[raid.zone]).size},
-  {id:'stores', image:'bunker-stash', issuer:'보급 담당관', title:'보급품 위치 확인', text:'한 레이드에서 컨테이너 두 개를 끝까지 수색하고 정상 탈출하세요.', cr:32000, xp:120,
+  {id:'stores',surveyFunding:true, image:'bunker-stash', issuer:'보급 담당관', title:'보급품 위치 확인', text:'한 레이드에서 컨테이너 두 개를 끝까지 수색하고 정상 탈출하세요.', cr:32000, xp:120,
     goal:'컨테이너 수색 완료', target:2, progress:()=>Object.values(field.boxes).filter(box=>box.complete).length},
   {id:'signals', image:'bunker-security', issuer:'현장 정비반', title:'고장 난 경비망', text:'한 레이드에서 경비 기체 한 대를 무력화하고 정상 탈출하세요.', cr:42000, xp:150,
     goal:'경비 기체 무력화', target:1, progress:()=>field.victories||0},
@@ -2015,12 +2019,12 @@ const ORDERS = [
     text:'마지막 의무품 수송이 끊긴 뒤, 두 곳에 남은 구급 붕대의 포장 상태를 확인하고 있습니다. 벙커 외곽 임시 진료소의 진료대 응급함은 열쇠 없이 열 수 있습니다. 폐쇄 검문소로 간다면 검역실 열쇠를 챙겨 검역 천막의 응급 케이스를 여세요. 둘 중 한 곳에서 찾은 구급 붕대 한 개를 가방에 넣어 정상 탈출하면 검사비를 지급합니다. 붕대는 본인 창고에 보관됩니다.',
     cr:28000, xp:100, goal:'지정된 두 응급함 중 한 곳에서 찾은 구급 붕대 휴대', target:1,
     recovery:{item:'bandage',sources:[{zone:0,landmark:7,boxOrdinal:0},{zone:1,landmark:1,boxOrdinal:0}]}, progress:countOrderRecovery},
-  {id:'handover-ledgers',image:'bunker-stash',issuer:'벙커 배차반',title:'사라진 화물 인계표',
+  {id:'handover-ledgers',surveyFunding:true,image:'bunker-stash',issuer:'벙커 배차반',title:'사라진 화물 인계표',
     text:'외곽 폐선 승강장을 떠난 화물이 검문소에서 인계됐는지 확인해 주세요. 한 출격에서 폐선 승강장의 화물표 서랍과 검역 천막의 검역 접수 서랍을 끝까지 수색한 뒤 정상 탈출하세요. 두 서랍 모두 열쇠 없이 열 수 있습니다. 어느 쪽을 먼저 가도 되고, 안이 비어 있어도 확인한 기록은 인정됩니다.',
     cr:34000,xp:115,goal:'지정 서랍 수색 완료',target:2,
     inspections:[{zone:0,landmark:8,boxOrdinal:1},{zone:1,landmark:1,boxOrdinal:1}],
     progress:order=>orderInspectionSites(order).filter(site=>site.complete).length},
-  {id:'pump-gauge',image:'bunker-water',issuer:'벙커 배수반',title:'빗물 펌프장 수위 판독',
+  {id:'pump-gauge',surveyFunding:true,image:'bunker-water',issuer:'벙커 배수반',title:'빗물 펌프장 수위 판독',
     text:'외곽 빗물 펌프장 발판에 수위계가 남아 있습니다. 눈금을 직접 읽고 기준선과 비교해 이번 출격의 수위를 기록하세요. 장비나 물자는 필요 없습니다. 정상 탈출하면 배수반에서 판독 수당을 지급합니다. 조기 귀환하면 다음 출격에서 새로 판독해야 합니다.',
     cr:12000,xp:55,goal:'기준선과 비교한 수위 기록',target:1,progress:pumpGaugeProgress},
   {id:'pump-pipe',after:'pump-gauge',image:'bunker-water',issuer:'벙커 배수반',title:'배수관 규격 대조',
@@ -2028,7 +2032,7 @@ const ORDERS = [
     cr:18000,xp:65,goal:'규격표 확인 및 PVC 배관 휴대',target:2,
     sample:{site:{zone:0,landmark:6,boxOrdinal:0},item:'rl_08_15'},
     progress:order=>sampleInspection(order,field,field.bag).count},
-  {id:'weather-survey',image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
+  {id:'weather-survey',surveyFunding:true,image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
     text:'안개가 수송로의 거리 표식을 얼마나 가리는지 맑은 날과 비교합니다. 지도에서 세 권역의 예보를 보고 첫 관측지를 고르세요. 외곽 경계 울타리, 검문소 대기 차량 행렬, 군수 창고 하역 도크가 관측 지점입니다. 한 출격에서 서로 다른 두 권역의 맑음과 안개를 한 번씩 기록하고 정상 탈출하세요. 관측 버튼을 누른 시점의 현장 날씨가 기록됩니다. 두 날씨의 관측 순서는 자유입니다.',
     cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length}
 ];
@@ -4116,7 +4120,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=65000; // Derived from the release title by build.py.
+const WRITER_BUILD=66000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4929,6 +4933,7 @@ inside.addEventListener('drop',e=>{
 // The same career, orders and facilities are used by the raid settlement and the terminal.
 let bunkerOrderSelected = 'scout';
 let bunkerOrderFilter = 'all';
+let fundingDossier = null;
 let bunkerHistoryRow = -1;
 let bunkerHistoryLimit = 5;
 const BUNKER_ROOMS = ['power','stash','workshop','rest'];
@@ -5012,6 +5017,11 @@ function bunkerOrderGoals(q){
   const count=state==='done'?q.target:active?Math.min(q.target,q.progress(q)):0;
   return [[q.goal,count,q.target],['정상 탈출',state==='done'?1:0,1]];
 }
+function fundingDossierReturn(order){
+  return fundingDossier?.order===order.id && !raid && sameObjective(fundingDossier.source,objectivePin)
+    ? '<button type="button" class="obj-pin" data-objective="procurement-funding-return">‹ 착공 예산으로 돌아가기</button>' : '';
+}
+
 function ordersView(){
   const states={new:'신규',active:'진행 중',done:'완료'};
   const visible=ORDERS.filter(q=>orderUnlocked(q) && (bunkerOrderFilter==='all'||bunkerOrderState(q)===bunkerOrderFilter));
@@ -5020,7 +5030,7 @@ function ordersView(){
   if(q){
     const state=bunkerOrderState(q),disabled=!writer||state==='done'||!!raid||(!!career.order&&state!=='active');
     const action=state==='done'?'보상 지급 완료':raid?'귀환 후 변경 가능':state==='active'?'수락 취소':career.order?'다른 의뢰 진행 중':'의뢰 수락';
-    detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>
+    detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>${fundingDossierReturn(q)}
     ${bunkerPicture(q.image,q.title+' 현장','bu-order-image')}
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
     <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
@@ -7010,7 +7020,7 @@ function marketCartPanel(trader,cart) {
     body=(cart.receipt?'':'<p class="mc-empty">진열대에서 물품과 수량을 고른 뒤 장바구니에 담으세요.</p>')+issue;
   }
   return '<section id="market-cart-panel" class="mc-panel tg-transaction" data-trade-pane="order" data-cart-panel data-trader="'+trader.id+'" tabindex="-1" aria-labelledby="mc-title">'+
-    '<header class="mc-head"><div><h2 id="mc-title">'+esc(trader.name)+' 장바구니</h2><span data-cart-count>'+
+    '<header id="cart" class="mc-head" tabindex="-1"><div><h2 id="mc-title">'+esc(trader.name)+' 장바구니</h2><span data-cart-count>'+
     cart.lines.length+'종 · '+cart.quantity+'개</span></div>'+browse+'</header>'+tradeCartGrid(trader.id,cart)+notice+body+recent+'</section>';
 }
 
@@ -7221,9 +7231,7 @@ function handleContractUI(d){
     if(!Object.hasOwn(questModes,d.mode))return;
     setTraderQuestMode(d.mode);
     const hash=d.mode==='standing'?'#quests':'#'+d.mode;
-    if(window.location?.hash!==hash){
-      try{window.history?.replaceState(null,'',hash)}catch{/* The tab remains usable in an offline or sandboxed frame. */}
-    }
+    replaceTerminalFragment(hash);
   }else if(d.contract==='trader'){
     if(!marketSelectTrader(d.id))return;
     clearRecurringFeedback();
@@ -8188,6 +8196,27 @@ function saleObjectiveImpact(quote) {
 
 // Procurement uses the objective's eligible holdings and each merchant's live retail shelf.
 // Queued quantities represent future deliveries and never count as owned goods.
+// These site inspections can be completed without buying equipment or finding a particular item.
+function facilityFundingPlan(balance){
+  if(raid || !Number.isSafeInteger(balance) || balance>=0)return null;
+  const deficit=-balance;
+  const candidates=ORDERS.filter(order=>order.surveyFunding && orderUnlocked(order) && !career.done.includes(order.id))
+    .sort((a,b)=>a.cr-b.cr);
+  const active=candidates.find(order=>order.id===career.order);
+  if(career.order && !active)return null;
+  const plans=[];
+  for(const [index,first] of candidates.entries()){
+    if(active && first!==active)continue;
+    plans.push({orders:[first],reward:first.cr});
+    const others=active?candidates.filter(order=>order!==first):candidates.slice(index+1);
+    for(const second of others)plans.push({orders:[first,second],reward:first.cr+second.cr});
+  }
+  // Minimize the uncovered amount, then required sorties, then excess. Keep the cheaper first job on ties.
+  plans.sort((a,b)=>Math.max(0,deficit-a.reward)-Math.max(0,deficit-b.reward) ||
+    a.orders.length-b.orders.length || a.reward-b.reward);
+  const best=plans[0];
+  return best?{orders:best.orders.map(order=>order.id),reward:best.reward,remaining:deficit-best.reward}:null;
+}
 function objectiveCartView(){
   const objective=resolveObjective();
   const view={source:objective?.source||null,title:objective?.title||'',goals:objective?.goals||[],
@@ -8229,6 +8258,7 @@ function objectiveCartView(){
     const inCart=view.lines.reduce((sum,line)=>sum+Math.min(line.missing,line.inCart)*line.unit,0);
     const total=unavailable.length?null:materials+step.costCR;
     view.budget={materials,retail,direct,catalog,inCart,build:step.costCR,wallet,total,balance:total===null?null:wallet-total,unavailable};
+    view.budget.funding=facilityFundingPlan(view.budget.balance);
   }
   for(const shop of shelves){
     const lines=view.lines.filter(row=>row.trader===shop.trader&&row.missing>0);
@@ -8574,6 +8604,20 @@ function procurementGroup(group,quote){
     '<div class="op-buttons">'+add+cartLink+'</div></section>';
 }
 
+function facilityFundingMarkup(plan){
+  if(!plan)return '';
+  const after=plan.remaining>0?'아직 '+money(plan.remaining)+' 부족':plan.remaining<0?'충당 후 '+money(-plan.remaining)+' 남음':'부족액 전액 충당';
+  const lines=plan.orders.map(id=>{
+    const order=ORDERS.find(row=>row.id===id);
+    const status=id===career.order?'진행 중':career.order?'진행 의뢰 완료 후':writer?'수락 가능':'플레이 탭에서 수락';
+    return '<li><button type="button" data-objective="procurement-order" data-id="'+esc(id)+'" aria-label="'+esc(order.title+' 의뢰 서류 보기')+'">'+esc(order.title)+' ›</button>'+
+      '<span>'+esc(status)+' · '+money(order.cr)+'</span></li>';
+  }).join('');
+  return '<details class="op-funding" data-order-funding><summary>의뢰로 자금 마련</summary>'+
+    '<p>준비 물품 없이 수행할 수 있습니다. 의뢰마다 별도로 수락·출격해 목표를 마치고 정상 탈출하면 한 번 지급됩니다.</p>'+
+    '<ul class="op-catalog-orders">'+lines+'</ul><strong data-funding-reward>예상 수당 '+money(plan.reward)+'</strong> · <span data-funding-balance>'+after+'</span></details>';
+}
+
 function facilityProcurementBudget(q){
   const budget=q.budget;
   if(!budget)return '';
@@ -8594,7 +8638,7 @@ function facilityProcurementBudget(q){
       row('구매·착공 합계','total',money(budget.total)))+row('현재 지갑','wallet',money(budget.wallet))+
     '</dl>'+orders+result+'<small>전체 상인 진열과 도감 직접 주문의 단가로 창고 부족분만 계산합니다. '+
     (budget.inCart?'담아 둔 목표 자재 '+money(budget.inCart)+' 포함. ':'')+
-    '초과 수량·다른 주문·선행 공사비 제외.</small></section>';
+    '초과 수량·다른 주문·선행 공사비 제외.</small>'+facilityFundingMarkup(budget.funding)+'</section>';
 }
 
 function procurementPanel(trader=''){
@@ -8638,6 +8682,24 @@ function procurementPanel(trader=''){
 function handleProcurementUI(d){
   const q=objectiveCartView();
   if(!q.source||!q.lines.length||raid)return;
+  if(d.objective==='procurement-funding-return'){
+    const origin=fundingDossier;
+    if(page!=='orders' || !origin || !sameObjective(q.source,origin.source))return;
+    procurementExpanded=procurementKey(q.source,origin.page==='trade'?marketUI.trader:'');
+    navigatePage(origin.page);
+    const details=$('[data-order-funding]');
+    if(details)details.open=true;
+    marketCartFocus($('[data-objective="procurement-order"][data-id="'+origin.order+'"]') ||
+      $('[data-order-funding] summary') || $('[data-procurement] .op-summary'));return;
+  }
+  if(d.objective==='procurement-order'){
+    if(!['map','prep','trade'].includes(page) || !q.budget?.funding?.orders.includes(d.id))return;
+    fundingDossier={page,source:q.source,order:d.id};
+    bunkerOrderSelected=d.id;bunkerOrderFilter='all';navigatePage('orders');
+    const heading=$('.bu-order-panel h2');
+    if(heading){heading.setAttribute('tabindex','-1');marketCartFocus(heading);}
+    return;
+  }
   if(d.objective==='procurement-catalog'){
     if(!q.budget?.catalog.some(line=>line.item===d.id))return;
     handleDB({db:'lookup',id:d.id});
@@ -9104,6 +9166,7 @@ function routeOption(profile,mode,objective) {
 function focusRouteOverview() {
   const panel=$('[data-route-compare], [data-route-status]');
   if (!panel) return;
+  markMapSection('#routes');
   panel.focus?.({preventScroll:true});
   panel.scrollIntoView?.({block:'start',inline:'nearest'});
 }
@@ -9113,7 +9176,7 @@ function routeComparison(from,mode,objective) {
     const profile=routeProfile(from,to);
     return profile?routeOption(profile,mode,objective):'';
   }).join('');
-  return '<section class="route-compare" data-route-compare tabindex="-1" data-from="'+from+'" aria-label="이동 경로 비교">'+
+  return '<section id="routes" class="route-compare" data-route-compare tabindex="-1" data-from="'+from+'" aria-label="이동 경로 비교">'+
     '<header><h2>이동 경로 비교</h2><span>'+esc(FIELD_ZONES[from].name)+' 출발</span></header>'+
     '<p class="route-caption">경로 전체 확률은 모든 칸을 이동할 때 조우나 보급이 각각 한 번 이상 발생할 확률입니다. 이동 시간은 교전과 보급 선택 대기를 제외합니다.</p>'+
     '<div class="route-grid">'+cards+'</div>'+journeyFailureMarkup()+'</section>';
@@ -9140,7 +9203,7 @@ function routeStatusPanel() {
     (field.action && field.action.end>=threshold?0:threshold);
   const situation=j.event==='contact'?'조우 대응 중':j.event==='supply'?'보급 선택 중':'이동 중';
   const waitNote=timing.remainingMs?'대응이 끝나면 남은 이동 '+routeSeconds(timing.remainingMs)+'를 이어갑니다.':'대응이 끝나면 목적지에 도착합니다.';
-  return '<section class="journey-track route-status" data-route-status tabindex="-1" data-from="'+j.from+'" data-to="'+j.to+
+  return '<section id="routes" class="journey-track route-status" data-route-status tabindex="-1" data-from="'+j.from+'" data-to="'+j.to+
     '" aria-label="진행 중인 경로"><header><h2>'+esc(timing.name)+'</h2><span>'+situation+'</span></header>'+
     '<div class="journey-endpoints"><b>'+esc(FIELD_ZONES[j.from].name)+'</b><span class="journey-dots">'+dots+
     '</span><b>'+esc(FIELD_ZONES[j.to].name)+'</b></div>'+
@@ -10691,7 +10754,7 @@ function weatherBoard(selected){
     return '<article class="wx-card" '+weatherZoneAttributes(f)+'><h3>'+esc(zoneDef.name)+'</h3>'+
       '<div data-weather-readout>'+weatherReadout(f)+'</div>'+surveyCardHint(z,f)+weatherZoneButton(z,selected)+'</article>';
   }).join('');
-  return '<section class="wx-board" data-weather-board tabindex="-1" aria-label="권역별 기상 예보"><header>'+
+  return '<section id="weather" class="wx-board" data-weather-board tabindex="-1" aria-label="권역별 기상 예보"><header>'+
     '<h2>권역별 기상 예보</h2><span class="wx-clock">작전 시각 (KST) '+weatherTime(now,true)+'</span></header>'+
     '<p>장비·시설·부상 보정을 포함한 주변 탐색 시간입니다. 날씨는 2분마다 바뀝니다.</p>'+
     '<div class="wx-grid">'+cards+'</div>'+
@@ -10713,6 +10776,7 @@ function weatherBrief(mode,z){
 }
 function focusWeatherBoard(){
   if(page!=='map')navigatePage('map');
+  markMapSection('#weather');
   const board=$('[data-weather-board]');
   board?.focus?.({preventScroll:true});
   const content=$('.content');
@@ -12914,7 +12978,8 @@ function renderKeep(){
 // Item catalog and selected facility.
 let catalogQuery='',catalogCategory='',catalogOffset=0,catalogSelected=null,facilitySelected='power',facilityTier=1;
 let craftCatalogOrigin=null;
-let clinicLinkActive=false;
+let activeTerminalLink=null,pendingTerminalLink=false;
+const terminalReturnViews=new WeakMap();
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>n.toLocaleString('ko-KR')+' CR';
 function itemSources(id){return ITEM_META[id].lootSources.map(t=>LOOT_TABLES[t].name).join(' · ')}
@@ -12969,8 +13034,10 @@ function render(){
     reconcile();
     inside.classList.toggle('large',large);
     document.documentElement.classList.toggle('reduce-motion',reduce);
-    if(clinicLinkActive && (page!=='facility'||facilitySelected!=='med'))releaseClinicLink();
+    if(activeTerminalLink && !terminalLinkMatches())releaseTerminalLink();
+    rememberTerminalView();
     if(page!=='catalog')craftCatalogOrigin=null;
+    if(page!=='orders')fundingDossier=null;
     inside.dataset.page=page;
     const content=$('.content'),current=contentView();
     const scrollAreas=current===lastContentView&&(page==='inventory'||page==='stash'||page==='trade')?captureStashScroll():null;
@@ -13007,27 +13074,66 @@ function render(){
   }finally{rendering=false}
 }
 
-function layout(){const w=innerWidth,h=innerHeight;const s=Math.min(w/864,h/1536);return {s,x:(w-864*s)/2,y:(h-1536*s)/2}}function transform(g){return `translate(${g.x}px,${g.y}px) scale(${g.s})`}function place(){if(!busy)phone.style.transform=transform(layout())}function zoom(){const g=layout(),s=Math.max(innerWidth/640,innerHeight/1312,g.s*1.35);return {s,x:innerWidth/2-433*s,y:innerHeight/2-735*s}}function motion(el,frames,ms){return el.animate(frames,{duration:reduce?0:ms,easing:'cubic-bezier(.3,.65,.2,1)',fill:'forwards'})}async function travel(direction,to=page){if(busy||power!=='on')return;busy=true;world.setAttribute('aria-busy','true');const entering=direction==='in';hits.inert=true;if(entering){lastButton=document.activeElement;page=to;save();render();const a=motion(phone,[{transform:transform(layout())},{transform:transform(zoom())}],760);const f=motion(fade,[{opacity:0,offset:0},{opacity:0,offset:.45},{opacity:1,offset:1}],760);await a.finished;inside.hidden=false;world.hidden=true;a.cancel();f.cancel();view='inside';const v=motion(inside,[{opacity:0},{opacity:1}],180);await v.finished;v.cancel();$('.content').focus({preventScroll:true});}else{inside.hidden=true;world.hidden=false;const a=motion(phone,[{transform:transform(zoom())},{transform:transform(layout())}],660);const f=motion(fade,[{opacity:1},{opacity:0}],500);await a.finished;a.cancel();f.cancel();view='photo';releaseClinicLink();phone.style.transform=transform(layout());(lastButton&&lastButton.isConnected?lastButton:$('#start')).focus({preventScroll:true});}busy=false;hits.inert=false;world.removeAttribute('aria-busy');place()}
+function layout(){const w=innerWidth,h=innerHeight;const s=Math.min(w/864,h/1536);return {s,x:(w-864*s)/2,y:(h-1536*s)/2}}function transform(g){return `translate(${g.x}px,${g.y}px) scale(${g.s})`}function place(){if(!busy)phone.style.transform=transform(layout())}function zoom(){const g=layout(),s=Math.max(innerWidth/640,innerHeight/1312,g.s*1.35);return {s,x:innerWidth/2-433*s,y:innerHeight/2-735*s}}function motion(el,frames,ms){return el.animate(frames,{duration:reduce?0:ms,easing:'cubic-bezier(.3,.65,.2,1)',fill:'forwards'})}async function travel(direction,to=page){if(busy||power!=='on')return;busy=true;world.setAttribute('aria-busy','true');const entering=direction==='in';hits.inert=true;if(entering){lastButton=document.activeElement;page=to;save();render();const a=motion(phone,[{transform:transform(layout())},{transform:transform(zoom())}],760);const f=motion(fade,[{opacity:0,offset:0},{opacity:0,offset:.45},{opacity:1,offset:1}],760);await a.finished;inside.hidden=false;world.hidden=true;a.cancel();f.cancel();view='inside';const v=motion(inside,[{opacity:0},{opacity:1}],180);await v.finished;v.cancel();$('.content').focus({preventScroll:true});}else{inside.hidden=true;world.hidden=false;const a=motion(phone,[{transform:transform(zoom())},{transform:transform(layout())}],660);const f=motion(fade,[{opacity:1},{opacity:0}],500);await a.finished;a.cancel();f.cancel();view='photo';releaseTerminalLink();phone.style.transform=transform(layout());(lastButton&&lastButton.isConnected?lastButton:$('#start')).focus({preventScroll:true});}busy=false;hits.inert=false;world.removeAttribute('aria-busy');place();if(pendingTerminalLink){pendingTerminalLink=false;openTerminalLink()}else rememberTerminalView()}
 function setPower(){document.documentElement.classList.toggle('reduce-motion',reduce);hits.hidden=power!=='on';layer.hidden=power==='on';if(power==='off'){layer.innerHTML='';$('#sidekey').setAttribute('aria-label','측면 전원 켜기')}else if(power==='boot'){layer.innerHTML='<div><p>RL-TC01 / SYSTEM BOOT</p><h1>RUSTLINE</h1><div class="boot-line"><i></i></div><p>단말기 초기화 중</p></div>'}else{$('#sidekey').setAttribute('aria-label','측면 전원 버튼');$('#start').focus({preventScroll:true})}$('#announce').textContent=power==='on'?'단말기 켜짐':power==='off'?'단말기 꺼짐':'단말기 부팅 중'}function powerToggle(){if(busy)return;clearTimeout(bootTimer);save();if(power==='on'||power==='boot'){power='off';setPower()}else{power='boot';setPower();bootTimer=setTimeout(()=>{power='on';setPower()},reduce?0:850)}}
 world.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;if(b.id==='sidekey'||b.hasAttribute('data-wake')||b.dataset.launch==='power')return powerToggle();const key=b.dataset.launch;if(key==='start')travel('in','home');else if(key==='bunker')travel('in','bunker');else if(key==='continue')travel('in',page);else if(key==='settings')travel('in','settings')});inside.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;const d=b.dataset;if(d.injury)return handleInjuryUI(d);if(d.maintenance)return handleMaintenanceUI(d);if(d.lootplan)return handleLootPlanUI(d);if(d.survivor)return handleSurvivorUI(d);if(d.finale)return handleFinaleUI(d);if(d.campaign)return handleCampaignUI(d);if(d.preset)return handlePresetUI(d);if(d.guide)return handleOnboardingUI(d);if(d.pos)return handlePossessionsUI(d);if(d.objective)return handleObjectiveUI(d);if(d.contract)return handleContractUI(d);if(d.bh)return handleBarterHuntUI(d);if(d.tg)return handleTradeGridUI(d);if(d.cart)return handleMarketCartUI(d);if(d.market)return handleMarketUI(d);if(d.loadout)return handleLoadoutUI(d);if(d.bui)return handleBunkerUI(d);if(d.cui)return handleCommandUI(d);if(d.gear)return handleEquipment(d);if(d.order)return changeOrder(d.order);if(d.hideout)return handleHideout(d);if(d.supply)return buyMaterial(d.supply);if(d.backup==='export')return exportSave();if(d.backup==='import')return $('#restore-file').click();if(d.db)return handleDB(d);if(d.raid)return handleRaidAction(d.raid,d);if(d.field)return handleField(d);if(d.pick){if(!isActive())return;if(picked?.uid===d.pick&&picked.side===d.side)return;picked={uid:d.pick,side:d.side,rot:false};notice='';renderKeep();return}if(d.cell==='bag'&&picked){transfer(Number(d.x),Number(d.y));return}if(d.action==='shutdown'){save();inside.hidden=true;world.hidden=false;view='photo';place();powerToggle();return}if(d.action==='return')return travel('out');if(d.action==='lock'){setLock(true);return}if(d.action==='unlock'){setLock(false);return}if(d.page&&pages.includes(d.page))return navigatePage(d.page);if(d.zone!==undefined&&!raid&&Number.isInteger(Number(d.zone))&&FIELD_ZONES[Number(d.zone)]){zone=Number(d.zone);save();render();$(`[data-zone="${zone}"]`).focus()}if(d.item!==undefined){item=Number(d.item);save();render();$(`[data-item="${item}"]`).focus()}if(d.setting){if(d.setting==='large')large=!large;else reduce=!reduce;save();render();$(`[data-setting="${d.setting}"]`).focus()}});inside.addEventListener('dblclick',e=>{const b=e.target.closest('[data-pick][data-side=loot]');if(b&&isActive()&&!field.contact){picked=fieldTileSelection(b);transfer()}});inside.addEventListener('dragstart',e=>{const b=e.target.closest('[data-pick]');if(!b||!isActive())return;dragged=fieldTileSelection(b);e.dataTransfer.setData('text/plain',b.dataset.pick);e.dataTransfer.effectAllowed='move'});inside.addEventListener('dragover',e=>{if(dragged&&e.target.closest('[data-grid=bag]')){e.preventDefault();e.dataTransfer.dropEffect='move'}});inside.addEventListener('drop',e=>{const g=e.target.closest('[data-grid=bag]');if(!g||!dragged)return;e.preventDefault();const r=g.getBoundingClientRect(),x=Math.floor((e.clientX-r.left-1)/(g.clientWidth/raidBagSize()[0])),y=Math.floor((e.clientY-r.top-1)/(g.clientHeight/raidBagSize()[1]));picked=dragged;dragged=null;transfer(x,y)});inside.addEventListener('dragend',()=>{dragged=null});function setLock(on){$('#lock').hidden=!on;for(const sel of ['.topbar','.body','.foot'])$(sel).inert=on;if(on)$('#lock button').focus();else $('.content').focus()}document.addEventListener('keydown',e=>{if(e.key==='Escape'&&view==='inside'&&!busy){if(!$('#lock').hidden){setLock(false)}else travel('out')}});setInterval(updateRaidClock,250);document.addEventListener('visibilitychange',updateRaidClock);window.addEventListener('focus',updateRaidClock);window.addEventListener('storage',e=>{if(e.key===SAVE_KEY||(!writer&&revision===0&&PREVIOUS_SAVE_KEYS.includes(e.key))||e.key===null){loadRaid();picked=null;updateRaidClock();if(view==='inside')renderKeep()}});startSession();
-function releaseClinicLink(){
-  if(!clinicLinkActive)return;
-  clinicLinkActive=false;
-  if(window.location?.hash!=='#clinic')return;
+function terminalLinkTarget(hash){
+  if(hash==='#guide')return onboardingView().mode==='active'?(raid?'raid':'home'):'settings';
+  return {'#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt',
+    '#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map',
+    '#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];
+}
+function terminalLinkMatches(){
+  const {hash,target}=activeTerminalLink;
+  if(page!==target)return false;
+  if(hash==='#clinic')return facilitySelected==='med';
+  if(hash==='#guide')return target===terminalLinkTarget(hash);
+  if(hash==='#cart')return marketUI.mode==='buy'&&marketUI.trader===marketCartSeller();
+  if(target==='traderQuests')return contractPanel.mode===(hash==='#quests'?'standing':hash.slice(1));
+  return true;
+}
+function replaceTerminalFragment(hash){
+  const {history,location}=window;
+  if(!history?.replaceState || !location)return;
   try{
-    const {history,location}=window;
-    history?.replaceState(history.state,'',location.href.split('#')[0]);
-  }catch{/* Navigation still works in frames with restricted history access. */}
+    if(location.hash!==hash)history.replaceState(history.state,'',location.href.split('#')[0]+hash);
+    activeTerminalLink=hash?{hash,target:terminalLinkTarget(hash)}:null;
+  }catch{/* Embedded terminals may have restricted access to browser history. */}
+}
+function releaseTerminalLink(){
+  const previous=activeTerminalLink;
+  activeTerminalLink=null;
+  if(previous && window.location?.hash===previous.hash)replaceTerminalFragment('');
+}
+function markMapSection(hash){
+  if(page==='map' && activeTerminalLink?.target==='map' && activeTerminalLink.hash!==hash)replaceTerminalFragment(hash);
+}
+// Native entries identify a hashless return destination without changing host history.state.
+function rememberTerminalView(){
+  const entry=window.navigation?.currentEntry;
+  if(!entry||window.location?.hash!=='')return;
+  terminalReturnViews.set(entry,{view,page,facility:facilitySelected,tier:facilityTier,questMode:contractPanel.mode});
 }
 function openTerminalLink(){
   if(updateRequired)return;
-  const hash=window.location?.hash;
-  const guideTarget = hash === '#guide' && onboardingView().mode === 'active' ? (raid ? 'raid' : 'home') : 'settings';
-  const target={'#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt','#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map','#guide':guideTarget,'#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];
-  if(!target||busy)return;
-  clinicLinkActive=hash==='#clinic';
+  if(busy){pendingTerminalLink=true;return;}
+  const hash=window.location?.hash,entry=window.navigation?.currentEntry;
+  const previous=!hash&&entry?terminalReturnViews.get(entry):null;
+  const target=previous?.page||terminalLinkTarget(hash);
+  if(!target)return;
+  activeTerminalLink=previous?null:{hash,target};
+  if(previous?.view==='photo'){
+    if(view==='inside')travel('out');
+    return;
+  }
   if(view==='photo'){
     world.hidden=true;inside.hidden=false;view='inside';
+  }
+  if(previous){
+    if(target==='facility'){openBunkerFacility(previous.facility,previous.tier);return;}
+    if(target==='traderQuests')setTraderQuestMode(previous.questMode);
+    navigatePage(target);
+    return;
   }
   if(hash==='#clinic'){
     openBunkerFacility('med');$('.content').focus({preventScroll:true});return;

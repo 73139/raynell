@@ -135,9 +135,7 @@ function handleContractUI(d){
     if(!Object.hasOwn(questModes,d.mode))return;
     setTraderQuestMode(d.mode);
     const hash=d.mode==='standing'?'#quests':'#'+d.mode;
-    if(window.location?.hash!==hash){
-      try{window.history?.replaceState(null,'',hash)}catch{/* The tab remains usable in an offline or sandboxed frame. */}
-    }
+    replaceTerminalFragment(hash);
   }else if(d.contract==='trader'){
     if(!marketSelectTrader(d.id))return;
     clearRecurringFeedback();

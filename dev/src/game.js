@@ -351,7 +351,8 @@ function renderKeep(){
 // Item catalog and selected facility.
 let catalogQuery='',catalogCategory='',catalogOffset=0,catalogSelected=null,facilitySelected='power',facilityTier=1;
 let craftCatalogOrigin=null;
-let clinicLinkActive=false;
+let activeTerminalLink=null,pendingTerminalLink=false;
+const terminalReturnViews=new WeakMap();
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>n.toLocaleString('ko-KR')+' CR';
 function itemSources(id){return ITEM_META[id].lootSources.map(t=>LOOT_TABLES[t].name).join(' · ')}
@@ -406,8 +407,10 @@ function render(){
     reconcile();
     inside.classList.toggle('large',large);
     document.documentElement.classList.toggle('reduce-motion',reduce);
-    if(clinicLinkActive && (page!=='facility'||facilitySelected!=='med'))releaseClinicLink();
+    if(activeTerminalLink && !terminalLinkMatches())releaseTerminalLink();
+    rememberTerminalView();
     if(page!=='catalog')craftCatalogOrigin=null;
+    if(page!=='orders')fundingDossier=null;
     inside.dataset.page=page;
     const content=$('.content'),current=contentView();
     const scrollAreas=current===lastContentView&&(page==='inventory'||page==='stash'||page==='trade')?captureStashScroll():null;
@@ -444,27 +447,66 @@ function render(){
   }finally{rendering=false}
 }
 
-function layout(){const w=innerWidth,h=innerHeight;const s=Math.min(w/864,h/1536);return {s,x:(w-864*s)/2,y:(h-1536*s)/2}}function transform(g){return `translate(${g.x}px,${g.y}px) scale(${g.s})`}function place(){if(!busy)phone.style.transform=transform(layout())}function zoom(){const g=layout(),s=Math.max(innerWidth/640,innerHeight/1312,g.s*1.35);return {s,x:innerWidth/2-433*s,y:innerHeight/2-735*s}}function motion(el,frames,ms){return el.animate(frames,{duration:reduce?0:ms,easing:'cubic-bezier(.3,.65,.2,1)',fill:'forwards'})}async function travel(direction,to=page){if(busy||power!=='on')return;busy=true;world.setAttribute('aria-busy','true');const entering=direction==='in';hits.inert=true;if(entering){lastButton=document.activeElement;page=to;save();render();const a=motion(phone,[{transform:transform(layout())},{transform:transform(zoom())}],760);const f=motion(fade,[{opacity:0,offset:0},{opacity:0,offset:.45},{opacity:1,offset:1}],760);await a.finished;inside.hidden=false;world.hidden=true;a.cancel();f.cancel();view='inside';const v=motion(inside,[{opacity:0},{opacity:1}],180);await v.finished;v.cancel();$('.content').focus({preventScroll:true});}else{inside.hidden=true;world.hidden=false;const a=motion(phone,[{transform:transform(zoom())},{transform:transform(layout())}],660);const f=motion(fade,[{opacity:1},{opacity:0}],500);await a.finished;a.cancel();f.cancel();view='photo';releaseClinicLink();phone.style.transform=transform(layout());(lastButton&&lastButton.isConnected?lastButton:$('#start')).focus({preventScroll:true});}busy=false;hits.inert=false;world.removeAttribute('aria-busy');place()}
+function layout(){const w=innerWidth,h=innerHeight;const s=Math.min(w/864,h/1536);return {s,x:(w-864*s)/2,y:(h-1536*s)/2}}function transform(g){return `translate(${g.x}px,${g.y}px) scale(${g.s})`}function place(){if(!busy)phone.style.transform=transform(layout())}function zoom(){const g=layout(),s=Math.max(innerWidth/640,innerHeight/1312,g.s*1.35);return {s,x:innerWidth/2-433*s,y:innerHeight/2-735*s}}function motion(el,frames,ms){return el.animate(frames,{duration:reduce?0:ms,easing:'cubic-bezier(.3,.65,.2,1)',fill:'forwards'})}async function travel(direction,to=page){if(busy||power!=='on')return;busy=true;world.setAttribute('aria-busy','true');const entering=direction==='in';hits.inert=true;if(entering){lastButton=document.activeElement;page=to;save();render();const a=motion(phone,[{transform:transform(layout())},{transform:transform(zoom())}],760);const f=motion(fade,[{opacity:0,offset:0},{opacity:0,offset:.45},{opacity:1,offset:1}],760);await a.finished;inside.hidden=false;world.hidden=true;a.cancel();f.cancel();view='inside';const v=motion(inside,[{opacity:0},{opacity:1}],180);await v.finished;v.cancel();$('.content').focus({preventScroll:true});}else{inside.hidden=true;world.hidden=false;const a=motion(phone,[{transform:transform(zoom())},{transform:transform(layout())}],660);const f=motion(fade,[{opacity:1},{opacity:0}],500);await a.finished;a.cancel();f.cancel();view='photo';releaseTerminalLink();phone.style.transform=transform(layout());(lastButton&&lastButton.isConnected?lastButton:$('#start')).focus({preventScroll:true});}busy=false;hits.inert=false;world.removeAttribute('aria-busy');place();if(pendingTerminalLink){pendingTerminalLink=false;openTerminalLink()}else rememberTerminalView()}
 function setPower(){document.documentElement.classList.toggle('reduce-motion',reduce);hits.hidden=power!=='on';layer.hidden=power==='on';if(power==='off'){layer.innerHTML='';$('#sidekey').setAttribute('aria-label','측면 전원 켜기')}else if(power==='boot'){layer.innerHTML='<div><p>RL-TC01 / SYSTEM BOOT</p><h1>RUSTLINE</h1><div class="boot-line"><i></i></div><p>단말기 초기화 중</p></div>'}else{$('#sidekey').setAttribute('aria-label','측면 전원 버튼');$('#start').focus({preventScroll:true})}$('#announce').textContent=power==='on'?'단말기 켜짐':power==='off'?'단말기 꺼짐':'단말기 부팅 중'}function powerToggle(){if(busy)return;clearTimeout(bootTimer);save();if(power==='on'||power==='boot'){power='off';setPower()}else{power='boot';setPower();bootTimer=setTimeout(()=>{power='on';setPower()},reduce?0:850)}}
 world.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;if(b.id==='sidekey'||b.hasAttribute('data-wake')||b.dataset.launch==='power')return powerToggle();const key=b.dataset.launch;if(key==='start')travel('in','home');else if(key==='bunker')travel('in','bunker');else if(key==='continue')travel('in',page);else if(key==='settings')travel('in','settings')});inside.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||busy)return;const d=b.dataset;if(d.injury)return handleInjuryUI(d);if(d.maintenance)return handleMaintenanceUI(d);if(d.lootplan)return handleLootPlanUI(d);if(d.survivor)return handleSurvivorUI(d);if(d.finale)return handleFinaleUI(d);if(d.campaign)return handleCampaignUI(d);if(d.preset)return handlePresetUI(d);if(d.guide)return handleOnboardingUI(d);if(d.pos)return handlePossessionsUI(d);if(d.objective)return handleObjectiveUI(d);if(d.contract)return handleContractUI(d);if(d.bh)return handleBarterHuntUI(d);if(d.tg)return handleTradeGridUI(d);if(d.cart)return handleMarketCartUI(d);if(d.market)return handleMarketUI(d);if(d.loadout)return handleLoadoutUI(d);if(d.bui)return handleBunkerUI(d);if(d.cui)return handleCommandUI(d);if(d.gear)return handleEquipment(d);if(d.order)return changeOrder(d.order);if(d.hideout)return handleHideout(d);if(d.supply)return buyMaterial(d.supply);if(d.backup==='export')return exportSave();if(d.backup==='import')return $('#restore-file').click();if(d.db)return handleDB(d);if(d.raid)return handleRaidAction(d.raid,d);if(d.field)return handleField(d);if(d.pick){if(!isActive())return;if(picked?.uid===d.pick&&picked.side===d.side)return;picked={uid:d.pick,side:d.side,rot:false};notice='';renderKeep();return}if(d.cell==='bag'&&picked){transfer(Number(d.x),Number(d.y));return}if(d.action==='shutdown'){save();inside.hidden=true;world.hidden=false;view='photo';place();powerToggle();return}if(d.action==='return')return travel('out');if(d.action==='lock'){setLock(true);return}if(d.action==='unlock'){setLock(false);return}if(d.page&&pages.includes(d.page))return navigatePage(d.page);if(d.zone!==undefined&&!raid&&Number.isInteger(Number(d.zone))&&FIELD_ZONES[Number(d.zone)]){zone=Number(d.zone);save();render();$(`[data-zone="${zone}"]`).focus()}if(d.item!==undefined){item=Number(d.item);save();render();$(`[data-item="${item}"]`).focus()}if(d.setting){if(d.setting==='large')large=!large;else reduce=!reduce;save();render();$(`[data-setting="${d.setting}"]`).focus()}});inside.addEventListener('dblclick',e=>{const b=e.target.closest('[data-pick][data-side=loot]');if(b&&isActive()&&!field.contact){picked=fieldTileSelection(b);transfer()}});inside.addEventListener('dragstart',e=>{const b=e.target.closest('[data-pick]');if(!b||!isActive())return;dragged=fieldTileSelection(b);e.dataTransfer.setData('text/plain',b.dataset.pick);e.dataTransfer.effectAllowed='move'});inside.addEventListener('dragover',e=>{if(dragged&&e.target.closest('[data-grid=bag]')){e.preventDefault();e.dataTransfer.dropEffect='move'}});inside.addEventListener('drop',e=>{const g=e.target.closest('[data-grid=bag]');if(!g||!dragged)return;e.preventDefault();const r=g.getBoundingClientRect(),x=Math.floor((e.clientX-r.left-1)/(g.clientWidth/raidBagSize()[0])),y=Math.floor((e.clientY-r.top-1)/(g.clientHeight/raidBagSize()[1]));picked=dragged;dragged=null;transfer(x,y)});inside.addEventListener('dragend',()=>{dragged=null});function setLock(on){$('#lock').hidden=!on;for(const sel of ['.topbar','.body','.foot'])$(sel).inert=on;if(on)$('#lock button').focus();else $('.content').focus()}document.addEventListener('keydown',e=>{if(e.key==='Escape'&&view==='inside'&&!busy){if(!$('#lock').hidden){setLock(false)}else travel('out')}});setInterval(updateRaidClock,250);document.addEventListener('visibilitychange',updateRaidClock);window.addEventListener('focus',updateRaidClock);window.addEventListener('storage',e=>{if(e.key===SAVE_KEY||(!writer&&revision===0&&PREVIOUS_SAVE_KEYS.includes(e.key))||e.key===null){loadRaid();picked=null;updateRaidClock();if(view==='inside')renderKeep()}});startSession();
-function releaseClinicLink(){
-  if(!clinicLinkActive)return;
-  clinicLinkActive=false;
-  if(window.location?.hash!=='#clinic')return;
+function terminalLinkTarget(hash){
+  if(hash==='#guide')return onboardingView().mode==='active'?(raid?'raid':'home'):'settings';
+  return {'#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt',
+    '#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map',
+    '#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];
+}
+function terminalLinkMatches(){
+  const {hash,target}=activeTerminalLink;
+  if(page!==target)return false;
+  if(hash==='#clinic')return facilitySelected==='med';
+  if(hash==='#guide')return target===terminalLinkTarget(hash);
+  if(hash==='#cart')return marketUI.mode==='buy'&&marketUI.trader===marketCartSeller();
+  if(target==='traderQuests')return contractPanel.mode===(hash==='#quests'?'standing':hash.slice(1));
+  return true;
+}
+function replaceTerminalFragment(hash){
+  const {history,location}=window;
+  if(!history?.replaceState || !location)return;
   try{
-    const {history,location}=window;
-    history?.replaceState(history.state,'',location.href.split('#')[0]);
-  }catch{/* Navigation still works in frames with restricted history access. */}
+    if(location.hash!==hash)history.replaceState(history.state,'',location.href.split('#')[0]+hash);
+    activeTerminalLink=hash?{hash,target:terminalLinkTarget(hash)}:null;
+  }catch{/* Embedded terminals may have restricted access to browser history. */}
+}
+function releaseTerminalLink(){
+  const previous=activeTerminalLink;
+  activeTerminalLink=null;
+  if(previous && window.location?.hash===previous.hash)replaceTerminalFragment('');
+}
+function markMapSection(hash){
+  if(page==='map' && activeTerminalLink?.target==='map' && activeTerminalLink.hash!==hash)replaceTerminalFragment(hash);
+}
+// Native entries identify a hashless return destination without changing host history.state.
+function rememberTerminalView(){
+  const entry=window.navigation?.currentEntry;
+  if(!entry||window.location?.hash!=='')return;
+  terminalReturnViews.set(entry,{view,page,facility:facilitySelected,tier:facilityTier,questMode:contractPanel.mode});
 }
 function openTerminalLink(){
   if(updateRequired)return;
-  const hash=window.location?.hash;
-  const guideTarget = hash === '#guide' && onboardingView().mode === 'active' ? (raid ? 'raid' : 'home') : 'settings';
-  const target={'#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt','#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map','#guide':guideTarget,'#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];
-  if(!target||busy)return;
-  clinicLinkActive=hash==='#clinic';
+  if(busy){pendingTerminalLink=true;return;}
+  const hash=window.location?.hash,entry=window.navigation?.currentEntry;
+  const previous=!hash&&entry?terminalReturnViews.get(entry):null;
+  const target=previous?.page||terminalLinkTarget(hash);
+  if(!target)return;
+  activeTerminalLink=previous?null:{hash,target};
+  if(previous?.view==='photo'){
+    if(view==='inside')travel('out');
+    return;
+  }
   if(view==='photo'){
     world.hidden=true;inside.hidden=false;view='inside';
+  }
+  if(previous){
+    if(target==='facility'){openBunkerFacility(previous.facility,previous.tier);return;}
+    if(target==='traderQuests')setTraderQuestMode(previous.questMode);
+    navigatePage(target);
+    return;
   }
   if(hash==='#clinic'){
     openBunkerFacility('med');$('.content').focus({preventScroll:true});return;

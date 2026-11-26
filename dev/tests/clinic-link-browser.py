@@ -92,7 +92,7 @@ def scenario(browser, width):
         expect(page.locator('[data-market="trader"]:visible').first).to_be_visible()
         click('.nav [data-page="bunker"]')
         expect(page.locator(".bu-deck")).to_be_visible()
-        assert page.url == URL + "#shop"
+        assert page.url == URL
         visit("map")
         expect(page.locator(".command-station:visible").first).to_be_visible()
         click('.command-station[data-index="0"]')

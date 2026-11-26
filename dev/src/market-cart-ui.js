@@ -58,7 +58,7 @@ function marketCartPanel(trader,cart) {
     body=(cart.receipt?'':'<p class="mc-empty">진열대에서 물품과 수량을 고른 뒤 장바구니에 담으세요.</p>')+issue;
   }
   return '<section id="market-cart-panel" class="mc-panel tg-transaction" data-trade-pane="order" data-cart-panel data-trader="'+trader.id+'" tabindex="-1" aria-labelledby="mc-title">'+
-    '<header class="mc-head"><div><h2 id="mc-title">'+esc(trader.name)+' 장바구니</h2><span data-cart-count>'+
+    '<header id="cart" class="mc-head" tabindex="-1"><div><h2 id="mc-title">'+esc(trader.name)+' 장바구니</h2><span data-cart-count>'+
     cart.lines.length+'종 · '+cart.quantity+'개</span></div>'+browse+'</header>'+tradeCartGrid(trader.id,cart)+notice+body+recent+'</section>';
 }
 

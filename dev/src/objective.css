@@ -56,3 +56,7 @@
 .op-catalog-orders li{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px 8px;padding:3px 0}
 .op-catalog-orders span{font-size:12px}
 #inside .op-catalog-orders button{min-height:40px;padding:5px 8px}
+
+.op-funding{margin-top:7px;border-top:1px solid #485241}.op-funding summary{display:list-item;box-sizing:border-box;min-height:44px;cursor:pointer;padding:11px 4px;font-weight:650}.op-funding summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.op-funding p{font-size:13px;line-height:1.5}.op-funding strong{font-variant-numeric:tabular-nums}
+#inside .op-funding button{min-height:44px;text-align:left}
