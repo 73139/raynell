@@ -18,4 +18,5 @@
 
 .pump-gauge{margin:10px 0;padding:10px 12px;border-left:2px solid #a2b49b;background:#232d28}
 .pump-gauge h3,.pump-gauge p{margin:3px 0 6px}.pump-gauge [role=status]:empty{display:none}
+.pump-gauge [data-db="relief-material"]{min-height:44px;margin:2px 0}
 .pump-controls{display:flex;gap:6px;flex-wrap:wrap}.pump-controls button{min-height:44px}

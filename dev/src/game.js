@@ -397,8 +397,8 @@ const money=n=>n.toLocaleString('ko-KR')+' CR';
 function itemSources(id){return ITEM_META[id].lootSources.map(t=>LOOT_TABLES[t].name).join(' · ')}
 function catalogRows(){return Object.entries(GOODS).filter(([id,g])=>(!catalogCategory||g[5]===catalogCategory)&&(!catalogQuery||[id,g[0],g[5],ITEM_META[id].usage,itemSources(id)].join(' ').toLowerCase().includes(catalogQuery.toLowerCase()))).sort((a,b)=>a[1][0].localeCompare(b[1][0],'ko'))}
 function catalogResults(){const rows=catalogRows(),max=Math.max(0,Math.floor((rows.length-1)/24)*24);catalogOffset=Math.min(catalogOffset,max);return `<div class="db-summary"><span>${rows.length}종 · ${rows.length?catalogOffset+1:0}–${Math.min(catalogOffset+24,rows.length)}</span><button data-db="prev" ${catalogOffset===0?'disabled':''}>이전</button><button data-db="next" ${catalogOffset+24>=rows.length?'disabled':''}>다음</button></div><div class="db-list">${rows.slice(catalogOffset,catalogOffset+24).map(([id,g])=>`<button data-db="item" data-id="${id}" aria-pressed="${catalogSelected===id}">${ico(g[4])}<span><b>${g[0]}</b><small>${g[5]} · ${g[1]}×${g[2]} · ${g[3]} kg</small></span><span>${money(g[6])}</span></button>`).join('')||'<p>검색 결과가 없습니다.</p>'}</div>`}
-function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:''}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${catalogFieldDisclosure(id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
-function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
+function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:reliefCatalogBack()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
+function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
 function facilityDetail(){return bunkerFacilityDetail()}
 function bunkerPage(){return bunkerHubPage()}
 function handleDB(d){
@@ -409,6 +409,16 @@ function handleDB(d){
     procurementNote='';catalogSelected=d.id;$('#db-detail').innerHTML=catalogDetail();$('#db-results').innerHTML=catalogResults();
     if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});return;
   }
+  if(d.db==='relief-return'){
+    if(!['catalog','lootplan'].includes(page)||!reliefCatalogOrigin||!orderUnlocked(reliefOrder()))return;
+    const {kind,item,filter}=reliefCatalogOrigin;
+    bunkerOrderSelected=RELIEF_ORDER;
+    bunkerOrderFilter=filter==='all'||filter===bunkerOrderState(reliefOrder())?filter:'all';
+    navigatePage('orders');
+    const link=$(`[data-db="relief-material"][data-kind="${kind}"][data-id="${item}"]`)||$('[data-bui="order"][data-id="external-relief"]');
+    link?.focus?.({preventScroll:true});link?.scrollIntoView?.({block:'nearest'});
+    return;
+  }
   if(d.db==='craft-return'){
     if(page!=='catalog'||!craftCatalogOrigin)return;
     const {facility,tier,recipe,item}=craftCatalogOrigin;
@@ -417,7 +427,12 @@ function handleDB(d){
     if(input){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest'});}
     return;
   }
-  if((d.db==='lookup'||d.db==='craft-ingredient')&&Object.hasOwn(GOODS,d.id)){
+  if(['lookup','craft-ingredient','relief-material'].includes(d.db)&&Object.hasOwn(GOODS,d.id)){
+    if(d.db==='relief-material'){
+      if(page!=='orders'||bunkerOrderSelection().q?.id!==RELIEF_ORDER||career.reliefReceipt||field.reliefDelivery||
+         !Object.hasOwn(RELIEF_REQUESTS,d.kind)||!Object.hasOwn(RELIEF_REQUESTS[d.kind].items,d.id))return;
+      reliefCatalogOrigin={kind:d.kind,item:d.id,filter:bunkerOrderFilter};
+    }else reliefCatalogOrigin=null;
     if(d.db==='craft-ingredient'){
       const recipe=d.recipe===WARD_RECIPE?WARD_RECIPE:Number(d.recipe);
       if(page!=='facility'||d.facility!==facilitySelected||!facilityRecipeAvailable(d.facility,recipe))return;
@@ -427,8 +442,8 @@ function handleDB(d){
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
     page='catalog';save();render();
-    if(craftCatalogOrigin){
-      const back=$('[data-db="craft-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
+    if(craftCatalogOrigin||reliefCatalogOrigin){
+      const back=$(craftCatalogOrigin?'[data-db="craft-return"]':'[data-db="relief-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
     }else $('.content').scrollTop=0;
     return;
   }
@@ -455,6 +470,7 @@ function render(){
     if(activeTerminalLink && !terminalLinkMatches())releaseTerminalLink();
     rememberTerminalView();
     if(page!=='catalog')craftCatalogOrigin=null;
+    if(page!=='catalog'&&page!=='lootplan')reliefCatalogOrigin=null;
     if(page!=='orders')fundingDossier=null;
     inside.dataset.page=page;
     const content=$('.content'),current=contentView();

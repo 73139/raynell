@@ -1,5 +1,6 @@
 // The first request from the external bunker has two mutually exclusive handover sites.
 const RELIEF_ORDER='external-relief';
+let reliefCatalogOrigin=null;
 const RELIEF_REQUESTS={
   meals:{name:'급식 보급',zone:0,landmark:3,items:{food:2,water:2}},
   power:{name:'전원 부품',zone:1,landmark:3,items:{battery:1,rl_03_25:1}}
@@ -36,11 +37,29 @@ function reliefMaterials(request,bag){
 function reliefDirections(){
   return field.reliefDelivery&&isActive()?[]:Object.values(RELIEF_REQUESTS).map(({zone,landmark})=>({zone,landmark}));
 }
+function reliefCatalogBack(){
+  return reliefCatalogOrigin&&orderUnlocked(reliefOrder())
+    ? '<button type="button" data-db="relief-return">‹ '+esc(RELIEF_REQUESTS[reliefCatalogOrigin.kind].name)+' 의뢰 서류로</button>' : '';
+}
+function reliefCatalogSeller(id){
+  if(reliefCatalogOrigin?.item!==id)return '';
+  const trader=marketOfferingTrader(id);
+  if(!trader)return '';
+  const standing=traderStanding(trader.id);
+  const rank=trader.stockTiers.findIndex(stock=>stock.includes(id))+1;
+  const detail=marketIsUnlocked(trader.id,id)?'상점가 '+money(GOODS[id][6]):
+    '우호도 '+rank+'단계에 판매 · 현재 '+standing.tier+'단계 ('+standing.points+'점)';
+  return '<p class="mini-field" data-relief-seller>'+esc(trader.name)+' · '+detail+'</p>';
+}
 function reliefRequestMarkup(kind,fieldView){
   const request=RELIEF_REQUESTS[kind],bag=isActive()?field.bag:equipmentState.bag;
   const lines=reliefMaterials(request,bag),ready=lines.every(line=>line.units.length===line.need);
   const area=FIELD_ZONES[request.zone].name+' · '+LANDMARKS[request.zone][request.landmark].name;
-  const items=lines.map(line=>esc(kitName(line.id))+' '+line.units.length+' / '+line.need).join(' · ');
+  const items=lines.map(({id,units,need})=>{
+    const label=esc(kitName(id))+' '+units.length+' / '+need;
+    return fieldView?label:'<button type="button" data-db="relief-material" data-kind="'+kind+'" data-id="'+esc(id)+'" '+
+      'aria-label="'+esc(kitName(id))+' 도감과 수급처 열기">'+label+' · 수급처</button>';
+  }).join(fieldView?' · ':' ');
   const blocked=!ready||!writer||field.action||field.contact||field.open||field.journey;
   return '<div data-relief-choice="'+kind+'"><h4>'+esc(request.name)+'</h4><p>'+esc(area)+'</p><p>가방에 준비한 수량 · '+items+'</p>'+
     (fieldView?'<button type="button" data-field="relief-deliver" data-kind="'+kind+'" data-raid-id="'+raid.startedAt+'"'+(blocked?' disabled':'')+'>'+esc(request.name)+' 인계</button>':'')+'</div>';

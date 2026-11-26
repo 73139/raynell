@@ -84,7 +84,7 @@ function catalogFieldMarkup(id,regions){
           (box.keyId?esc(kitName(box.keyId))+' 필요':'열쇠 불필요')+'</span><strong>'+huntOddsPercent(chance)+'</strong></div>';
       }).join('')+'</li>').join('')+'</ul></section>').join('');
 }
-function catalogFieldDisclosure(id){
-  return ITEM_META[id]?.lootSources.length?'<details class="db-field-sources" data-catalog-sources="'+esc(id)+'">'+
+function catalogFieldDisclosure(id,expanded=false){
+  return ITEM_META[id]?.lootSources.length?'<details class="db-field-sources" data-catalog-sources="'+esc(id)+'"'+(expanded?' open':'')+'>'+
     '<summary>현장 수급처 · 보관함별 확률</summary><div data-catalog-sites></div></details>':'';
 }

@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.78</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.79</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -165,6 +165,7 @@
 
 .pump-gauge{margin:10px 0;padding:10px 12px;border-left:2px solid #a2b49b;background:#232d28}
 .pump-gauge h3,.pump-gauge p{margin:3px 0 6px}.pump-gauge [role=status]:empty{display:none}
+.pump-gauge [data-db="relief-material"]{min-height:44px;margin:2px 0}
 .pump-controls{display:flex;gap:6px;flex-wrap:wrap}.pump-controls button{min-height:44px}
 
 #inside{--canvas:#0b1013;--surface:#12191d;--panel:#192024;--hover:#303738;--line:#404a4c;--text:#eeeae0;--muted:#b7b9ae;--accent:#d9cf9d;--success:#b1c890;--danger:#eaa499;position:fixed;inset:0;grid-template-areas:"bar" "clock" "work" "foot";grid-template-rows:auto auto minmax(0,1fr) auto;background:radial-gradient(ellipse at 55% -40%,#293333,transparent 57%),#0d1317;color:var(--text);font-family:system-ui,"Malgun Gothic",sans-serif}
@@ -4325,7 +4326,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=78000; // Derived from the release title by build.py.
+const WRITER_BUILD=79000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -5379,10 +5380,13 @@ function fundingDossierReturn(order){
     ? '<button type="button" class="obj-pin" data-objective="procurement-funding-return">‹ 착공 예산으로 돌아가기</button>' : '';
 }
 
+function bunkerOrderSelection(){
+  const visible=ORDERS.filter(q=>orderUnlocked(q) && (bunkerOrderFilter==='all'||bunkerOrderState(q)===bunkerOrderFilter));
+  return {visible,q:visible.find(v=>v.id===bunkerOrderSelected)||visible[0]};
+}
 function ordersView(){
   const states={new:'신규',active:'진행 중',done:'완료'};
-  const visible=ORDERS.filter(q=>orderUnlocked(q) && (bunkerOrderFilter==='all'||bunkerOrderState(q)===bunkerOrderFilter));
-  const q=visible.find(v=>v.id===bunkerOrderSelected)||visible[0];
+  const {visible,q}=bunkerOrderSelection();
   let detail='<div class="bu-empty">이 상태의 의뢰가 없습니다.</div>';
   if(q){
     const state=bunkerOrderState(q),disabled=!writer||state==='done'||!!raid||(!!career.order&&state!=='active');
@@ -9306,6 +9310,15 @@ function guideInstruction(title, text, action, label, value) {
   return {title, text, action, label, value};
 }
 
+function guideView() {
+  const v=onboardingView();
+  // A newcomer's return on this quest is part of the guide, including its unpaid receipt.
+  const guideReturn=v.questStatus==='ready'||v.questStatus==='claimed';
+  const otherQuest=Object.values(traderContracts).some(record=>record.done.some(id=>id!==ONBOARDING_QUEST));
+  const returning=career.returns>Number(guideReturn)||otherQuest||campaignState.claimed.length>0||Boolean(finaleState.reply);
+  return {...v,returning,name:returning?'한미정의 배급소 찬장 안내':'첫 출격 안내'};
+}
+
 function guideSelectedQuest(id) {
   return page === 'traderQuests' && marketUI.trader === 'supply' && contractPanel.mode === 'standing' &&
     contractPanel.quest === id && !contractPanel.confirmCancel;
@@ -9314,9 +9327,9 @@ function guideSelectedQuest(id) {
 function guideDeployment(v, retry) {
   const area = FIELD_ZONES[v.goal.zone].name;
   if (page === 'prep' && zone === v.goal.zone) {
-    return guideInstruction(retry?'장비를 확인하고 다시 출격하세요':'장비를 확인하고 첫 출격을 시작하세요',
+    return guideInstruction(retry?'장비를 확인하고 다시 출격하세요':v.returning?'배급소 식당 수색을 준비하세요':'장비를 확인하고 첫 출격을 시작하세요',
       area+'에서 배급소 식당을 수색합니다. 착용 장비와 가방 속 물품을 가져갑니다.',
-      'deploy',retry?'재출격 시작':'첫 출격 시작');
+      'deploy',retry?'재출격 시작':v.returning?'배급소 식당 수색 출격':'첫 출격 시작');
   }
   if (page === 'map' || page === 'inventory' || page === 'prep') {
     return guideInstruction(retry?'남은 장비로 재출격을 준비하세요':'배급소 식당으로 갈 준비를 하세요',
@@ -9352,8 +9365,8 @@ function guideFieldInstruction(v) {
       guideInstruction('권역 사이를 이동 중입니다.','도착 후 현장 안내를 이어갑니다.');
   }
   if (extract) {
-    const title = v.step === 'unassigned' ? '벙커에서 첫 의뢰를 수락하세요' : '수색을 마쳤습니다. 생환하세요';
-    const note = v.step === 'unassigned' ? '첫 의뢰는 벙커에서 수락할 수 있습니다.' :
+    const title = v.step === 'unassigned' ? '귀환 후 한미정의 의뢰를 수락하세요' : '수색을 마쳤습니다. 생환하세요';
+    const note = v.step === 'unassigned' ? '배급소 찬장 의뢰는 벙커에서 수락할 수 있습니다.' :
       '조기 탈출도 이 의뢰에 인정됩니다. 생환하면 수색 기록이 확정됩니다.';
     if (field.open) return guideInstruction(title,note,'close','상자 닫고 탈출 준비');
     if (raid.zone !== exit.zone) return guideInstruction(title,note,'move','벙커 외곽으로 이동',exit.zone);
@@ -9385,10 +9398,10 @@ function guideDirection(v) {
     case 'accept':
       return guideSelectedQuest(q.id)
         ? guideInstruction('한미정의 의뢰를 수락하세요','배급소 식당의 상자 한 곳을 끝까지 수색하고 살아 돌아오는 의뢰입니다.','accept',objectivePin?'배급소 찬장 수락':'의뢰 수락하고 목표 고정')
-        : guideInstruction('첫 의뢰를 확인하세요','보급 담당 한미정이 배급소 식당의 찬장을 조사해 달라고 합니다.','quest','한미정의 의뢰 열기',q.id);
+        : guideInstruction(v.returning?'배급소 찬장 의뢰를 확인하세요':'첫 의뢰를 확인하세요','보급 담당 한미정이 배급소 식당의 찬장을 조사해 달라고 합니다.','quest','한미정의 의뢰 열기',q.id);
     case 'busy': {
       const active = traderContracts[q.trader].active?.id, current = CONTRACT_BY_ID.get(active);
-      const note = '한미정의 진행 중인 의뢰를 마치면 첫 출격 안내를 이어갈 수 있습니다.';
+      const note = '한미정의 진행 중인 의뢰를 마친 뒤 배급소 찬장 의뢰를 수락할 수 있습니다.';
       if (guideSelectedQuest(active)) return guideInstruction(current.title+' 진행 중',note);
       return guideInstruction('진행 중인 의뢰를 확인하세요',note,'quest',current.title+' 열기',active);
     }
@@ -9399,15 +9412,15 @@ function guideDirection(v) {
         '식당 수색 기록이 반영됐습니다. 벙커에서 의뢰 보상을 받을 수 있습니다.','ack-quest','벙커 복귀 · 한미정에게 보고');
       return guideInstruction('생환 기록을 확인하세요',v.questStatus==='active'?
         '배급소 식당의 수색 완료 기록이 없습니다. 다음 출격에서 식당 상자 하나를 끝까지 확인하세요.':
-        '이번 출격을 정산했습니다. 벙커에 돌아가 첫 의뢰 안내를 이어가세요.','ack','벙커로 복귀');
+        '이번 출격을 정산했습니다. 벙커에서 한미정의 배급소 찬장 의뢰를 확인하세요.','ack','벙커로 복귀');
     case 'claim':
       return guideSelectedQuest(q.id) ? guideInstruction('의뢰 보상을 받으세요',
-        '배급소 찬장의 수색 보고가 준비됐습니다. 한미정에게 보상을 받으면 첫 출격 안내가 완료됩니다.','claim','한미정에게 보상 받기') :
-        guideInstruction('한미정에게 수색 결과를 보고하세요','첫 의뢰의 생환 조건을 달성했습니다.','quest','보상 받을 의뢰 열기',q.id);
+        '배급소 찬장의 수색 보고가 준비됐습니다. 한미정에게 보상을 받으면 안내가 완료됩니다.','claim','한미정에게 보상 받기') :
+        guideInstruction('한미정에게 수색 결과를 보고하세요','배급소 찬장 의뢰의 생환 조건을 달성했습니다.','quest','보상 받을 의뢰 열기',q.id);
     case 'failed': return guideInstruction('남은 물품으로 다음 출격을 준비하세요',
       '벙커에 두었던 물품은 보존됐습니다. 아래에서 손실과 남은 물품을 확인하세요.','ack-kit','벙커 복귀 · 장비 확인');
     case 'retry': return guideDeployment(v,true);
-    case 'done': return guideInstruction('첫 출격 안내 완료',
+    case 'done': return guideInstruction(v.name+' 완료',
       '한미정의 배급소 찬장 보상을 받았습니다. 다음 의뢰를 선택하거나 자유롭게 출격할 수 있습니다.');
   }
 }
@@ -9442,29 +9455,29 @@ function guideButton(action, label, value) {
 
 function onboardingPanel(screen) {
   if (screen!=='settings' && !GUIDE_SCREENS.includes(screen)) return '';
-  const v=onboardingView();
+  const v=guideView();
   if (screen==='settings') {
     const rewarded=v.step==='done';
     const note=rewarded?'배급소 찬장 의뢰 완료 · 보상 수령. 다음 의뢰를 선택하거나 자유롭게 출격할 수 있습니다.':
       v.mode==='active'?'안내를 끄면 일반 플레이를 계속할 수 있습니다. 언제든 여기에서 이어갈 수 있습니다.':
-      v.mode==='skipped'?'저장된 의뢰와 현재 출격 상태에서 안내를 이어갈 수 있습니다.':'현재 의뢰와 장비를 유지한 채 첫 출격 안내를 시작할 수 있습니다.';
-    return '<section class="sortie-guide guide-settings" data-guide-panel data-guide-step="'+v.step+'" aria-label="첫 출격 안내 설정" tabindex="-1">'+
-      '<div class="guide-main"><h2>첫 출격 안내</h2><p>'+esc(note)+'</p></div><div class="guide-actions">'+
+      v.mode==='skipped'?'저장된 의뢰와 현재 출격 상태에서 안내를 이어갈 수 있습니다.':'현재 의뢰와 장비를 유지한 채 '+v.name+'를 시작할 수 있습니다.';
+    return '<section class="sortie-guide guide-settings" data-guide-panel data-guide-step="'+v.step+'" aria-label="'+v.name+' 설정" tabindex="-1">'+
+      '<div class="guide-main"><h2>'+v.name+'</h2><p>'+esc(note)+'</p></div><div class="guide-actions">'+
       (rewarded?'':v.mode==='active'?'<button type="button" data-guide="skip">안내 건너뛰기</button>':
-        '<button type="button" data-guide="resume">'+(v.mode==='skipped'?'안내 이어하기':'첫 출격 안내 시작')+'</button>')+'</div>'+guideFeedback()+'</section>';
+        '<button type="button" data-guide="resume">'+(v.mode==='skipped'?'안내 이어하기':v.name+' 시작')+'</button>')+'</div>'+guideFeedback()+'</section>';
   }
   const receipt=v.mode==='completed' && guideSelectedQuest(v.quest.id);
   if (v.mode!=='active' && !receipt) return '';
   const d=guideDirection(v);
   if (!d) return '';
   const recovery=v.step==='failed'||v.step==='retry'||guideReviewingLoss(v), index=GUIDE_STEPS[v.step];
-  const label='첫 출격 안내'+(recovery?' · 재출격':index?' · '+index+'/5':'');
+  const label=v.name+(recovery?' · 재출격':index?' · '+index+'/5':'');
   const issue=guideReviewingLoss(v)&&!equipmentState.worn.back;
-  return '<section class="sortie-guide" data-guide-panel data-guide-step="'+esc(v.step)+'" aria-label="첫 출격 안내" tabindex="-1">'+
+  return '<section class="sortie-guide" data-guide-panel data-guide-step="'+esc(v.step)+'" aria-label="'+v.name+'" tabindex="-1">'+
     '<div class="guide-main"><div class="guide-head"><span>'+esc(label)+'</span></div><h2>'+esc(d.title)+'</h2><p>'+esc(d.text)+'</p>'+
     (recovery?guideRecoveryInventory():'')+'</div><div class="guide-actions">'+
     (d.action?guideButton(d.action,d.label,d.value):'')+(issue?'<button type="button" data-guide="issue">지급 배낭 받기</button>':'')+
-    (v.mode==='active'?'<button class="guide-skip" type="button" data-guide="skip" aria-label="첫 출격 안내 건너뛰기">안내 건너뛰기</button>':'')+'</div>'+guideFeedback()+'</section>';
+    (v.mode==='active'?'<button class="guide-skip" type="button" data-guide="skip" aria-label="'+v.name+' 건너뛰기">안내 건너뛰기</button>':'')+'</div>'+guideFeedback()+'</section>';
 }
 
 function guideFeedback() {
@@ -9546,7 +9559,7 @@ function handleOnboardingUI(data) {
     ($('[data-guide-panel]')||$('.content'))?.focus?.({preventScroll:true});
     return;
   }
-  const v=onboardingView();
+  const v=guideView();
   if (v.mode!=='active') return;
   if (data.guide==='issue') {
     if(guideReviewingLoss(v)&&!equipmentState.worn.back) handleEquipment({gear:'issue'});
@@ -12146,7 +12159,7 @@ function lootPlanPage(){
   const z=lootPlanRegion??(raid?raid.zone:zone);
   return '<article class="lp-page" data-lootplan-page data-region="'+z+'"><header class="lp-cover" style="--lp-art:url(\''+
     esc(artURL(COMMAND_ZONES[z].art))+'\')"><div><h1>물자 수색 계획</h1><p>필요한 물자를 선택하고 출격할 권역과 랜드마크를 정하세요.</p></div>'+
-    '<button type="button" data-page="map">작전 지도</button></header>'+
+    '<button type="button" data-page="map">작전 지도</button></header>'+reliefCatalogBack()+
     '<section class="lp-goals"><div class="lp-row"><h2>목표 물자</h2>'+
     (goal?'<button type="button" class="lp-clear" data-lootplan="clear">목표 해제</button>':'')+'</div>'+
     '<div class="lp-selector" role="group" aria-label="목표 물자">'+v.goals.map(g=>
@@ -13357,8 +13370,8 @@ function catalogFieldMarkup(id,regions){
           (box.keyId?esc(kitName(box.keyId))+' 필요':'열쇠 불필요')+'</span><strong>'+huntOddsPercent(chance)+'</strong></div>';
       }).join('')+'</li>').join('')+'</ul></section>').join('');
 }
-function catalogFieldDisclosure(id){
-  return ITEM_META[id]?.lootSources.length?'<details class="db-field-sources" data-catalog-sources="'+esc(id)+'">'+
+function catalogFieldDisclosure(id,expanded=false){
+  return ITEM_META[id]?.lootSources.length?'<details class="db-field-sources" data-catalog-sources="'+esc(id)+'"'+(expanded?' open':'')+'>'+
     '<summary>현장 수급처 · 보관함별 확률</summary><div data-catalog-sites></div></details>':'';
 }
 
@@ -13582,6 +13595,7 @@ function handlePostal(d){
 
 // The first request from the external bunker has two mutually exclusive handover sites.
 const RELIEF_ORDER='external-relief';
+let reliefCatalogOrigin=null;
 const RELIEF_REQUESTS={
   meals:{name:'급식 보급',zone:0,landmark:3,items:{food:2,water:2}},
   power:{name:'전원 부품',zone:1,landmark:3,items:{battery:1,rl_03_25:1}}
@@ -13618,11 +13632,29 @@ function reliefMaterials(request,bag){
 function reliefDirections(){
   return field.reliefDelivery&&isActive()?[]:Object.values(RELIEF_REQUESTS).map(({zone,landmark})=>({zone,landmark}));
 }
+function reliefCatalogBack(){
+  return reliefCatalogOrigin&&orderUnlocked(reliefOrder())
+    ? '<button type="button" data-db="relief-return">‹ '+esc(RELIEF_REQUESTS[reliefCatalogOrigin.kind].name)+' 의뢰 서류로</button>' : '';
+}
+function reliefCatalogSeller(id){
+  if(reliefCatalogOrigin?.item!==id)return '';
+  const trader=marketOfferingTrader(id);
+  if(!trader)return '';
+  const standing=traderStanding(trader.id);
+  const rank=trader.stockTiers.findIndex(stock=>stock.includes(id))+1;
+  const detail=marketIsUnlocked(trader.id,id)?'상점가 '+money(GOODS[id][6]):
+    '우호도 '+rank+'단계에 판매 · 현재 '+standing.tier+'단계 ('+standing.points+'점)';
+  return '<p class="mini-field" data-relief-seller>'+esc(trader.name)+' · '+detail+'</p>';
+}
 function reliefRequestMarkup(kind,fieldView){
   const request=RELIEF_REQUESTS[kind],bag=isActive()?field.bag:equipmentState.bag;
   const lines=reliefMaterials(request,bag),ready=lines.every(line=>line.units.length===line.need);
   const area=FIELD_ZONES[request.zone].name+' · '+LANDMARKS[request.zone][request.landmark].name;
-  const items=lines.map(line=>esc(kitName(line.id))+' '+line.units.length+' / '+line.need).join(' · ');
+  const items=lines.map(({id,units,need})=>{
+    const label=esc(kitName(id))+' '+units.length+' / '+need;
+    return fieldView?label:'<button type="button" data-db="relief-material" data-kind="'+kind+'" data-id="'+esc(id)+'" '+
+      'aria-label="'+esc(kitName(id))+' 도감과 수급처 열기">'+label+' · 수급처</button>';
+  }).join(fieldView?' · ':' ');
   const blocked=!ready||!writer||field.action||field.contact||field.open||field.journey;
   return '<div data-relief-choice="'+kind+'"><h4>'+esc(request.name)+'</h4><p>'+esc(area)+'</p><p>가방에 준비한 수량 · '+items+'</p>'+
     (fieldView?'<button type="button" data-field="relief-deliver" data-kind="'+kind+'" data-raid-id="'+raid.startedAt+'"'+(blocked?' disabled':'')+'>'+esc(request.name)+' 인계</button>':'')+'</div>';
@@ -13756,8 +13788,8 @@ const money=n=>n.toLocaleString('ko-KR')+' CR';
 function itemSources(id){return ITEM_META[id].lootSources.map(t=>LOOT_TABLES[t].name).join(' · ')}
 function catalogRows(){return Object.entries(GOODS).filter(([id,g])=>(!catalogCategory||g[5]===catalogCategory)&&(!catalogQuery||[id,g[0],g[5],ITEM_META[id].usage,itemSources(id)].join(' ').toLowerCase().includes(catalogQuery.toLowerCase()))).sort((a,b)=>a[1][0].localeCompare(b[1][0],'ko'))}
 function catalogResults(){const rows=catalogRows(),max=Math.max(0,Math.floor((rows.length-1)/24)*24);catalogOffset=Math.min(catalogOffset,max);return `<div class="db-summary"><span>${rows.length}종 · ${rows.length?catalogOffset+1:0}–${Math.min(catalogOffset+24,rows.length)}</span><button data-db="prev" ${catalogOffset===0?'disabled':''}>이전</button><button data-db="next" ${catalogOffset+24>=rows.length?'disabled':''}>다음</button></div><div class="db-list">${rows.slice(catalogOffset,catalogOffset+24).map(([id,g])=>`<button data-db="item" data-id="${id}" aria-pressed="${catalogSelected===id}">${ico(g[4])}<span><b>${g[0]}</b><small>${g[5]} · ${g[1]}×${g[2]} · ${g[3]} kg</small></span><span>${money(g[6])}</span></button>`).join('')||'<p>검색 결과가 없습니다.</p>'}</div>`}
-function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:''}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${catalogFieldDisclosure(id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
-function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
+function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:reliefCatalogBack()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
+function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
 function facilityDetail(){return bunkerFacilityDetail()}
 function bunkerPage(){return bunkerHubPage()}
 function handleDB(d){
@@ -13768,6 +13800,16 @@ function handleDB(d){
     procurementNote='';catalogSelected=d.id;$('#db-detail').innerHTML=catalogDetail();$('#db-results').innerHTML=catalogResults();
     if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});return;
   }
+  if(d.db==='relief-return'){
+    if(!['catalog','lootplan'].includes(page)||!reliefCatalogOrigin||!orderUnlocked(reliefOrder()))return;
+    const {kind,item,filter}=reliefCatalogOrigin;
+    bunkerOrderSelected=RELIEF_ORDER;
+    bunkerOrderFilter=filter==='all'||filter===bunkerOrderState(reliefOrder())?filter:'all';
+    navigatePage('orders');
+    const link=$(`[data-db="relief-material"][data-kind="${kind}"][data-id="${item}"]`)||$('[data-bui="order"][data-id="external-relief"]');
+    link?.focus?.({preventScroll:true});link?.scrollIntoView?.({block:'nearest'});
+    return;
+  }
   if(d.db==='craft-return'){
     if(page!=='catalog'||!craftCatalogOrigin)return;
     const {facility,tier,recipe,item}=craftCatalogOrigin;
@@ -13776,7 +13818,12 @@ function handleDB(d){
     if(input){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest'});}
     return;
   }
-  if((d.db==='lookup'||d.db==='craft-ingredient')&&Object.hasOwn(GOODS,d.id)){
+  if(['lookup','craft-ingredient','relief-material'].includes(d.db)&&Object.hasOwn(GOODS,d.id)){
+    if(d.db==='relief-material'){
+      if(page!=='orders'||bunkerOrderSelection().q?.id!==RELIEF_ORDER||career.reliefReceipt||field.reliefDelivery||
+         !Object.hasOwn(RELIEF_REQUESTS,d.kind)||!Object.hasOwn(RELIEF_REQUESTS[d.kind].items,d.id))return;
+      reliefCatalogOrigin={kind:d.kind,item:d.id,filter:bunkerOrderFilter};
+    }else reliefCatalogOrigin=null;
     if(d.db==='craft-ingredient'){
       const recipe=d.recipe===WARD_RECIPE?WARD_RECIPE:Number(d.recipe);
       if(page!=='facility'||d.facility!==facilitySelected||!facilityRecipeAvailable(d.facility,recipe))return;
@@ -13786,8 +13833,8 @@ function handleDB(d){
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
     page='catalog';save();render();
-    if(craftCatalogOrigin){
-      const back=$('[data-db="craft-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
+    if(craftCatalogOrigin||reliefCatalogOrigin){
+      const back=$(craftCatalogOrigin?'[data-db="craft-return"]':'[data-db="relief-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
     }else $('.content').scrollTop=0;
     return;
   }
@@ -13814,6 +13861,7 @@ function render(){
     if(activeTerminalLink && !terminalLinkMatches())releaseTerminalLink();
     rememberTerminalView();
     if(page!=='catalog')craftCatalogOrigin=null;
+    if(page!=='catalog'&&page!=='lootplan')reliefCatalogOrigin=null;
     if(page!=='orders')fundingDossier=null;
     inside.dataset.page=page;
     const content=$('.content'),current=contentView();

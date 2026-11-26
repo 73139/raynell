@@ -122,10 +122,13 @@ function fundingDossierReturn(order){
     ? '<button type="button" class="obj-pin" data-objective="procurement-funding-return">‹ 착공 예산으로 돌아가기</button>' : '';
 }
 
+function bunkerOrderSelection(){
+  const visible=ORDERS.filter(q=>orderUnlocked(q) && (bunkerOrderFilter==='all'||bunkerOrderState(q)===bunkerOrderFilter));
+  return {visible,q:visible.find(v=>v.id===bunkerOrderSelected)||visible[0]};
+}
 function ordersView(){
   const states={new:'신규',active:'진행 중',done:'완료'};
-  const visible=ORDERS.filter(q=>orderUnlocked(q) && (bunkerOrderFilter==='all'||bunkerOrderState(q)===bunkerOrderFilter));
-  const q=visible.find(v=>v.id===bunkerOrderSelected)||visible[0];
+  const {visible,q}=bunkerOrderSelection();
   let detail='<div class="bu-empty">이 상태의 의뢰가 없습니다.</div>';
   if(q){
     const state=bunkerOrderState(q),disabled=!writer||state==='done'||!!raid||(!!career.order&&state!=='active');

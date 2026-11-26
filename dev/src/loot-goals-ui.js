@@ -92,7 +92,7 @@ function lootPlanPage(){
   const z=lootPlanRegion??(raid?raid.zone:zone);
   return '<article class="lp-page" data-lootplan-page data-region="'+z+'"><header class="lp-cover" style="--lp-art:url(\''+
     esc(artURL(COMMAND_ZONES[z].art))+'\')"><div><h1>물자 수색 계획</h1><p>필요한 물자를 선택하고 출격할 권역과 랜드마크를 정하세요.</p></div>'+
-    '<button type="button" data-page="map">작전 지도</button></header>'+
+    '<button type="button" data-page="map">작전 지도</button></header>'+reliefCatalogBack()+
     '<section class="lp-goals"><div class="lp-row"><h2>목표 물자</h2>'+
     (goal?'<button type="button" class="lp-clear" data-lootplan="clear">목표 해제</button>':'')+'</div>'+
     '<div class="lp-selector" role="group" aria-label="목표 물자">'+v.goals.map(g=>
