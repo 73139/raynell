@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / "index.html").read_bytes()
 LIVE = os.getenv("RUSTLINE_URL")
 URL = urldefrag(LIVE or "https://rustline-catalog-budget.test/").url
-KEY = "rl-reboot-session-v35"
+KEY = "rl-reboot-session-v36"
 PIPE, VALVE = "rl_08_15", "rl_08_19"
 
 

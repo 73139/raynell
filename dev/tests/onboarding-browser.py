@@ -13,7 +13,7 @@ from playwright.sync_api import expect, sync_playwright
 
 TESTS = Path(__file__).resolve().parent
 URL = urldefrag(os.environ.get('RUSTLINE_URL') or (TESTS.parent / 'index.html').as_uri()).url
-SAVE = 'rl-reboot-session-v35'
+SAVE = 'rl-reboot-session-v36'
 OLD = 'rl-reboot-session-v18'
 PANEL = '[data-guide-panel]'
 NEXT = '[data-guide="next"]'

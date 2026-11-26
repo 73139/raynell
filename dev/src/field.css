@@ -18,3 +18,7 @@
 @media(max-width:600px){
   [data-return-market]>summary{min-height:44px;padding-block:11px;cursor:pointer}
 }
+
+#save-upgrade:not([hidden]){position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:#111812;color:var(--text)}
+#save-upgrade>div{max-width:28rem;padding:20px;border:1px solid var(--line);background:#1b231c}
+#save-upgrade h1{margin:0;font-size:1.45rem}#save-upgrade p{line-height:1.6}#save-refresh{min-height:44px}

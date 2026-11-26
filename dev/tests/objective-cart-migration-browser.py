@@ -35,7 +35,7 @@ def existing_storage_profile(browser, old):
     page.clock.install(time=datetime.fromtimestamp((now-86400000)/1000,timezone.utc))
     page.clock.pause_at(datetime.fromtimestamp(now/1000,timezone.utc))
     shared['at'](page,'shop')
-    page.wait_for_function("Boolean(localStorage.getItem('rl-reboot-session-v35'))")
+    page.wait_for_function("Boolean(localStorage.getItem('rl-reboot-session-v36'))")
     assert page.evaluate("localStorage.getItem('rl-reboot-session-v29')") == original
     return context,page,errors
 
@@ -94,7 +94,7 @@ def migration(browser, stored=False):
             p.evaluate("""() => {const k='rl-reboot-session-v29',s=JSON.parse(localStorage.getItem(k));
                            s.objectivePin=null;s.revision+=20;localStorage.setItem(k,JSON.stringify(s));}""")
             p.reload(wait_until='domcontentloaded')
-            p.wait_for_function("JSON.parse(localStorage.getItem('rl-reboot-session-v35')).wallet===13000")
+            p.wait_for_function("JSON.parse(localStorage.getItem('rl-reboot-session-v36')).wallet===13000")
             restored=snapshot(p)
             assert restored['objectivePin']==done['objectivePin'] and restored['marketCarts']==done['marketCarts']
             assert restored['cash']==done['cash'] and restored['stashSlots']==done['stashSlots']

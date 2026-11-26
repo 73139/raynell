@@ -16,7 +16,7 @@ from playwright.sync_api import expect, sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 DATA = json.loads((ROOT / 'tests/fixtures/campaign-v21.json').read_text())
 URL = urldefrag(os.getenv('RUSTLINE_URL') or (ROOT / 'index.html').as_uri()).url
-KEY = 'rl-reboot-session-v35'
+KEY = 'rl-reboot-session-v36'
 CHAPTERS = [('power', 'food', 5000, 35), ('water', 'water', 6500, 45), ('med', 'bandage', 8000, 60)]
 
 
@@ -162,7 +162,7 @@ def campaign_run(browser, width, folder):
                 backup = folder / f'chapter-{width}.json'
                 captured.value.save_as(backup)
                 payload = json.loads(backup.read_text())
-                assert payload['session']['version'] == 35
+                assert payload['session']['version'] == 36
                 c, p, fresh_errors = profile(browser, width, p.evaluate('Date.now()'))
                 contexts.append(c)
                 logs.append(fresh_errors)

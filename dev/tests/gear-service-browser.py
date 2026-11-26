@@ -193,7 +193,7 @@ def migrate(browser):
         helpers['import_profile'](page,data)
         visit_field(page)
         new = snapshot(page)
-        assert new['version']==35 and new['wallet']==old['wallet'] and new['raid']==old['raid']
+        assert new['version']==36 and new['wallet']==old['wallet'] and new['raid']==old['raid']
         assert new['field']['action']['end']==old['field']['action']['end']
         assert new['field']['boxes']==old['field']['boxes']
         uid=new['field']['instances']['primary']['uid']

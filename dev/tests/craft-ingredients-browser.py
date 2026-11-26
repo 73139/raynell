@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / "index.html").read_bytes()
 LIVE = os.getenv("RUSTLINE_URL")
 URL = urldefrag(LIVE or "https://rustline-craft.test/").url
-KEY = "rl-reboot-session-v35"
+KEY = "rl-reboot-session-v36"
 
 
 def scenario(browser, width):

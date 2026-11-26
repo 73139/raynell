@@ -107,7 +107,7 @@ def play(browser, html, width):
         # Seed low energy in this private test profile. Keep the normal game
         # clock and move controls; force clear cells to isolate walking damage.
         page.evaluate("""() => {
-            const key = 'rl-reboot-session-v35', save = JSON.parse(localStorage.getItem(key));
+            const key = 'rl-reboot-session-v36', save = JSON.parse(localStorage.getItem(key));
             save.field.energy = 5;
             localStorage.setItem(key, JSON.stringify(save));
         }""")
@@ -130,7 +130,7 @@ def play(browser, html, width):
             expect(status).to_contain_text("폐철도 화물선")
             expect(page.locator("[data-route-trip-risk]:visible, [data-route-trip-supply]:visible")).to_have_count(0)
         def current():
-            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
         for _ in range(3):
             step = current()["field"]["action"]

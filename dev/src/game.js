@@ -1,6 +1,6 @@
 (()=>{'use strict';const $=s=>document.querySelector(s),world=$('#world'),phone=$('#phone'),inside=$('#inside'),layer=$('#power-layer'),hits=$('#main-hits'),fade=$('#fade');const pages=['home','map','prep','presets','campaign','survivors','lootplan','barterhunt','maintenance','raid','inventory','health','journal','orders','bunker','facility','settings','catalog','stash','trade','traderQuests','messages','more'];
 const zones=[['벙커 외곽','위험도 I'],['폐쇄 검문소','위험도 II'],['군수 보급 창고','위험도 III']];const items=[['응급 파우치','의료 보급품'],['물통','생활 보급품'],['통신 모듈','전자 장비'],['기록 카드','정보 물품']];let power='on',page='home',view='photo',busy=false,zone=0,item=0,large=false,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,bootTimer=0,lastButton=null;
-try{const saved=JSON.parse(localStorage.getItem('rl-reboot-tc01-v03')||'{}');if(pages.some(p=>p===saved.page))page=saved.page;if(Number.isInteger(saved.zone)&&saved.zone>=0&&saved.zone<zones.length)zone=saved.zone;if(Number.isInteger(saved.item)&&saved.item>=0&&saved.item<items.length)item=saved.item;large=saved.large===true;if(typeof saved.reduce==='boolean')reduce=saved.reduce}catch{}function save(){try{localStorage.setItem('rl-reboot-tc01-v03',JSON.stringify({page,zone,item,large,reduce}))}catch{}}
+try{const saved=JSON.parse(localStorage.getItem('rl-reboot-tc01-v03')||'{}');if(pages.some(p=>p===saved.page))page=saved.page;if(Number.isInteger(saved.zone)&&saved.zone>=0&&saved.zone<zones.length)zone=saved.zone;if(Number.isInteger(saved.item)&&saved.item>=0&&saved.item<items.length)item=saved.item;large=saved.large===true;if(typeof saved.reduce==='boolean')reduce=saved.reduce}catch{}function save(){if(updateRequired)return;try{localStorage.setItem('rl-reboot-tc01-v03',JSON.stringify({page,zone,item,large,reduce}))}catch{}}
 
 
 // v0.7 field search / spatial inventory
@@ -164,7 +164,7 @@ function objectiveTimeMilestone(now) {
   return objectivePin && raid && !field.result && qualifiesNormalExtraction(now-raid.startedAt,0,0) ? raid.startedAt : 0;
 }
 function updateRaidClock(){
-  if(!field)return;
+  if(!field||updateRequired)return;
   updateHideoutClock();tickRecurringQuestUI();
   const changed=reconcile(),now=Date.now(),phase=raidPhase(now),bar=$('#raid-status');
   const milestone=objectiveTimeMilestone(now),objectiveTimeChanged=milestone!==lastObjectiveTimeMilestone;
@@ -399,7 +399,7 @@ inside.addEventListener('change',e=>{if(e.target.id==='db-category'){catalogCate
 
 function head(code,title,desc){return `<div class="head"><span class="mono">${code}</span><h1>${title}</h1><p>${desc}</p></div>`}
 function render(){
-  if (deferPossessionRender() || deferPresetRender()) return;
+  if (updateRequired || deferPossessionRender() || deferPresetRender()) return;
   rendering=true;
   try{
     reconcile();
@@ -456,6 +456,7 @@ function releaseClinicLink(){
   }catch{/* Navigation still works in frames with restricted history access. */}
 }
 function openTerminalLink(){
+  if(updateRequired)return;
   const hash=window.location?.hash;
   const guideTarget = hash === '#guide' && onboardingView().mode === 'active' ? (raid ? 'raid' : 'home') : 'settings';
   const target={'#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt','#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map','#guide':guideTarget,'#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];

@@ -43,7 +43,7 @@ async function main() {
   waiting.storage.set(key, JSON.stringify(update));
   waiting.element('window').dispatch('storage', {key});
   assert.equal(waiting.g.s.field.action, null);
-  assert.equal(waiting.storage.has('rl-reboot-session-v35'), false);
+  assert.equal(waiting.storage.has('rl-reboot-session-v36'), false);
   console.log('PASS a read-only v27 terminal follows the live v26 writer before migration without creating a second save.');
   console.log('PASS all three ordinary planning destinations survive independent exports and imports, active and out-of-range selections rejected, v26 compatibility preserved.');
 }

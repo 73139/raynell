@@ -20,7 +20,7 @@ def play(browser,width):
         page.clock.install()
         page.goto(URL+"#quests")
         def click(selector):page.locator(selector+":visible").first.click()
-        def snap():return page.evaluate("() => JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+        def snap():return page.evaluate("() => JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
         click('[data-page=orders]')
         click('[data-bui=order][data-id=tower-wire]')
         click('[data-order=tower-wire]')

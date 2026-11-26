@@ -15,7 +15,7 @@ HTML = (ROOT / "index.html").read_bytes()
 FIXTURES = json.loads((ROOT / "tests/fixtures/campaign-v21.json").read_text())
 LIVE = os.getenv("RUSTLINE_URL")
 BASE = urldefrag(LIVE or "https://rustline-sale.test/").url
-KEY = "rl-reboot-session-v35"
+KEY = "rl-reboot-session-v36"
 
 
 def scenario(browser, width):

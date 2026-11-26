@@ -29,7 +29,7 @@ def open_game(context):
     page.on('pageerror', lambda error: errors.append(str(error)))
     page.on('dialog', lambda dialog: dialog.accept())
     page.goto(GAME, wait_until='domcontentloaded', timeout=60000)
-    page.wait_for_function("Boolean(localStorage.getItem('rl-reboot-session-v35'))")
+    page.wait_for_function("Boolean(localStorage.getItem('rl-reboot-session-v36'))")
     return page, errors
 
 
@@ -46,7 +46,7 @@ def restore(page, path):
 
 
 def snapshot(page):
-    return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+    return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
 
 def rename(page, uid, label):
@@ -181,7 +181,7 @@ def check_window(browser, width, folder):
             page.locator('[data-backup="export"]').click()
         backup = folder / f'backup-{width}.json'
         download.value.save_as(backup)
-        assert json.loads(backup.read_text(encoding='utf-8'))['session']['version'] == 35
+        assert json.loads(backup.read_text(encoding='utf-8'))['session']['version'] == 36
 
         fresh = browser.new_context(**context_options)
         try:

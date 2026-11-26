@@ -4,7 +4,7 @@ const fs=require('node:fs');
 const {assert,boot,clone,extract,finish,go,move,stamp,valid}=require('./game-fixture.cjs');
 const {baseline,prebuilt}=require('./fixtures/campaign-v21.json');
 const oldFlagged=require('./fixtures/finale-v21.json');
-const fileKey='rl-reboot-session-v35',oldKey='rl-reboot-session-v21';
+const fileKey='rl-reboot-session-v36',oldKey='rl-reboot-session-v21';
 const finalQuest='repair-first-call';
 const old=()=>({...clone(baseline.session),...clone(prebuilt.changes),...clone(oldFlagged.changes)});
 function ok(r){assert.equal(r.ok,true,r.message)}

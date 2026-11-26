@@ -36,7 +36,7 @@ def play(browser, width, outcome):
                 target.click()
 
         def saved():
-            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
         click('.command-station[data-index="0"]')
         click('.command-deploy[data-page="prep"]')

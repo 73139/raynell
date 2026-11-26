@@ -5,7 +5,7 @@ const path = require('node:path');
 const PANTRY = 'supply-pantry';
 const FLASK = 'supply-spare-flask';
 const OLD = 'rl-reboot-session-v18';
-const CURRENT = 'rl-reboot-session-v35';
+const CURRENT = 'rl-reboot-session-v36';
 const legacy = () => {
   const {session} = JSON.parse(fs.readFileSync(path.join(__dirname,'fixtures/possessions-v17.json'),'utf8'));
   session.version = 18;

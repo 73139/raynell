@@ -1,7 +1,7 @@
 // Campaign integration against the packed game, with v0.21 exporter fixtures.
 const {assert,boot,clone,extract,go,stamp,valid} = require('./game-fixture.cjs');
 const {baseline,prebuilt} = require('./fixtures/campaign-v21.json');
-const oldKey='rl-reboot-session-v21', key='rl-reboot-session-v35';
+const oldKey='rl-reboot-session-v21', key='rl-reboot-session-v36';
 const definitions=[
   ['power','food',5000,35],
   ['water','water',6500,45],
@@ -35,7 +35,7 @@ function noChange(b,fn){const before=raw(b.g.s),disk=b.storage.get(key);fn();ass
 function receipt(g,claimed,delivered,returnId){assert.deepEqual(clone(g.s.campaign),{claimed,delivered,returnId});}
 async function chapterLoop() {
   let b=legacy(),g=b.g;
-  assert.equal(g.s.version,35);assert.equal(g.s.career.returns,1);
+  assert.equal(g.s.version,36);assert.equal(g.s.career.returns,1);
   assert.deepEqual(names(g.s),['전력 복구반','정수 복구반']);
   assert.deepEqual(clone(g.s.objectivePin),baseline.session.objectivePin);
   assert.equal(g.s.campaign.returnId,null,'old successful sortie is not credit for a new chapter');

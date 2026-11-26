@@ -36,7 +36,7 @@ def scenario(browser, width):
                 control.click()
 
         def saved():
-            return p.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+            return p.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
         def clinic():
             response = p.goto(URL + "#clinic", wait_until="domcontentloaded") if p.url != URL+"#clinic" else p.reload(wait_until="domcontentloaded")

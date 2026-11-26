@@ -19,7 +19,7 @@ from playwright.sync_api import expect, sync_playwright
 
 ROOT=Path(__file__).resolve().parents[1]
 URL=urldefrag(os.environ.get('RUSTLINE_URL') or (ROOT/'index.html').as_uri()).url
-KEY='rl-reboot-session-v35'
+KEY='rl-reboot-session-v36'
 FIX=ROOT/'tests/fixtures/loot-goals-v23-search.json'
 survivor=runpy.run_path(str(ROOT/'tests/survivor-browser.py'))
 fit=survivor['fit']
@@ -188,7 +188,7 @@ def fork(p,browser,width,folder,contexts,error_sets):
     with p.expect_download() as dlg:p.locator('[data-backup="export"]').click()
     saved=folder/'partial.json';dlg.value.save_as(saved)
     payload=json.loads(saved.read_text())
-    assert payload['session']['version']==35
+    assert payload['session']['version']==36
     c,other,errs=profile(browser,width,p.evaluate('Date.now()'))
     contexts.append(c);error_sets.append(errs)
     other.locator('.shell-settings').click()
@@ -321,7 +321,7 @@ def legacy(browser):
         p.locator('#restore-file').set_input_files(FIX)
         expect(p.locator('.save-panel [role="status"]')).to_contain_text('복원했습니다')
         snap=read(p)
-        assert snap['version']==35 and snap['field']['boxes']['0-8']==s['field']['boxes']['0-8']
+        assert snap['version']==36 and snap['field']['boxes']['0-8']==s['field']['boxes']['0-8']
         assert snap['field']['action']==s['field']['action'] and snap['field']['open']=='0-8'
         at(p,'map');go_field(p)
         until(p,s['field']['action']['end']+300)

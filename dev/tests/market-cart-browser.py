@@ -22,7 +22,7 @@ from playwright.sync_api import expect, sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 shared = runpy.run_path(str(ROOT/'tests/survivor-browser.py'))
 at, snapshot = shared['at'], shared['snapshot']
-KEY = 'rl-reboot-session-v35'
+KEY = 'rl-reboot-session-v36'
 V27 = ROOT/'tests/fixtures/market-cart-v27.json'
 PRICES = {'bandage':4500, 'gauze':4000}
 NAMES = {'bandage':'구급 붕대', 'gauze':'멸균 거즈'}
@@ -264,7 +264,7 @@ def legacy(browser):
     try:
         shared['import_profile'](p,data)
         at(p,'cart')
-        assert snapshot(p)['version']==35
+        assert snapshot(p)['version']==36
         for key in ['wallet','equipment','stash','stashSlots','injuryState','gearOverflow']:
             assert snapshot(p)[key]==old[key],key
         assert not items(p)

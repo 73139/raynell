@@ -45,7 +45,7 @@ valid(g);
 console.log('PASS all ten screens and their route buttons, stash packing, quick binding, order selection, map inspection, timed loot reveal, take, successful extraction, persistent record detail and utility destinations.');
 const migrated=boot({[v11]:old},{now:old.field.action.start});
 assert.equal(migrated.storage.get(v11),JSON.stringify(old));assert.ok(migrated.storage.has(v12));
-assert.equal(migrated.g.s.version,35);assert.equal(migrated.g.s.wallet,old.wallet);
+assert.equal(migrated.g.s.version,36);assert.equal(migrated.g.s.wallet,old.wallet);
 assert.deepEqual(clone(migrated.g.s.field.action),old.field.action);
 assert.deepEqual(clone(migrated.g.s.field.bag),old.field.bag);
 assert.deepEqual(clone(migrated.g.s.field.boxes),old.field.boxes);

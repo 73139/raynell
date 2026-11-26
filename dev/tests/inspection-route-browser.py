@@ -10,7 +10,7 @@ HTML = (Path(__file__).resolve().parents[1] / "index.html").read_bytes()
 LIVE = os.getenv("RUSTLINE_URL")
 URL = urldefrag(LIVE or "https://rustline-inspection-route.test/").url
 ORDER = "handover-ledgers"
-KEY = "rl-reboot-session-v35"
+KEY = "rl-reboot-session-v36"
 ZONES = ("벙커 외곽", "폐쇄 검문소", "군수 보급 창고")
 DEFAULT_START = ("외곽 보급소", "경비 초소", "중앙 보급동")
 # Each tuple contains route, cells, base walk seconds and displayed contact probability.

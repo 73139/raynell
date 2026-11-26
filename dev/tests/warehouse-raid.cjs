@@ -30,7 +30,7 @@ function browser(){
  function route(){return by('.content').innerHTML;}
  return {launch,rendered:route,click:(d)=>click('#inside',d),tick:()=>clock.forEach(f=>f())};
 }
-const save=()=>JSON.parse(store.get('rl-reboot-session-v35'));
+const save=()=>JSON.parse(store.get('rl-reboot-session-v36'));
 (async()=>{
  const legacy={raid:null,field:null,stash:{water:1,wire:270,radio:1},wallet:30000,lastSummary:null};
  store.set('rl-reboot-session-v09',JSON.stringify(legacy));let b=browser();await b.launch();b.click({page:'stash'});

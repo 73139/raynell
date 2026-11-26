@@ -9,7 +9,7 @@ const clone = o => JSON.parse(JSON.stringify(o));
 const v9 = 'rl-reboot-session-v09';
 const v10 = 'rl-reboot-session-v10';
 const v11 = 'rl-reboot-session-v11';
-const v12 = 'rl-reboot-session-v35'; // Active save key used by gameplay scenarios.
+const v12 = 'rl-reboot-session-v36'; // Active save key used by gameplay scenarios.
 const probe = `globalThis.game={
   facilityProductionPanel,kitSupply,
   wardTrialView,wardTrialAction,wardTrialPanel,

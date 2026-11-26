@@ -11,7 +11,7 @@ HTML = (ROOT / "index.html").read_bytes()
 LIVE = os.getenv("RUSTLINE_URL")
 BASE = urldefrag(LIVE or "https://rustline-clinic.test/terminal").url
 URL = BASE + ("&" if "?" in BASE else "?") + "from=clinic&source=a%2Bb"
-KEY = "rl-reboot-session-v35"
+KEY = "rl-reboot-session-v36"
 
 
 def scenario(browser, width):

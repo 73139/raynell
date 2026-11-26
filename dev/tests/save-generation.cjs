@@ -6,7 +6,7 @@ const persisted=new Map([[priorKey,JSON.stringify(source)]]);
 const oldBytes=persisted.get(priorKey);
 const clock={now:source.raid.startedAt+1000};
 const current=boot(persisted,clock),first=clone(current.g.s);
-assert.equal(first.version,35);
+assert.equal(first.version,36);
 for(const key of ['wallet','stash','stashSlots','cash','marketCarts','objectivePin','raid']){
   assert.deepEqual(first[key],source[key],key+' survives first opening');
 }
@@ -22,7 +22,7 @@ assert.equal(JSON.parse(persisted.get(priorKey)).revision,olderTab.revision);
 const failed=new Map([[priorKey,oldBytes]]);failed.set=()=>{throw Error('quota')};
 boot(failed,clock);assert.equal(failed.get(priorKey),oldBytes);assert.equal(failed.has(v12),false);
 delete failed.set;const retry=boot(failed,clock);valid(retry.g);assert.equal(retry.g.s.wallet,source.wallet);assert.ok(failed.has(v12));
-console.log('PASS untouched previous save, real v29 raid migrated to v35, old-tab isolation, quota failure and clean retry.');
+console.log('PASS untouched previous save, real v29 raid migrated to v36, old-tab isolation, quota failure and clean retry.');
 
 // The v0.33 release exported this schema-32 player checkpoint after commerce,
 // a recovered and registered clinic sheet, two cash transfers and starting a job.
@@ -46,7 +46,7 @@ assert.equal(totalBanknotes(s33),19250);
 const mixed=new Map([[priorKey,oldBytes],[previous32,bytes33]]);
 const during={now:job.end-119000};
 const upgraded=boot(mixed,during);
-assert.equal(upgraded.g.s.version,35);
+assert.equal(upgraded.g.s.version,36);
 assert.ok(upgraded.g.check(shipped33),'the original schema-32 backup remains importable');
 for(const k of conserved){
   const expected=k==='hideout'?{...s33[k],wardTrial:null}:s33[k];
@@ -69,7 +69,7 @@ for(const [key,s] of [[priorKey,source],[previous32,s33]]){
 }
 assert.equal(mixed.get(v12),settledBytes);
 const resumed=boot(mixed,during);
-assert.equal(resumed.g.s.version,35);valid(resumed.g);
+assert.equal(resumed.g.s.version,36);valid(resumed.g);
 for(const k of conserved)assert.deepEqual(clone(resumed.g.s[k]),settled[k],k+' survives stale v32 and v29 writes');
 assert.equal(resumed.g.s.stash.rl_craft_dressing,1);
 const quota32=new Map([[priorKey,oldBytes],[previous32,bytes33]]);
@@ -79,7 +79,7 @@ assert.equal(quota32.get(priorKey),oldBytes);assert.equal(quota32.get(previous32
 delete quota32.set;
 const retried=boot(quota32,{now:job.end-119000});valid(retried.g);
 assert.deepEqual(clone(retried.g.s.marketCarts),s33.marketCarts);
-console.log('PASS genuine v33 schema 32 wins over v29; physical banknote UIDs, two merchant receipts, repair draft, registered manual and pending job survive v35 migration. Old writers cannot roll back cash or duplicate completion. Both source bytes survive quota and retry.');
+console.log('PASS genuine v33 schema 32 wins over v29; physical banknote UIDs, two merchant receipts, repair draft, registered manual and pending job survive v36 migration. Old writers cannot roll back cash or duplicate completion. Both source bytes survive quota and retry.');
 
 // The genuine v0.55 export is a live sortie with the pump answer, the old
 // clinic job, physical cash, and the market records restored through its UI.
@@ -100,15 +100,15 @@ assert.equal(interrupted.has(v12),false);
 for(const [key,value] of sourceKeys)assert.equal(interrupted.get(key),value);
 delete interrupted.set;
 const recovered=boot(interrupted,clock55);
-const changedOnlyHeader=s=>{const data=clone(s);delete data.version;delete data.revision;return data;};
-assert.equal(recovered.g.s.version,35);
+const changedOnlyHeader=s=>{const data=clone(s);delete data.version;delete data.revision;delete data.writerBuild;return data;};
+assert.equal(recovered.g.s.version,36);
 assert.deepEqual(changedOnlyHeader(recovered.g.s),changedOnlyHeader(s55));
 assert.equal(recovered.g.check(shipped55),true);
 valid(recovered.g);
-const v35Bytes=interrupted.get(v12),stable34=interrupted.get(previous34);
+const v36Bytes=interrupted.get(v12),stable34=interrupted.get(previous34);
 const unrelated=clone(s55);unrelated.career.order=null;unrelated.objectivePin=null;
 unrelated.revision+=50;interrupted.set(previous34,JSON.stringify(unrelated));
-assert.equal(interrupted.get(v12),v35Bytes);
+assert.equal(interrupted.get(v12),v36Bytes);
 
 const retry35=boot(interrupted,clock55);
 assert.deepEqual(changedOnlyHeader(retry35.g.s),changedOnlyHeader(s55));
@@ -126,4 +126,4 @@ assert.equal(paid.wallet,s55.wallet);
 const next35=boot(interrupted,clock55);
 assert.equal(next35.g.s.stash.rl_craft_dressing,paid.stash.rl_craft_dressing);
 assert.equal(next35.g.s.field.pumpGauge.answer,s55.field.pumpGauge.answer);
-console.log('PASS v0.55 source bytes preserved on failed and retried v35 migration; full live raid, answer/pin, wallet, receipt and production checkpoint preserved; legacy writer and same-generation revision conflict are isolated, due job credits once.');
+console.log('PASS v0.55 source bytes preserved on failed and retried v36 migration; full live raid, answer/pin, wallet, receipt and production checkpoint preserved; legacy writer and same-generation revision conflict are isolated, due job credits once.');

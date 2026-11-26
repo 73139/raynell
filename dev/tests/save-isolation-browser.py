@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DOC = (ROOT / "index.html").read_bytes()
 FIXTURE = json.loads((ROOT/"tests/fixtures/pump-gauge-v55.json").read_text())
 OLD_KEY = "rl-reboot-session-v34"
-KEY = "rl-reboot-session-v35"
+KEY = "rl-reboot-session-v36"
 LIVE = os.getenv("RUSTLINE_URL")
 BASE = urldefrag(LIVE or "https://rustline-save-handoff.test/").url
 CLOCK = datetime.fromtimestamp((FIXTURE["session"]["field"]["pumpGauge"]["readAt"]+1000)/1000, timezone.utc)
@@ -37,7 +37,7 @@ def state(p, key=KEY):
 
 
 def content(s):
-    return {k:v for k,v in s.items() if k not in ("version","revision")}
+    return {k:v for k,v in s.items() if k not in ("version","revision","writerBuild")}
 
 
 def writer(p, expected):
@@ -90,12 +90,12 @@ def suite(browser, legacy):
             localStorage.setItem('rl-reboot-session-v34',seed);
             if(sessionStorage.getItem('retry')===null){sessionStorage.setItem('retry','1');
               const set=Storage.prototype.setItem;
-              Storage.prototype.setItem=function(k,v){if(k==='rl-reboot-session-v35')throw new DOMException('test','QuotaExceededError');
+              Storage.prototype.setItem=function(k,v){if(k==='rl-reboot-session-v36')throw new DOMException('test','QuotaExceededError');
                 return set.call(this,k,v)}}})(%s)"""%json.dumps(seed))
         p=visit(ctx,"current","map");writer(p,True)
         assert raw(p,KEY) is None and raw(p,OLD_KEY)==seed
         p.reload();writer(p,True)
-        assert state(p)["version"]==35 and content(state(p))==content(FIXTURE["session"])
+        assert state(p)["version"]==36 and content(state(p))==content(FIXTURE["session"])
         assert raw(p,OLD_KEY)==seed
         print("PASS real v0.55 export remained intact after denied first write; reload migrated the complete checkpoint.",flush=True)
 
@@ -146,12 +146,12 @@ def suite(browser, legacy):
         assert content(state(newer))==content(winner)
         click(newer,".shell-settings")
         with newer.expect_download() as ev:click(newer,'[data-backup="export"]')
-        assert ev.value.suggested_filename=="Rustline_save_v35.json"
-        exported=json.loads(Path(ev.value.path()).read_text());assert exported["session"]["version"]==35
+        assert ev.value.suggested_filename=="Rustline_save_v36.json"
+        exported=json.loads(Path(ev.value.path()).read_text());assert exported["session"]["version"]==36
     with open_context(browser,legacy) as restored:
         p=visit(restored,"current","map");writer(p,True);import_file(p,exported)
         assert content(state(p))==content(exported["session"])
-        print("PASS same-generation lock handoff and native v35 backup round-trip retained the recorded gauge, current raid, receipts, cash and pending production.",flush=True)
+        print("PASS same-generation lock handoff and native v36 backup round-trip retained the recorded gauge, current raid, receipts, cash and pending production.",flush=True)
 
 
 if __name__=="__main__":

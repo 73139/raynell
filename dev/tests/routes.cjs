@@ -146,7 +146,7 @@ async function oldTravels(){
       assert.ok(!g.routeProfile(0,2).items.some(row=>row.tpl===id),'old-only supply must survive migration');
     }
     assert.equal(j.supply,raw.field.journey.supply);assert.equal(j.event,raw.field.journey.event);
-    const backup=await b.exportData();assert.equal(backup.session.version,35);valid(g);
+    const backup=await b.exportData();assert.equal(backup.session.version,36);valid(g);
     const recovered=boot({},b.clock);await recovered.g.importFile(new Blob([JSON.stringify(backup)]));
     assert.deepEqual(clone(recovered.g.s.field.journey),clone(j));
     const f=boot({},b.clock);await f.g.importFile(new Blob([JSON.stringify({format:'rustline-tc01',session:raw})]));

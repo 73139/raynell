@@ -36,7 +36,7 @@ def scenario(browser, width, order):
                 button.click()
 
         def saved():
-            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
         def finish():
             action=saved()["field"]["action"]

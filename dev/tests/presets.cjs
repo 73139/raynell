@@ -4,7 +4,7 @@ const legacyGearShape = require('./legacy-gear-shape.js');
 const {assert, boot, clone, extract, finish, go, valid} = require('./game-fixture.cjs');
 const legacy = require('./fixtures/presets-v20.json');
 const oldKey = 'rl-reboot-session-v20';
-const saveKey = 'rl-reboot-session-v35';
+const saveKey = 'rl-reboot-session-v36';
 const alpha = '야간 조명';
 const bravo = '관측 통신';
 const baseWorn = {back:'issued_pack',primary:'rl10_carbine'};
@@ -48,7 +48,7 @@ function beforeAfter(b,fn) {
 }
 async function mixedStockAndRecovery() {
   const b = legacyBoot(), g=b.g, initial=totals(g.s);
-  assert.equal(g.s.version,35);
+  assert.equal(g.s.version,36);
   assert.deepEqual(clone(g.presetBook),[null,null]);
   assert.deepEqual(clone(g.s.objectivePin),legacy.session.objectivePin);
   assert.equal(b.storage.get(oldKey),JSON.stringify(legacy.session));
@@ -111,7 +111,7 @@ async function activeVersion20Transfers() {
         const data={format:'rustline-tc01',session:raw};assert.ok(g.check(data));
         await g.importFile(new Blob([JSON.stringify(data)]));
       }
-      assert.equal(g.s.version,35);assert.deepEqual(clone(g.presetBook),[null,null]);
+      assert.equal(g.s.version,36);assert.deepEqual(clone(g.presetBook),[null,null]);
       assert.deepEqual(clone(g.s.equipment.modules),{});
       assert.deepEqual(legacyGearShape(g.s.field),{...raw.field,modules:{},lootLocks:{raidId:raw.raid.startedAt,legacy:true,unlocked:[]}});
       for(const key of ['raid','stash','stashSlots','objectivePin','wallet','career'])

@@ -9,7 +9,7 @@ from playwright.sync_api import expect, sync_playwright
 HTML = (Path(__file__).resolve().parents[1] / "index.html").read_bytes()
 LIVE = os.getenv("RUSTLINE_URL")
 URL = urldefrag(LIVE or "https://rustline-med-progress.test/").url
-SAVE = "rl-reboot-session-v35"
+SAVE = "rl-reboot-session-v36"
 
 
 def scenario(browser, roll, width):

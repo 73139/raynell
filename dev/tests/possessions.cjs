@@ -38,7 +38,7 @@ function checkCounts(g) {
 }
 async function warehouseAndMigration(){
   const original=legacy(), b=boot({[oldKey]:original}),{g}=b;
-  valid(g);assert.equal(g.s.version,35);
+  valid(g);assert.equal(g.s.version,36);
   assert.deepEqual(clone(g.s.objectivePin),{kind:'contract',id:'supply-pantry'});
   assert.equal(b.storage.get(oldKey),JSON.stringify(original));
   assert.equal(g.searchOwned('식량 보관함').length,2);

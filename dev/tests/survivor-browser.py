@@ -18,7 +18,7 @@ from playwright.sync_api import expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 URL = urldefrag(os.getenv('RUSTLINE_URL') or (ROOT / 'index.html').as_uri()).url
-KEY = 'rl-reboot-session-v35'
+KEY = 'rl-reboot-session-v36'
 LEGACY = ROOT / 'tests/fixtures/survivor-v22-route.json'
 helpers = runpy.run_path(str(ROOT / 'tests/campaign-browser.py'))
 fit = helpers['fit']
@@ -113,7 +113,7 @@ def export_profile(p, path):
         p.locator('[data-backup="export"]').click()
     download.value.save_as(path)
     payload=json.loads(path.read_text())
-    assert payload['session']['version']==35
+    assert payload['session']['version']==36
     return payload
 
 

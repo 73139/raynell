@@ -250,7 +250,7 @@ def run_legacy(browser):
     try:
         shared['import_profile'](page,payload)
         s=snapshot(page)
-        assert s['version']==35 and s['wallet']==original['wallet']==21000
+        assert s['version']==36 and s['wallet']==original['wallet']==21000
         assert s['raid']==original['raid'] and s['injuryState']==original['injuryState']
         assert s['field']['bag']==original['field']['bag'] and s['field']['hp']==original['field']['hp']
         assert action(page)==saved

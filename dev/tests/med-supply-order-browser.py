@@ -48,7 +48,7 @@ def play(browser, html, width, site):
             activate(page.locator(selector + ":visible").first)
 
         def saved():
-            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
         click('[data-page="orders"]')
         offer = page.locator(f'[data-bui="order"][data-id="{ORDER}"]')

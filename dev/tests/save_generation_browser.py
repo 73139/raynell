@@ -13,7 +13,7 @@ from urllib.parse import urldefrag
 from playwright.sync_api import expect
 
 ROOT = Path(__file__).resolve().parents[1]
-CURRENT = 'rl-reboot-session-v35'
+CURRENT = 'rl-reboot-session-v36'
 PREVIOUS = 'rl-reboot-session-v32'
 EARLIER = 'rl-reboot-session-v29'
 PRESERVED = ('wallet','stash','stashSlots','equipment','cash','hideout','marketCarts','saleReceipts','career','lastSummary')
@@ -82,7 +82,7 @@ def v33_migration(browser, legacy_html=None):
             page=start_page(context,url+'#stash',begin,errors)
             page.wait_for_function('k=>!!localStorage.getItem(k)',arg=CURRENT)
             migrated=json.loads(raw(page,CURRENT))
-            assert migrated['version']==35
+            assert migrated['version']==36
             compare(migrated,old)
             assert raw(page,PREVIOUS)==sources[PREVIOUS] and raw(page,EARLIER)==sources[EARLIER]
             page.locator('[data-page="bunker"]:visible').first.click()
@@ -97,9 +97,9 @@ def v33_migration(browser, legacy_html=None):
             with page.expect_download() as stream:
                 page.locator('[data-backup="export"]').click()
             download=stream.value
-            assert download.suggested_filename=='Rustline_save_v35.json'
+            assert download.suggested_filename=='Rustline_save_v36.json'
             backup=json.loads(Path(download.path()).read_text())
-            assert backup['session']['version']==35
+            assert backup['session']['version']==36
             compare(backup['session'],done)
             saved=raw(page,CURRENT)
 
@@ -144,8 +144,8 @@ def v33_migration(browser, legacy_html=None):
             assert json.loads(raw(page,PREVIOUS))['revision']>old['revision']
             assert not errors,errors
             print('PASS v33 schema 32 and v29 originals, exact UIDs/coordinates and receipts, '
-                  '120-second v35 job with one output after reload, v35 backup, and '
-                  +('real v33 checkout while v35 reader stayed on its search.' if legacy_html
+                  '120-second v36 job with one output after reload, v36 backup, and '
+                  +('real v33 checkout while v36 reader stayed on its search.' if legacy_html
                     else 'stale v32 checkpoint write ignored.'),flush=True)
     finally:
         context.close()

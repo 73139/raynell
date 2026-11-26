@@ -12,7 +12,7 @@ HTML = (ROOT / "index.html").read_bytes()
 LIVE = os.getenv("RUSTLINE_URL")
 URL = urldefrag(LIVE or "https://rustline-pump.test/").url
 ORDER = "pump-gauge"
-KEY = "rl-reboot-session-v35"
+KEY = "rl-reboot-session-v36"
 
 
 def play(browser, width):

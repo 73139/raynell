@@ -13,7 +13,7 @@ from playwright.sync_api import expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 URL = urldefrag(os.getenv('RUSTLINE_URL') or (ROOT / 'index.html').as_uri()).url
-SAVE = 'rl-reboot-session-v35'
+SAVE = 'rl-reboot-session-v36'
 ROUTES = {
     (0, 1): ('배수로 옆길', 1, 8, 10, 25, ['water','bandage','food']),
     (0, 2): ('폐철도 화물선', 3, 30, 35, 27, ['battery','wire','tape']),

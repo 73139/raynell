@@ -39,7 +39,7 @@ def run_case(browser, mode, width):
                 button.click()
 
         def saved():
-            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
         if mode != "no-order":
             click('[data-page="orders"]')

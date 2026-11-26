@@ -54,7 +54,7 @@ def play(browser, width, clinic_only=False):
                 click(selector)
 
         def saved():
-            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
         panel = page.locator("[data-order-readiness]")
         free = panel.locator('[data-ready-site="0-7"]')

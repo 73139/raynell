@@ -24,7 +24,7 @@ shared = runpy.run_path(str(ROOT / 'tests/survivor-browser.py'))
 gear = runpy.run_path(str(ROOT / 'tests/gear-service-browser.py'))
 loot = runpy.run_path(str(ROOT / 'tests/loot-goals-browser.py'))
 at, snapshot, until = (shared[key] for key in ('at', 'snapshot', 'until'))
-KEY = 'rl-reboot-session-v35'
+KEY = 'rl-reboot-session-v36'
 FIXTURE = ROOT / 'tests/fixtures/injuries-v25-contact.json'
 
 
@@ -275,7 +275,7 @@ def run_legacy(browser):
     try:
         shared['import_profile'](p,data)
         new=snapshot(p)
-        assert new['version']==35 and new['field']['hp']==old['field']['hp']==84
+        assert new['version']==36 and new['field']['hp']==old['field']['hp']==84
         assert new['wallet']==old['wallet'] and new['raid']==old['raid']
         assert new['field']['bag']==old['field']['bag'] and new['field']['action']==old['field']['action']
         assert new['injuryState']['legacy'] and not new['injuryState']['events']

@@ -11,7 +11,7 @@ from playwright.sync_api import expect, sync_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 URL = urldefrag(os.getenv('RUSTLINE_URL') or (ROOT/'index.html').as_uri()).url
-KEY = 'rl-reboot-session-v35'
+KEY = 'rl-reboot-session-v36'
 
 
 def center(tile):

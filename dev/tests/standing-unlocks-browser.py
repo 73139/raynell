@@ -44,7 +44,7 @@ def progress(browser, width):
                 page.goto(URL+"#"+fragment,wait_until="domcontentloaded")
 
         def saved():
-            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v35'))")
+            return page.evaluate("JSON.parse(localStorage.getItem('rl-reboot-session-v36'))")
 
         def economy():
             s = saved()

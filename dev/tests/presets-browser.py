@@ -19,7 +19,7 @@ from playwright.sync_api import expect, sync_playwright
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURE = ROOT / 'tests/fixtures/presets-v20.json'
 URL = urldefrag(os.environ.get('RUSTLINE_URL') or (ROOT / 'index.html').as_uri()).url
-SAVE = 'rl-reboot-session-v35'
+SAVE = 'rl-reboot-session-v36'
 ALPHA = '야간 조명'
 BRAVO = '관측 통신'
 
@@ -213,7 +213,7 @@ def scenario(browser, width, folder):
             page.locator('[data-backup="export"]').click()
         backup = folder / f'presets-{width}.json'
         downloaded.value.save_as(backup)
-        assert json.loads(backup.read_text())['session']['version'] == 35
+        assert json.loads(backup.read_text())['session']['version'] == 36
         restored, fresh, fresh_errors = profile(browser, width)
         restore(fresh, backup)
         actual = read(fresh)

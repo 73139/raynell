@@ -1,6 +1,8 @@
 // The previous client can still own an open tab. Keep its checkpoint isolated.
-const SAVE_VERSION=35;
-const SAVE_KEY='rl-reboot-session-v35';
+const SAVE_VERSION=36;
+const SAVE_KEY='rl-reboot-session-v36';
+const SAVE35='rl-reboot-session-v35';
+const WRITER_BUILD=__WRITER_BUILD__; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -21,7 +23,7 @@ const SAVE12='rl-reboot-session-v12';
 const SAVE11='rl-reboot-session-v11';
 const SAVE10='rl-reboot-session-v10';
 // v0.33 also wrote schema 32. Earlier generations are sources, never write targets.
-const PREVIOUS_SAVE_KEYS=[SAVE34,SAVE32,SAVE29,SAVE28,SAVE27,SAVE26,SAVE25,SAVE24,SAVE23,SAVE22,SAVE21,SAVE20,SAVE19,SAVE18,SAVE17,SAVE16,SAVE12,SAVE11,SAVE10];
+const PREVIOUS_SAVE_KEYS=[SAVE35,SAVE34,SAVE32,SAVE29,SAVE28,SAVE27,SAVE26,SAVE25,SAVE24,SAVE23,SAVE22,SAVE21,SAVE20,SAVE19,SAVE18,SAVE17,SAVE16,SAVE12,SAVE11,SAVE10];
 function previousCheckpoint(){
   for(const key of PREVIOUS_SAVE_KEYS){
     const saved=getJSON(key);
@@ -31,6 +33,23 @@ function previousCheckpoint(){
 }
 let writer=false, revision=0, saveMessage='', settlementNeedsCommit=false;
 let lastCheckpointJSON=null;
+let updateRequired=false, releaseWriterLock=null;
+
+function newerCheckpoint(s){
+  return Boolean(s && (s.version>SAVE_VERSION || s.writerBuild>WRITER_BUILD ||
+    (s.version>=36 && (!Number.isSafeInteger(s.writerBuild)||s.writerBuild<1))));
+}
+
+function requireCurrentClient(s){
+  if(!newerCheckpoint(s))return !updateRequired;
+  updateRequired=true;writer=false;
+  document.documentElement.classList.add('read-only');
+  world.inert=true;inside.inert=true;
+  $('#save-upgrade').hidden=false;
+  $('#save-refresh').focus();
+  releaseWriterLock?.();
+  return false;
+}
 function readSession(current){
   if(current===undefined){
     try{
@@ -43,6 +62,7 @@ function readSession(current){
       current=lastCheckpointJSON?JSON.parse(lastCheckpointJSON):null;
     }
   }
+  if(!requireCurrentClient(current))return false;
   settlementNeedsCommit=false;
   const previous=current?null:previousCheckpoint(), snap=current||previous||getJSON(SAVE09);
   revision=current?.revision||0;
@@ -93,10 +113,10 @@ function readSession(current){
   prepareLandmarks();
   prepareSortie(true);
   migrateJourneySchedule(snap?.version ?? 0);
-  objectivePin = [17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,SAVE_VERSION].includes(snap?.version) ? normalizeObjectivePin(snap.objectivePin) : null;
-  loadOnboarding([19,20,21,22,23,24,25,26,27,28,29,32,34,SAVE_VERSION].includes(snap?.version) ? snap.onboarding : null, Boolean(snap || r || f));
+  objectivePin = [17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(snap?.version) ? normalizeObjectivePin(snap.objectivePin) : null;
+  loadOnboarding([19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(snap?.version) ? snap.onboarding : null, Boolean(snap || r || f));
 }
-function snapshot(){return {version:SAVE_VERSION,revision,marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...cashProjection(wallet),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
+function snapshot(){return {version:SAVE_VERSION,writerBuild:WRITER_BUILD,revision,marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...cashProjection(wallet),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
 function writeSession(){
   if(!writer)return false;
   const nextRevision = revision + 1;
@@ -104,6 +124,7 @@ function writeSession(){
     // A failed revision read is a failed transaction, even if writes still work.
     const raw=localStorage.getItem(SAVE_KEY),disk=JSON.parse(raw);
     lastCheckpointJSON=raw;
+    if(!requireCurrentClient(disk))return false;
     if((disk?.revision||0)!==revision){
       readSession(disk);saveMessage='다른 탭에서 저장한 최신 기록을 불러왔습니다.';return false;
     }
@@ -136,13 +157,17 @@ function setObjectivePin(requested) {
   return false;
 }
 function enableSession(){
-  writer=true;document.documentElement.classList.remove('read-only');readSession();
+  if(updateRequired)return;
+  writer=true;readSession();
+  if(updateRequired)return;
+  document.documentElement.classList.remove('read-only');
   if(raid)seedContainers();
   if(raid&&field.result==='expired'&&lastSummary?.raidId!==raid.startedAt)finishRaid('expired',raid.endsAt);
   reconcile();persist();if(view==='inside')renderKeep();
 }
 function startSession(){
   readSession();
+  if(updateRequired)return;
   let locks;
   try{locks=navigator.locks}catch{}
   if(!locks){enableSession();return}
@@ -151,8 +176,13 @@ function startSession(){
     // Keep one writer across an open v0.10 tab and later migrations.
     locks.request(SAVE10,async()=>{
       enableSession();
-      await new Promise(resolve=>window.addEventListener('pagehide',resolve,{once:true}));
-      writer=false;
+      if(!writer)return;
+      await new Promise(resolve=>{
+        releaseWriterLock=resolve;
+        window.addEventListener('pagehide',resolve,{once:true});
+      });
+      window.removeEventListener('pagehide',releaseWriterLock);
+      releaseWriterLock=null;writer=false;
     }).catch(()=>{if(!writer)enableSession()});
   }catch{enableSession()}
 }
@@ -171,14 +201,14 @@ function exportSave(){
   setTimeout(()=>URL.revokeObjectURL(url),10000);
 }
 function validateBackup(raw){
-  if(!raw||raw.format!=='rustline-tc01')return false;
+  if(!raw||raw.format!=='rustline-tc01'||newerCheckpoint(raw.session))return false;
   const s=raw.session, dict=o=>o&&typeof o==='object'&&!Array.isArray(o);
   const integer=(n,min=0,max=Number.MAX_SAFE_INTEGER)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
   const id=x=>typeof x==='string'&&Object.hasOwn(GOODS,x);
   const sizedTile=(o,maxX,maxY)=>dict(o)&&id(o.g)&&typeof o.uid==='string'&&/^[a-z0-9_-]{1,100}$/i.test(o.uid)&&integer(o.x,0,maxX)&&integer(o.y,0,maxY)&&integer(o.w,1,20)&&integer(o.h,1,20);
   const tile=o=>sizedTile(o,40,40);
-  if(!dict(s)||![10,11,12,16,17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,SAVE_VERSION].includes(s.version)||!integer(s.wallet)||!dict(s.stash)||!Object.entries(s.stash).every(([k,n])=>id(k)&&integer(n,1))||!Array.isArray(s.stashSlots))return false;
-  if ([19,20,21,22,23,24,25,26,27,28,29,32,34,SAVE_VERSION].includes(s.version) && (!validOnboardingCheckpoint(s.onboarding) ||
+  if(!dict(s)||![10,11,12,16,17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(s.version)||!integer(s.wallet)||!dict(s.stash)||!Object.entries(s.stash).every(([k,n])=>id(k)&&integer(n,1))||!Array.isArray(s.stashSlots))return false;
+  if ([19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(s.version) && (!validOnboardingCheckpoint(s.onboarding) ||
       (s.onboarding.mode === 'completed' && !(Array.isArray(s.contracts?.supply?.done) &&
         s.contracts.supply.done.includes(ONBOARDING_QUEST))))) return false;
   const level=s.hideout?.levels?.stash??0;
@@ -260,16 +290,26 @@ async function importSave(file){
   if(!file||!writer)return;
   const originalRevision = revision;
   let data;
-  try{if(file.size>4000000)throw Error();data=JSON.parse(await file.text());if(!validateBackup(data))throw Error()}
+  try{
+    if(file.size>4000000)throw Error();
+    data=JSON.parse(await file.text());
+    if(data?.format==='rustline-tc01' && newerCheckpoint(data.session)){
+      saveMessage='이 백업은 최신 버전의 게임에서 복원할 수 있습니다. 최신 게임을 열어 다시 선택하세요.';renderKeep();return;
+    }
+    if(!validateBackup(data))throw Error();
+  }
   catch{saveMessage='읽을 수 없는 백업입니다. 러스트라인 게임에서 내보낸 호환 백업 파일을 선택하세요.';renderKeep();return}
   if(!writer)return;
-  const disk = getJSON(SAVE_KEY);
-  if (originalRevision !== revision || (disk && disk.revision !== revision)) {
-    readSession();saveMessage='플레이 기록이 갱신되었습니다. 확인한 뒤 백업 파일을 다시 선택하세요.';renderKeep();return;
+  function readyToReplace(){
+    const disk=JSON.parse(localStorage.getItem(SAVE_KEY));
+    if(!requireCurrentClient(disk))return false;
+    if(originalRevision===revision && (disk?.revision||0)===revision)return true;
+    readSession();saveMessage='플레이 기록이 갱신되었습니다. 확인한 뒤 백업 파일을 다시 선택하세요.';renderKeep();return false;
   }
-  if(!confirm('현재 플레이 기록을 선택한 백업으로 교체할까요?'))return;
-  try{localStorage.setItem(SAVE_KEY,JSON.stringify({...data.session,revision:revision+1}))}
-  catch{saveMessage='브라우저가 저장을 허용하지 않았습니다.';renderKeep();return}
+  try{
+    if(!readyToReplace() || !confirm('현재 플레이 기록을 선택한 백업으로 교체할까요?') || !readyToReplace())return;
+    localStorage.setItem(SAVE_KEY,JSON.stringify({...data.session,writerBuild:WRITER_BUILD,revision:revision+1}));
+  }catch{saveMessage='브라우저가 저장을 허용하지 않았습니다.';renderKeep();return}
   readSession();
   if(raid)seedContainers();
   else if(data.session.version>=27 && Number.isInteger(data.session.plannedDepartureZone)){
@@ -279,6 +319,7 @@ async function importSave(file){
 }
 document.addEventListener('click',e=>{
   if(writer)return;
+  if(updateRequired && e.target.closest('#save-refresh')){location.reload();return;}
   if(e.target.closest('button,input,select')){e.stopImmediatePropagation();e.preventDefault()}
 },true);
 document.addEventListener('drop',e=>{if(!writer){e.preventDefault();e.stopImmediatePropagation()}},true);
