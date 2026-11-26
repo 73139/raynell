@@ -44,3 +44,11 @@
 }
 
 @media(max-width:440px){#inside .foot .nav [data-page="journal"]{display:none}}
+
+/* Allow user-enlarged labels to wrap as whole buttons without covering a neighbouring destination. */
+@media (max-width:760px){
+  #inside .foot .nav{flex-wrap:wrap}
+  #inside .foot .nav button{min-width:max-content}
+  #inside .shell-readouts{min-width:0;max-width:100%;flex-wrap:wrap;justify-content:flex-end}
+  #inside #shell-wallet{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+}
