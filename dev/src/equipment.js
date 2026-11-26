@@ -211,6 +211,21 @@ function rationUseText(q){
   return q.gain?q.label+' '+q.before+' → '+q.after+' · 실효 +'+q.gain+(q.waste?' · 초과 '+q.waste:''):
     q.label+' '+q.before+' · 최대 · 소모 없음';
 }
+// Advisory only: the selected physical ration is not reserved or locked.
+function rationDeliveryPreview(unit,q){
+  if(!q||!isActive()||!objectivePin)return '';
+  const objective=resolveObjective();
+  if(!objective||!['contract','daily','weekly'].includes(objective.source.kind))return '';
+  const material=objective.materials.find(row=>row.id===unit.g);
+  if(!material||!matchesDeliveryUnit(unit,material.id))return '';
+  const available=material.usable+material.fieldUsable;
+  const before=Math.max(0,material.required-available);
+  const after=Math.max(0,material.required-available+Number(q.gain>0));
+  const detail=!q.gain?'회복량 0 · 소모 없음':after>before?'사용하면 납품 부족량이 늘어납니다.':'사용 후에도 이 품목의 필요 수량을 충족합니다.';
+  return '<p class="obj-risk" data-ration-delivery="'+esc(unit.uid)+'" data-before="'+before+'" data-after="'+after+'">'+
+    '고정 의뢰 · '+esc(objective.title)+' · '+esc(kitName(unit.g))+' 필요 '+material.required+'개 · 벙커 납품 가능 '+material.usable+
+    '개 · 현장 가방 납품 가능 '+material.fieldUsable+'개 · 생환 시 부족 '+before+' → '+after+'개 · '+detail+'</p>';
+}
 function rationUnitLocation(unit,k=field){
   return (k.worn?.back?'가방':'주머니')+' '+(unit.y+1)+'행 '+(unit.x+1)+'열';
 }
@@ -231,7 +246,7 @@ function equipmentSelectionActions(o){
   if(!o||picked?.side!=='bag'||!raid||field.result)return '';
   const slot=kitSlot(o.g),effect=kitSupply(o.g),busy=Boolean(field.action),disabled=busy||Boolean(field.contact||field.journey);
   const ration=rationRecovery(o.g);
-  return (ration?'<p data-ration-preview="'+esc(o.uid)+'">'+esc(rationUnitLocation(o))+' · '+rationUseText(ration)+esc(rationUseHint(ration))+'</p>':'')+(slot?gearButton('wear-bag',KIT_SLOTS[slot].label+' 장착',{unit:o.uid},disabled):'')+
+  return (ration?'<p data-ration-preview="'+esc(o.uid)+'">'+esc(rationUnitLocation(o))+' · '+rationUseText(ration)+esc(rationUseHint(ration))+'</p>'+rationDeliveryPreview(o,ration):'')+(slot?gearButton('wear-bag',KIT_SLOTS[slot].label+' 장착',{unit:o.uid},disabled):'')+
     (effect?gearButton('consume',ration?(ration.gain?effect.label+' +'+ration.gain+' 사용':'최대 · 사용 불가'):effect.label+' +'+effect.gain+' 사용',{unit:o.uid},busy||((field[effect.stat]??100)>=100 && !(effect.stat==='hp' && hasInjury()))):'')+
     gearButton('drop','바닥에 놓기',{unit:o.uid},disabled);
 }
