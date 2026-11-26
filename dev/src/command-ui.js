@@ -95,6 +95,23 @@ function commandMapAction(selected){
   return `<button class="command-deploy" data-field="move" data-index="${selected}">${commandIcon('forward')}이동 시작 · ${routeTimeLabel(raid.zone,selected)}</button>`;
 }
 
+function surveyMapJournal(zone){
+  const logged=new Set(career.surveyedBoxes||[]),area=FIELD_ZONES[zone];
+  const total=area.boxes.length,done=area.boxes.reduce((n,_,i)=>n+Number(logged.has(boxKey(zone,i))),0);
+  const rows=LANDMARKS[zone].map(point=>{
+    const boxes=point.boxes.map(index=>{
+      const key=boxKey(zone,index),recorded=logged.has(key);
+      const lock=lootLockView(zone,index);
+      const access=!lock?'':lock.unlocked?'이번 출격 개방':esc(lock.keyName)+(lock.carried?' · 휴대 중':' 필요');
+      return '<li data-survey-box="'+key+'" data-recorded="'+recorded+'"><span>'+esc(area.boxes[index][0])+
+        (access?'<small class="survey-access">'+access+'</small>':'')+'</span><span>'+(recorded?'기록 완료':'미기록')+'</span></li>';
+    }).join('');
+    return '<li><h3>'+esc(point.name)+'</h3><ul>'+boxes+'</ul></li>';
+  }).join('');
+  return '<details class="survey-map-journal" data-survey-journal="'+zone+'"><summary>'+esc(area.name)+' 수색 수첩 · '+done+' / '+total+'개</summary>'+
+    '<p>상자를 끝까지 수색하고 생환하면 기록됩니다. 같은 상자를 다시 조사해도 한 곳으로 셉니다.</p><ul class="survey-sites">'+rows+'</ul></details>';
+}
+
 function sectorMapPage(){
   const objective=resolveObjective();
   const selected=commandZoneSelection(),meta=COMMAND_ZONES[selected],area=FIELD_ZONES[selected];
@@ -112,5 +129,5 @@ function sectorMapPage(){
       <div class="command-route-info"><div>${commandIcon('pin')}<span>랜드마크</span><b>${LANDMARKS[selected].length}곳</b></div><button type="button" class="cmd-route-choice route-overview-link" data-cui="forecast">${weatherIcon('clear')}<span>권역별 기상 예보</span><b aria-hidden="true">↓</b></button>${brief}</div>
       ${commandMapAction(selected)}
     </section>
-  </section>${weatherBoard(selected)}${lootPlanLink(selected)}${survivorNavLink()}${compare}${objectivePanel('map',objective)}`;
+  </section>${weatherBoard(selected)}${surveyMapJournal(selected)}${lootPlanLink(selected)}${survivorNavLink()}${compare}${objectivePanel('map',objective)}`;
 }

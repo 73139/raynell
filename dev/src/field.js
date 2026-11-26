@@ -21,12 +21,15 @@ function matchesOrderRecovery(unit,{item,sources}){
 function countOrderRecovery(order){
   return field.bag.filter(unit=>matchesOrderRecovery(unit,order.recovery)).length;
 }
+function fullySearchedAt(sortie,zone,index){
+  if(!sortie?.found?.[zone]?.includes(index))return false;
+  const box=sortie.boxes?.[boxKey(zone,index)];
+  return Boolean(box?.complete===true&&Array.isArray(box.items)&&box.items.every(unit=>unit?.revealed===true));
+}
 function orderInspectionSites(order,sortie=field){
   return order.inspections.map(({zone,landmark,boxOrdinal})=>{
     const index=LANDMARKS[zone][landmark].boxes[boxOrdinal];
-    const box=sortie?.boxes?.[boxKey(zone,index)];
-    const complete=Boolean(sortie?.found?.[zone]?.includes(index) && box?.complete===true &&
-      Array.isArray(box.items) && box.items.every(unit=>unit.revealed===true));
+    const complete=fullySearchedAt(sortie,zone,index);
     return {zone,landmark,index,complete};
   });
 }
@@ -54,6 +57,47 @@ function sampleInspection(order, sortie, bag) {
   const carried = (bag || []).some(unit => unit.g === order.sample.item);
   return {site, carried, count:Number(site.complete) + Number(carried)};
 }
+// Stable zone-and-container keys are already used by the outing's found and searched records.
+function surveySite(key){
+  if(typeof key!=='string'||!/^([0-2])-(0|[1-9]\d*)$/.test(key))return null;
+  const [zone,index]=key.split('-').map(Number),site=FIELD_ZONES[zone]?.boxes?.[index];
+  return site?{key,zone,index,name:site[0]}:null;
+}
+function validSurveyList(keys){
+  return Array.isArray(keys)&&keys.length<=FIELD_ZONES.reduce((n,z)=>n+(z.boxes?.length||0),0)&&
+    new Set(keys).size===keys.length&&keys.every(key=>Boolean(surveySite(key)));
+}
+function completedSurveyKeys(sortie){
+  if(!Array.isArray(sortie?.found))return [];
+  const visited=new Set();
+  for(const [zone,indices] of sortie.found.entries()){
+    if(!Array.isArray(indices))continue;
+    for(const index of indices){
+      const key=boxKey(zone,index);
+      if(surveySite(key)&&fullySearchedAt(sortie,zone,index))visited.add(key);
+    }
+  }
+  return [...visited];
+}
+function recordReturnedSurveys(sortie){
+  const prior=new Set(career.surveyedBoxes||[]),fresh=completedSurveyKeys(sortie).filter(key=>!prior.has(key));
+  if(fresh.length)career.surveyedBoxes=[...prior,...fresh];
+  return fresh;
+}
+function validSurveyBackup(s){
+  const keys=s.career?.surveyedBoxes,arrivals=s.lastSummary?.newSurveyBoxes;
+  if(keys!==undefined&&!validSurveyList(keys))return false;
+  if(arrivals===undefined)return true;
+  return validSurveyList(arrivals)&&arrivals.length>0&&s.lastSummary.result==='success'&&['success','quick'].includes(s.lastSummary.rating)&&
+    arrivals.length<=s.lastSummary.searched&&arrivals.every(key=>keys?.includes(key));
+}
+function surveySummaryMarkup(summary){
+  const rows=summary?.newSurveyBoxes;
+  if(!rows?.length||!validSurveyList(rows))return '';
+  return '<details class="field-section survey-return" data-survey-return><summary>수색 수첩에 새로 기록한 상자 '+rows.length+'개</summary><ul>'+
+    rows.map(key=>{const site=surveySite(key);return '<li>'+esc(FIELD_ZONES[site.zone].name)+' · '+esc(site.name)+'</li>'}).join('')+'</ul></details>';
+}
+
 function orderUnlocked(order, done=career.done, reply, clinic) {
   if(order.afterWard && !paidWardDelivery(clinic===undefined?hideout:clinic))return false;
   if(order.afterReply && !(reply===undefined?finaleState.reply:reply))return false;
@@ -113,7 +157,7 @@ function readCareer(raw={},reply=null,clinic=null) {
   const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed,reply,clinic) &&
     (q.id!==WARD_FIELD_ID || wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)) &&
     (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
-  career = {...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  career = {...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
     done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply,clinic))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
@@ -315,6 +359,10 @@ function reconcileEnd(result,at,exit=null){
   career.sorties++;career.xp+=earned+missionXp;career.victories+=victories;
   const summary={raidId:raid.startedAt,result,rating,exit:exit?.name||null,elapsed,goods,cost,visited,searched,victories,
     worn,earned,commission,missionXp,orderName,contractUpdates,gearReport,...(carriedCash?{carriedCash}:{})};
+  if(returned){
+    const discoveries=recordReturnedSurveys(field);
+    if(discoveries.length)summary.newSurveyBoxes=discoveries;
+  }
   settleInjuries(summary);
   delete field.gearUsage;delete field.legacyEngagement;
   const survivorSortie=survivorState.active?.raidId===raid.startedAt;
@@ -380,7 +428,7 @@ function resultPage(){
   const counts={};
   for(const id of r.goods||[])if(Object.hasOwn(GOODS,id))counts[id]=(counts[id]||0)+1;
   return head('AFTER ACTION REPORT',label,returned?'휴대 물품을 벙커로 회수했습니다.':'이번 출격의 휴대 물품과 착용 장비를 잃었습니다.')+
-    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
+    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
