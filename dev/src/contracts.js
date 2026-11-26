@@ -27,6 +27,7 @@ function validTraderRecord(traderId, record) {
   if (quest?.trader !== traderId || !Array.isArray(locations) || new Set(locations).size !== locations.length) return false;
   if (!locations.every(key => typeof key === 'string' && /^[0-2]-(0|[1-9]\d*)$/.test(key) &&
       quest.goals.some(goal => contractBoxMatches(goal, key)))) return false;
+  if (!validDockContractProof(quest, active)) return false;
   return !record.done.includes(quest.id) &&
     points >= CONTRACT_TIERS[quest.tier - 1] && Array.isArray(active.progress) &&
     active.progress.length === quest.goals.length && active.progress.every((value, i) =>
@@ -36,11 +37,32 @@ function validTraderRecord(traderId, record) {
         locations.filter(key => contractBoxMatches(quest.goals[i], key)).length)));
 }
 
-function validContractsBackup(raw) {
+// The receipt follows the equipment serial, not a reusable container tile identifier.
+function validDockContractProof(quest, active) {
+  const i=quest.goals.findIndex(g=>g.type==='dock-cycle');
+  const proof=active.dockProof;
+  if(i<0)return proof===undefined;
+  const n=active.progress?.[i];
+  if(n===0)return proof===undefined;
+  if((n!==1&&n!==2)||!proof||Array.isArray(proof)||!DOCK_CACHE_ITEMS.includes(proof.g)||
+    typeof proof.uid!=='string'||!/^[a-z0-9_-]{1,140}$/i.test(proof.uid)||
+    !Number.isSafeInteger(proof.raidId)||proof.raidId<=0||
+    Object.keys(proof).some(k=>!['raidId','g','uid','returnedRaidId'].includes(k)))return false;
+  return n===1?proof.returnedRaidId===undefined:
+    Number.isSafeInteger(proof.returnedRaidId)&&proof.returnedRaidId>0&&proof.returnedRaidId!==proof.raidId;
+}
+function validContractsBackup(raw, summary) {
   if (raw === undefined) return true; // Compatible with pre-trader saves.
   return raw && typeof raw === 'object' && !Array.isArray(raw) &&
     Object.keys(raw).length === MARKET_TRADERS.length &&
-    MARKET_TRADERS.every(trader => validTraderRecord(trader.id, raw[trader.id]));
+    MARKET_TRADERS.every(trader => {
+      const record=raw[trader.id];
+      if(!validTraderRecord(trader.id,record))return false;
+      const proof=record.active?.dockProof;
+      if(!proof||proof.returnedRaidId!==undefined)return true;
+      return summary?.raidId===proof.raidId&&summary.dockCacheOutcome==='booked'&&
+        Array.isArray(summary.gearReport)&&summary.gearReport.some(row=>row.disposition==='stored'&&row.uid===proof.uid&&row.g===proof.g);
+    });
 }
 
 function loadTraderContracts(raw) {
@@ -63,6 +85,7 @@ function contractGoalLabel(goal) {
     case 'visits': return location + ' 방문 후 생환';
     case 'victories': return '경비 기체를 무력화하고 생환';
     case 'regions': return '한 레이드에서 여러 권역을 방문하고 생환';
+    case 'dock-cycle': return '도크 보관·리프트 귀환 → 다음 출격 동일 장비 회수·생환';
   }
 }
 
@@ -107,12 +130,39 @@ function contractRaidAmount(goal, rating, newLocations) {
 
 // Called in the same settlement as the returned gear and before the raid is closed.
 // All field objectives use completed, survived raids. Each raid is settled once.
-function settleTraderContracts(rating) {
+function settleDockContract(active,index,rating,exit) {
+  const previous=active.progress[index];
+  if(previous===2)return;
+  const survived=rating==='success'||rating==='quick';
+  const proof=active.dockProof;
+  if(previous===1){
+    // Only the next outing can close a booking. A different item/model or a lost
+    // original cannot satisfy this receipt, even when the player survives.
+    if(survived&&proof&&lastSummary?.raidId===proof.raidId&&lastSummary.dockCacheOutcome==='booked'&&
+       raid.startedAt!==proof.raidId&&field.bag.some(u=>u.g===proof.g&&u.gear?.uid===proof.uid)){
+      active.progress[index]=2;
+      active.dockProof={...proof,returnedRaidId:raid.startedAt};
+      return;
+    }
+    active.progress[index]=0;
+    delete active.dockProof;
+  }
+  if(survived&&exit?.rule==='cargo'&&dockCache?.stage==='pending'&&dockCache.depositRaidId===raid.startedAt){
+    const gear=dockCache.unit.gear;
+    active.progress[index]=1;
+    active.dockProof={raidId:raid.startedAt,g:gear.g,uid:gear.uid};
+  }
+}
+function settleTraderContracts(rating,exit) {
   const updates = [];
-  if (rating !== 'success' && rating !== 'quick') return updates;
+  const survived=rating==='success'||rating==='quick';
   for (const {active} of Object.values(traderContracts)) {
     if (!active) continue;
     const quest = CONTRACT_BY_ID.get(active.id);
+    if(!survived){
+      quest.goals.forEach((goal,i)=>{if(goal.type==='dock-cycle')settleDockContract(active,i,rating,exit);});
+      continue;
+    }
     const knownLocations = new Set(active.locations);
     const newLocations = Object.keys(field.boxes).filter(key => field.boxes[key].complete && !knownLocations.has(key) &&
       quest.goals.some(goal => contractBoxMatches(goal, key)));
@@ -120,6 +170,12 @@ function settleTraderContracts(rating) {
     const changes = [];
     quest.goals.forEach((goal, i) => {
       if (goal.type === 'delivery') return;
+      if(goal.type==='dock-cycle'){
+        const previous=active.progress[i];
+        settleDockContract(active,i,rating,exit);
+        if(active.progress[i]>previous)changes.push({i,added:active.progress[i]-previous});
+        return;
+      }
       const amount = contractRaidAmount(goal, rating, newLocations);
       const total = goal.type === 'regions' ? Math.max(active.progress[i], amount) : active.progress[i] + amount;
       const previous = active.progress[i];
