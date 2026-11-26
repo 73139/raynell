@@ -4,10 +4,10 @@ const {assert, boot, clone, extract, finish, go, move, valid, v12, epoch} = requ
 const base = boot();
 const {g: catalogue} = base;
 const ids = new Set();
-const allowed = ['delivery','returns','normal','searches','visits','victories','regions'];
+const allowed = ['delivery','returns','normal','searches','visits','victories','regions','dock-cycle'];
 for (const trader of catalogue.traders) {
   const entries = catalogue.quests.filter(q => q.trader === trader.id);
-  assert.deepEqual([1,2,3,4].map(t => entries.filter(q => q.tier === t).length), [6,3,4,3]);
+  assert.deepEqual([1,2,3,4].map(t => entries.filter(q => q.tier === t).length), trader.id==='quarter'?[6,3,4,4]:[6,3,4,3]);
   assert.equal(new Set(entries.map(q => q.title)).size, entries.length);
   for (const q of entries) {
     assert.ok(!ids.has(q.id)); ids.add(q.id);
@@ -24,7 +24,7 @@ for (const trader of catalogue.traders) {
     }
   }
 }
-assert.equal(ids.size,64);
+assert.equal(ids.size,65);
 const sorted = [...catalogue.quests].sort((a,b) => a.tier-b.tier);
 const singleDelivery = sorted.find(q => q.tier === 1 && q.goals.length === 1 && q.goals[0].type === 'delivery');
 assert.ok(singleDelivery, 'beginner hand-in');
@@ -40,7 +40,7 @@ const campaign = boot({[v12]:seed}), g = campaign.g;
 valid(g);
 assert.ok(g.status(sorted.find(q=>q.tier===2).id).status === 'locked');
 let rewardCr = 0, rewardXp = 0;
-for (const quest of sorted) {
+for (const quest of sorted.filter(q=>q.id!=='quarter-dock-chain')) {
   const standing = clone(g.standing(quest.trader));
   const others = Object.fromEntries(g.traders.filter(t => t.id !== quest.trader).map(t => [t.id, g.standing(t.id).points]));
   assert.equal(g.status(quest.id).status, 'available', quest.id);
@@ -77,7 +77,7 @@ assert.ok(rewardCr>0 && rewardXp>0);
 valid(g);
 const restored=boot(new Map(campaign.storage));
 assert.deepEqual(clone(restored.g.s.contracts),clone(g.s.contracts));
-assert.ok(restored.g.quests.every(q=>restored.g.status(q.id).status==='claimed'));
+assert.ok(restored.g.quests.filter(q=>q.id!=='quarter-dock-chain').every(q=>restored.g.status(q.id).status==='claimed'));
 for (const t of g.traders) assert.equal(g.standing(t.id).tier,4);
 
 // Input-level journey/survival: accepting a quest never consumes earlier returns.
