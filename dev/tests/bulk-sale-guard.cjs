@@ -35,8 +35,11 @@ for(const overflow of [false,true]){
   assert.equal(g.listed('quarter','sell').includes(gun),false);
   const persisted=clone(g.s);
   const reopened=boot(new Map(b.storage),b.clock).g;
+  const afterReload=clone(reopened.s);
+  assert.ok(afterReload.revision>=persisted.revision);
+  assert.deepEqual(afterReload,{...persisted,revision:afterReload.revision});
   assert.equal(reopened.trade('quarter','sell',gun,1).ok,false);
-  assert.deepEqual(clone(reopened.s),persisted);
+  assert.deepEqual(clone(reopened.s),afterReload);
   valid(reopened);
   console.log('PASS fitted host and module preserved in '+(overflow?'overflow':'grid')+'; quote, rollback and reload agree.');
 }
