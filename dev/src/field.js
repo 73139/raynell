@@ -150,7 +150,10 @@ const ORDERS = [
     cr:18000,xp:75,goal:'포장을 대조한 처치포 원본 휴대',target:1,progress:()=>Number(wardCheckCarried())},
   {id:'ward-shuttle',after:'ward-packing',image:'bunker-med',issuer:'윤서진 · 의무실',title:'의무 셔틀 시운전',
     text:'의무실에서 환승 정류장을 다시 엽니다. 첫 출격에서 폐쇄 검문소 대기 차량 행렬의 배차판을 조정하고 정상 탈출하세요. 다음 출격에서 확정한 노선의 출발 정류장에 호출을 넣고, 제한시간 안에 도착 정류장에서 응답한 뒤 정상 탈출하세요. 열쇠나 소모품은 필요 없습니다.',
-    get cr(){return shuttleRate().cr;},get xp(){return shuttleRate().xp;},goal:'1차 배차 확정 및 2차 시운전 도착 응답',target:2,progress:()=>shuttleProgress()}
+    get cr(){return shuttleRate().cr;},get xp(){return shuttleRate().xp;},goal:'1차 배차 확정 및 2차 시운전 도착 응답',target:2,progress:()=>shuttleProgress()},
+  {id:'ration-survey',after:'scout',image:'bunker-kitchen',issuer:'벙커 급양반',title:'원정 급양표',
+    text:'서로 다른 두 권역의 거점에서, 가방이나 주머니의 식량과 음료를 한 번씩 사용해 회복량을 측정하세요. 각각 실제로 5 이상, 두 번 합쳐 20 이상 회복하고 정상 탈출하면 수당을 받습니다. 같은 권역의 같은 종류는 가장 높은 기록 한 건만 남습니다. 길 위 보급은 측정하지 않습니다. 어느 권역에서 먼저 먹거나 마실지는 자유입니다.',
+    cr:36000,xp:125,goal:'서로 다른 두 권역에서 식량·음료로 회복한 합계',target:20,progress:()=>rationPair(field.rationUses)?.gain||0}
 ];
 let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={},reply=null,clinic=null) {
@@ -375,6 +378,7 @@ function reconcileEnd(result,at,exit=null){
     if(discoveries.length)summary.newSurveyBoxes=discoveries;
   }
   if(returned&&exit?.rule==='cargo')summary.liftGrams=kitBagGrams(field.bag);
+  if(order?.id===RATION_ORDER&&award.payable){const pair=rationPair(field.rationUses);summary.rationUses=[pair.meal,pair.drink];}
   settleInjuries(summary);
   delete field.gearUsage;delete field.legacyEngagement;
   const survivorSortie=survivorState.active?.raidId===raid.startedAt;
@@ -393,7 +397,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost, ...(summary.liftGrams!==undefined?{liftGrams:summary.liftGrams}:{}), ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.shuttle;delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.shuttle;delete field.rationUses;delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
@@ -440,7 +444,7 @@ function resultPage(){
   const counts={};
   for(const id of r.goods||[])if(Object.hasOwn(GOODS,id))counts[id]=(counts[id]||0)+1;
   return head('AFTER ACTION REPORT',label,returned?'휴대 물품을 벙커로 회수했습니다.':'이번 출격의 휴대 물품과 착용 장비를 잃었습니다.')+
-    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
+    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+rationReceipt(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+

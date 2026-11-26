@@ -8,7 +8,7 @@ const base=fs.readFileSync('index.html','utf8');
 const gridMethods=base.split('\n').filter(s=>/^function (fits|firstFit)\(/.test(s)).join('\n');
 const setup=`
 const GOODS=${JSON.stringify(goods)};
-const ICONS={},inside={addEventListener(){}},FIELD_ZONES=[{name:'A'},{name:'B'},{name:'C'}];
+const career={order:null},ICONS={},inside={addEventListener(){}},FIELD_ZONES=[{name:'A'},{name:'B'},{name:'C'}];
 let raid=null,field={bag:[],log:[]},picked=null,notice='',wallet=30000,stash={};
 function hideoutLevel(){return 0}function traderStanding(){return {tier:1}}function reconcile(){}function renderKeep(){}function persist(){}function esc(s){return s}function logField(s){field.log.unshift(s)}
 function ico(){return '<svg></svg>'}function head(c,t){return t}function money(n){return String(n)}function bagPanel(){return ''}function selectionPanel(){return ''}`;
@@ -71,7 +71,7 @@ const scenarios=[
  `]
 ];
 const context={assert,console};vm.createContext(context);
-vm.runInContext(setup+gridMethods+stash+eq+fs.readFileSync('src/market.js','utf8')+fs.readFileSync('src/exchange.js','utf8'),context);
+vm.runInContext(setup+gridMethods+stash+eq+fs.readFileSync('src/ration-survey.js','utf8')+fs.readFileSync('src/market.js','utf8')+fs.readFileSync('src/exchange.js','utf8'),context);
 for(const [name,script] of scenarios){
  vm.runInContext(script,context);console.log('PASS '+name);
 }

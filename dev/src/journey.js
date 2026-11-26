@@ -166,9 +166,7 @@ function roadSupplyPlacement(id){
   return kitFit(field.bag,raidBagSize(),{g:id,x:0,y:0,w:item[1],h:item[2]});
 }
 function roadSupplyRecovery(id){
-  const effect=kitSupply(id);
-  if(!effect||!['energy','water'].includes(effect.stat))return null;
-  return {...effect,gain:Math.min(effect.gain,Math.max(0,100-field[effect.stat]))};
+  return rationRecovery(id);
 }
 function handleJourneyField(d){
   const j=field.journey;

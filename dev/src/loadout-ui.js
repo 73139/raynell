@@ -131,7 +131,12 @@ function loQuickbar(kit){
   const data=loBindings(),available=id=>kit.bag.filter(u=>u.g===id).length;
   const assigning=Boolean(loAssign&&kit.bag.some(o=>o.g===loAssign));
   return '<section class="lo-quick"><div><strong>빠른 사용</strong><small>'+esc(assigning?kitName(loAssign)+' · 칸 선택':loClearBind?'해제할 칸 선택':'1 – 0')+'</small></div><div class="lo-keys">'+
-    data.map((id,i)=>'<button data-loadout="quick" data-index="'+i+'" class="'+(id?'bound':'')+'" aria-label="'+((i+1)%10)+'번 · '+esc(assigning?kitName(loAssign)+' 지정':id?kitName(id):'빈 칸')+'"><kbd>'+((i+1)%10)+'</kbd>'+(id?itemArt(id)+'<small>×'+available(id)+'</small>':'')+'</button>').join('')+'</div>'+
+    data.map((id,i)=>{
+      const unit=raid&&!assigning&&!loClearBind&&id?kit.bag.find(u=>u.g===id):null;
+      const ration=unit?rationRecovery(id,kit):null;
+      const description=ration?esc(rationUnitLocation(unit,kit)+' · '+rationUseText(ration)):'';
+      const hint=description?' title="'+description+'" aria-description="'+description+'"':'';
+      return '<button'+hint+' data-loadout="quick" data-index="'+i+'" class="'+(id?'bound':'')+'" aria-label="'+((i+1)%10)+'번 · '+esc(assigning?kitName(loAssign)+' 지정':id?kitName(id):'빈 칸')+'"><kbd>'+((i+1)%10)+'</kbd>'+(id?itemArt(id)+'<small>×'+available(id)+'</small>':'')+'</button>';}).join('')+'</div>'+
     (assigning?'<button data-loadout="assign-cancel">지정 취소</button>':data.some(Boolean)?'<button data-loadout="unbind" aria-pressed="'+loClearBind+'">'+(loClearBind?'해제 취소':'지정 해제')+'</button>':'')+'</section>';
 }
 function loResultLink(){
@@ -204,15 +209,16 @@ function healthView(){
   const unit=supplies.find(u=>u.g===selected),effect=unit?kitSupply(unit.g):null;
   const injury=injuryView(), wounded=injury.mode==='active'&&injury.parts.some(p=>p.status==='wounded');
   const targeted=wounded&&effect?.stat==='hp';
+  const ration=active&&unit?rationRecovery(unit.g,k):null;
   const vitals=[['hp','체력'],['energy','기력'],['water','수분']];
   const low=active?vitals.filter(([v])=>(field[v]??100)<40).map(([,label])=>label+' 부족'):[];
   return '<div class="loadout-ui lo-health">'+loHead('06','건강 상태',active?FIELD_ZONES[raid.zone].name:'B-04 벙커 · 출격 전',active?'<button data-page="raid">현장 복귀</button>':'')+loMsg()+
-    injuryHealthPanel()+(!active?injurySummaryMarkup(lastSummary,'최근 출격 부상·치료 기록'):'')+loLayout('health')+'<section class="lo-pane lo-condition">'+loTitle('생존 수치','','med')+'<div class="lo-health-body iw-vitals"><div class="lo-meters">'+
+    rationSurveyPanel()+injuryHealthPanel()+(!active?injurySummaryMarkup(lastSummary,'최근 출격 부상·치료 기록'):'')+loLayout('health')+'<section class="lo-pane lo-condition">'+loTitle('생존 수치','','med')+'<div class="lo-health-body iw-vitals"><div class="lo-meters">'+
     vitals.map(([v,label])=>{const value=active?field[v]??100:100;return '<div class="lo-meter"><small>'+label+'</small><b>'+value+' <span>/ 100</span></b><progress value="'+value+'" max="100" aria-label="'+label+'"></progress></div>';}).join('')+
     '<div class="lo-status"><small>상태 요약</small><b>'+esc(low.join(' · ')||'수치 안정')+'</b></div></div></div></section>'+loBag(k,active)+
     '<section class="lo-pane lo-meds">'+loTitle('가방 내 소모품',supplies.length+'개')+'<div class="lo-pane-body">'+
     (ids.length?'<div class="lo-med-grid">'+ids.map(id=>'<button data-loadout="medical" data-id="'+id+'" aria-pressed="'+(id===selected)+'">'+itemArt(id)+'<b>'+esc(kitName(id))+'</b><small>×'+supplies.filter(o=>o.g===id).length+'</small></button>').join('')+'</div>':'<p>가방에 의료품·음료·식량이 없습니다.</p><button data-page="'+(active?'raid':'inventory')+'">'+(active?'현장 수색':'보급품 준비')+'</button>')+
-    (unit?'<div class="lo-med-detail"><b>'+esc(kitName(selected))+'</b><p>'+effect.label+' +'+effect.gain+' · 사용 시 1개 소모</p>'+gearButton('consume',targeted?'치료할 부위 선택':'사용',{unit:unit.uid},!active||Boolean(field.action)||(!targeted&&(field[effect.stat]??100)>=100))+loBindButton(selected)+'</div>':'')+'</div></section></div>'+loQuickbar(k)+'</div>';
+    (unit?'<div class="lo-med-detail"><b>'+esc(kitName(selected))+'</b>'+ (ration?'<p data-ration-preview="'+esc(unit.uid)+'">'+esc(rationUnitLocation(unit,k))+' · '+rationUseText(ration)+esc(rationUseHint(ration))+'</p>':'<p>'+effect.label+' +'+effect.gain+' · 사용 시 1개 소모</p>')+gearButton('consume',targeted?'치료할 부위 선택':'사용',{unit:unit.uid},!active||Boolean(field.action)||(!targeted&&(field[effect.stat]??100)>=100))+loBindButton(selected)+'</div>':'')+'</div></section></div>'+loQuickbar(k)+'</div>';
 }
 function loUseQuick(i,keyboard=false){
   const kit=currentKit(),bindings=loBindings(),id=bindings[i];

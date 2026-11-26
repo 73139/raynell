@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
 const {boot,clone,epoch,extract,stamp}=require('./game-fixture.cjs');
 const db=JSON.parse(fs.readFileSync('Rustline_Database_v10.json','utf8'));
 const routeFixture=boot().g;
-const uiSource=['routes-ui','field','gear-instances','gear-service','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor','survivor-ui','objective','objective-ui','weather','postal','relief','ward-field','ward-shuttle', 'dock-lift'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
+const uiSource=['routes-ui','field','gear-instances','gear-service','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor','survivor-ui','objective','objective-ui','weather','postal','relief','ward-field','ward-shuttle', 'dock-lift','ration-survey'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
 const ctx=vm.createContext({routeProfile:routeFixture.routeProfile,routeStepDuration:routeFixture.routeStepDuration,presetRecord:r=>r&&typeof r==='object'&&!Array.isArray(r),cartMoney:n=>Number.isSafeInteger(n)&&n>=0,document:{activeElement:null},ITEM_META:{},LANDMARKS:clone(boot().g.places),lastSummary:null,campaignBunkerCard:()=>'',menuIcon:()=>'',assert,writer:true,commandIcon:()=>'',GOODS:Object.fromEntries(Object.entries(db.items).map(([k,item])=>[k,[item.name]])),
   FACILITIES:db.hideout.facilities,FACILITY_PRODUCTION:db.hideout.production,boxKey:(zone,index)=>zone+'-'+index,
   artURL:key=>{assert.ok(fs.existsSync('src/assets/ui/'+key+'.webp'),key);return key+'.webp'},
@@ -87,6 +87,7 @@ vm.runInContext(`let raid=null,field={},page='bunker',wallet=20000,facilitySelec
     if(q.afterWard){raid.startedAt=2000;field.wardCheck={raidId:2000,at:2500,site:0,uid:'s-clinic-check'};field.bag.push({g:WARD_TRIAL_ITEM,uid:'s-clinic-check'});}
     if(q.afterReply){raid.startedAt=2000;field.reliefDelivery={kind:'power',raidId:2000,at:2500};}
     if(q.id==='ward-shuttle'){career.shuttle={route:'local'};field.shuttle={arrived:Date.now()};}
+    if(q.id==='ration-survey')field.rationUses=[{stat:'water',zone:0,before:90,after:100},{stat:'energy',zone:1,before:90,after:100}];
     if(q.id==='sealed-mail'){
       const at=Date.now()-2000;raid.startedAt=at;raid.endsAt=at+1800000;field.raidId=at;field.visited=[2,1];
       field.postal={raidId:at,issuedAt:at+1,stampedAt:at+1000};

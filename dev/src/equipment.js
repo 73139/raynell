@@ -200,6 +200,20 @@ function kitSupply(id){
   if(typeof hideoutRecoveryBonus==='function')gain+=hideoutRecoveryBonus(stat);
   return {stat,gain,label:{hp:'체력',water:'수분',energy:'기력'}[stat]};
 }
+// Show the same capped recovery that will be committed for the selected bag or pocket unit.
+function rationRecovery(id,k=field){
+  const effect=kitSupply(id);
+  if(!effect||!['energy','water'].includes(effect.stat))return null;
+  const before=Math.max(0,Math.min(100,k[effect.stat]??100)),after=Math.min(100,before+effect.gain);
+  return {stat:effect.stat,label:effect.label,before,after,gain:after-before,nominal:effect.gain,waste:effect.gain-(after-before)};
+}
+function rationUseText(q){
+  return q.gain?q.label+' '+q.before+' → '+q.after+' · 실효 +'+q.gain+(q.waste?' · 초과 '+q.waste:''):
+    q.label+' '+q.before+' · 최대 · 소모 없음';
+}
+function rationUnitLocation(unit,k=field){
+  return (k.worn?.back?'가방':'주머니')+' '+(unit.y+1)+'행 '+(unit.x+1)+'열';
+}
 function currentKit(){return raid?field:equipmentState;}
 function kitGround(){
   if(!field.gearGround)field.gearGround=FIELD_ZONES.map(()=>[]);
@@ -216,8 +230,9 @@ function equipmentStashActions(id,uid) {
 function equipmentSelectionActions(o){
   if(!o||picked?.side!=='bag'||!raid||field.result)return '';
   const slot=kitSlot(o.g),effect=kitSupply(o.g),busy=Boolean(field.action),disabled=busy||Boolean(field.contact||field.journey);
-  return (slot?gearButton('wear-bag',KIT_SLOTS[slot].label+' 장착',{unit:o.uid},disabled):'')+
-    (effect?gearButton('consume',effect.label+' +'+effect.gain+' 사용',{unit:o.uid},busy||((field[effect.stat]??100)>=100 && !(effect.stat==='hp' && hasInjury()))):'')+
+  const ration=rationRecovery(o.g);
+  return (ration?'<p data-ration-preview="'+esc(o.uid)+'">'+esc(rationUnitLocation(o))+' · '+rationUseText(ration)+esc(rationUseHint(ration))+'</p>':'')+(slot?gearButton('wear-bag',KIT_SLOTS[slot].label+' 장착',{unit:o.uid},disabled):'')+
+    (effect?gearButton('consume',ration?(ration.gain?effect.label+' +'+ration.gain+' 사용':'최대 · 사용 불가'):effect.label+' +'+effect.gain+' 사용',{unit:o.uid},busy||((field[effect.stat]??100)>=100 && !(effect.stat==='hp' && hasInjury()))):'')+
     gearButton('drop','바닥에 놓기',{unit:o.uid},disabled);
 }
 function equipmentSummary(r) {
@@ -414,7 +429,9 @@ function handleEquipment(d) {
         if(effect.stat==='hp' && hasInjury()){openInjuryTreatment(item.uid);return;}
         const value=k[effect.stat]??100;
         if(value>=100){gearNotice=effect.label+'이 이미 최대입니다.';break;}
-        k[effect.stat]=Math.min(100,value+effect.gain);
+        const ration=rationRecovery(item.g,k);
+        if(ration)rationLogUse(item,ration);
+        k[effect.stat]=ration?ration.after:Math.min(100,value+effect.gain);
         gearNotice=kitName(item.g)+' 사용 · '+effect.label+' +'+(k[effect.stat]-value);
       }else{
         kitGround().push(item);gearNotice=kitName(item.g)+' · 이 지역에 내려놓았습니다.';

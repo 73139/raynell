@@ -100,6 +100,7 @@ function bunkerOrderGoals(q){
   const state=bunkerOrderState(q);
   const active=state==='active'&&raid&&!field.result;
   if(q.id===SHUTTLE_ORDER)return shuttleGoals();
+  if(q.id===RATION_ORDER)return rationOrderGoals();
   if(q.id==='sealed-mail'){
     const progress=state==='done'?2:active?postalProgress():0;
     return [['반송 화물실에서 우편낭 인수',Number(progress>=1),1],['통행증 발급소 접수 도장',Number(progress===2),1],['정상 탈출',Number(state==='done'),1]];
