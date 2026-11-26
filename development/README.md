@@ -23,3 +23,11 @@ python3 pack_source.py
 저장소 루트에서 `python3 development/check-release.py`를 실행하면 임시 폴더에서 빌드해 두 배포 파일을 대조합니다. Python 3 표준 라이브러리만 사용합니다. 소스 ZIP만 받은 경우 빈 폴더에서 `python3 -m zipfile -e Rustline-source.zip .`으로 같은 모듈과 테스트를 복원할 수 있습니다.
 
 실행 환경에 연결할 수 없는 동안에는 GitHub에서 커밋을 먼저 고정하고 `dev/src/`의 해당 모듈과 `dev/tests/`의 검사를 함께 열어 변경 후보를 작성할 수 있습니다. 실행 환경이 복구되면 최신 운영 브랜치와 차이를 대조하고 빌드·회귀·브라우저 검증을 마칩니다.
+
+## 작업 브랜치의 원격 검증
+
+`rustline-work/`로 시작하는 작업 브랜치에 게임 소스를 푸시하거나 `rustline-web-reboot`를 대상으로 소스 변경 PR을 열면 “Rustline candidate” 검사가 실행됩니다. GitHub의 Ubuntu 24.04 환경에서 모든 Node 엔진 테스트와 네 가지 Chromium 시나리오를 모바일·데스크톱 폭으로 실행합니다. 성공한 실행의 Artifacts에서 검증된 HTML과 소스 ZIP을 하루 동안 받을 수 있습니다. 두 파일의 SHA-256은 해당 실행의 요약에서 확인합니다.
+
+## 실제 시간으로 플레이하기
+
+Python Playwright와 Chromium을 설치한 뒤 저장소 루트에서 `python3 tests/live-exploration.py --state-dir <저장소 밖 전용 폴더> --until <시간대가 포함된 미래 ISO 시각>`을 실행하면 기본 시계와 난수로 현장 의뢰·거점 수색·거래를 반복하고 결과를 `events.jsonl`에 기록합니다. 같은 폴더와 종료 시각으로 재개할 수 있으며, 그 폴더에 `stop.request`를 만들면 현재 출격 정산 후 멈추고 `refresh.request`를 만들면 진행 중인 출격에서 공개 빌드를 다시 확인합니다.
