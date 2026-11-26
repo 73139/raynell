@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.59</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.60</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -1979,6 +1979,14 @@ function validPumpGauge(raid,sortie,order){
 function pumpGaugeProgress(){
   return Number(Boolean(field.pumpGauge?.answer && validPumpGauge(raid,field,career.order)));
 }
+function sampleInspection(order, sortie, bag) {
+  const [site] = orderInspectionSites({inspections:[order.sample.site]}, sortie);
+  const carried = (bag || []).some(unit => unit.g === order.sample.item);
+  return {site, carried, count:Number(site.complete) + Number(carried)};
+}
+function orderUnlocked(order, done=career.done) {
+  return !order.after || done.includes(order.after);
+}
 const ORDERS = [
   {id:'scout', image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
     goal:'서로 다른 지역 방문', target:2, progress:()=>new Set(field.visited||[raid.zone]).size},
@@ -2001,16 +2009,22 @@ const ORDERS = [
     progress:order=>orderInspectionSites(order).filter(site=>site.complete).length},
   {id:'pump-gauge',image:'bunker-water',issuer:'벙커 배수반',title:'빗물 펌프장 수위 판독',
     text:'외곽 빗물 펌프장 발판에 수위계가 남아 있습니다. 눈금을 직접 읽고 기준선과 비교해 이번 출격의 수위를 기록하세요. 장비나 물자는 필요 없습니다. 정상 탈출하면 배수반에서 판독 수당을 지급합니다. 조기 귀환하면 다음 출격에서 새로 판독해야 합니다.',
-    cr:12000,xp:55,goal:'기준선과 비교한 수위 기록',target:1,progress:pumpGaugeProgress}
+    cr:12000,xp:55,goal:'기준선과 비교한 수위 기록',target:1,progress:pumpGaugeProgress},
+  {id:'pump-pipe',after:'pump-gauge',image:'bunker-water',issuer:'벙커 배수반',title:'배수관 규격 대조',
+    text:'수위 판독을 받은 배수반에서 교체 배관의 규격을 확인합니다. 벙커 외곽 빗물 펌프장에서 배수반 공구함을 끝까지 수색해 뚜껑 안쪽의 규격표를 확인하세요. 같은 출격에서 PVC 배관 한 개를 가방에 넣고 정상 탈출하세요. 준비해 간 배관과 현장에서 찾은 배관 모두 인정하며 귀환한 배관은 창고에 보관됩니다.',
+    cr:18000,xp:65,goal:'규격표 확인 및 PVC 배관 휴대',target:2,
+    sample:{site:{zone:0,landmark:6,boxOrdinal:0},item:'rl_08_15'},
+    progress:order=>sampleInspection(order,field,field.bag).count}
 ];
 let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={}) {
   orderFeedback='';raidAckFeedback='';pumpNotice=null;
   const number = n => Number.isSafeInteger(n) && n>=0 ? n : 0;
-  const done = ORDERS.filter(q=>raw?.done?.includes(q.id)).map(q=>q.id);
+  const completed = Array.isArray(raw?.done) ? raw.done : [];
+  const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed)).map(q=>q.id);
   career = {xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
-    done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id))?raw.order:null,
+    done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12):[]};
 }
 function playerLevel(){return 1+Math.floor(Math.sqrt(career.xp/150))}
@@ -2155,7 +2169,7 @@ function qualifiesNormalExtraction(elapsedMs, searched, victories) {
 }
 function bunkerOrderAward(normal,balanceAfterExit){
   const order=ORDERS.find(q=>q.id===career.order);
-  if(!order)return null;
+  if(!order || !orderUnlocked(order) || career.done.includes(order.id))return null;
   const progress=Math.min(order.target,order.progress(order));
   const fits=Number.isSafeInteger(balanceAfterExit+order.cr);
   return {order,progress,fits,payable:normal&&progress>=order.target&&fits};
@@ -2251,6 +2265,11 @@ function returnMarketPanel(){
   return '<details data-return-market><summary>매입처·단가 보기</summary><p>회수한 일반 물품 중 창고에 같은 품목이 있는 경우, 한 개의 매입가를 표시합니다. 상인을 누르면 벙커로 복귀한 뒤 판매할 물품을 직접 선택합니다.</p>'+
     '<ul class="obj-goals">'+rows+'</ul></details>';
 }
+function nextBunkerOrder(report) {
+  if (!raid || field.result!=='success' || report?.rating!=='success' || report.raidId!==raid.startedAt) return null;
+  const completed=ORDERS.find(order=>order.title===report.orderName && order.cr===report.commission && career.done.includes(order.id));
+  return completed ? ORDERS.find(order=>order.after===completed.id && !career.done.includes(order.id)) : null;
+}
 function resultPage(){
   const r=field.result?lastSummary:null;
   const status=raidAckFeedback||(!writer?'다른 탭에서 플레이 중입니다. 해당 탭에서 벙커로 복귀하세요.':'');
@@ -2258,6 +2277,7 @@ function resultPage(){
     '<button class="primary" data-raid="ack"'+(writer?'':' disabled')+'>벙커로 복귀</button>';
   if(!r)return head('FIELD / ENDED','레이드 종료','정산 기록이 없습니다.')+ack;
   const returned=r.result==='success',rating=r.rating||r.result;
+  const next=nextBunkerOrder(r);
   const [code,label]=ENDINGS[rating]||ENDINGS.expired;
   const counts={};
   for(const id of r.goods||[])if(Object.hasOwn(GOODS,id))counts[id]=(counts[id]||0)+1;
@@ -2269,6 +2289,7 @@ function resultPage(){
     (r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
     (r.orderName?'<p class="exit-ok">'+esc(r.orderName)+' 의뢰 완료 · '+money(r.commission)+'</p>':'')+
+    (next?'<button type="button" data-bui="order-followup" data-id="'+esc(next.id)+'" data-return-id="'+r.raidId+'" '+(writer?'':'disabled')+'>벙커 복귀 · 후속 의뢰 보기 · '+esc(next.title)+'</button>':'')+
     '<h3>'+(returned?'회수한 물품':'잃은 물품')+'</h3><div class="db-list">'+(Object.entries(counts).map(([id,n])=>'<div class="stash-row">'+ico(GOODS[id][4])+'<span>'+GOODS[id][0]+'</span><b>×'+n+'</b></div>').join('')||'<p>휴대 물품 없음</p>')+'</div>'+returnMarketPanel()+equipmentSummary(r)+gearSettlementMarkup(r)+injurySummaryMarkup(r)+contractResultPanel(r.contractUpdates)+
     ack+'</section>';
 }
@@ -2276,7 +2297,7 @@ function journalPage(){
   const lv=playerLevel();
   return head('03 / FIELD JOURNAL','작전 기록','대원 성장과 벙커에서 수신한 의뢰')+
     '<section class="panel"><h2>대원 Lv.'+lv+'</h2><p>'+career.xp+' XP · 다음 레벨 '+(150*lv*lv)+' XP · 출격 '+career.sorties+'회 · 귀환 '+career.returns+'회</p><p>레벨마다 교전 피해가 1 증가합니다. 최대 보너스는 10입니다.</p></section>'+
-    '<section class="field-section"><h2>벙커 의뢰</h2><p>출격 전에 한 건을 수락하세요. 정상 탈출 시 조건을 확인하고 보상을 지급합니다.</p>'+orderStatus()+'<div class="orders">'+ORDERS.map(q=>{
+    '<section class="field-section"><h2>벙커 의뢰</h2><p>출격 전에 한 건을 수락하세요. 정상 탈출 시 조건을 확인하고 보상을 지급합니다.</p>'+orderStatus()+'<div class="orders">'+ORDERS.filter(q=>orderUnlocked(q)).map(q=>{
       const done=career.done.includes(q.id),active=career.order===q.id;
       return '<article class="panel"><small>'+q.issuer+'</small><h3>'+q.title+'</h3><p>'+q.text+'</p><p>'+money(q.cr)+' · '+q.xp+' XP</p><button data-order="'+q.id+'" '+(!writer||done||raid||(!active&&career.order)?'disabled':'')+'>'+(done?'완료':active?'수락 취소':'의뢰 수락')+'</button></article>';
     }).join('')+'</div></section><section class="field-section"><h2>최근 출격</h2>'+
@@ -2294,7 +2315,7 @@ function changeOrder(id){
     orderFeedback='의뢰 기록을 다시 불러왔습니다. 현재 상태를 확인하세요.';
     renderKeep();return;
   }
-  if(raid||!ORDERS.some(q=>q.id===id)||career.done.includes(id)||(career.order&&career.order!==id))return;
+  if(raid||!ORDERS.some(q=>q.id===id && orderUnlocked(q))||career.done.includes(id)||(career.order&&career.order!==id))return;
   const previous=career.order;
   career.order=previous===id?null:id;
   orderFeedback='';
@@ -3718,7 +3739,8 @@ function landmarkPanel(){
   const recovery=objective?.recovery;
   const source=recovery&&recovery.carried<recovery.required&&recovery.sources.find(site=>
     site.zone===zi&&LANDMARKS[zi][site.landmark]===point&&site.boxOrdinal!==undefined);
-  const inspection=objective?.inspections?.find(site=>!site.complete&&site.zone===zi&&LANDMARKS[zi][site.landmark]===point);
+  const sites=objective?.inspections||[objective?.sample?.site].filter(Boolean);
+  const inspection=sites.find(site=>!site.complete&&site.zone===zi&&LANDMARKS[zi][site.landmark]===point);
   const targetBox=source?point.boxes[source.boxOrdinal]:null;
   const lock=source?lootLockView(zi,targetBox):null;
   const searchSite=objective?.search?.sites.find(site=>site.zone===zi&&site.index===targetBox);
@@ -4860,12 +4882,18 @@ function bunkerOrderState(q){
 function bunkerOrderGoals(q){
   const state=bunkerOrderState(q);
   const active=state==='active'&&raid&&!field.result;
+  if(q.sample){
+    const snapshot=sampleInspection(q,active?field:null,active?field.bag:!raid?equipmentState.bag:[]);
+    const done=state==='done';
+    return [['배수반 공구함 규격표 확인',Number(done||snapshot.site.complete),1],
+      ['PVC 배관 가방에 휴대',Number(done||snapshot.carried),1],['정상 탈출',Number(done),1]];
+  }
   const count=state==='done'?q.target:active?Math.min(q.target,q.progress(q)):0;
   return [[q.goal,count,q.target],['정상 탈출',state==='done'?1:0,1]];
 }
 function ordersView(){
   const states={new:'신규',active:'진행 중',done:'완료'};
-  const visible=ORDERS.filter(q=>bunkerOrderFilter==='all'||bunkerOrderState(q)===bunkerOrderFilter);
+  const visible=ORDERS.filter(q=>orderUnlocked(q) && (bunkerOrderFilter==='all'||bunkerOrderState(q)===bunkerOrderFilter));
   const q=visible.find(v=>v.id===bunkerOrderSelected)||visible[0];
   let detail='<div class="bu-empty">이 상태의 의뢰가 없습니다.</div>';
   if(q){
@@ -4875,6 +4903,7 @@ function ordersView(){
     ${bunkerPicture(q.image,q.title+' 현장','bu-order-image')}
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
     <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
+    ${q.sample&&state!=='done'&&!raid?'<div class="shell-actions"><button data-db="lookup" data-id="'+esc(q.sample.item)+'">PVC 배관 도감 · 수급처와 주문</button><button data-page="stash">창고에서 출격 가방에 담기</button></div>':''}
     ${state==='active'?objectiveControl({kind:'order',id:q.id}):''}
     <p class="bu-minor">목표를 달성하고 정상 탈출하면 정산 시 보상을 받습니다.</p>`;
   }
@@ -4964,6 +4993,15 @@ function openBunkerFacility(id,tier){
   const content=$('.content');if(content)content.scrollTop=0;
 }
 function handleBunkerUI(d){
+  if(d.bui==='order-followup'){
+    const follow=nextBunkerOrder(lastSummary);
+    if(!writer||page!=='raid'||!follow||follow.id!==d.id||String(raid.startedAt)!==d.returnId)return;
+    handleRaidAction('ack');
+    if(!raid && orderUnlocked(follow) && !career.done.includes(follow.id)){
+      bunkerOrderSelected=follow.id;bunkerOrderFilter='all';navigatePage('orders');
+    }
+    return;
+  }
   if(d.bui==='facility')return openBunkerFacility(d.id,Number(d.tier));
   if(d.bui==='tier'){
     const tier=Number(d.tier);if(!Number.isInteger(tier)||!FACILITIES[facilitySelected]?.levels[tier-1])return;
@@ -4976,7 +5014,7 @@ function handleBunkerUI(d){
   }else if(d.bui==='order-filter'){
     if(!['all','new','active','done'].includes(d.id))return;bunkerOrderFilter=d.id;
   }else if(d.bui==='order'){
-    if(!ORDERS.some(q=>q.id===d.id))return;bunkerOrderSelected=d.id;
+    if(!ORDERS.some(q=>q.id===d.id && orderUnlocked(q)))return;bunkerOrderSelected=d.id;
   }else return;
   renderKeep();
 }
@@ -7960,9 +7998,9 @@ function resolveObjective(pin = objectivePin) {
     const assigned = bunkerOrderGoals(order);
     const goals = assigned.map(([label, current, target]) => ({label, value:0, target}));
     if (isActive()) {
-      if (assigned[0][1] > 0) goals[0].projected = assigned[0][1];
+      assigned.slice(0,-1).forEach((row,index)=>{if(row[1]>0)goals[index].projected=row[1];});
       if (objectiveRaidRating(Object.values(field.boxes).filter(box => box.complete).length) === 'success') {
-        goals[1].projected = 1;
+        goals[goals.length-1].projected = 1;
       }
     }
     const recovery=order.recovery&&isActive()
@@ -7970,11 +8008,13 @@ function resolveObjective(pin = objectivePin) {
     const carried=recovery&&recovery.carried>=recovery.required;
     const search=recoverySearchProgress(recovery);
     const inspections=order.inspections?orderInspectionSites(order,isActive()?field:null):null;
-    const locations=inspections
+    const sample=order.sample?sampleInspection(order,isActive()?field:null,isActive()?field.bag:equipmentState.bag):null;
+    if(sample && !raid && sample.carried)goals[1].value=1;
+    const locations=sample?(sample.site.complete?[]:[sample.site]):inspections
       ? inspections.filter(site=>!site.complete).map(({zone,landmark})=>({zone,landmark}))
       : order.id==='pump-gauge' && (!isActive()||!pumpGaugeProgress())?[PUMP_SITE]:recoveryDestinations(order,carried,search);
     return {source, title:order.title, kindLabel:'벙커 의뢰', status:'정상 탈출 시 정산',
-      goals, materials:[], recovery, search, inspections, locations};
+      goals, materials:[], recovery, search, inspections, locations, sample};
   }
 
   const standingQuest = kind === 'contract';
