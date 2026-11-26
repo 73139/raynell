@@ -33,7 +33,7 @@ function weatherBoard(selected){
   const cards=FIELD_ZONES.map((zoneDef,z)=>{
     const f=weatherForecast(z,now);
     return '<article class="wx-card" '+weatherZoneAttributes(f)+'><h3>'+esc(zoneDef.name)+'</h3>'+
-      '<div data-weather-readout>'+weatherReadout(f)+'</div>'+weatherZoneButton(z,selected)+'</article>';
+      '<div data-weather-readout>'+weatherReadout(f)+'</div>'+surveyCardHint(z,f)+weatherZoneButton(z,selected)+'</article>';
   }).join('');
   return '<section class="wx-board" data-weather-board tabindex="-1" aria-label="권역별 기상 예보"><header>'+
     '<h2>권역별 기상 예보</h2><span class="wx-clock">작전 시각 (KST) '+weatherTime(now,true)+'</span></header>'+
@@ -80,11 +80,14 @@ function tickWeatherUI(){
     Object.assign(card.dataset,{condition:f.id,startsAt:f.startsAt,nextAt:f.endsAt,scanMs:f.scanMs,nextCondition:f.nextId,nextScanMs:f.nextScanMs});
     card.querySelector('[data-weather-readout]').innerHTML=weatherReadout(f);
     const board=card.closest('[data-weather-board]');
+    const surveySite=card.querySelector('[data-survey-site]');
+    if(surveySite)surveySite.outerHTML=surveyCardHint(f.zone,f);
     if(!board||card.querySelector('[aria-pressed="true"]')){
       const live=(board||card).querySelector('[data-weather-notice]');
       if(live)live.textContent=FIELD_ZONES[f.zone].name+' 기상 변경 · '+f.label+' · 주변 탐색 '+routeSeconds(f.scanMs);
     }
     if(card.hasAttribute('data-weather-field')){
+      refreshSurveyStation(f);
       const label=document.querySelector('[data-field="scan"] small');
       if(label)label.textContent=routeSeconds(f.scanMs);
     }
@@ -102,4 +105,41 @@ function weatherFocusSelector(){
     if(area)return (area.matches('.command-brief')?'.command-brief':area.hasAttribute('data-weather-prep')?'[data-weather-prep]':'[data-weather-field]')+' [data-cui="forecast"]';
   }
   return null;
+}
+
+const SURVEY_MARKS=['울타리 끝의 거리표','차량 행렬 끝의 정지 표지판','맞은편 하역장의 흰 경계선'];
+function surveySight(zone,condition){
+  const target=SURVEY_MARKS[zone];
+  return condition==='clear'?target+'의 테두리가 뚜렷합니다.':condition==='fog'?target+'의 윤곽만 보입니다.':target+' 앞으로 빗줄기가 지나갑니다.';
+}
+function surveyStationName(zone){return LANDMARKS[zone][SURVEY_STATIONS[zone].landmark].name;}
+function surveyCardHint(zone,forecast){
+  if(career.order!==WEATHER_SURVEY_ORDER||field.result)return '';
+  const rows=surveyObservations(),taken=rows.find(row=>row.zone===zone);
+  const status=taken?regionalWeather(zone,taken.at).label+' 기록 완료':rows.length===2?'관측 완료':
+    SURVEY_CONDITIONS.includes(forecast.id)&&!rows.some(row=>row.condition===forecast.id)?'지금 '+forecast.label+' 관측 가능':'다음 예보 확인';
+  return '<p data-survey-site>시정 관측지 · '+esc(surveyStationName(zone))+' · '+esc(status)+'</p>';
+}
+function surveyReadingPanel(){
+  if(career.order!==WEATHER_SURVEY_ORDER||!raid||field.result||field.landmarkByZone?.[raid.zone]!==SURVEY_STATIONS[raid.zone].landmark)return '';
+  const z=raid.zone,f=weatherForecast(z),rows=surveyObservations(),reason=surveyEligibility(z,f,rows);
+  const previous=rows.map(row=>esc(FIELD_ZONES[row.zone].name)+' · '+esc(regionalWeather(row.zone,row.at).label)+' · '+weatherTime(row.at)).join('<br>');
+  const feedback=weatherSurveyNotice?.raidId===raid.startedAt&&weatherSurveyNotice.zone===z&&weatherSurveyNotice.window===f.startsAt?weatherSurveyNotice.text:'';
+  return '<section class="pump-gauge" data-survey-station="'+z+'"><h3>시정 관측소 · '+esc(surveyStationName(z))+'</h3>'+
+    '<p>현재 시정 <b data-survey-condition>'+esc(f.label)+'</b> · <span data-survey-sight>'+esc(surveySight(z,f.id))+'</span></p>'+
+    (previous?'<p data-survey-log>'+previous+'</p>':'')+
+    '<div class="pump-controls"><button data-field="survey-observe" data-zone="'+z+'" data-raid-id="'+raid.startedAt+'" data-window="'+f.startsAt+'" '+(reason||field.action||!writer?'disabled':'')+'>현재 시정 기록</button>'+
+    '<button type="button" data-cui="forecast">다른 권역 예보 보기</button></div>'+
+    '<p data-survey-status role="status" tabindex="-1">'+esc(feedback||reason)+'</p></section>';
+}
+function refreshSurveyStation(f){
+  const panel=document.querySelector('[data-survey-station]');
+  if(!panel||panel.dataset.surveyStation!==String(f.zone))return;
+  const button=panel.querySelector('[data-field="survey-observe"]');
+  const reason=surveyEligibility(f.zone,f,surveyObservations());
+  panel.querySelector('[data-survey-condition]').textContent=f.label;
+  panel.querySelector('[data-survey-sight]').textContent=surveySight(f.zone,f.id);
+  panel.querySelector('[data-survey-status]').textContent=reason;
+  button.dataset.window=String(f.startsAt);
+  button.disabled=Boolean(reason||field.action||!writer);
 }

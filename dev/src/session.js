@@ -80,6 +80,7 @@ function readSession(current){
   }
   readCareer(snap?.career);
   if(!validPumpGauge(raid,field,career.order))delete field.pumpGauge;
+  if(!validWeatherSurvey(raid,field,career.order))delete field.weatherSurvey;
   loadTraderContracts(snap?.contracts);
   loadMarketCarts(snap?.version>=28?snap.marketCarts:null);
   saleReceipts=validSaleReceipts(snap?.saleReceipts)?snap?.saleReceipts??{}:{};
@@ -250,7 +251,7 @@ function validateBackup(raw){
   if(s.version>=24 && s.plannedDepartureZone!==undefined && (s.raid || (s.version<27 && !s.lootDestination) || !integer(s.plannedDepartureZone,0,FIELD_ZONES.length-1)))return false;
   if(!validWardBackup(s)||!validCaseBackup(s)||!validateEquipmentBackup(s)||!validContractsBackup(s.contracts)||!validRecurringSave(s.periodic))return false;
   const r=s.raid,f=s.field;
-  if(!validPumpGauge(r,f,s.career?.order))return false;
+  if(!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
   if(r!==null&&(!dict(r)||!integer(r.startedAt,1)||r.endsAt-r.startedAt!==RAID_DURATION_MS||!integer(r.zone,0,2)))return false;
   if(f.raidId!==(r?.startedAt||0)||!Array.isArray(f.bag)||!f.bag.every(tile)||!Array.isArray(f.found)||f.found.length!==3||!f.found.every((a,z)=>Array.isArray(a)&&a.every(i=>integer(i,0,FIELD_ZONES[z].boxes.length-1))))return false;
   if(!Array.isArray(f.log)||!f.log.every(x=>typeof x==='string')||!dict(f.boxes))return false;

@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const assert=require('node:assert/strict');
 const {boot,clone,epoch,extract,stamp}=require('./game-fixture.cjs');
 const db=JSON.parse(fs.readFileSync('Rustline_Database_v10.json','utf8'));
-const uiSource=['field','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor-ui','objective','objective-ui'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
+const uiSource=['field','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor-ui','objective','objective-ui','weather'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
 const ctx=vm.createContext({LANDMARKS:clone(boot().g.places),lastSummary:null,campaignBunkerCard:()=>'',menuIcon:()=>'',assert,writer:true,commandIcon:()=>'',GOODS:Object.fromEntries(Object.entries(db.items).map(([k,item])=>[k,[item.name]])),
   FACILITIES:db.hideout.facilities,FACILITY_PRODUCTION:db.hideout.production,boxKey:(zone,index)=>zone+'-'+index,
   artURL:key=>{assert.ok(fs.existsSync('src/assets/ui/'+key+'.webp'),key);return key+'.webp'},
@@ -61,6 +61,12 @@ vm.runInContext(`let raid=null,field={},page='bunker',wallet=20000,facilitySelec
       field.found[zone].push(index);
       field.boxes[boxKey(zone,index)]={complete:true,items:[]};
       field.bag.push({g:q.sample.item,uid:'p-pvc'});
+    }
+    if(q.id==='weather-survey'){
+      const at=Math.floor((Date.now()-360000)/360000)*360000;
+      raid.startedAt=at;raid.endsAt=at+1800000;field.raidId=at;
+      field.weatherSurvey={raidId:at,observations:[{zone:0,landmark:9,at:at+1000,condition:'clear'},
+        {zone:1,landmark:6,at:at+10000,condition:'fog'}]};
     }
     const rows=bunkerOrderGoals(q);assert.ok(rows.slice(0,-1).every(([,n,max])=>n===max));assert.equal(rows.at(-1)[1],0);assert.ok(ordersView().includes('귀환 후 변경 가능'));
     changeOrder(q.id);assert.equal(career.order,q.id);raid=null;changeOrder(q.id);assert.equal(career.order,null);

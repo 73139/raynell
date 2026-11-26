@@ -39,3 +39,10 @@
 #inside .wx-board .wx-deploy{margin-top:.7rem;min-height:44px;padding:.45rem 1rem;border:1px solid #aa9460;border-radius:2px;background:#584d34;color:#fff0c0;font-size:.94rem;font-weight:730}
 #inside .wx-board .wx-deploy:focus-visible{outline:2px solid #eddbac;outline-offset:1px}
 @media(max-width:575px){#inside .wx-board .wx-deploy{width:100%}}
+
+#inside .wx-card [data-survey-site]{margin:.4rem 0;color:#dedbbd;font-size:.87rem;line-height:1.4}
+@media (min-width:576px) and (max-width:805px){
+  .wx-card>[data-survey-site]{grid-column:1/-1;grid-row:2}
+  .wx-card .wx-choose{grid-column:3;grid-row:1}
+}
+@media (max-width:575px){.wx-card>[data-survey-site]{grid-column:1/-1;grid-row:3}}

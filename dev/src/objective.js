@@ -242,7 +242,8 @@ function resolveObjective(pin = objectivePin) {
     const inspections=order.inspections?orderInspectionSites(order,isActive()?field:null):null;
     const sample=order.sample?sampleInspection(order,isActive()?field:null,isActive()?field.bag:equipmentState.bag):null;
     if(sample && !raid && sample.carried)goals[1].value=1;
-    const locations=sample?(sample.site.complete?[]:[sample.site]):inspections
+    const observations=order.id==='weather-survey'&&isActive()?surveyObservations():[];
+    const locations=order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
       ? inspections.filter(site=>!site.complete).map(({zone,landmark})=>({zone,landmark}))
       : order.id==='pump-gauge' && (!isActive()||!pumpGaugeProgress())?[PUMP_SITE]:recoveryDestinations(order,carried,search);
     return {source, title:order.title, kindLabel:'벙커 의뢰', status:'정상 탈출 시 정산',

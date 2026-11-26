@@ -84,7 +84,10 @@ const ORDERS = [
     text:'수위 판독을 받은 배수반에서 교체 배관의 규격을 확인합니다. 벙커 외곽 빗물 펌프장에서 배수반 공구함을 끝까지 수색해 뚜껑 안쪽의 규격표를 확인하세요. 같은 출격에서 PVC 배관 한 개를 가방에 넣고 정상 탈출하세요. 준비해 간 배관과 현장에서 찾은 배관 모두 인정하며 귀환한 배관은 창고에 보관됩니다.',
     cr:18000,xp:65,goal:'규격표 확인 및 PVC 배관 휴대',target:2,
     sample:{site:{zone:0,landmark:6,boxOrdinal:0},item:'rl_08_15'},
-    progress:order=>sampleInspection(order,field,field.bag).count}
+    progress:order=>sampleInspection(order,field,field.bag).count},
+  {id:'weather-survey',image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
+    text:'안개가 수송로의 거리 표식을 얼마나 가리는지 맑은 날과 비교합니다. 지도에서 세 권역의 예보를 보고 첫 관측지를 고르세요. 외곽 경계 울타리, 검문소 대기 차량 행렬, 군수 창고 하역 도크가 관측 지점입니다. 한 출격에서 서로 다른 두 권역의 맑음과 안개를 한 번씩 기록하고 정상 탈출하세요. 관측 버튼을 누른 시점의 현장 날씨가 기록됩니다. 두 날씨의 관측 순서는 자유입니다.',
+    cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length}
 ];
 let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={}) {
@@ -305,7 +308,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.pumpGauge;pumpNotice=null;
+  delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
