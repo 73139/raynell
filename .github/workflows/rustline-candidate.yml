@@ -40,7 +40,7 @@ jobs:
           python3 -m venv "$RUNNER_TEMP/rustline-browser"
           "$RUNNER_TEMP/rustline-browser/bin/pip" install 'playwright==1.56.0'
           "$RUNNER_TEMP/rustline-browser/bin/python" -m playwright install --with-deps chromium
-          for test in catalog-budget pump-pipe backup-retry stash-keyboard; do
+          for test in catalog-budget pump-pipe backup-retry stash-keyboard ration-delivery; do
             "$RUNNER_TEMP/rustline-browser/bin/python" "tests/${test}-browser.py"
           done
       - name: Package and reproduce the tested sources
