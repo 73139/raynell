@@ -334,10 +334,14 @@ function arrangeStashUnit(x, y, automatic = false) {
 
 function stashGridMarkup(filter = null) {
   const [cols, rows] = stashSize();
+  const canPlace = stashAtBunker() && (selectedStashUnit() || (!raid && (gearPick || cashSelected)));
   let cells = '';
   for (let y = 0; y < rows; y++) {
     for (let x = 0; x < cols; x++) {
-      cells += '<button class="slot" data-stash="place" data-x="' + x + '" data-y="' + y + '" style="grid-column:' + (x + 1) + ';grid-row:' + (y + 1) + '" aria-label="창고 ' + (x + 1) + '열 ' + (y + 1) + '행"></button>';
+      const attrs = ' class="slot" data-stash="place" data-x="' + x + '" data-y="' + y + '" style="grid-column:' + (x + 1) + ';grid-row:' + (y + 1) + '"';
+      cells += canPlace
+        ? '<button type="button" tabindex="-1"' + attrs + ' aria-label="창고 ' + (x + 1) + '열 ' + (y + 1) + '행에 배치"></button>'
+        : '<span' + attrs + ' aria-hidden="true"></span>';
     }
   }
   const tiles = stashSlots.map(s => {
@@ -350,8 +354,33 @@ function stashGridMarkup(filter = null) {
 }
 
 function stashViewport(filter) {
-  return '<div class="stash-scroll" data-scroll-key="warehouse-grid" role="region" tabindex="0" aria-label="창고 격자 스크롤">'+stashGridMarkup(filter)+'</div>';
+  const help = stashAtBunker() ? '<p id="stash-key-help" class="mini-field">Tab으로 물품 이동 · 선택 후 방향키로 칸 지정 · Enter로 배치</p>' : '';
+  return help+'<div class="stash-scroll" data-scroll-key="warehouse-grid" role="region" tabindex="0" aria-label="창고 격자 스크롤"'+(help?' aria-describedby="stash-key-help"':'')+'>'+stashGridMarkup(filter)+'</div>';
 }
+
+// The viewport and owned items are Tab stops. Destination cells use arrow keys only while placing an item.
+inside.addEventListener('keydown', event => {
+  const direction = {ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1]}[event.key];
+  if (!direction || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  const target = event.target, area = target.closest?.('[data-scroll-key="warehouse-grid"]');
+  if (!area || !area.querySelector('button[data-stash="place"]')) return;
+  const cell = target.matches('button[data-stash="place"]');
+  const selected = target.matches('.loot-tile[aria-pressed="true"]');
+  if (target !== area && !cell && !selected) return;
+
+  let x = 0, y = 0;
+  if (cell || selected) {
+    const [cols, rows] = stashSize();
+    const originX = cell ? Number(target.dataset.x) : Number(target.style.gridColumnStart)-1;
+    const originY = cell ? Number(target.dataset.y) : Number(target.style.gridRowStart)-1;
+    x = Math.max(0, Math.min(cols-1, originX+direction[0]));
+    y = Math.max(0, Math.min(rows-1, originY+direction[1]));
+  }
+  event.preventDefault();
+  const destination = area.querySelector('button[data-stash="place"][data-x="'+x+'"][data-y="'+y+'"]');
+  destination.focus({preventScroll:true});
+  destination.scrollIntoView({block:'nearest', inline:'nearest'});
+});
 
 // The shell replaces the contents of the active screen after a game action.
 // A case and the surrounding warehouse each own their own scroll position.

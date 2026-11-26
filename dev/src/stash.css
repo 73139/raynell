@@ -2,6 +2,7 @@
 .stash-scroll{min-width:0;max-height:clamp(165px,48vh,550px);overflow:auto;overscroll-behavior:contain;container-type:inline-size;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#727a69 #151d1c}
 .stash-scroll:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .stash-scroll .spatial-grid.stash-grid{--cell:clamp(32px,calc((100cqw - 2px)/6),64px);display:grid;grid-template-columns:repeat(var(--cols),var(--cell));grid-template-rows:repeat(var(--rows),var(--cell));height:auto;width:max-content;max-width:none;aspect-ratio:auto;gap:0;padding:0;margin:0 auto}
+.stash-grid .slot:focus-visible{z-index:2;background:transparent}
 .stash-grid .loot-tile span{font-size:11px;line-height:1.2}
 .stash-grid .loot-tile .item-symbol{max-width:42px;max-height:43px}
 .stash-sidebar{display:grid;gap:12px;min-width:0}

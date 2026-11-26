@@ -93,4 +93,29 @@ for(const condition of ['neighbor','missing','partial','quick','abandon','expire
   }
   valid(b.g);
 }
+// The locker beside the toolbox can roll the pipe. Use the actual loot table, search and transfer UI actions.
+{
+  const db=require('../Rustline_Database_v10.json');
+  const locker=db.containers.locker, [w,h]=locker.size;
+  const candidates=locker.itemDistribution.filter(({tpl})=>{
+    const item=db.items[tpl];
+    return (item.width<=w && item.height<=h)||(item.height<=w && item.width<=h);
+  });
+  const weight=rows=>rows.reduce((sum,row)=>sum+row.relativeProbability,0);
+  const index=candidates.findIndex(row=>row.tpl===pipe);
+  assert.ok(index>=0);
+  const draw=(weight(candidates.slice(0,index))+candidates[index].relativeProbability/2)/weight(candidates);
+  const b=start(false,draw);
+  open(b,12);search(b);
+  const lockerBox=open(b,13);
+  go(b,'search');while(b.g.s.field.action)finish(b);
+  const found=lockerBox.items.find(u=>u.g===pipe);
+  assert.ok(found?.revealed);
+  b.g.selectLoot(found.uid);go(b,'close');
+  assert.equal(b.g.objective().sample.carried,true);
+  b.g.gear({gear:'drop',unit:found.uid});assert.equal(b.g.objective().sample.carried,false);
+  b.g.gear({gear:'recover',unit:found.uid});assert.equal(b.g.objective().sample.carried,true);
+  assert.equal(settle(b,true).commission,18000);
+  assert.equal(b.g.stock(pipe),2); // Unpacked purchase plus the actual newly recovered pipe.
+}
 console.log('PASS pump follow-up: actual prerequisite and catalog purchase, wrong box, no pipe, partial and empty toolbox, quick, expired, abandoned, retry, physical pipe retained and single normal-return settlement.');
