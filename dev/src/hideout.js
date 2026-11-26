@@ -203,12 +203,20 @@ function productionStatus(id,index) {
   if (hideout.builds[id]) return '건설 진행 중';
   if (hideout.production[id]) return '작업 진행 중';
   if (raid) return '귀환 후 작업 가능';
+  if (!writer) return '플레이 중인 탭 필요';
   return missingMaterials(facilityRecipe(id,index).inputs) ? '재료 부족' : '';
 }
 function productionResult(recipe) {
   const goods = Object.entries(recipe.outputs || {}).map(([id,n]) => `${GOODS[id][0]} ×${n}`);
   if (recipe.reward) goods.push(recipe.reward.toLocaleString('ko-KR') + ' CR');
   return goods.join(' · ');
+}
+function productionResultLine(recipe,key){
+  const label='지급 · '+productionResult(recipe);
+  if(!isSurveyRecipe(key))return '<small>'+label+'</small>';
+  const item=Object.keys(recipe.outputs)[0];
+  return '<button type="button" class="db-link" data-db="lookup" data-id="'+item+'" aria-label="'+
+    kitName(item)+' 도감 열기">'+label+' · 도감 ›</button>';
 }
 function handleHideout(d) {
   const id = d.id;
@@ -298,7 +306,7 @@ function facilityProductionPanel(id) {
     ${job ? `<p class="facility-current">${facilityRecipe(id,job.recipe).name} · ${facilityTimer(job.end)} 남음</p>` : ''}
     ${available.map(([r,i]) => {
       const status = productionStatus(id,i);
-      return `<div class="facility-recipe" data-production-recipe="${i}"><div><b>${r.name}</b>${productionIngredients(id,i,r.inputs)}<small>지급 · ${productionResult(r)}</small>${i===WARD_RECIPE?'<small>사용 시 체력 +'+(28+hideoutRecoveryBonus('hp'))+' · 한 칸에 휴대</small>':isSurveyRecipe(i)?surveyRecipeEffect(i):''}</div><button data-hideout="produce" data-id="${id}" data-recipe="${i}" ${status ? 'disabled' : ''}>${status || '시작'}<small>${hideoutTime(productionMs(r))}</small></button></div>`;
+      return `<div class="facility-recipe" data-production-recipe="${i}"><div><b>${r.name}</b>${productionIngredients(id,i,r.inputs)}${productionResultLine(r,i)}${i===WARD_RECIPE?'<small>사용 시 체력 +'+(28+hideoutRecoveryBonus('hp'))+' · 한 칸에 휴대</small>':isSurveyRecipe(i)?surveyRecipeEffect(i):''}</div><button data-hideout="produce" data-id="${id}" data-recipe="${i}" ${status ? 'disabled' : ''}>${status || '시작'}<small>${hideoutTime(productionMs(r))}</small></button></div>`;
     }).join('')}
     <p class="mini-field">완료된 물품과 대금은 창고와 지갑에 자동 지급됩니다.</p></section>`;
 }

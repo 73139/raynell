@@ -53,6 +53,11 @@ def scenario(browser, width):
         restore(base)
         kitchen()
         assert not page.locator('[data-production-recipe="salt-drink"]').count()
+        activate('[data-db=lookup]')
+        for id in ("rl_09_10", "rl_10_16"):
+            page.locator("#db-query").fill(id)
+            activate(f'[data-db=item][data-id="{id}"]')
+            expect(page.locator('[data-survey-kitchen-source]')).to_have_count(0)
         base["career"]["done"].append("ration-survey")
         restore(base)
         kitchen()
@@ -69,6 +74,18 @@ def scenario(browser, width):
         restore(base)
         kitchen()
         for panel, product, name in [(drink, "rl_10_16", "식염 음료"), (porridge, "rl_09_10", "즉석 죽")]:
+            activate(panel + f' [data-db=lookup][data-id="{product}"]')
+            detail = page.locator(f'[data-survey-kitchen-source="{product}"]')
+            expect(page.locator("#db-detail h2")).to_have_text(name)
+            expect(detail).to_contain_text("물통 ×1")
+            expect(detail).to_contain_text(("소금" if panel == drink else "오트밀") + " ×1")
+            expect(detail).to_contain_text(name + " ×2")
+            expect(detail).to_contain_text(("2분" if panel == drink else "3분") + " 0초 · 시작 가능")
+            assert detail.evaluate("e => e.scrollWidth <= e.clientWidth + 1")
+            before = saved()
+            activate(f'[data-db=survey-kitchen][data-id="{product}"]')
+            expect(page.locator(panel)).to_be_focused()
+            assert saved() == before
             wallet = saved()["wallet"]
             control = panel + ' [data-hideout=produce]'
             expect(page.locator(control)).to_be_enabled()

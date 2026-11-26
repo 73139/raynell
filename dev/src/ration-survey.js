@@ -18,6 +18,30 @@ function validSurveyProduction(s){
       Number.isSafeInteger(job.end)&&job.end>0;
   });
 }
+function surveyRecipeForProduct(item){
+  if(!surveyKitchenUnlocked(career.done,hideoutLevel('kitchen')))return null;
+  return Object.entries(SURVEY_RECIPES).find(([,recipe])=>Object.hasOwn(recipe.outputs,item));
+}
+function surveyKitchenSourcePanel(item){
+  const source=surveyRecipeForProduct(item);
+  if(!source)return '';
+  const [key,recipe]=source;
+  const inputs=Object.entries(recipe.inputs).map(([id,qty])=>kitName(id)+' ×'+qty).join(' + ');
+  const status=productionStatus('kitchen',key)||'시작 가능';
+  return '<section data-survey-kitchen-source="'+item+'"><h3>조리 시설에서 제작</h3><p>'+inputs+' → '+
+    productionResult(recipe)+'</p><p>'+hideoutTime(productionMs(recipe))+' · '+status+'</p>'+
+    '<button type="button" class="db-link" data-db="survey-kitchen" data-id="'+item+'">'+recipe.name+' 작업 보기 ›</button></section>';
+}
+function openSurveyKitchenSource(item){
+  if(page!=='catalog'||item!==catalogSelected)return;
+  const source=surveyRecipeForProduct(item);
+  if(!source)return;
+  openBunkerFacility('kitchen',1);
+  const row=$('[data-production-recipe="'+source[0]+'"]');
+  row?.setAttribute?.('tabindex','-1');
+  row?.focus?.({preventScroll:true});
+  row?.scrollIntoView?.({block:'nearest'});
+}
 function surveyRecipeEffect(key){
   const recipe=SURVEY_RECIPES[key],item=Object.keys(recipe.outputs)[0],effect=kitSupply(item);
   return '<small>한 개 사용 시 '+effect.label+' 최대 +'+effect.gain+' · 두 개로 나누어 출격 가방에 휴대</small>';

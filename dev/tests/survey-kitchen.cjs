@@ -29,6 +29,16 @@ async function main(){
     const b=play(seed()),g=b.g;const other=recipes.find(recipe=>recipe!==r);
     const shape=()=>clone([g.s.stash,g.s.stashSlots,g.s.wallet,g.s.hideout.production]);
     const before=shape();
+    const viewer=boot({[v12]:clone(g.s)},b.clock,{locks:{request:()=>new Promise(()=>{})}});
+    viewer.g.lookup(r.product);assert.ok(viewer.content().includes('플레이 중인 탭 필요'));
+    g.lookup(r.product);
+    assert.ok(b.content().includes('data-survey-kitchen-source="'+r.product+'"'));
+    assert.ok(b.content().includes(r.minutes===3?'2분 51초':'1분 54초'),'catalog applies ventilation');
+    b.click({db:'survey-kitchen',id:other.product});
+    assert.ok(b.content().includes('id="db-detail"'),'a stale item link cannot navigate');
+    b.click({db:'survey-kitchen',id:r.product});
+    assert.ok(b.content().includes('data-production-recipe="'+r.key+'"'));
+    assert.deepEqual(shape(),before,'product lookup cannot start production');
     assert.ok(g.facilityProductionPanel('kitchen').includes('data-recipe="'+r.key+'"'));
     cook(b,r.key,'med');assert.deepEqual(shape(),before);
     noWrite(b,()=>cook(b,r.key));assert.deepEqual(shape(),before,'rejected start restores stock');
