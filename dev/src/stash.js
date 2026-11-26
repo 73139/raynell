@@ -409,20 +409,28 @@ function restoreStashScroll(positions) {
   }
 }
 
+function stashSaleRestriction(unit) {
+  if (unit.contents?.length) return '보관함을 비운 뒤 판매하세요.';
+  // An incoming stack sells its first physical instance, just as placing or equipping it does.
+  const gear = unit.uid === 'overflow' ? gearOverflow.find(row => row.g === unit.g) : unit.gear;
+  return gear?.module ? kitName(gear.module) + ' 장착 중 · 장비를 착용하고 모듈 정비에서 분리한 뒤 판매하세요.' : '';
+}
+
 function stashSelectionMarkup() {
   const s = selectedStashUnit();
   if (!s) return '<h2>선택한 물품</h2><p>창고나 입고 대기 목록에서 물품을 선택하세요.</p>';
   const g = GOODS[s.g], canEdit = stashAtBunker(), rot = stashSelection.rot;
   const w = rot ? s.h : s.w, h = rot ? s.w : s.h;
+  const saleRestriction = canEdit ? stashSaleRestriction(s) : '';
   return `<div class="db-detail-title">${ico(g[4])}<div><h2>${esc(caseDisplayName(s))}</h2><p>${s.alias ? esc(g[0]) + ' · ' : ''}${g[5]} · ${w} × ${h}칸 · ${g[3]} kg</p></div></div>
     <div class="stash-tools">${canEdit ? `
       ${s.w !== s.h ? '<button data-stash="rotate" aria-pressed="' + rot + '">90° 회전</button>' : ''}
       ${rot && s.uid !== 'overflow' ? '<button data-stash="rotate-here">현재 위치에 적용</button>' : ''}
       ${s.uid === 'overflow' ? '<button data-stash="auto">빈 공간에 배치</button>' : ''}
       ${equipmentStashActions(s.g, s.uid)}
-      <button data-stash="sell" ${s.contents?.length ? 'disabled title="내용물을 모두 꺼낸 뒤 판매할 수 있습니다."' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
+      <button data-stash="sell" ${saleRestriction ? 'disabled aria-describedby="stash-sale-reason"' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
       <button data-db="lookup" data-id="${s.g}">도감 보기</button><button data-stash="clear">선택 해제</button>
-    </div>${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
+    </div>${saleRestriction?'<p id="stash-sale-reason">'+esc(saleRestriction)+'</p>':''}${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
 }
 
 function storagePage() {
@@ -466,6 +474,8 @@ function handleStash(d) {
     if (d.stash === 'auto') changed = arrangeStashUnit(0, 0, true);
     if (d.stash === 'rotate-here') changed = arrangeStashUnit(unit.x, unit.y);
     if (d.stash === 'sell') {
+      const restriction = stashSaleRestriction(unit);
+      if (restriction) { stashNotice = restriction; renderKeep(); return; }
       const price = stashSalePrice(unit.g);
       if (!(typeof cashCanCredit==='function'?cashCanCredit(price):Number.isSafeInteger(wallet+price)) || !takeStashGoods(unit.g, 1, unit.uid)) return;
       wallet += price;

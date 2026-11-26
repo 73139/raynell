@@ -31,8 +31,8 @@ function saleQuote(trader,uids){
     if(!unit){quote.reason='선택한 물품이 창고에서 이동했습니다.';return quote;}
     if(unit.g==='cr_notes'){quote.reason='CR 화폐 묶음은 판매할 수 없습니다.';return quote;}
     if(!marketBuys(trader,unit.g)){quote.reason=kitName(unit.g)+'은 이 상인의 매입 품목에 없습니다.';return quote;}
-    if(unit.contents?.length){quote.reason='보관함을 비운 뒤 판매하세요.';return quote;}
-    if(unit.gear?.module){quote.reason='장착된 부품을 분리한 뒤 판매하세요.';return quote;}
+    const restriction=stashSaleRestriction(unit);
+    if(restriction){quote.reason=restriction;return quote;}
     const price=stashSalePrice(unit.g);
     quote.lines.push({uid,item:unit.g,unit:price,total:price,x:unit.x,y:unit.y,w:unit.w,h:unit.h});
     quote.total+=price;
