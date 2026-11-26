@@ -116,6 +116,76 @@ def exercise(browser, width):
         ctx.close()
 
 
+
+def exercise_trade_keyboard(browser, width):
+    """Keyboard-only buy, stage, cancel, select, settle; pointer/touch parity."""
+    ctx = browser.new_context(viewport={'width':width,'height':844}, has_touch=width<=500,
+                              reduced_motion='reduce')
+    page = ctx.new_page()
+    errors, focus_errors = [], []
+    page.on('pageerror', lambda error: errors.append(str(error)))
+    def activate(selector):
+        if not page.evaluate('s => document.activeElement.matches(s)', selector):
+            tab_to(page, selector)
+        page.keyboard.press('Enter')
+    def focus_in_order(label):
+        if not page.evaluate("()=>!!document.activeElement.closest('[data-trade-pane=order]')"):
+            focus_errors.append(label + ': ' + page.evaluate('()=>document.activeElement.outerHTML.slice(0,180)'))
+    try:
+        helpers['at'](page, 'shop')
+        activate('[data-market="item"][data-id="water"]')
+        activate('[data-market="quantity"][data-step="1"]')
+        activate('[data-market="trade"][data-id="water"][data-qty="2"]')
+        expect(page.locator('.mk-receipt-body')).to_be_visible()
+        wallet, counts, units = stock(page)
+        assert wallet == 20000 and counts['water'] == 2
+        first, second = [u['uid'] for u in units if u['g']=='water']
+        activate('[data-market="mode"][data-mode="sell"]')
+        def select(uid):
+            activate('[data-tg="stash-select"][data-uid="'+uid+'"]')
+            expect(page.locator('.tg-unit-value')).to_contain_text('CR')
+            expect(page.locator('[data-tg="sell-add"][data-uid="'+uid+'"]')).to_be_enabled()
+        before = stock(page)
+        select(first)
+        activate('[data-tg="sell-add"][data-uid="'+first+'"]')
+        focus_in_order('stage')
+        assert stock(page)==before
+        activate('[data-tg="sell-remove"][data-uid="'+first+'"]')
+        focus_in_order('cancel')
+        assert stock(page)==before
+        expect(page.locator('[data-tg="sell-confirm"]')).to_be_disabled()
+        select(second)
+        activate('[data-tg="sell-add"][data-uid="'+second+'"]')
+        activate('[data-tg="sale-select"][data-uid="'+second+'"]')
+        focus_in_order('select staged item')
+        total = int(''.join(c for c in page.locator('[data-sale-total]').inner_text() if c.isdigit()))
+        assert total>0 and stock(page)==before
+        activate('[data-tg="sell-confirm"]')
+        expect(page.locator('[data-sale-receipt-total]')).to_contain_text(str(total) if total<1000 else format(total,','))
+        after = stock(page)
+        assert after[0]==wallet+total and after[1]['water']==1
+        assert [u['uid'] for u in after[2] if u['g']=='water']==[first]
+        page.reload()
+        expect(page.locator('[data-market="mode"][data-mode="sell"]')).to_be_visible()
+        assert stock(page)==after
+        # Switch to sale if reload restored the default buy tab.
+        mode=page.locator('[data-market="mode"][data-mode="sell"]')
+        if mode.get_attribute('aria-pressed')!='true':
+            mode.tap() if width<=500 else mode.click()
+        tile=page.locator('[data-tg="stash-select"][data-uid="'+first+'"]')
+        tile.tap() if width<=500 else tile.click()
+        add=page.locator('[data-tg="sell-add"][data-uid="'+first+'"]')
+        add.tap() if width<=500 else add.click()
+        remove=page.locator('[data-tg="sell-remove"][data-uid="'+first+'"]')
+        remove.tap() if width<=500 else remove.click()
+        assert stock(page)==after
+        assert not errors, errors
+        assert not focus_errors, focus_errors
+        print(f'PASS {width}px: keyboard purchase, quote, sale cancellation, exact UID settlement, reload and pointer/touch cancellation', flush=True)
+    finally:
+        ctx.close()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('widths', nargs='*', type=int)
@@ -130,5 +200,6 @@ if __name__ == '__main__':
         try:
             for width in args.widths or [390,1280]:
                 exercise(browser, width)
+                exercise_trade_keyboard(browser, width)
         finally:
             browser.close()
