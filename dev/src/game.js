@@ -248,12 +248,12 @@ function handleRaidAction(action,data={}){
   if(action==='start'&&phase==='idle'){
     raidAckFeedback='';
     let now=Date.now();
-    const priorIds=new Set([lastSummary?.raidId,survivorState.last?.raidId,campaignState.returnId,finaleState.reply?.raidId,...campaignState.claimed]);
+    const priorIds=new Set([lastSummary?.raidId,dockCache?.depositRaidId,survivorState.last?.raidId,campaignState.returnId,finaleState.reply?.raidId,...campaignState.claimed]);
     while(priorIds.has(now)) now++;
     raid={startedAt:now,endsAt:now+RAID_DURATION_MS,zone};
     field=freshField();startInjuries();startLootLocks(raid.startedAt);prepareLandmarks();
     field.landmarkByZone[raid.zone]=sortieSpawnLandmark(raid.zone);
-    prepareSortie();startEquipmentRaid();prepareWardPacking();startFinaleRaid(raid.startedAt);startSurvivorRaid(raid.startedAt,raid.zone);seedContainers();
+    prepareSortie();startDockCacheSortie();startEquipmentRaid();prepareWardPacking();startFinaleRaid(raid.startedAt);startSurvivorRaid(raid.startedAt,raid.zone);seedContainers();
     picked=null;notice='';gearNotice='';page='raid';
   }else return;
   const startedField=field;
@@ -374,6 +374,7 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(['dock-deposit','dock-claim','dock-cancel'].includes(d.field))return handleDockCache(d);
 if(d.field==='passage')return handlePassage(d);
 if(d.field==='shuttle')return handleShuttle(d);
 if(d.field==='ward-compare')return compareWardPacking(d);

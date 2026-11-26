@@ -131,7 +131,7 @@ function gearEngageButtons(busy){
   }).join('');
 }
 
-function sortieGearReport(returned){
+function sortieGearReport(returned,liftReturn=false){
   const records=new Map((field.gearUsage||[]).map(row=>[row.uid,{...row,disposition:'left'}]));
   function add(gear,disposition){
     if(!gear)return;
@@ -140,6 +140,7 @@ function sortieGearReport(returned){
     records.set(row.uid,row);
   }
   for(const units of field.gearGround||[])for(const unit of units)add(unit.gear,'left');
+  if(dockCache?.stage==='pending')add(dockCache.unit.gear,liftReturn?'stored':'left');
   const disposition=returned?'returned':'lost';
   for(const unit of field.bag)add(unit.gear,disposition);
   for(const slot of Object.keys(field.worn||{}))add(gearWorn(field,slot),disposition);
@@ -148,7 +149,7 @@ function sortieGearReport(returned){
 
 function gearSettlementMarkup(summary){
   if(!summary.gearReport?.length)return '';
-  const labels={returned:'회수',lost:'손실',left:'현장에 남김'};
+  const labels={returned:'회수',lost:'손실',left:'현장에 남김',stored:'도크 인수함에 보관'};
   return '<h3>장비 사용 정산</h3><div class="gear-use-report">'+summary.gearReport.map(row=>{
     const spec=gearSpec(row.g), ammo=spec.capacity?'탄약 '+row.ammoBefore+' → '+(row.ammoBefore-row.ammoUsed)+'발 (사용 '+row.ammoUsed+'발) · ':'';
     return '<div><b>'+esc(kitName(row.g))+'</b> · '+labels[row.disposition]+' <small>'+esc(row.uid)+'</small><p>'+ammo+
@@ -174,7 +175,7 @@ function validGearRows(rows,reported,exact=false){
     const spec=gearSpec(row.g);
     return Boolean(spec && integer(row.ammoBefore,spec.capacity)&&integer(row.durabilityBefore,spec.maxDurability)&&
       integer(row.ammoUsed,row.ammoBefore)&&integer(row.wear,row.durabilityBefore)&&
-      (!reported || ['returned','lost','left'].includes(row.disposition)));
+      (!reported || ['returned','lost','left','stored'].includes(row.disposition)));
   });
 }
 function validHistoryGear(row){
@@ -183,7 +184,8 @@ function validHistoryGear(row){
   if(!Array.isArray(rows)||rows.length>HISTORY_GEAR_LIMIT||!validGearRows(rows,true,true))return false;
   if(row.gearOmitted!==undefined && !(rows.length===HISTORY_GEAR_LIMIT&&Number.isSafeInteger(row.gearOmitted)&&row.gearOmitted>0))return false;
   const returned=row.rating==='success'||row.rating==='quick';
-  return rows.every(gear=>gear.disposition!==(returned?'lost':'returned'));
+  return rows.every(gear=>gear.disposition!==(returned?'lost':'returned')&&
+    (gear.disposition!=='stored'||(returned&&row.exit===exitBy('lift').name&&DOCK_CACHE_ITEMS.includes(gear.g))));
 }
 function historyGearMatches(row,summary){
   if(!row.gearReport || !Array.isArray(summary?.gearReport) || row.at-row.elapsed!==summary.raidId)return true;
@@ -205,6 +207,7 @@ function validGearLedger(s){
   if(f.gearUsage?.length){
     const carried=[...Object.values(f.instances||{}),...f.bag.map(unit=>unit.gear),
       ...(f.gearGround||[]).flat().map(unit=>unit.gear)].filter(Boolean);
+    if(s.dockCache?.stage==='pending'&&s.dockCache.unit?.gear)carried.push(s.dockCache.unit.gear);
     const byId=new Map(carried.map(gear=>[gear.uid,gear]));
     for(const row of f.gearUsage){
       const gear=byId.get(row.uid);

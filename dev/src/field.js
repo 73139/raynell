@@ -366,7 +366,9 @@ function reconcileEnd(result,at,exit=null){
     career.shuttle={...field.shuttle,returnedAt:at};
   }
   if(returned && exit?.rule==='radio')recordGearUse(workingRaidRadio(),0,1);
-  const gearReport=sortieGearReport(returned);
+  const liftReturn=returned&&exit?.rule==='cargo';
+  const gearReport=sortieGearReport(returned,liftReturn);
+  const dockCacheOutcome=settleDockCache(liftReturn);
   const walletBeforeSettlement=wallet;
   if(returned){
     for(const unit of recoveredBag){
@@ -386,7 +388,9 @@ function reconcileEnd(result,at,exit=null){
     const discoveries=recordReturnedSurveys(field);
     if(discoveries.length)summary.newSurveyBoxes=discoveries;
   }
-  if(returned&&exit?.rule==='cargo')summary.liftGrams=kitBagGrams(field.bag);
+  if(dockCacheOutcome)summary.dockCacheOutcome=dockCacheOutcome;
+  if(dockCacheOutcome==='booked'&&dockCache.unit.gear.module)summary.dockCacheModule=dockCache.unit.gear.module;
+  if(liftReturn)summary.liftGrams=kitBagGrams(field.bag);
   if(order?.id===RATION_ORDER&&award.payable){const pair=rationPair(field.rationUses);summary.rationUses=[pair.meal,pair.drink];}
   settleInjuries(summary);
   delete field.gearUsage;delete field.legacyEngagement;
@@ -457,7 +461,7 @@ function resultPage(){
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
-    dockReceipt(r)+(r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
+    dockReceipt(r)+dockCacheReceipt(r)+(r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
     (career.gateTest?.raidId===r.raidId?'<p data-passage-return>'+esc(passageLabel(career.gateTest.from))+' · 다음 출격부터 통행 차단 · 이번 수당 0 CR</p>':'')+
     (career.shuttle?.raidId===r.raidId?'<p data-shuttle-dispatch>'+esc(SHUTTLE_ROUTES[career.shuttle.route].name)+' 배차 확정 · 이번 출격 수당 0 CR · 다음 출격에서 '+esc(shuttleName(SHUTTLE_ROUTES[career.shuttle.route].from))+' 호출</p>':'')+

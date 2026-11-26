@@ -66,6 +66,8 @@ function readSession(current){
   settlementNeedsCommit=false;
   const previous=current?null:previousCheckpoint(), snap=current||previous||getJSON(SAVE09);
   revision=current?.revision||0;
+  dockCache=snap?.dockCache??null;
+  dockCacheFeedback='';
   stash=Object.fromEntries(Object.entries(snap?.stash||{}).filter(([id,q])=>Object.hasOwn(GOODS,id)&&Number.isSafeInteger(q)&&q>0));
   wallet=Number.isSafeInteger(snap?.wallet)&&snap.wallet>=0?snap.wallet:30000;
   lastSummary=snap?.lastSummary||null;
@@ -131,7 +133,7 @@ function readSession(current){
   objectivePin = [17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(snap?.version) ? normalizeObjectivePin(snap.objectivePin) : null;
   loadOnboarding([19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(snap?.version) ? snap.onboarding : null, Boolean(snap || r || f));
 }
-function snapshot(){const moneyState=cashProjection(wallet);return {version:SAVE_VERSION,writerBuild:WRITER_BUILD,revision,marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...moneyState,...stashPinSnapshot(moneyState.stashSlots),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
+function snapshot(){const moneyState=cashProjection(wallet);return {version:SAVE_VERSION,writerBuild:WRITER_BUILD,revision,...(dockCache?{dockCache}:{}),marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...moneyState,...stashPinSnapshot(moneyState.stashSlots),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
 function writeSession(){
   if(!writer)return false;
   const nextRevision = revision + 1;
@@ -293,7 +295,7 @@ function validateBackup(raw){
     if(!r||!dict(a)||!supportedAction||!integer(a.start)||!integer(a.end)||a.start>a.end)return false;
     if(a.type==='move'&&!integer(a.zone,0,2)||a.type==='search'&&!f.boxes[a.key]||a.type==='extract'&&!exitBy(a.exit))return false;
   }
-  if(!validDockBackup(s))return false;
+  if(!validDockCache(s)||!validDockBackup(s))return false;
   if(s.version>=28 && !validMarketCarts(s.marketCarts,s.contracts))return false;
   if(s.version>=26 && !validInjuryBackup(s))return false;
   const summary=s.lastSummary;

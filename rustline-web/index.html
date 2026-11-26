@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.93</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.94</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -49,6 +49,9 @@
 #save-upgrade:not([hidden]){position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:#111812;color:var(--text)}
 #save-upgrade>div{max-width:28rem;padding:20px;border:1px solid var(--line);background:#1b231c}
 #save-upgrade h1{margin:0;font-size:1.45rem}#save-upgrade p{line-height:1.6}#save-refresh{min-height:44px}
+
+[data-dock-cache] button{display:block;max-width:100%;margin:.4rem 0;text-align:left;white-space:normal;overflow-wrap:anywhere}
+[data-dock-cache] [role="status"]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 .stash-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
 .stash-scroll{min-width:0;max-height:clamp(165px,48vh,550px);overflow:auto;overscroll-behavior:contain;container-type:inline-size;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#727a69 #151d1c}
@@ -1957,12 +1960,12 @@ function handleRaidAction(action,data={}){
   if(action==='start'&&phase==='idle'){
     raidAckFeedback='';
     let now=Date.now();
-    const priorIds=new Set([lastSummary?.raidId,survivorState.last?.raidId,campaignState.returnId,finaleState.reply?.raidId,...campaignState.claimed]);
+    const priorIds=new Set([lastSummary?.raidId,dockCache?.depositRaidId,survivorState.last?.raidId,campaignState.returnId,finaleState.reply?.raidId,...campaignState.claimed]);
     while(priorIds.has(now)) now++;
     raid={startedAt:now,endsAt:now+RAID_DURATION_MS,zone};
     field=freshField();startInjuries();startLootLocks(raid.startedAt);prepareLandmarks();
     field.landmarkByZone[raid.zone]=sortieSpawnLandmark(raid.zone);
-    prepareSortie();startEquipmentRaid();prepareWardPacking();startFinaleRaid(raid.startedAt);startSurvivorRaid(raid.startedAt,raid.zone);seedContainers();
+    prepareSortie();startDockCacheSortie();startEquipmentRaid();prepareWardPacking();startFinaleRaid(raid.startedAt);startSurvivorRaid(raid.startedAt,raid.zone);seedContainers();
     picked=null;notice='';gearNotice='';page='raid';
   }else return;
   const startedField=field;
@@ -2083,6 +2086,7 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(['dock-deposit','dock-claim','dock-cancel'].includes(d.field))return handleDockCache(d);
 if(d.field==='passage')return handlePassage(d);
 if(d.field==='shuttle')return handleShuttle(d);
 if(d.field==='ward-compare')return compareWardPacking(d);
@@ -2461,7 +2465,9 @@ function reconcileEnd(result,at,exit=null){
     career.shuttle={...field.shuttle,returnedAt:at};
   }
   if(returned && exit?.rule==='radio')recordGearUse(workingRaidRadio(),0,1);
-  const gearReport=sortieGearReport(returned);
+  const liftReturn=returned&&exit?.rule==='cargo';
+  const gearReport=sortieGearReport(returned,liftReturn);
+  const dockCacheOutcome=settleDockCache(liftReturn);
   const walletBeforeSettlement=wallet;
   if(returned){
     for(const unit of recoveredBag){
@@ -2481,7 +2487,9 @@ function reconcileEnd(result,at,exit=null){
     const discoveries=recordReturnedSurveys(field);
     if(discoveries.length)summary.newSurveyBoxes=discoveries;
   }
-  if(returned&&exit?.rule==='cargo')summary.liftGrams=kitBagGrams(field.bag);
+  if(dockCacheOutcome)summary.dockCacheOutcome=dockCacheOutcome;
+  if(dockCacheOutcome==='booked'&&dockCache.unit.gear.module)summary.dockCacheModule=dockCache.unit.gear.module;
+  if(liftReturn)summary.liftGrams=kitBagGrams(field.bag);
   if(order?.id===RATION_ORDER&&award.payable){const pair=rationPair(field.rationUses);summary.rationUses=[pair.meal,pair.drink];}
   settleInjuries(summary);
   delete field.gearUsage;delete field.legacyEngagement;
@@ -2552,7 +2560,7 @@ function resultPage(){
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
-    dockReceipt(r)+(r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
+    dockReceipt(r)+dockCacheReceipt(r)+(r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
     (career.gateTest?.raidId===r.raidId?'<p data-passage-return>'+esc(passageLabel(career.gateTest.from))+' · 다음 출격부터 통행 차단 · 이번 수당 0 CR</p>':'')+
     (career.shuttle?.raidId===r.raidId?'<p data-shuttle-dispatch>'+esc(SHUTTLE_ROUTES[career.shuttle.route].name)+' 배차 확정 · 이번 출격 수당 0 CR · 다음 출격에서 '+esc(shuttleName(SHUTTLE_ROUTES[career.shuttle.route].from))+' 호출</p>':'')+
@@ -4556,7 +4564,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=93000; // Derived from the release title by build.py.
+const WRITER_BUILD=94000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4620,6 +4628,8 @@ function readSession(current){
   settlementNeedsCommit=false;
   const previous=current?null:previousCheckpoint(), snap=current||previous||getJSON(SAVE09);
   revision=current?.revision||0;
+  dockCache=snap?.dockCache??null;
+  dockCacheFeedback='';
   stash=Object.fromEntries(Object.entries(snap?.stash||{}).filter(([id,q])=>Object.hasOwn(GOODS,id)&&Number.isSafeInteger(q)&&q>0));
   wallet=Number.isSafeInteger(snap?.wallet)&&snap.wallet>=0?snap.wallet:30000;
   lastSummary=snap?.lastSummary||null;
@@ -4685,7 +4695,7 @@ function readSession(current){
   objectivePin = [17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(snap?.version) ? normalizeObjectivePin(snap.objectivePin) : null;
   loadOnboarding([19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(snap?.version) ? snap.onboarding : null, Boolean(snap || r || f));
 }
-function snapshot(){const moneyState=cashProjection(wallet);return {version:SAVE_VERSION,writerBuild:WRITER_BUILD,revision,marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...moneyState,...stashPinSnapshot(moneyState.stashSlots),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
+function snapshot(){const moneyState=cashProjection(wallet);return {version:SAVE_VERSION,writerBuild:WRITER_BUILD,revision,...(dockCache?{dockCache}:{}),marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...moneyState,...stashPinSnapshot(moneyState.stashSlots),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
 function writeSession(){
   if(!writer)return false;
   const nextRevision = revision + 1;
@@ -4847,7 +4857,7 @@ function validateBackup(raw){
     if(!r||!dict(a)||!supportedAction||!integer(a.start)||!integer(a.end)||a.start>a.end)return false;
     if(a.type==='move'&&!integer(a.zone,0,2)||a.type==='search'&&!f.boxes[a.key]||a.type==='extract'&&!exitBy(a.exit))return false;
   }
-  if(!validDockBackup(s))return false;
+  if(!validDockCache(s)||!validDockBackup(s))return false;
   if(s.version>=28 && !validMarketCarts(s.marketCarts,s.contracts))return false;
   if(s.version>=26 && !validInjuryBackup(s))return false;
   const summary=s.lastSummary;
@@ -5275,6 +5285,13 @@ function sortiePreflight(kit,zoneId){
       }
     }
   }
+  if(dockCache?.stage==='ready'){
+    const unit=dockCache.unit;
+    const fitsBag=Boolean(kitFit(kit.bag,size,unit));
+    rows.push({kind:'dock-pickup',ok:fitsBag,label:kitName(unit.g)+' 인수 공간',
+      detail:maintenanceStateLine(unit.gear)+(unit.gear.module?' · '+kitName(unit.gear.module)+' 장착':'')+
+        ' · '+unit.w+' × '+unit.h+'칸 · '+(fitsBag?'현재 가방에 수납 가능':'도크에서 찾기 전에 가방 공간 확보 필요')});
+  }
   const soughtItems=new Set([hunt?.item,lootGoalDefinition(lootPlan)?.item].filter(Boolean));
   for(const item of soughtItems){
     const [,w,h]=GOODS[item];
@@ -5286,7 +5303,7 @@ function sortiePreflight(kit,zoneId){
 function sortiePreflightMarkup(kit,zoneId){
   const v=sortiePreflight(kit,zoneId);
   return '<section class="gm-readiness" data-sortie-preflight><div class="gm-readiness-head"><h2>수색 준비 점검</h2><button type="button" data-page="'+v.plan+'">수색 계획</button></div>'+
-    '<p data-preflight-free="'+v.free+'">가방 빈칸 '+v.free+' / '+v.capacity+'칸 · 실제 배치 가능 여부는 물품 크기에 따라 다릅니다.</p>'+
+    dockCacheBrief()+'<p data-preflight-free="'+v.free+'">가방 빈칸 '+v.free+' / '+v.capacity+'칸 · 실제 배치 가능 여부는 물품 크기에 따라 다릅니다.</p>'+
     (v.rows.length?'<ul>'+v.rows.map(r=>'<li data-preflight-kind="'+r.kind+'" data-ready="'+r.ok+'"><b>'+esc(r.label)+'</b><span>'+esc((r.ok?'확인 · ':'주의 · ')+r.detail)+'</span></li>').join('')+'</ul>':'<p>고정한 수색 목적지가 없습니다.</p>')+
     (v.rows.some(r=>!r.ok)?'<p>주의 사항은 출격을 막지 않습니다. 필요하면 장비·창고에서 준비한 뒤 출격하세요.</p><button type="button" data-page="inventory">장비·창고 확인</button>':'')+'</section>';
 }
@@ -10967,6 +10984,7 @@ function validGearBackup(s) {
       kit.bag.every(u=>u&&accept(u.g,u.gear));
   }
   if (!Array.isArray(s.gearOverflow)||!kitValid(s.equipment)) return false;
+  if(s.dockCache && (!s.dockCache.unit || !accept(s.dockCache.unit.g,s.dockCache.unit.gear)))return false;
   if (s.raid&&!s.field.result) {
     if (!kitValid(s.field)||!Array.isArray(s.field.gearGround)||!s.field.gearGround.every(list=>Array.isArray(list)&&list.every(u=>u&&accept(u.g,u.gear)))) return false;
     for (const box of Object.values(s.field.boxes||{})) {
@@ -11177,7 +11195,7 @@ function gearEngageButtons(busy){
   }).join('');
 }
 
-function sortieGearReport(returned){
+function sortieGearReport(returned,liftReturn=false){
   const records=new Map((field.gearUsage||[]).map(row=>[row.uid,{...row,disposition:'left'}]));
   function add(gear,disposition){
     if(!gear)return;
@@ -11186,6 +11204,7 @@ function sortieGearReport(returned){
     records.set(row.uid,row);
   }
   for(const units of field.gearGround||[])for(const unit of units)add(unit.gear,'left');
+  if(dockCache?.stage==='pending')add(dockCache.unit.gear,liftReturn?'stored':'left');
   const disposition=returned?'returned':'lost';
   for(const unit of field.bag)add(unit.gear,disposition);
   for(const slot of Object.keys(field.worn||{}))add(gearWorn(field,slot),disposition);
@@ -11194,7 +11213,7 @@ function sortieGearReport(returned){
 
 function gearSettlementMarkup(summary){
   if(!summary.gearReport?.length)return '';
-  const labels={returned:'회수',lost:'손실',left:'현장에 남김'};
+  const labels={returned:'회수',lost:'손실',left:'현장에 남김',stored:'도크 인수함에 보관'};
   return '<h3>장비 사용 정산</h3><div class="gear-use-report">'+summary.gearReport.map(row=>{
     const spec=gearSpec(row.g), ammo=spec.capacity?'탄약 '+row.ammoBefore+' → '+(row.ammoBefore-row.ammoUsed)+'발 (사용 '+row.ammoUsed+'발) · ':'';
     return '<div><b>'+esc(kitName(row.g))+'</b> · '+labels[row.disposition]+' <small>'+esc(row.uid)+'</small><p>'+ammo+
@@ -11220,7 +11239,7 @@ function validGearRows(rows,reported,exact=false){
     const spec=gearSpec(row.g);
     return Boolean(spec && integer(row.ammoBefore,spec.capacity)&&integer(row.durabilityBefore,spec.maxDurability)&&
       integer(row.ammoUsed,row.ammoBefore)&&integer(row.wear,row.durabilityBefore)&&
-      (!reported || ['returned','lost','left'].includes(row.disposition)));
+      (!reported || ['returned','lost','left','stored'].includes(row.disposition)));
   });
 }
 function validHistoryGear(row){
@@ -11229,7 +11248,8 @@ function validHistoryGear(row){
   if(!Array.isArray(rows)||rows.length>HISTORY_GEAR_LIMIT||!validGearRows(rows,true,true))return false;
   if(row.gearOmitted!==undefined && !(rows.length===HISTORY_GEAR_LIMIT&&Number.isSafeInteger(row.gearOmitted)&&row.gearOmitted>0))return false;
   const returned=row.rating==='success'||row.rating==='quick';
-  return rows.every(gear=>gear.disposition!==(returned?'lost':'returned'));
+  return rows.every(gear=>gear.disposition!==(returned?'lost':'returned')&&
+    (gear.disposition!=='stored'||(returned&&row.exit===exitBy('lift').name&&DOCK_CACHE_ITEMS.includes(gear.g))));
 }
 function historyGearMatches(row,summary){
   if(!row.gearReport || !Array.isArray(summary?.gearReport) || row.at-row.elapsed!==summary.raidId)return true;
@@ -11251,6 +11271,7 @@ function validGearLedger(s){
   if(f.gearUsage?.length){
     const carried=[...Object.values(f.instances||{}),...f.bag.map(unit=>unit.gear),
       ...(f.gearGround||[]).flat().map(unit=>unit.gear)].filter(Boolean);
+    if(s.dockCache?.stage==='pending'&&s.dockCache.unit?.gear)carried.push(s.dockCache.unit.gear);
     const byId=new Map(carried.map(gear=>[gear.uid,gear]));
     for(const row of f.gearUsage){
       const gear=byId.get(row.uid);
@@ -14456,10 +14477,11 @@ const DOCK_SURVEYS=['2-3','2-4','2-8'];
 const DOCK_LIFT_LIMIT=4000;
 function dockAccess(keys){return Array.isArray(keys)&&DOCK_SURVEYS.every(key=>keys.includes(key));}
 function dockWeight(grams){return (grams/1000).toFixed(3)+' kg';}
+function dockLocation(){return FIELD_ZONES[2].name+' '+LANDMARKS[2][1].name;}
 function dockAtPlatform(sortie=field,current=raid){return current?.zone===2&&sortie.landmarkByZone?.[2]===1;}
 function dockStatus(){
   if(!writer)return '플레이 중인 탭에서 탑승하세요';
-  if(!dockAtPlatform())return '군수 창고 하역 도크에서 탑승';
+  if(!dockAtPlatform())return dockLocation()+'에서 탑승';
   const mass=kitBagGrams(field.bag);
   return mass>DOCK_LIFT_LIMIT?'화물 '+dockWeight(mass-DOCK_LIFT_LIMIT)+' 초과':'';
 }
@@ -14475,13 +14497,19 @@ function dockPlan(zone){
     eligible?'다음 출격부터 상시 배정':'세 상자를 끝까지 수색하고 생환하면 다음 출격부터 배정';
   return '<details class="survey-map-journal" data-dock-plan><summary>하역 도크 화물 리프트 · 수색 기록 '+count+' / 3</summary>'+
     '<p data-dock-status>'+status+'</p><ul>'+rows+'</ul><p>'+esc(exitBy('lift').desc)+' · 대기 '+exitBy('lift').sec+'초</p>'+
-    (eligible&&!raid?'<p data-dock-kit>출격 준비 가방 '+dockCapacityText(kitBagGrams(equipmentState.bag))+'</p>':'')+'</details>';
+    (eligible&&!raid?'<p data-dock-kit>출격 준비 가방 '+dockCapacityText(kitBagGrams(equipmentState.bag))+'</p>':'')+dockCacheBrief()+'</details>';
 }
 function dockLoadPanel(){
   const mass=kitBagGrams(field.bag);
-  const option=mass>DOCK_LIFT_LIMIT?(dockAtPlatform()?'':dockWeight(mass-DOCK_LIFT_LIMIT)+' 초과 · ')+'가방 물품을 이 지역 바닥에 내려놓거나 다른 배정 탈출구를 이용하세요.':'남은 화물 여유 '+dockWeight(DOCK_LIFT_LIMIT-mass);
+  let option='남은 화물 여유 '+dockWeight(DOCK_LIFT_LIMIT-mass);
+  if(mass>DOCK_LIFT_LIMIT){
+    const canStore=dockAtPlatform()&&!dockCache&&field.bag.some(dockCanStore);
+    option=dockWeight(mass-DOCK_LIFT_LIMIT)+' 초과 · '+(canStore?
+      '아래 도크 인수함에 장비 1개를 맡기거나 가방 물품을 바닥에 내려놓으세요.':
+      '가방 물품을 이 지역 바닥에 내려놓거나 다른 배정 탈출구를 이용하세요.');
+  }
   return '<p data-dock-load>현재 가방 '+dockWeight(mass)+' / '+dockWeight(DOCK_LIFT_LIMIT)+' · '+option+'</p>'+
-    (mass>DOCK_LIFT_LIMIT?'<button type="button" data-page="inventory">가방 열기</button>':'');
+    (mass>DOCK_LIFT_LIMIT?'<button type="button" data-page="inventory">가방 열기</button>':'')+dockCachePanel();
 }
 function dockReceipt(row){
   return Number.isSafeInteger(row?.liftGrams)?'<p data-dock-receipt><b>화물 리프트 인수 중량</b> '+dockWeight(row.liftGrams)+' · 가방 내용물</p>':'';
@@ -14576,6 +14604,124 @@ function reviewDockUnit(uid){
   const tile=Array.from(document.querySelectorAll('[data-kit-grid] button')).find(b=>
     b.dataset.gear==='select'&&b.dataset.unit===uid||b.dataset.cash==='select'&&b.dataset.uid===uid);
   tile?.focus({preventScroll:true});tile?.scrollIntoView({block:'nearest'});
+}
+
+// A dock booking carries one physical item across exactly one departure.
+const DOCK_CACHE_ITEMS=['rl10_vest','flash','radio'];
+let dockCache=null,dockCacheFeedback='';
+function startDockCacheSortie(){
+  dockCacheFeedback='';
+  if(dockCache?.stage==='ready')dockCache={...dockCache,stage:'claimable',claimRaidId:raid.startedAt};
+}
+function settleDockCache(liftReturn){
+  if(!dockCache)return null;
+  const pending=dockCache.stage==='pending'&&dockCache.depositRaidId===raid.startedAt;
+  const booked=pending&&liftReturn;
+  const outcome=booked?'booked':pending?'forfeited':'expired';
+  dockCache=booked?{...dockCache,stage:'ready'}:null;
+  dockCacheFeedback='';
+  return outcome;
+}
+function dockCacheReceipt(row){
+  const labels={booked:'보관 확정 · 다음 출격에서 '+esc(dockLocation())+'를 찾아 장비를 받으세요.',forfeited:'리프트로 귀환하지 않아 맡긴 장비를 잃었습니다.',expired:'이번 출격에서 찾지 않아 보관 기한이 끝났습니다.'};
+  return Object.hasOwn(labels,row?.dockCacheOutcome)?'<p data-dock-cache-receipt><b>도크 인수함</b> · '+labels[row.dockCacheOutcome]+'</p>':'';
+}
+function dockCacheBrief(){
+  if(!dockCache||!['ready','claimable'].includes(dockCache.stage))return '';
+  return '<p data-dock-cache-brief>도크 인수함 · '+esc(kitName(dockCache.unit.g))+
+    (dockCache.stage==='ready'?' · 다음 출격 한 번 동안':' · 이번 출격이 끝나기 전까지')+' '+esc(dockLocation())+'에서 찾으세요.</p>';
+}
+function dockGearLabel(gear){
+  return maintenanceStateLine(gear)+' · '+(gear.module?kitName(gear.module)+' 장착':'부품 없음')+' · #'+gearSerial(gear.uid);
+}
+function dockCacheButton(action,label,unit,disabled){
+  return '<button type="button" data-field="dock-'+action+'" data-raid-id="'+raid.startedAt+'" data-uid="'+esc(unit.uid)+
+    '" data-gear-uid="'+esc(unit.gear.uid)+'"'+(disabled?' disabled':'')+'>'+esc(label)+'</button>';
+}
+function dockCanStore(unit){return DOCK_CACHE_ITEMS.includes(unit.g)&&gearValid(unit.gear,unit.g);}
+function dockCachePanel(){
+  if(!dockAtPlatform()||!field.exits.includes('lift')||!dockAccess(career.surveyedBoxes))return dockCacheBrief();
+  const locked=!writer||Boolean(field.action||field.open||field.contact||field.journey);
+  let body;
+  if(!dockCache){
+    const options=field.bag.filter(dockCanStore);
+    body='<p>가방 속 방호 조끼·손전등·무전기 중 1개를 맡길 수 있습니다. 이번에 리프트로 귀환하면 다음 출격에서 한 번 찾을 수 있습니다.</p>'+
+      (options.length?options.map(u=>dockCacheButton('deposit',dockPackLabel(u)+' · '+dockGearLabel(u.gear)+' · 맡기기',u,locked)).join(''):'<p>가방에 맡길 장비가 없습니다.</p>');
+  }else{
+    const u=dockCache.unit,claim=dockCache.stage==='claimable',space=Boolean(kitFit(field.bag,raidBagSize(),u));
+    body='<p>'+esc(kitName(u.g))+' · '+esc(dockGearLabel(u.gear))+'</p><p>'+
+      (claim?'이번 출격이 끝나기 전에 찾아 가방에 넣으세요.':'보관 대기 중입니다. 리프트로 귀환해야 다음 출격에 남습니다. 다른 곳으로 탈출하거나 실종되면 잃습니다.')+'</p>'+
+      dockCacheButton(claim?'claim':'cancel',claim?'장비 찾기':'맡기기 취소 · 가방으로',u,locked||!space)+
+      (space?'':'<p>이 장비가 들어갈 빈 칸을 가방에 마련하세요.</p>');
+  }
+  return '<section data-dock-cache="'+(dockCache?.stage||'empty')+'"><h4>도크 인수함</h4><p role="status" tabindex="-1">'+esc(dockCacheFeedback)+'</p>'+body+'</section>';
+}
+function handleDockCache(d){
+  if(!writer||!isActive()||String(raid.startedAt)!==d.raidId||!dockAtPlatform()||!field.exits.includes('lift')||
+      !dockAccess(career.surveyedBoxes)||field.action||field.contact||field.journey||field.open)return;
+  const owner=field,oldBag=field.bag,oldCache=dockCache;
+  let feedback;
+  if(d.field==='dock-deposit'){
+    const u=oldBag.find(item=>item.uid===d.uid);
+    if(dockCache||!u||!dockCanStore(u)||u.gear.uid!==d.gearUid)return;
+    const {uid,g,x,y,w,h,gear}=u;
+    // Loot-grid keys repeat across sorties. Give such cargo a permanent tile key as soon as it is set aside.
+    const cacheUid=/^[0-2]-\d+-\d+$/.test(uid)?newStashUid():uid;
+    dockCache={stage:'pending',depositRaidId:raid.startedAt,claimRaidId:null,unit:{uid:cacheUid,g,x,y,w,h,revealed:true,gear}};
+    field.bag=oldBag.filter(item=>item!==u);
+    feedback=kitName(u.g)+' 보관 대기 · 가방에서 옮겼습니다.';
+  }else{
+    const claim=d.field==='dock-claim';
+    if(claim?dockCache?.stage!=='claimable'||dockCache.claimRaidId!==raid.startedAt:
+      d.field!=='dock-cancel'||dockCache?.stage!=='pending'||dockCache.depositRaidId!==raid.startedAt)return;
+    const u=dockCache.unit;
+    if(u.uid!==d.uid||u.gear.uid!==d.gearUid)return;
+    const fit=kitFit(oldBag,raidBagSize(),u);
+    if(!fit)return;
+    // Container tile IDs can be reused in a later sortie. The equipment serial is permanent.
+    if(claim||oldBag.some(item=>item.uid===fit.uid)||field.gearGround.some(items=>items.some(item=>item.uid===fit.uid)))fit.uid=newStashUid();
+    if(oldBag.some(item=>item.uid===fit.uid))return;
+    field.bag=[...oldBag,fit];dockCache=null;
+    feedback=kitName(u.g)+' · 가방에 넣었습니다.';
+  }
+  if(writeSession()){
+    dockCacheFeedback=feedback;picked=null;dragged=null;
+  }else if(field===owner){
+    field.bag=oldBag;dockCache=oldCache;dockCacheFeedback='저장하지 못했습니다. 장비는 옮기기 전 위치에 있습니다.';
+  }else dockCacheFeedback='다른 탭의 최신 기록을 불러왔습니다. 장비 위치를 확인하세요.';
+  renderKeep();
+  inside.querySelector?.('[data-dock-cache] [role="status"]')?.focus({preventScroll:true});
+}
+function validDockCache(s){
+  const c=s.dockCache,report=s.lastSummary,receipt=report?.dockCacheOutcome;
+  const stored=Array.isArray(report?.gearReport)?report.gearReport.filter(row=>row?.disposition==='stored'):[];
+  if(receipt!==undefined&&!['booked','forfeited','expired'].includes(receipt))return false;
+  if(receipt==='booked'){
+    if(report.exit!==exitBy('lift').name||report.result!=='success'||stored.length!==1||
+        !DOCK_CACHE_ITEMS.includes(stored[0].g)||
+        (report.dockCacheModule!==undefined&&!PRESET_MODULES[stored[0].g]?.includes(report.dockCacheModule)))return false;
+    if((!s.raid||s.raid.startedAt===report.raidId)&&c?.stage!=='ready')return false;
+  }else if(stored.length||report?.dockCacheModule!==undefined)return false;
+  if(c===undefined||c===null)return true;
+  const u=c.unit;
+  if(s.version<36||!dockAccess(s.career?.surveyedBoxes)||!Number.isSafeInteger(c.depositRaidId)||c.depositRaidId<=0||
+      !u||!DOCK_CACHE_ITEMS.includes(u.g)||!gearValid(u.gear,u.g)||u.revealed!==true||
+      Object.keys(u).some(k=>!['uid','g','x','y','w','h','revealed','gear'].includes(k))||
+      Object.keys(u.gear).some(k=>!['uid','g','ammo','durability','module'].includes(k))||
+      typeof u.uid!=='string'||!/^[a-z0-9_-]{1,100}$/i.test(u.uid)||
+      !Number.isInteger(u.x)||u.x<0||u.x>40||!Number.isInteger(u.y)||u.y<0||u.y>40)return false;
+  const [,w,h]=GOODS[u.g];
+  if(!((u.w===w&&u.h===h)||(u.w===h&&u.h===w)))return false;
+  const r=s.raid,f=s.field;
+  if(c.stage==='pending')return c.claimRaidId===null&&r?.startedAt===c.depositRaidId&&!f.result&&f.exits.includes('lift')&&
+    !f.bag.some(item=>item.uid===u.uid)&&!f.gearGround.some(items=>items.some(item=>item.uid===u.uid))&&
+    !Object.values(f.boxes).some(box=>box.items.some(item=>item.uid===u.uid));
+  const record=report?.gearReport?.find(row=>row.disposition==='stored'&&row.uid===u.gear.uid&&row.g===u.g);
+  if(receipt!=='booked'||(report?.dockCacheModule??null)!==u.gear.module||report?.raidId!==c.depositRaidId||report.exit!==exitBy('lift').name||!record||
+     record.durabilityBefore-record.wear!==u.gear.durability||record.ammoBefore-record.ammoUsed!==u.gear.ammo)return false;
+  if(c.stage==='ready')return c.claimRaidId===null&&(!r||r.startedAt===c.depositRaidId&&f.result==='success');
+  return c.stage==='claimable'&&r?.startedAt===c.claimRaidId&&Number.isSafeInteger(c.claimRaidId)&&
+    c.claimRaidId>0&&c.claimRaidId!==c.depositRaidId&&!f.result&&f.exits.includes('lift');
 }
 
 // Only an actual inventory use at a known landmark qualifies; road supplies may still be consumed normally.

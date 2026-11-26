@@ -111,6 +111,7 @@ function validGearBackup(s) {
       kit.bag.every(u=>u&&accept(u.g,u.gear));
   }
   if (!Array.isArray(s.gearOverflow)||!kitValid(s.equipment)) return false;
+  if(s.dockCache && (!s.dockCache.unit || !accept(s.dockCache.unit.g,s.dockCache.unit.gear)))return false;
   if (s.raid&&!s.field.result) {
     if (!kitValid(s.field)||!Array.isArray(s.field.gearGround)||!s.field.gearGround.every(list=>Array.isArray(list)&&list.every(u=>u&&accept(u.g,u.gear)))) return false;
     for (const box of Object.values(s.field.boxes||{})) {

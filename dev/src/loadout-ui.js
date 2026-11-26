@@ -160,6 +160,13 @@ function sortiePreflight(kit,zoneId){
       }
     }
   }
+  if(dockCache?.stage==='ready'){
+    const unit=dockCache.unit;
+    const fitsBag=Boolean(kitFit(kit.bag,size,unit));
+    rows.push({kind:'dock-pickup',ok:fitsBag,label:kitName(unit.g)+' 인수 공간',
+      detail:maintenanceStateLine(unit.gear)+(unit.gear.module?' · '+kitName(unit.gear.module)+' 장착':'')+
+        ' · '+unit.w+' × '+unit.h+'칸 · '+(fitsBag?'현재 가방에 수납 가능':'도크에서 찾기 전에 가방 공간 확보 필요')});
+  }
   const soughtItems=new Set([hunt?.item,lootGoalDefinition(lootPlan)?.item].filter(Boolean));
   for(const item of soughtItems){
     const [,w,h]=GOODS[item];
@@ -171,7 +178,7 @@ function sortiePreflight(kit,zoneId){
 function sortiePreflightMarkup(kit,zoneId){
   const v=sortiePreflight(kit,zoneId);
   return '<section class="gm-readiness" data-sortie-preflight><div class="gm-readiness-head"><h2>수색 준비 점검</h2><button type="button" data-page="'+v.plan+'">수색 계획</button></div>'+
-    '<p data-preflight-free="'+v.free+'">가방 빈칸 '+v.free+' / '+v.capacity+'칸 · 실제 배치 가능 여부는 물품 크기에 따라 다릅니다.</p>'+
+    dockCacheBrief()+'<p data-preflight-free="'+v.free+'">가방 빈칸 '+v.free+' / '+v.capacity+'칸 · 실제 배치 가능 여부는 물품 크기에 따라 다릅니다.</p>'+
     (v.rows.length?'<ul>'+v.rows.map(r=>'<li data-preflight-kind="'+r.kind+'" data-ready="'+r.ok+'"><b>'+esc(r.label)+'</b><span>'+esc((r.ok?'확인 · ':'주의 · ')+r.detail)+'</span></li>').join('')+'</ul>':'<p>고정한 수색 목적지가 없습니다.</p>')+
     (v.rows.some(r=>!r.ok)?'<p>주의 사항은 출격을 막지 않습니다. 필요하면 장비·창고에서 준비한 뒤 출격하세요.</p><button type="button" data-page="inventory">장비·창고 확인</button>':'')+'</section>';
 }

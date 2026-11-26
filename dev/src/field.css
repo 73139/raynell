@@ -22,3 +22,6 @@
 #save-upgrade:not([hidden]){position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:#111812;color:var(--text)}
 #save-upgrade>div{max-width:28rem;padding:20px;border:1px solid var(--line);background:#1b231c}
 #save-upgrade h1{margin:0;font-size:1.45rem}#save-upgrade p{line-height:1.6}#save-refresh{min-height:44px}
+
+[data-dock-cache] button{display:block;max-width:100%;margin:.4rem 0;text-align:left;white-space:normal;overflow-wrap:anywhere}
+[data-dock-cache] [role="status"]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
