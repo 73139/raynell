@@ -165,7 +165,8 @@ def keyboard_catalog(browser, width):
         p.keyboard.press("Enter")
         expect(p.locator("#db-detail .db-detail-title h2")).to_be_focused()
         back = p.locator('[data-db="list-return"]')
-        back.focus()
+        p.keyboard.press("Tab")
+        expect(back).to_be_focused()
         p.keyboard.press("Enter")
         expect(p.locator(f'#db-results [data-db="item"][data-id="{selected}"]')).to_be_focused()
         # If a filter removes the selected item, the return action targets the search input.
