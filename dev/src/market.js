@@ -87,7 +87,7 @@ function marketGoods(traderId, mode) {
   }
   if (mode !== 'sell') return [];
   return Object.keys(stash)
-    .filter(id => stashRemovableCount(id) > 0 && marketBuys(traderId, id))
+    .filter(id => stashUnfittedCount(id) > 0 && marketBuys(traderId, id))
     .sort((a, b) => GOODS[a][0].localeCompare(GOODS[b][0], 'ko'));
 }
 
@@ -113,12 +113,13 @@ function marketQuote(traderId, mode, itemId, qty = 1) {
   else {
     quote.max = buy
       ? Math.min(Math.floor(wallet / quote.unit), Number.MAX_SAFE_INTEGER - count)
-      : Math.min(stashRemovableCount(itemId), Math.floor((Number.MAX_SAFE_INTEGER - wallet - (typeof cashCarried==='function'?cashCarried():0)) / quote.unit));
+      : Math.min(stashUnfittedCount(itemId), Math.floor((Number.MAX_SAFE_INTEGER - wallet - (typeof cashCarried==='function'?cashCarried():0)) / quote.unit));
     if (!quote.total) quote.reason = '수량을 양의 정수로 지정하세요.';
     else if (qty > quote.max) {
       if (buy && quote.total > wallet) quote.reason = '보유 CR이 부족합니다.';
       else if (!buy && qty > count) quote.reason = '창고에 판매할 수량이 부족합니다.';
       else if (!buy && qty > stashRemovableCount(itemId)) quote.reason = '보관함을 비운 뒤 판매하세요.';
+      else if (!buy && qty > stashUnfittedCount(itemId)) quote.reason = '장착된 모듈을 분리한 뒤 판매하세요.';
       else quote.reason = '거래 후 보유 한도를 초과합니다.';
     }
   }
@@ -137,7 +138,7 @@ function marketTrade(traderId, mode, itemId, qty = 1) {
   const before = {wallet, count: stashCount(itemId), slots: stashSlots.slice(), overflow:gearOverflow.slice(), revision};
   const stock = stash;
   const buy = mode === 'buy';
-  const changed = buy ? addStashGoods(itemId, qty) : takeStashGoods(itemId, qty);
+  const changed = buy ? addStashGoods(itemId, qty) : takeStashGoods(itemId, qty, null, 'sale');
   if (!changed) return fail('창고 수량이 바뀌었습니다. 다시 선택하세요.');
   wallet += buy ? -quote.total : quote.total;
   persist();
