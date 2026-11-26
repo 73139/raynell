@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const assert=require('node:assert/strict');
 const {boot,clone,epoch,extract,stamp}=require('./game-fixture.cjs');
 const db=JSON.parse(fs.readFileSync('Rustline_Database_v10.json','utf8'));
-const uiSource=['field','gear-instances','gear-service','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor-ui','objective','objective-ui','weather','postal'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
+const uiSource=['field','gear-instances','gear-service','injuries','injuries-ui','stash','hideout','ward-trial','bunker-ui','survivor','survivor-ui','objective','objective-ui','weather','postal'].map(n=>fs.readFileSync('src/'+n+'.js','utf8')).join('\n');
 const ctx=vm.createContext({document:{activeElement:null},ITEM_META:{},LANDMARKS:clone(boot().g.places),lastSummary:null,campaignBunkerCard:()=>'',menuIcon:()=>'',assert,writer:true,commandIcon:()=>'',GOODS:Object.fromEntries(Object.entries(db.items).map(([k,item])=>[k,[item.name]])),
   FACILITIES:db.hideout.facilities,FACILITY_PRODUCTION:db.hideout.production,boxKey:(zone,index)=>zone+'-'+index,
   artURL:key=>{assert.ok(fs.existsSync('src/assets/ui/'+key+'.webp'),key);return key+'.webp'},
@@ -89,6 +89,10 @@ vm.runInContext(`let raid=null,field={},page='bunker',wallet=20000,facilitySelec
       raid.startedAt=at;raid.endsAt=at+1800000;field.raidId=at;
       field.weatherSurvey={raidId:at,observations:[{zone:0,landmark:9,at:at+1000,condition:'clear'},
         {zone:1,landmark:6,at:at+10000,condition:'fog'}]};
+    }
+    if(q.id==='courier-checkin'){
+      const start=Date.now()-120000;raid.startedAt=start;field.raidId=start;
+      survivorState.active={raidId:start,origin:0,clues:[],choice:null,meetings:[{step:0,at:start+1000},{step:1,at:start+110000}]};
     }
     const rows=bunkerOrderGoals(q);assert.ok(rows.slice(0,-1).every(([,n,max])=>n===max));assert.equal(rows.at(-1)[1],0);assert.ok(ordersView().includes('귀환 후 변경 가능'));
     changeOrder(q.id);assert.equal(career.order,q.id);raid=null;changeOrder(q.id);assert.equal(career.order,null);

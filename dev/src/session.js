@@ -256,6 +256,11 @@ function validateBackup(raw){
   if(s.version>=24 && s.plannedDepartureZone!==undefined && (s.raid || (s.version<27 && !s.lootDestination) || !integer(s.plannedDepartureZone,0,FIELD_ZONES.length-1)))return false;
   if(!validWardBackup(s)||!validCaseBackup(s)||!validateEquipmentBackup(s)||!validContractsBackup(s.contracts)||!validRecurringSave(s.periodic))return false;
   const r=s.raid,f=s.field;
+  if(s.career?.order==='courier-checkin'||s.career?.done?.includes?.('courier-checkin')){
+    const done=s.career.done;
+    if(!Array.isArray(done)||!orderUnlocked(ORDERS.find(q=>q.id==='courier-checkin'),done)||
+       (s.career.order==='courier-checkin'&&done.includes('courier-checkin')))return false;
+  }
   if(!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
   if(r!==null&&(!dict(r)||!integer(r.startedAt,1)||r.endsAt-r.startedAt!==RAID_DURATION_MS||!integer(r.zone,0,2)))return false;
   if(f.raidId!==(r?.startedAt||0)||!Array.isArray(f.bag)||!f.bag.every(tile)||!Array.isArray(f.found)||f.found.length!==3||!f.found.every((a,z)=>Array.isArray(a)&&a.every(i=>integer(i,0,FIELD_ZONES[z].boxes.length-1))))return false;

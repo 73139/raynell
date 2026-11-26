@@ -181,6 +181,7 @@ function objectivePanel(context,objective=resolveObjective()){
   const routePlan=!raid&&['prep','map'].includes(context)&&o.source.id==='handover-ledgers'?inspectionReturnRoute(zone,o.inspections):null;
   const places=o.inspections?inspectionChecklist(o.inspections,context,routePlan):preparation||areaSearch||objectivePlaces(o.locations,context);
   let body=places+recoverySearchPanel(o)+objectiveGoalRows(o.goals)+materialList+procurement+actions;
+  if(o.source.kind==='order'&&o.source.id==='courier-checkin')body+=courierCheckinPanel();
   if(facility&&(context==='field'||context==='loot')){
     const filled=o.materials.filter(m=>m.missing===0).length;
     body='<details class="obj-field-details" data-objective-details="field" '+(sameObjective(expandedFieldObjective,o.source)?'open':'')+

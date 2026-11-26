@@ -11,6 +11,19 @@ function survivorNavLink(){
   return '<div class="sv-nav"><button type="button" data-page="survivors">'+menuIcon('journal')+
     '<span>생존자 관측 수첩</span><i aria-hidden="true">›</i></button></div>';
 }
+function courierCheckinPanel(){
+  const visits=courierCheckins();
+  const rows=visits.map(visit=>'<li>'+esc(survivorZoneName(visit.zone))+' · 출격 +'+formatRaid(visit.at-raid.startedAt)+'</li>').join('');
+  let advice='현장에서 관측 수첩을 열고 주변 흔적을 조사하세요.';
+  if(visits.length===1){
+    const end=survivorView().encounter?.departAt;
+    advice=end?'이곳 정차 종료는 출격 +'+formatRaid(end-raid.startedAt)+'입니다. 떠난 뒤 흔적을 다시 조사해 다음 권역을 확인하세요.':
+      '관측 수첩에서 마지막으로 만난 권역에 남은 단서를 확인하세요.';
+  }else if(visits.length>=2)advice='두 권역에서 대화를 마쳤습니다. 정상 탈출하면 배차반 수당을 받습니다.';
+  return '<section class="obj-place" data-courier-checkins><h3>운반원 면담 기록</h3>'+
+    (rows?'<ul>'+rows+'</ul>':'')+'<p>'+esc(advice)+'</p>'+
+    survivorNavLink()+'</section>';
+}
 function survivorButton(action,label,token,v,disabled=false,primary=false){
   return '<button type="button" data-survivor="'+esc(action)+'" data-token="'+esc(token)+'" data-raid-id="'+v.raidId+
     '"'+(primary?' class="primary"':'')+(disabled||!writer?' disabled':'')+'>'+esc(label)+'</button>';

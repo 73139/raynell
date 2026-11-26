@@ -56,8 +56,21 @@ def play(browser,width,natural):
             assert saved()['raid']['zone']==z
         def site(z,l):
             move(z)
-            if saved()['field']['landmarkByZone'][z]!=l:
-                click('.landmark-picker summary');click(f'[data-field=landmark][data-index="{l}"]')
+            if saved()['field']['landmarkByZone'][z]==l:return
+            picker=p.locator('.landmark-picker')
+            option=picker.locator(f'[data-field=landmark][data-index="{l}"]')
+            expect(picker).to_be_visible()
+            # The native disclosure and the location button change this page in place.
+            if not picker.evaluate('details=>details.open'):
+                summary=picker.locator('summary')
+                if mobile:summary.tap()
+                else:summary.click(no_wait_after=True)
+            expect(option).to_be_visible()
+            if mobile:option.tap()
+            else:option.click(no_wait_after=True)
+            expect(option).to_have_attribute('aria-pressed','true')
+            state=saved()
+            assert state['raid']['zone']==z and state['field']['landmarkByZone'][z]==l
         def search(z,l,b):
             site(z,l);sel=f'[data-field=open][data-index="{b}"]'
             for _ in range(3):
@@ -145,6 +158,42 @@ def play(browser,width,natural):
         assert sum(row.get('commission',0) for row in s['career']['history'])==64000 and s['career']['returns']==2
         nav('quests');click('[data-page=orders]');click(f'[data-bui=order][data-id="{MAIL}"]');expect(p.locator(f'[data-order="{MAIL}"]')).to_be_disabled();assert not errors,errors
         print(f'PASS {width}px {"real clock/RNG" if natural else "controlled clock/RNG"}: new player earned access, real 2-cell mail, region drop and original UID recovered across {"file transfer" if transfer else "reload"}, relay consumed it, normal extraction {r["elapsed"]} ms, one 30,000 CR / 105 XP payment, 94,000 CR after both orders.',flush=True)
+
+        if os.getenv('RUSTLINE_COURIER_CHAIN')=='1':
+            accept('courier-checkin');deploy(0)
+            field_note=p.locator('[data-courier-checkins]:visible').first
+            expect(field_note.locator('li')).to_have_count(0)
+            assert '폐쇄 검문소' not in field_note.inner_text()
+            start=saved()['raid']['startedAt']
+            def at_time(elapsed):
+                left=start+elapsed-p.evaluate('Date.now()')
+                if left<=0:return
+                if natural:
+                    while left>0:
+                        p.wait_for_timeout(min(12000,left+50));left=start+elapsed-p.evaluate('Date.now()')
+                else:p.clock.fast_forward(left+50)
+            def notebook():
+                click('[data-courier-checkins] [data-page=survivors]')
+                expect(p.locator('[data-survivor=observe]')).to_be_visible()
+            notebook();click('[data-survivor=observe]');click('[data-survivor=follow][data-token=boots-0]')
+            click('[data-survivor=meet]');click('[data-survivor=decline]')
+            assert saved()['wallet']==94000 and len(saved()['survivor']['active']['meetings'])==1
+            raid_tab(0);expect(field_note.locator('li')).to_have_count(1)
+            # Search while waiting in this region; two fully searched cases qualify for normal extraction.
+            search(0,0,0);search(0,0,1)
+            at_time(90050);notebook();click('[data-survivor=observe]')
+            clue=p.locator('[data-sv-clue][data-kind=cloth]:visible').first
+            expect(clue).to_contain_text('폐쇄 검문소');click('[data-survivor=follow][data-token=cloth-0]')
+            raid_tab(0);move(1);at_time(105050)
+            p.reload(wait_until='domcontentloaded');raid_tab(1);expect(field_note.locator('li')).to_have_count(1)
+            notebook();click('[data-survivor=meet]');raid_tab(1)
+            expect(field_note.locator('li')).to_have_count(2)
+            expect(field_note).to_contain_text('정상 탈출');assert saved()['wallet']==94000
+            r=extract();assert r['rating']=='success' and (r['commission'],r['missionXp'])==(38000,135)
+            click('[data-raid=ack]');p.reload(wait_until='domcontentloaded');end=saved()
+            assert end['wallet']==132000 and end['career']['sorties']==3 and end['career']['done'].count('courier-checkin')==1
+            assert not errors,errors
+            print(f'PASS {width}px {"real clock/RNG" if natural else "controlled clock/RNG"}: ledger → sealed mail → two courier meetings, real journal clue and mid-raid reload, water declined, {r["elapsed"]} ms, 38,000 CR / 135 XP once, 132,000 CR.',flush=True)
 
 if __name__=='__main__':
     natural=os.getenv('RUSTLINE_POSTAL_NATURAL')=='1';proxy={'server':os.environ['RUSTLINE_PROXY']} if os.getenv('RUSTLINE_PROXY') else None

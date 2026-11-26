@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.73</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.74</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -2067,7 +2067,9 @@ function sampleInspection(order, sortie, bag) {
   return {site, carried, count:Number(site.complete) + Number(carried)};
 }
 function orderUnlocked(order, done=career.done) {
-  return !order.after || done.includes(order.after);
+  if(!order.after)return true;
+  const prior=ORDERS.find(candidate=>candidate.id===order.after);
+  return Boolean(prior&&done.includes(prior.id)&&orderUnlocked(prior,done));
 }
 const ORDERS = [
   {id:'scout',surveyFunding:true, image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
@@ -2102,7 +2104,10 @@ const ORDERS = [
     cr:30000,xp:105,goal:'우편낭 인수 및 중계소 인계',target:2,progress:()=>postalProgress()},
   {id:'weather-survey',surveyFunding:true,image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
     text:'안개가 수송로의 거리 표식을 얼마나 가리는지 맑은 날과 비교합니다. 지도에서 세 권역의 예보를 보고 첫 관측지를 고르세요. 외곽 경계 울타리, 검문소 대기 차량 행렬, 군수 창고 하역 도크가 관측 지점입니다. 한 출격에서 서로 다른 두 권역의 맑음과 안개를 한 번씩 기록하고 정상 탈출하세요. 관측 버튼을 누른 시점의 현장 날씨가 기록됩니다. 두 날씨의 관측 순서는 자유입니다.',
-    cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length}
+    cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length},
+  {id:'courier-checkin',after:'sealed-mail',image:'bunker-stash',issuer:'벙커 배차반',title:'배달 뒤의 소식',
+    text:'회송한 우편낭이 수송망에 올랐습니다. 한 출격에서 서로 다른 두 권역에 정차한 기록 운반원 은서를 만나 소식을 확인하세요. 현장에서 흔적을 조사하고 따라간 뒤 말을 걸어야 만남이 기록됩니다. 물통 지원은 선택입니다. 정상 탈출하면 배차반이 수당을 지급합니다.',
+    cr:38000,xp:135,goal:'서로 다른 권역에서 운반원과 대화',target:2,progress:()=>courierCheckins().length}
 ];
 let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={}) {
@@ -4211,7 +4216,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=73000; // Derived from the release title by build.py.
+const WRITER_BUILD=74000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4465,6 +4470,11 @@ function validateBackup(raw){
   if(s.version>=24 && s.plannedDepartureZone!==undefined && (s.raid || (s.version<27 && !s.lootDestination) || !integer(s.plannedDepartureZone,0,FIELD_ZONES.length-1)))return false;
   if(!validWardBackup(s)||!validCaseBackup(s)||!validateEquipmentBackup(s)||!validContractsBackup(s.contracts)||!validRecurringSave(s.periodic))return false;
   const r=s.raid,f=s.field;
+  if(s.career?.order==='courier-checkin'||s.career?.done?.includes?.('courier-checkin')){
+    const done=s.career.done;
+    if(!Array.isArray(done)||!orderUnlocked(ORDERS.find(q=>q.id==='courier-checkin'),done)||
+       (s.career.order==='courier-checkin'&&done.includes('courier-checkin')))return false;
+  }
   if(!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
   if(r!==null&&(!dict(r)||!integer(r.startedAt,1)||r.endsAt-r.startedAt!==RAID_DURATION_MS||!integer(r.zone,0,2)))return false;
   if(f.raidId!==(r?.startedAt||0)||!Array.isArray(f.bag)||!f.bag.every(tile)||!Array.isArray(f.found)||f.found.length!==3||!f.found.every((a,z)=>Array.isArray(a)&&a.every(i=>integer(i,0,FIELD_ZONES[z].boxes.length-1))))return false;
@@ -5249,6 +5259,7 @@ function ordersView(){
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
     <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
     ${q.id==='weather-survey'&&state!=='done'?'<div class="shell-actions"><button data-cui="forecast">세 권역 예보 비교</button></div>':''}
+    ${q.id==='courier-checkin'&&state!=='done'?courierCheckinPanel():''}
     ${q.sample&&state!=='done'&&!raid?'<div class="shell-actions"><button data-db="lookup" data-id="'+esc(q.sample.item)+'">PVC 배관 도감 · 수급처와 주문</button><button data-page="stash">창고에서 출격 가방에 담기</button></div>':''}
     ${state==='active'?objectiveControl({kind:'order',id:q.id}):''}
     <p class="bu-minor">목표를 달성하고 정상 탈출하면 정산 시 보상을 받습니다.</p>`;
@@ -8823,6 +8834,7 @@ function objectivePanel(context,objective=resolveObjective()){
   const routePlan=!raid&&['prep','map'].includes(context)&&o.source.id==='handover-ledgers'?inspectionReturnRoute(zone,o.inspections):null;
   const places=o.inspections?inspectionChecklist(o.inspections,context,routePlan):preparation||areaSearch||objectivePlaces(o.locations,context);
   let body=places+recoverySearchPanel(o)+objectiveGoalRows(o.goals)+materialList+procurement+actions;
+  if(o.source.kind==='order'&&o.source.id==='courier-checkin')body+=courierCheckinPanel();
   if(facility&&(context==='field'||context==='loot')){
     const filled=o.materials.filter(m=>m.missing===0).length;
     body='<details class="obj-field-details" data-objective-details="field" '+(sameObjective(expandedFieldObjective,o.source)?'open':'')+
@@ -11496,6 +11508,14 @@ const SURVIVOR_NAME = '기록 운반원 은서';
 const SURVIVOR_AID = {item:'water', reward:6000};
 let survivorState = {active:null,last:null};
 
+function courierCheckins(){
+  const record=survivorState.active;
+  if(!raid||field.result||!record||career.order!=='courier-checkin'||record.raidId!==raid.startedAt)return [];
+  const route=SURVIVOR_ROUTES[record.origin];
+  return record.meetings.map(meeting=>({zone:route[meeting.step],at:meeting.at}))
+    .filter(meeting=>field.visited.includes(meeting.zone));
+}
+
 function survivorClueSpec(record,step,kind) {
   const route=SURVIVOR_ROUTES[record.origin], stop=SURVIVOR_STOPS[step];
   const zone=route[step], to=kind==='cloth' ? route[step+1] ?? null : null;
@@ -12163,6 +12183,19 @@ function survivorZoneName(zoneId){return FIELD_ZONES[zoneId]?.name||'';}
 function survivorNavLink(){
   return '<div class="sv-nav"><button type="button" data-page="survivors">'+menuIcon('journal')+
     '<span>생존자 관측 수첩</span><i aria-hidden="true">›</i></button></div>';
+}
+function courierCheckinPanel(){
+  const visits=courierCheckins();
+  const rows=visits.map(visit=>'<li>'+esc(survivorZoneName(visit.zone))+' · 출격 +'+formatRaid(visit.at-raid.startedAt)+'</li>').join('');
+  let advice='현장에서 관측 수첩을 열고 주변 흔적을 조사하세요.';
+  if(visits.length===1){
+    const end=survivorView().encounter?.departAt;
+    advice=end?'이곳 정차 종료는 출격 +'+formatRaid(end-raid.startedAt)+'입니다. 떠난 뒤 흔적을 다시 조사해 다음 권역을 확인하세요.':
+      '관측 수첩에서 마지막으로 만난 권역에 남은 단서를 확인하세요.';
+  }else if(visits.length>=2)advice='두 권역에서 대화를 마쳤습니다. 정상 탈출하면 배차반 수당을 받습니다.';
+  return '<section class="obj-place" data-courier-checkins><h3>운반원 면담 기록</h3>'+
+    (rows?'<ul>'+rows+'</ul>':'')+'<p>'+esc(advice)+'</p>'+
+    survivorNavLink()+'</section>';
 }
 function survivorButton(action,label,token,v,disabled=false,primary=false){
   return '<button type="button" data-survivor="'+esc(action)+'" data-token="'+esc(token)+'" data-raid-id="'+v.raidId+

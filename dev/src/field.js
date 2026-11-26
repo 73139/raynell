@@ -55,7 +55,9 @@ function sampleInspection(order, sortie, bag) {
   return {site, carried, count:Number(site.complete) + Number(carried)};
 }
 function orderUnlocked(order, done=career.done) {
-  return !order.after || done.includes(order.after);
+  if(!order.after)return true;
+  const prior=ORDERS.find(candidate=>candidate.id===order.after);
+  return Boolean(prior&&done.includes(prior.id)&&orderUnlocked(prior,done));
 }
 const ORDERS = [
   {id:'scout',surveyFunding:true, image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
@@ -90,7 +92,10 @@ const ORDERS = [
     cr:30000,xp:105,goal:'우편낭 인수 및 중계소 인계',target:2,progress:()=>postalProgress()},
   {id:'weather-survey',surveyFunding:true,image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
     text:'안개가 수송로의 거리 표식을 얼마나 가리는지 맑은 날과 비교합니다. 지도에서 세 권역의 예보를 보고 첫 관측지를 고르세요. 외곽 경계 울타리, 검문소 대기 차량 행렬, 군수 창고 하역 도크가 관측 지점입니다. 한 출격에서 서로 다른 두 권역의 맑음과 안개를 한 번씩 기록하고 정상 탈출하세요. 관측 버튼을 누른 시점의 현장 날씨가 기록됩니다. 두 날씨의 관측 순서는 자유입니다.',
-    cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length}
+    cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length},
+  {id:'courier-checkin',after:'sealed-mail',image:'bunker-stash',issuer:'벙커 배차반',title:'배달 뒤의 소식',
+    text:'회송한 우편낭이 수송망에 올랐습니다. 한 출격에서 서로 다른 두 권역에 정차한 기록 운반원 은서를 만나 소식을 확인하세요. 현장에서 흔적을 조사하고 따라간 뒤 말을 걸어야 만남이 기록됩니다. 물통 지원은 선택입니다. 정상 탈출하면 배차반이 수당을 지급합니다.',
+    cr:38000,xp:135,goal:'서로 다른 권역에서 운반원과 대화',target:2,progress:()=>courierCheckins().length}
 ];
 let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={}) {

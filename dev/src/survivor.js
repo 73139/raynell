@@ -10,6 +10,14 @@ const SURVIVOR_NAME = '기록 운반원 은서';
 const SURVIVOR_AID = {item:'water', reward:6000};
 let survivorState = {active:null,last:null};
 
+function courierCheckins(){
+  const record=survivorState.active;
+  if(!raid||field.result||!record||career.order!=='courier-checkin'||record.raidId!==raid.startedAt)return [];
+  const route=SURVIVOR_ROUTES[record.origin];
+  return record.meetings.map(meeting=>({zone:route[meeting.step],at:meeting.at}))
+    .filter(meeting=>field.visited.includes(meeting.zone));
+}
+
 function survivorClueSpec(record,step,kind) {
   const route=SURVIVOR_ROUTES[record.origin], stop=SURVIVOR_STOPS[step];
   const zone=route[step], to=kind==='cloth' ? route[step+1] ?? null : null;
