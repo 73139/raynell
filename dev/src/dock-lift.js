@@ -68,8 +68,10 @@ function dockPackLabel(unit){
   const name=unit.g==='cr_notes'?money(unit.amount)+' 지폐':kitName(unit.g);
   return name+' · 가방 '+(unit.y+1)+'행 '+(unit.x+1)+'열';
 }
+let dockManifestKit=null;
 function dockPrepManifest(kit,zoneId){
   if(raid||zoneId!==2||!dockAccess(career.surveyedBoxes))return '';
+  dockManifestKit=kit;
   const grams=kitBagGrams(kit.bag);
   const rows=kit.bag.slice().sort((a,b)=>kitUnitGrams(b)-kitUnitGrams(a)||a.y-b.y||a.x-b.x).map(unit=>{
     const label=esc(dockPackLabel(unit)),uid=esc(unit.uid);
@@ -87,6 +89,28 @@ function previewDockCargo(box){
   const omitted=new Set(Array.from(panel.querySelectorAll('[data-dock-omit]:checked'),c=>c.dataset.dockOmit));
   const remaining=equipmentState.bag.filter(u=>!omitted.has(u.uid));
   panel.querySelector('[data-dock-preview]').textContent='예상 가방 '+dockCapacityText(kitBagGrams(remaining));
+}
+function captureDockManifest(){
+  if(raid||zone!==2||dockManifestKit!==equipmentState)return null;
+  const panel=inside.querySelector?.('[data-dock-manifest]');
+  if(!panel)return null;
+  const active=document.activeElement;
+  return {open:panel.open, omitted:new Set(Array.from(panel.querySelectorAll('[data-dock-omit]:checked'),box=>box.dataset.dockOmit)),
+    focus:panel.contains(active)?active.dataset:null};
+}
+function restoreDockManifest(view){
+  if(!view)return;
+  const panel=inside.querySelector('[data-dock-manifest]');
+  if(!panel)return;
+  panel.open=view.open;
+  const boxes=Array.from(panel.querySelectorAll('[data-dock-omit]'));
+  for(const box of boxes)box.checked=view.omitted.has(box.dataset.dockOmit);
+  if(boxes.length&&view.omitted.size)previewDockCargo(boxes[0]);
+  if(!view.focus)return;
+  let target;
+  if(view.focus.dockOmit)target=boxes.find(box=>box.dataset.dockOmit===view.focus.dockOmit);
+  if(view.focus.loadout==='dock-review')target=Array.from(panel.querySelectorAll('[data-loadout="dock-review"]')).find(button=>button.dataset.uid===view.focus.uid);
+  (target||panel.querySelector('summary')).focus({preventScroll:true});
 }
 function reviewDockUnit(uid){
   if(page!=='prep'||raid||zone!==2||!dockAccess(career.surveyedBoxes))return;

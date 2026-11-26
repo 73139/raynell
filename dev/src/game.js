@@ -537,6 +537,7 @@ function render(){
     if(page!=='orders')fundingDossier=null;
     inside.dataset.page=page;
     const content=$('.content'),current=contentView();
+    const dockView=page==='prep'&&current===lastContentView?captureDockManifest():null;
     const scrollAreas=current===lastContentView&&(page==='inventory'||page==='stash'||page==='trade')?captureStashScroll():null;
     content.dataset.view=page;
     shellNavRender();
@@ -558,6 +559,7 @@ function render(){
       '<p role="status">'+esc(raidAckFeedback)+'</p>':'';
     content.innerHTML=onboardingPanel(page)+returnStatus+(page==='raid' && raid && !field.result ? finaleFieldPanel()+survivorFieldPanel() : '')+(screenViews[page]||commandHome)();
     if(scrollAreas?.size)restoreStashScroll(scrollAreas);
+    restoreDockManifest(dockView);
     restoreCaseRelocation(relocationView);
     restorePossessionEditor(possessionEditor);
     restoreOnboardingFocus(guideFocus);
