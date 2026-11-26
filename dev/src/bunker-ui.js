@@ -166,9 +166,9 @@ function bunkerDetailView(){
   <div class="bu-upgrade-level"><strong>시설 단계</strong><div>${f.levels.map(s=>`<button data-bui="tier" data-tier="${s.level}" aria-pressed="${tier===s.level}">Lv.${s.level}</button>`).join('')}</div></div>
   <div class="bu-next-effect"><b>Lv.${tier} 효과</b> ${facilityEffect(id,tier)}</div>
   ${tier===level+1&&!job?objectiveControl({kind:'facility',id,tier}):''}
-  <h3>필요 자재 <small>창고 보유 / 필요</small></h3><div class="bu-materials">${Object.entries(step.materials).map(([g,qty])=>{
-    const n=stashCount(g),ok=n>=qty;
-    return `<button data-db="lookup" data-id="${g}" aria-label="${GOODS[g][0]} 수급처, 보유 ${n}개, 필요 ${qty}개"><span class="bu-mat-image"><i class="${ok?'ready':'short'}">${ok?'✓':'×'}</i>${itemArt(g)}</span><b>${GOODS[g][0]}</b><small class="${ok?'ready':'short'}">${n} / ${qty}</small></button>`;
+  <h3>필요 자재 <small>창고 사용 가능 / 필요</small></h3><div class="bu-materials">${Object.entries(step.materials).map(([g,qty])=>{
+    const n=facilityMaterialCount(g),note=facilityFittedNote(g,n),ok=n>=qty;
+    return `<button data-db="lookup" data-id="${g}" aria-label="${GOODS[g][0]} 수급처, 사용 가능 ${n}개, 필요 ${qty}개${note}"><span class="bu-mat-image"><i class="${ok?'ready':'short'}">${ok?'✓':'×'}</i>${itemArt(g)}</span><b>${GOODS[g][0]}</b><small class="${ok?'ready':'short'}">${n} / ${qty}${note}</small></button>`;
   }).join('')}</div>
   <div class="bu-needs"><b>선행 시설</b><div>${step.requires.map(r=>`<button data-bui="facility" data-id="${r.facility}" data-tier="${r.level}">${hideoutLevel(r.facility)>=r.level?'✓':'□'} ${FACILITIES[r.facility].name} Lv.${r.level}</button>`).join('')||'없음'}</div></div>
   ${bunkerConstructionPlan(id,tier)}

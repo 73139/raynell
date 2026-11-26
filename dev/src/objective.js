@@ -49,7 +49,7 @@ function objectiveMaterial(id, required, forConstruction, outgoing=0) {
   const carried = isActive() ? count(field.bag) : 0;
   const fieldWorn = isActive() ? countWorn(field) : 0;
   const owned = loose + bag + cases + worn;
-  const usable = stashRemovableCount(id) - outgoing + (forConstruction ? 0 : bag + cases);
+  const usable = (forConstruction ? facilityMaterialCount(id) : stashRemovableCount(id) + bag + cases) - outgoing;
   return {id, required, loose, bag, worn, cases, owned, usable, field:carried, fieldWorn, missing:Math.max(0, required - usable)};
 }
 
@@ -172,7 +172,7 @@ function recoveryMaterial(id,aid,construction,outgoing=0){
   const row=objectiveMaterial(id,aid+construction,false,outgoing);
   // Construction can use only loose warehouse stock. A unit reserved for construction
   // cannot also fill a relief delivery, even if both lines ask for the same kind.
-  const assignedBuild=Math.min(construction,row.loose);
+  const assignedBuild=Math.min(construction,Math.max(0,facilityMaterialCount(id)-outgoing));
   const assignedAid=Math.min(aid,Math.max(0,row.usable-assignedBuild));
   return {...row,aid,construction,usable:assignedBuild+assignedAid,missing:row.required-assignedBuild-assignedAid};
 }

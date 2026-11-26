@@ -57,10 +57,10 @@ function gearQueuePhysical(record) {
   const {batch,...physical}=record;
   return physical;
 }
-function gearQueueRemove(list,id,amount) {
+function gearQueueRemove(list,id,amount,skipFitted=false) {
   for(let i=0;amount>0&&i<list.length;) {
     const record=list[i];
-    if(record.g!==id){i++;continue;}
+    if(record.g!==id || (skipFitted && record.module)){i++;continue;}
     const count=record.batch?.count||1;
     if(count<=amount){list.splice(i,1);amount-=count;continue;}
     const {prefix,start}=record.batch, next=start+amount;

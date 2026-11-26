@@ -123,6 +123,8 @@ function objectiveMaterialRow(m,facility){
   const inventory=[['창고·입고 대기',m.loose],['보관함',m.cases],['준비 가방',m.bag],['착용 중',m.worn]]
     .filter(([,qty])=>qty>0).map(([where,qty])=>where+' '+qty).join(' · ');
   const recovery=m.construction!==undefined;
+  const fitted=(facility||m.construction)?stashRemovableCount(m.id)-facilityMaterialCount(m.id):0;
+  const protectedHosts=fitted?'<span class="obj-rule">모듈 장착 '+fitted+'개 · 장비 정비에서 모듈을 분리하면 자재로 사용할 수 있습니다.</span>':'';
   const allocation=recovery?'<small class="obj-inventory">'+[m.aid?'구호 납품 '+m.aid+'개':'',m.construction?'시설 건설 '+m.construction+'개':''].filter(Boolean).join(' · ')+'</small>':'';
   const atRisk=m.field>0?'<span class="obj-risk">현장 가방 '+m.field+'개 · 생환 후 부족 '+Math.max(0,m.missing-m.field)+'개</span>':'';
   const relocate=(facility || m.construction) && m.missing>0 && (m.bag||m.cases)?'<span class="obj-rule">건설에 쓸 물품은 창고로 옮기세요.</span>':'';
@@ -130,7 +132,7 @@ function objectiveMaterialRow(m,facility){
     '<span class="'+(m.missing?'obj-short':'obj-ready')+'">'+(m.missing?'부족 '+m.missing:'부족 0 · 확보')+'</span></div>'+
     '<div class="obj-quantities"><span>필요 <b>'+m.required+'</b></span><span>보유 <b>'+m.owned+'</b></span>'+
     '<span>'+ (recovery?'지금 충당 가능':facility?'건설용 창고 재고':'납품용 보유량')+' <b>'+m.usable+'</b></span></div>'+
-    allocation+(inventory?'<small class="obj-inventory">'+inventory+'</small>':'')+atRisk+(m.fieldWorn?'<span class="obj-rule">현장 장착 '+m.fieldWorn+'개 · 생환 후 해제하여 사용</span>':'')+relocate+(m.worn&&m.missing?'<span class="obj-rule">착용 장비나 장착 모듈을 해제해 창고에 넣으세요.</span>':'')+'</li>';
+    allocation+protectedHosts+(inventory?'<small class="obj-inventory">'+inventory+'</small>':'')+atRisk+(m.fieldWorn?'<span class="obj-rule">현장 장착 '+m.fieldWorn+'개 · 생환 후 해제하여 사용</span>':'')+relocate+(m.worn&&m.missing?'<span class="obj-rule">착용 장비나 장착 모듈을 해제해 창고에 넣으세요.</span>':'')+'</li>';
 }
 
 function objectiveGoalRows(goals){

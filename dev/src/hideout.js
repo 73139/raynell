@@ -163,7 +163,7 @@ function advanceHideout(now = Date.now()) {
   return changed;
 }
 function missingMaterials(inputs) {
-  return Object.entries(inputs).some(([id,qty]) => stashRemovableCount(id) < qty);
+  return Object.entries(inputs).some(([id,qty]) => facilityMaterialCount(id) < qty);
 }
 function facilityBuildStatus(id, tier) {
   const f = FACILITIES[id];
@@ -245,16 +245,21 @@ function updateHideoutClock() {
     if (el.textContent !== time) el.textContent = time;
   }
 }
+function facilityFittedNote(id, available = facilityMaterialCount(id)) {
+  const fitted = stashRemovableCount(id) - available;
+  return fitted ? ' · 모듈 장착 '+fitted+'개 제외' : '';
+}
+
 function facilityMaterials(inputs) {
   return `<div class="db-list facility-materials">${Object.entries(inputs).map(([id,qty]) => {
-    const qtyHeld = stashCount(id), g = GOODS[id];
-    return `<button data-db="lookup" data-id="${id}">${ico(g[4])}<span><b>${g[0]}</b><small>${itemSources(id)}</small></span><span class="${qtyHeld < qty ? 'facility-deficit' : 'facility-ready'}">${qtyHeld} / ${qty}개</span></button>`;
+    const qtyHeld = facilityMaterialCount(id), g = GOODS[id];
+    return `<button data-db="lookup" data-id="${id}">${ico(g[4])}<span><b>${g[0]}</b><small>${itemSources(id)}</small></span><span class="${qtyHeld < qty ? 'facility-deficit' : 'facility-ready'}">${qtyHeld} / ${qty}개${facilityFittedNote(id,qtyHeld)}</span></button>`;
   }).join('')}</div>`;
 }
 function productionIngredients(facility,recipe,inputs) {
   const rows=Object.entries(inputs).map(([item,need])=>{
-    const held=stashRemovableCount(item),shortage=Math.max(0,need-held);
-    const info=`<span>${GOODS[item][0]} · ${held} / ${need}</span>`;
+    const held=facilityMaterialCount(item),shortage=Math.max(0,need-held);
+    const info=`<span>${GOODS[item][0]} · ${held} / ${need}${facilityFittedNote(item,held)}</span>`;
     const attrs=`data-craft-input="${item}" data-shortage="${shortage}"`;
     if(!shortage)return `<span ${attrs} tabindex="-1">${info}<span>충족</span></span>`;
     return `<button type="button" ${attrs} data-db="craft-ingredient" data-id="${item}" data-facility="${facility}" data-recipe="${recipe}">${info}<span>${shortage}개 부족 · 수급처 ›</span></button>`;
@@ -288,7 +293,7 @@ function bunkerFacilityDetail() {
     ${job ? `<p class="facility-current">Lv.${job.tier} 공사 중 · ${facilityTimer(job.end)} 남음</p>` : ''}
     <div class="facility-bill"><span>건설비 <b>${money(step.costCR)}</b></span><span>공사 기간 <b>${step.durationMinutes}분</b></span></div>
     <h3>선행 시설</h3><div class="db-prereq">${step.requires.map(r => `<button data-db="facility" data-id="${r.facility}" data-tier="${r.level}">${FACILITIES[r.facility].name} Lv.${r.level} · ${hideoutLevel(r.facility)>=r.level?'충족':'미충족'}</button>`).join('') || '없음'}</div>
-    <h3>건설 재료 <small>보유 / 필요</small></h3>${facilityMaterials(step.materials)}
+    <h3>건설 재료 <small>창고 사용 가능 / 필요</small></h3>${facilityMaterials(step.materials)}
     <button class="primary facility-build" data-hideout="build" data-id="${id}" data-tier="${tier}" ${status?'disabled':''}>${status || '재료와 건설비를 지불하고 Lv.' + tier + ' 건설'}</button>
     ${facilityProductionPanel(id)}`;
 }

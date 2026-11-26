@@ -85,7 +85,7 @@ function campaignFacility(v) {
     body='<p>시설 공사에는 아래 창고 자재와 건설비가 필요합니다.</p>'+
       '<table><caption>건설 자재</caption><thead><tr><th scope="col">물품</th><th scope="col">필요</th><th scope="col">창고</th><th scope="col">부족</th></tr></thead><tbody>'+
       Object.entries(step.materials).map(([item,required])=>{
-        const owned=stashCount(item),missing=Math.max(0,required-owned);
+        const owned=facilityMaterialCount(item),missing=Math.max(0,required-owned);
         return '<tr data-campaign-material="'+item+'"><th scope="row">'+esc(kitName(item))+'</th><td>'+required+'</td><td>'+
           owned.toLocaleString('ko-KR')+'</td><td class="'+(missing?'rc-short':'rc-ok')+'">'+missing+'</td></tr>';
       }).join('')+'</tbody></table><dl class="rc-bill"><div><dt>건설비</dt><dd>'+money(step.costCR)+'</dd></div>'+

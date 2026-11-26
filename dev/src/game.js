@@ -382,7 +382,7 @@ function handleDB(d){
       const recipe=d.recipe===WARD_RECIPE?WARD_RECIPE:Number(d.recipe);
       if(page!=='facility'||d.facility!==facilitySelected||!facilityRecipeAvailable(d.facility,recipe))return;
       const inputs=facilityRecipe(d.facility,recipe).inputs;
-      if(!Object.hasOwn(inputs,d.id)||stashRemovableCount(d.id)>=inputs[d.id])return;
+      if(!Object.hasOwn(inputs,d.id)||facilityMaterialCount(d.id)>=inputs[d.id])return;
       craftCatalogOrigin={facility:d.facility,tier:facilityTier,recipe,item:d.id};
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
