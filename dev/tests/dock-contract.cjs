@@ -1,5 +1,7 @@
 const {assert,boot,clone,epoch,extract,go,stamp,v12,valid}=require('./game-fixture.cjs');
 const id='quarter-dock-chain';
+// New quest IDs are not understood by v0.95; sharing its writer build would erase the trader record.
+assert.ok(boot().g.s.writerBuild>=96000,'dock-cycle release requires a new writer build');
 function seed(){
   const b=boot(),s=clone(b.g.s);
   s.career.surveyedBoxes=['2-3','2-4','2-8'];
