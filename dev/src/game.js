@@ -242,7 +242,7 @@ function handleRaidAction(action,data={}){
     raid={startedAt:now,endsAt:now+RAID_DURATION_MS,zone};
     field=freshField();startInjuries();startLootLocks(raid.startedAt);prepareLandmarks();
     field.landmarkByZone[raid.zone]=sortieSpawnLandmark(raid.zone);
-    prepareSortie();startEquipmentRaid();startFinaleRaid(raid.startedAt);startSurvivorRaid(raid.startedAt,raid.zone);seedContainers();
+    prepareSortie();startEquipmentRaid();prepareWardPacking();startFinaleRaid(raid.startedAt);startSurvivorRaid(raid.startedAt,raid.zone);seedContainers();
     picked=null;notice='';gearNotice='';page='raid';
   }else return;
   const startedField=field;
@@ -363,6 +363,7 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(d.field==='ward-compare')return compareWardPacking(d);
 if(d.field==='relief-deliver')return handleReliefDelivery(d);
 if(d.field==='postal-pickup'||d.field==='postal-stamp')return handlePostal(d);
 if(d.field==='survey-observe')return handleWeatherObservation(d);

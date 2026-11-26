@@ -138,6 +138,7 @@ function ordersView(){
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
     <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
     ${q.id==='weather-survey'&&state!=='done'?'<div class="shell-actions"><button data-cui="forecast">세 권역 예보 비교</button></div>':''}
+    ${q.id===WARD_FIELD_ID?wardPackingDossier():''}
     ${q.id===RELIEF_ORDER?reliefPanel():''}
     ${q.id==='courier-checkin'&&state!=='done'?courierCheckinPanel():''}
     ${q.sample&&state!=='done'&&!raid?'<div class="shell-actions"><button data-db="lookup" data-id="'+esc(q.sample.item)+'">PVC 배관 도감 · 수급처와 주문</button><button data-page="stash">창고에서 출격 가방에 담기</button></div>':''}

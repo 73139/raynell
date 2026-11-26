@@ -54,11 +54,12 @@ function sampleInspection(order, sortie, bag) {
   const carried = (bag || []).some(unit => unit.g === order.sample.item);
   return {site, carried, count:Number(site.complete) + Number(carried)};
 }
-function orderUnlocked(order, done=career.done, reply) {
+function orderUnlocked(order, done=career.done, reply, clinic) {
+  if(order.afterWard && !paidWardDelivery(clinic===undefined?hideout:clinic))return false;
   if(order.afterReply && !(reply===undefined?finaleState.reply:reply))return false;
   if(!order.after)return true;
   const prior=ORDERS.find(candidate=>candidate.id===order.after);
-  return Boolean(prior&&done.includes(prior.id)&&orderUnlocked(prior,done,reply));
+  return Boolean(prior&&done.includes(prior.id)&&orderUnlocked(prior,done,reply,clinic));
 }
 const ORDERS = [
   {id:'scout',surveyFunding:true, image:'bunker-tower', issuer:'벙커 관제실', title:'외곽 통신선 조사', text:'한 레이드에서 서로 다른 두 지역을 방문하고 정상 탈출하세요.', cr:20000, xp:80,
@@ -99,18 +100,22 @@ const ORDERS = [
     cr:38000,xp:135,goal:'서로 다른 권역에서 운반원과 대화',target:2,progress:()=>courierCheckins().length},
   {id:'external-relief',afterReply:true,image:'bunker-kitchen',issuer:'외부 벙커 연락반',title:'회신 뒤의 첫 보급',
     text:'외부 벙커에서 첫 보급을 요청했습니다. 외곽 배급소 식당의 급식 보급, 또는 폐쇄 검문소 감시 통제실의 전원 부품 중 하나를 선택해 현장 가방에서 인계하고 정상 탈출하세요.',
-    cr:36000,xp:110,goal:'외부 벙커 보급 요청 한 건 인계',target:1,progress:()=>reliefProgress()}
+    cr:36000,xp:110,goal:'외부 벙커 보급 요청 한 건 인계',target:1,progress:()=>reliefProgress()},
+  {id:'ward-packing',afterWard:true,image:'bunker-med',issuer:'윤서진 · 의무실',title:'회수 포장 대조',
+    text:'초도 납품 뒤 회수 포장을 점검합니다. 접이식 야전 처치포를 출격 가방에 담고, 외곽 임시 진료소의 진료대 응급함 또는 검문소 검역 천막의 응급 케이스를 끝까지 수색하세요. 임시 진료소는 열쇠 없이 이용합니다. 검역 천막의 케이스에는 검역실 열쇠가 필요합니다. 포장 표식에 대조한 바로 그 처치포를 가지고 정상 탈출하세요. 처치포는 귀환 후 창고에 보관됩니다.',
+    cr:18000,xp:75,goal:'포장을 대조한 처치포 원본 휴대',target:1,progress:()=>Number(wardCheckCarried())}
 ];
 let career,orderFeedback='',raidAckFeedback='';
-function readCareer(raw={},reply=null) {
+function readCareer(raw={},reply=null,clinic=null) {
   orderFeedback='';raidAckFeedback='';pumpNotice=null;
   const number = n => Number.isSafeInteger(n) && n>=0 ? n : 0;
   const completed = Array.isArray(raw?.done) ? raw.done : [];
-  const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed,reply) &&
+  const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed,reply,clinic) &&
+    (q.id!==WARD_FIELD_ID || wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)) &&
     (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
-  career = {...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  career = {...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
-    done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply))?raw.order:null,
+    done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply,clinic))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
       if(!row || (validHistoryGear(row) && historyGearMatches(row,lastSummary)))return row;
       const {gearReport,gearOmitted,...rest}=row;
@@ -291,6 +296,7 @@ function reconcileEnd(result,at,exit=null){
   const order=award?.order;
   if(award?.payable){
     commission=order.cr;missionXp=order.xp;orderName=order.title;
+    if(order.id===WARD_FIELD_ID)career.wardCheckReceipt={...field.wardCheck};
     if(order.id===RELIEF_ORDER)career.reliefReceipt={...field.reliefDelivery};
     career.done.push(order.id);career.order=null;
   }
@@ -300,7 +306,7 @@ function reconcileEnd(result,at,exit=null){
   if(returned){
     for(const unit of recoveredBag){
       if(unit.g==='rl_bp_dressing')receiveWardSheet(unit.uid);
-      else if(unit.g!=='cr_notes')addStashGoods(unit.g,1,unit.gear);
+      else if(unit.g!=='cr_notes')addStashGoods(unit.g,1,unit.gear,unit.uid);
     }
     wallet=(wallet-cost)+carriedCash+commission;
     career.returns++;
@@ -327,7 +333,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost, ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }

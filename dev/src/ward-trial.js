@@ -1,5 +1,5 @@
 // A clinic commission does not occupy a trader's standing-quest slot.
-const WARD_TRIAL_ITEM='rl_craft_dressing',WARD_TRIAL_CR=10000,WARD_TRIAL_XP=25;
+const WARD_TRIAL_CR=10000,WARD_TRIAL_XP=25;
 let wardTrialMessage='';
 
 function validWardTrialRecord(record,registered,level){
@@ -70,7 +70,7 @@ function wardTrialPanel(){
       '<button type="button" data-contract="ward-trial" data-step="accept"'+(view.reason?' disabled':'')+'>의뢰 수락</button>';
   }else if(view.stage==='paid'){
     body='<p data-ward-trial-receipt>처치포 1개 납품 완료 · 실물 '+money(WARD_TRIAL_CR)+' 입금 · +'+WARD_TRIAL_XP+' XP</p>'+
-      '<p>납품 직후 잔액 '+money(view.paid.beforeCR+WARD_TRIAL_CR)+' · 누적 '+(view.paid.beforeXP+WARD_TRIAL_XP).toLocaleString('ko-KR')+' XP</p>';
+      '<p>납품 직후 잔액 '+money(view.paid.beforeCR+WARD_TRIAL_CR)+' · 누적 '+(view.paid.beforeXP+WARD_TRIAL_XP).toLocaleString('ko-KR')+' XP</p><button type="button" data-contract="ward-trial" data-step="followup">회수 포장 대조 '+(career.done.includes(WARD_FIELD_ID)?'기록':'의뢰')+' 보기</button>';
   }else{
     const rows=view.copies.map(u=>'<li><span>'+esc(kitName(WARD_TRIAL_ITEM))+'<small>창고 '+(u.y+1)+'행 '+(u.x+1)+'열</small></span>'+
       '<button type="button" data-contract="ward-trial" data-step="deliver" data-uid="'+esc(u.uid)+'" aria-label="창고 '+(u.y+1)+'행 '+(u.x+1)+'열의 처치포 한 개 납품"'+
@@ -90,6 +90,11 @@ function openWardTrial(){
 }
 function handleWardTrial(d){
   if(page!=='traderQuests'||marketUI.trader!=='medic'||contractPanel.mode!=='standing')return;
+  if(d.step==='followup'){
+    if(!paidWardDelivery(hideout))return;
+    bunkerOrderSelected=WARD_FIELD_ID;bunkerOrderFilter='all';navigatePage('orders');
+    const heading=$('.bu-order-title h2');heading?.setAttribute?.('tabindex','-1');heading?.focus?.({preventScroll:true});return;
+  }
   wardTrialMessage=wardTrialAction(d.step,d.uid).message;
   renderKeep();
   const panel=$('[data-ward-trial]');panel?.focus({preventScroll:true});panel?.scrollIntoView({block:'nearest'});

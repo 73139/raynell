@@ -160,7 +160,7 @@ function caseTransfer(uid, action, item) {
     id=item;
     if (!caseAccepts(box.g,id)) return fail('이 보관함에 넣을 수 없는 종류입니다.');
     const [,w,h]=GOODS[id];
-    const physical=id==='rl_bp_dressing'?stashSlots.findLast(unit=>unit.g===id)?.uid:newStashUid();
+    const physical=wardPackUid(id,null)||newStashUid();
     const fit=kitFit(contents,STORAGE_CASES[box.g].size,{uid:physical,g:id,x:0,y:0,w,h});
     if (!fit) return fail('보관함에 물품이 들어갈 공간이 없습니다.');
     const gear=gearStashChoice(id,null); if (gear) fit.gear=gear;
@@ -206,7 +206,14 @@ function newStashUid() {
   return 's-' + suffix;
 }
 
-function placeIncomingGoods(id, amount, incoming = null, newStock = false) {
+// Count-only overflow has no UID until a physical copy is placed or packed.
+const WARD_TRIAL_ITEM='rl_craft_dressing';
+function wardPackUid(id,uid){
+  if(id!=='rl_bp_dressing'&&id!==WARD_TRIAL_ITEM)return null;
+  if(uid==='overflow'||(!uid&&stashOverflowCount(id)>0))return newStashUid();
+  return uid||stashSlots.findLast(unit=>unit.g===id)?.uid;
+}
+function placeIncomingGoods(id, amount, incoming = null, newStock = false, sourceUid = null) {
   const [, w, h] = GOODS[id];
   const size = stashSize();
   let placed=0;
@@ -219,7 +226,7 @@ function placeIncomingGoods(id, amount, incoming = null, newStock = false) {
       pos = firstFit(stashSlots, size, width, height);
     }
     if (!pos) break;
-    const unit={uid:newStashUid(),g:id,...pos,w:width,h:height};
+    const unit={uid:placed===0&&sourceUid?sourceUid:newStashUid(),g:id,...pos,w:width,h:height};
     const offset=gearOverflow.findIndex(gear=>gear.g===id);
     if (incoming) {unit.gear=incoming; incoming=null;}
     else if (!newStock && offset>=0) {unit.gear=gearQueuePhysical(gearOverflow[offset]);gearQueueRemove(gearOverflow,id,1);}
@@ -284,7 +291,8 @@ function addStashGoods(id, amount = 1, gear = null, sourceUid = null) {
     return true;
   }
   stash[id] = next;
-  placeIncomingGoods(id, amount, gear, true);
+  const preserve=id===WARD_TRIAL_ITEM && amount===1 && wardUid(sourceUid) && !stashSlots.some(u=>u.uid===sourceUid);
+  placeIncomingGoods(id, amount, gear, true, preserve?sourceUid:null);
   return true;
 }
 

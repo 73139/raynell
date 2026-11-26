@@ -78,7 +78,8 @@ function readSession(current){
   if(raid)for(const box of Object.values(field.boxes)){
     if(!Array.isArray(box.size))box.size=BOX_SIZE.slice();
   }
-  readCareer(snap?.career,snap?.finale?.reply||null);
+  readCareer(snap?.career,snap?.finale?.reply||null,snap?.hideout||null);
+  if(field.wardCheck&&!validWardFieldBackup({...snap,raid,field,career}))delete field.wardCheck;
   if(field.reliefDelivery&&!validReliefBackup({raid,field,career,finale:snap?.finale,lastSummary}))delete field.reliefDelivery;
   postalNotice='';
   if(!validPostalCargo(raid,field,career.order)){
@@ -264,7 +265,7 @@ function validateBackup(raw){
     if(!Array.isArray(done)||!orderUnlocked(ORDERS.find(q=>q.id==='courier-checkin'),done)||
        (s.career.order==='courier-checkin'&&done.includes('courier-checkin')))return false;
   }
-  if(!validReliefBackup(s)||!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
+  if(!validWardFieldBackup(s)||!validReliefBackup(s)||!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
   if(r!==null&&(!dict(r)||!integer(r.startedAt,1)||r.endsAt-r.startedAt!==RAID_DURATION_MS||!integer(r.zone,0,2)))return false;
   if(f.raidId!==(r?.startedAt||0)||!Array.isArray(f.bag)||!f.bag.every(tile)||!Array.isArray(f.found)||f.found.length!==3||!f.found.every((a,z)=>Array.isArray(a)&&a.every(i=>integer(i,0,FIELD_ZONES[z].boxes.length-1))))return false;
   if(!Array.isArray(f.log)||!f.log.every(x=>typeof x==='string')||!dict(f.boxes))return false;

@@ -341,7 +341,7 @@ function kitPackFromStash(id,uid) {
   if(kitBunkerOnly(id)){gearNotice='보관함은 벙커 안에서만 사용할 수 있습니다.';return;}
   const k=equipmentState,fit=kitFit(k.bag,kitCapacity(k.worn),gearUnitFor(id,gearStashChoice(id,uid)));
   if(!fit){gearNotice='가방에 물품이 들어갈 공간이 없습니다.';return;}
-  if(id==='rl_bp_dressing')fit.uid=uid||stashSlots.findLast(unit=>unit.g===id)?.uid;
+  fit.uid=wardPackUid(id,uid)||fit.uid;
   if(!takeStashGoods(id,1,uid||null)){gearNotice='창고 물품을 다시 확인하세요.';return;}
   k.bag.push(fit);gearNotice=kitName(id)+' 출격 준비 완료.';
 }
@@ -356,7 +356,7 @@ function removeWorn(slot,ground) {
   if(moved){
     k.bag=moved.placed;
     if(ground)kitGround().push(...moved.left);
-    else for(const unit of moved.left){if(unit.g==='cr_notes')wallet+=unit.amount;else if(unit.g==='rl_bp_dressing')receiveWardSheet(unit.uid);else addStashGoods(unit.g,1,unit.gear);}
+    else for(const unit of moved.left){if(unit.g==='cr_notes')wallet+=unit.amount;else if(unit.g==='rl_bp_dressing')receiveWardSheet(unit.uid);else addStashGoods(unit.g,1,unit.gear,unit.uid);}
     gearNotice=moved.left.length?'휴대 공간을 넘긴 '+moved.left.length+'개를 '+(ground?'바닥에 두었습니다.':'창고로 옮겼습니다.'):slot==='back'?'주머니로 전환했습니다.':'보조 파우치를 해제했습니다.';
   }else gearNotice=kitName(id)+(ground?' 내려놓음.':' 창고 보관.');
   if(ground)kitGround().push(gearUnitFor(id,physical));

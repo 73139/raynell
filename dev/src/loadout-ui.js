@@ -290,9 +290,9 @@ function moveStashToBagCell(x,y){
   if(!fits(equipmentState.bag,kitCapacity(equipmentState.worn),x,y,w,h)){
     gearNotice='이 위치에 들어가지 않습니다. 빈 칸을 선택하세요.';return false;
   }
-  const physical=gearStashChoice(unit.g,unit.uid);
+  const physical=gearStashChoice(unit.g,unit.uid),printedUid=wardPackUid(unit.g,unit.uid);
   if(!takeStashGoods(unit.g,1,unit.uid))return false;
-  equipmentState.bag.push({...gearUnitFor(unit.g,physical),...(unit.g==='rl_bp_dressing'?{uid:unit.uid}:{}),x,y,w,h});stashSelection=null;gearPick=null;stashNotice='';
+  equipmentState.bag.push({...gearUnitFor(unit.g,physical),...(printedUid?{uid:printedUid}:{}),x,y,w,h});stashSelection=null;gearPick=null;stashNotice='';
   gearNotice=kitName(unit.g)+' · 가방에 넣었습니다.';return true;
 }
 function moveBagToStashCell(x,y){
@@ -305,7 +305,7 @@ function moveBagToStashCell(x,y){
     gearNotice='선택한 창고 위치에 여유 공간이 없습니다.';return false;
   }
   const next=stashCount(unit.g)+1;if(!Number.isSafeInteger(next))return false;
-  stash[unit.g]=next;stashSlots.push({uid:unit.g==='rl_bp_dressing'?unit.uid:newStashUid(),g:unit.g,x,y,w,h,...(unit.gear?{gear:unit.gear}:{})});
+  stash[unit.g]=next;stashSlots.push({uid:unit.g==='rl_bp_dressing'||(unit.g===WARD_TRIAL_ITEM&&wardUid(unit.uid))?unit.uid:newStashUid(),g:unit.g,x,y,w,h,...(unit.gear?{gear:unit.gear}:{})});
   bag.splice(index,1);gearPick=null;stashSelection=null;stashNotice='';gearNotice=kitName(unit.g)+' · 창고에 보관했습니다.';return true;
 }
 inside.addEventListener('dragover',e=>{
