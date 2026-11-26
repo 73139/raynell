@@ -47,7 +47,7 @@ function objectiveMaterial(id, required, forConstruction, outgoing=0) {
   const worn = countWorn(equipmentState);
   const cases = stashSlots.reduce((sum, unit) => sum + (unit.contents ? count(unit.contents) : 0), 0);
   const carried = isActive() ? count(field.bag) : 0;
-  const fieldUsable = isActive() ? field.bag.filter(unit => unit.g === id && !unit.gear?.module).length : 0;
+  const fieldUsable = isActive() ? field.bag.filter(unit => matchesDeliveryUnit(unit,id)).length : 0;
   const fieldWorn = isActive() ? countWorn(field) : 0;
   const owned = loose + bag + cases + worn;
   const usable = (forConstruction ? stashUnfittedCount(id) : contractDeliveryCount(id)) - outgoing;

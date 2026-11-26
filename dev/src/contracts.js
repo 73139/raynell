@@ -209,6 +209,10 @@ function contractAction(id, action, pinIfEmpty = false) {
   return {ok: true, message};
 }
 
+function matchesDeliveryUnit(unit,id) {
+  return unit.g===id&&!unit.gear?.module;
+}
+
 // Worn gear, installed modules and nonempty cases stay with the player.
 function npcDeliveryStock(id) {
   const loose = stashUnfittedCount(id);
@@ -249,7 +253,7 @@ function consumeNPCDelivery(materials,reserveLoose={}) {
   for (const [id, count] of entries) {
     let remaining = count;
     equipmentState.bag = equipmentState.bag.filter(unit => {
-      if (unit.g !== id || unit.gear?.module || remaining === 0) return true;
+      if (!matchesDeliveryUnit(unit,id) || remaining === 0) return true;
       remaining--;
       return false;
     });
@@ -260,7 +264,7 @@ function consumeNPCDelivery(materials,reserveLoose={}) {
       const box=stashSlots[i];
       if (!box.contents?.length) continue;
       const contents=box.contents.filter(unit=>{
-        if (unit.g!==id || unit.gear?.module || !remaining) return true;
+        if (!matchesDeliveryUnit(unit,id) || !remaining) return true;
         remaining--;
         return false;
       });

@@ -207,6 +207,20 @@ function objectiveLootHint(unit,objective){
   return m?' · 목표 물품 · 필요 '+m.required+' · 보유 '+m.owned+' · 부족 '+m.missing:'';
 }
 
+function groundDeliveryNote(unit,objective){
+  if(!unit.revealed||!objective)return '';
+  const material=objective.materials.find(row=>row.id===unit.g);
+  if(!material)return '';
+  const needed=Math.max(0,material.missing-material.fieldUsable);
+  const period=objective.source.kind==='daily'?'일일 납품':'주간 납품';
+  let impact;
+  if(!matchesDeliveryUnit(unit,material.id))impact='이 장비는 장착 모듈을 분리해야 납품 가능 · 지금 회수해도 부족 '+needed+'개';
+  else if(!needed)impact=material.missing?'현재 가방으로 생환하면 이 품목 충족':'벙커에 이 품목 납품량 확보';
+  else impact='현재 생환 시 부족 '+needed+'개 · 이 물품도 회수해 생환하면 '+(needed===1?'이 품목 충족':'부족 '+(needed-1)+'개');
+  return '<small data-ground-delivery="'+material.id+'">'+period+' · 필요 '+material.required+'개 · 벙커 납품 가능 '+
+    material.usable+'개 · 현장 가방 납품 가능 '+material.fieldUsable+'개 · '+impact+'</small>';
+}
+
 function objectiveLootBadge(hint){
   if(!hint)return '';
   return '<i class="obj-tile-mark" aria-hidden="true" title="목표 물품">'+commandIcon('pin')+'</i>';

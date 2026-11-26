@@ -250,6 +250,7 @@ function kitGroundPanel(){
   if(!raid||field.result||field.journey)return '';
   const ground=field.gearGround?.[raid.zone];
   if(!ground?.length)return '';
+  const pinnedDelivery=objectivePin?.kind==='daily'||objectivePin?.kind==='weekly'?resolveObjective():null;
   const counts=new Map(),seen=new Map();
   const names=ground.map(unit=>{
     const suffix=unit.gear?' #'+gearSerial(unit.gear.uid):isCashUnit(unit)?' · '+money(unit.amount):'';
@@ -274,7 +275,7 @@ function kitGroundPanel(){
       details='<small>'+esc(state.join(' · '))+'</small>';
     }
     const ref='ground-unit-'+i,button='ground-recover-'+i,action=unit.g===ISSUE_PACK?'다시 메기':'회수';
-    return '<div><span id="'+ref+'">'+esc(label)+details+'</span><button type="button" id="'+button+
+    return '<div><span id="'+ref+'">'+esc(label)+details+groundDeliveryNote(unit,pinnedDelivery)+'</span><button type="button" id="'+button+
       '" aria-labelledby="'+ref+' '+button+'" data-gear="recover" data-unit="'+esc(unit.uid)+'"'+
       (field.action||field.contact?' disabled':'')+'>'+action+'</button></div>';
   });
