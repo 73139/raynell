@@ -3,6 +3,10 @@
   color:var(--lo-text);font-family:var(--font,Arial),sans-serif;
 }
 .loadout-ui *{box-sizing:border-box}
+.lo-prep{position:relative}
+.lo-prep .lo-deploy-shortcut{position:absolute;inset-inline-start:0;top:0;z-index:4}
+.lo-prep .lo-deploy-shortcut:not(:focus){clip-path:inset(50%);pointer-events:none;overflow:hidden;width:1px;height:1px;padding:0;border:0}
+
 .loadout-ui button:focus-visible,.loadout-ui summary:focus-visible{outline:2px solid #e9d798;outline-offset:2px;z-index:3}
 .lo-head{display:flex;gap:1rem;align-items:center;margin:0 0 .75rem;padding:.5rem 0 .7rem;border-bottom:1px solid var(--lo-line)}
 .lo-head>div{display:flex;gap:.6rem;align-items:center;white-space:nowrap}

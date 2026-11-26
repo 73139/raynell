@@ -29,3 +29,6 @@
 .kit-vitals{display:flex;gap:.6rem 1.2rem;flex-wrap:wrap;margin:.6rem 0;color:var(--muted,#b2b6a4)}
 .kit-vitals b{margin-left:.2em;color:var(--text,#e7e9dd)}
 @media(max-width:760px){.kit-layout.on-raid>.kit-wear{order:2}}
+
+.kit-ground .kit-rows>div>span{min-width:0;overflow-wrap:anywhere}
+#inside .kit-ground button[data-gear="recover"]{min-height:44px}

@@ -92,9 +92,12 @@ function kitUnitGrams(unit){
   const module=unit.gear?.module;
   return Math.round(GOODS[unit.g][3]*1000)+(module?Math.round(GOODS[module][3]*1000):0);
 }
-function selectedMassMarkup(unit){
+function kitUnitMassText(unit){
   const module=unit.gear?.module;
-  return '<span data-selected-mass>'+kitUnitGrams(unit)/1000+' kg'+(module?' ('+esc(kitName(module))+' 포함)':'')+'</span>';
+  return kitUnitGrams(unit)/1000+' kg'+(module?' ('+kitName(module)+' 포함)':'');
+}
+function selectedMassMarkup(unit){
+  return '<span data-selected-mass>'+esc(kitUnitMassText(unit))+'</span>';
 }
 function packMassLabel(bag){
   return bag.reduce((grams,unit)=>grams+kitUnitGrams(unit),0)/1000+' kg';
@@ -229,10 +232,38 @@ function equipmentDeployInfo() {
 }
 function kitGroundPanel(){
   if(!raid||field.result||field.journey)return '';
-  const ground=kitGround();
-  if(!ground.length)return '';
-  return '<section class="panel kit-ground"><h2>이 지역에 내려놓은 물품</h2><p>'+FIELD_ZONES[raid.zone].name+' · 떠나기 전에 회수할 수 있습니다.</p><div class="kit-rows">'+ground.map(o=>
-    '<div><span>'+esc(kitName(o.g))+'</span>'+gearButton('recover',o.g===ISSUE_PACK?'다시 메기':'회수',{unit:o.uid},Boolean(field.action||field.contact))+'</div>').join('')+'</div></section>';
+  const ground=field.gearGround?.[raid.zone];
+  if(!ground?.length)return '';
+  const counts=new Map(),seen=new Map();
+  const names=ground.map(unit=>{
+    const suffix=unit.gear?' #'+gearSerial(unit.gear.uid):isCashUnit(unit)?' · '+money(unit.amount):'';
+    const name=kitName(unit.g)+suffix;
+    counts.set(name,(counts.get(name)||0)+1);
+    return name;
+  });
+  const rows=ground.map((unit,i)=>{
+    const gear=unit.gear,name=names[i],total=counts.get(name);
+    let label=name,details='';
+    if(total>1){
+      if(gear)label=kitName(unit.g)+' #'+gear.uid;
+      else{
+        const ordinal=(seen.get(name)||0)+1;
+        seen.set(name,ordinal);label=name+' ('+ordinal+'/'+total+')';
+      }
+    }
+    if(gear){
+      const spec=gearSpec(gear.g),state=[kitUnitMassText(unit)];
+      if(gear.durability<spec.maxDurability)state.push('내구도 '+gear.durability+'/'+spec.maxDurability);
+      if(gear.ammo<spec.capacity)state.push('탄약 '+gear.ammo+'/'+spec.capacity+'발');
+      details='<small>'+esc(state.join(' · '))+'</small>';
+    }
+    const ref='ground-unit-'+i,button='ground-recover-'+i,action=unit.g===ISSUE_PACK?'다시 메기':'회수';
+    return '<div><span id="'+ref+'">'+esc(label)+details+'</span><button type="button" id="'+button+
+      '" aria-labelledby="'+ref+' '+button+'" data-gear="recover" data-unit="'+esc(unit.uid)+'"'+
+      (field.action||field.contact?' disabled':'')+'>'+action+'</button></div>';
+  });
+  return '<section class="panel kit-ground"><h2>이 지역에 내려놓은 물품</h2><p>'+esc(FIELD_ZONES[raid.zone].name)+
+    ' · 떠나기 전에 회수할 수 있습니다.</p><div class="kit-rows">'+rows.join('')+'</div></section>';
 }
 function kitSlotPanel(kit) {
   const active=Boolean(raid),blocked=Boolean(active&&(field.action||field.contact||field.journey));

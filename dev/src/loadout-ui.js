@@ -173,7 +173,7 @@ function sortiePreflightMarkup(kit,zoneId){
 function prepView(){
   if(raid)return field.result?loResultLink():loHead('03','출격 준비','진행 중인 작전으로 복귀할 수 있습니다.')+'<button class="primary" data-page="raid">현장 복귀</button>'+objectivePanel('prep');
   const k=equipmentState,checks=[['주 장비',Boolean(k.worn.primary)],['방호복',Boolean(k.worn.armor)],['배낭',Boolean(k.worn.back)],['의료품',k.bag.some(u=>kitSupply(u.g)?.stat==='hp')],['수분 보급품',k.bag.some(u=>kitSupply(u.g)?.stat==='water')]];
-  return '<div class="loadout-ui lo-prep">'+loHead('03','출격 준비','B-04 벙커 · '+FIELD_ZONES[zone].name,'<button data-page="presets">장비 프리셋·정비</button>')+loMsg()+
+  return '<div class="loadout-ui lo-prep"><button type="button" class="lo-deploy-shortcut" data-loadout="focus-deploy">출격 시작 버튼으로 이동</button>'+loHead('03','출격 준비','B-04 벙커 · '+FIELD_ZONES[zone].name,'<button data-page="presets">장비 프리셋·정비</button>')+loMsg()+
     weatherBrief('prep',zone)+lootPlanLink(zone)+gearReadinessMarkup(k)+sortiePreflightMarkup(k,zone)+objectivePanel('prep')+loLayout('prep')+loWearPanel(k)+loBag(k,false)+'<section class="lo-pane lo-check">'+loTitle('출격 체크리스트')+
     '<div class="lo-pane-body"><div class="lo-pair"><span>투입 지역</span><b>'+FIELD_ZONES[zone].name+'</b></div><div class="lo-pair"><span>작전 제한 시간</span><b>'+Math.round(RAID_DURATION_MS/60000)+'분</b></div>'+
     '<div class="lo-pair" data-prep-cash><span>반입 지폐</span><b>'+money(cashSum(k.bag))+'</b></div><h3>장비 상태</h3>'+
@@ -231,6 +231,18 @@ function loUseQuick(i,keyboard=false){
   handleEquipment({gear:'consume',unit:unit.uid});
 }
 function handleLoadoutUI(d){
+  if(d.loadout==='focus-deploy'){
+    if(page!=='prep'||raid)return;
+    const selector='.lo-prep .lo-deploy[data-raid="start"]';
+    const target=document.querySelector(selector);
+    if(!target)return;
+    if(!target.getClientRects().length){
+      loMobilePanel.prep=2;
+      renderKeep();
+    }
+    document.querySelector(selector)?.focus();
+    return;
+  }
   if(d.loadout==='mobile-tab'&&Object.hasOwn(LO_MOBILE,d.screen)&&['0','1','2'].includes(d.index)){loMobilePanel[d.screen]=Number(d.index);}
   else if(d.loadout==='shop'){loShopOpen=!loShopOpen;}
   else if(d.loadout==='slot'){loSlot=loSlot===d.slot?null:d.slot;}
