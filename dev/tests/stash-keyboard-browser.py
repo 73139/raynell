@@ -186,6 +186,70 @@ def exercise_trade_keyboard(browser, width):
         ctx.close()
 
 
+
+def exercise_overflow_keyboard(browser, width):
+    """Synthetic full warehouse, keyboard selection, collision, sale, placement and reload.
+    The synthetic save is confined to the locally built game; never install it on a public origin.
+    """
+    if os.getenv('RUSTLINE_URL'):
+        print('SKIP overflow fixture on public origin', flush=True)
+        return
+    ctx = browser.new_context(viewport={'width':width,'height':844}, has_touch=width<=500,
+                              reduced_motion='reduce')
+    page = ctx.new_page()
+    errors = []
+    page.on('pageerror', lambda err: errors.append(str(err)))
+    try:
+        helpers['at'](page,'stash')
+        key = helpers['KEY']
+        page.evaluate("""key=>{
+          const s=JSON.parse(localStorage.getItem(key));
+          s.stash={bolt:192,water:1};
+          s.stashSlots=Array.from({length:192},(_,i)=>({uid:'s-overflow-fill-'+i,g:'bolt',x:i%6,y:Math.floor(i/6),w:1,h:1}));
+          localStorage.setItem(key,JSON.stringify(s));
+        }""",key)
+        page.reload()
+        overflow=page.locator('[data-stash="select"][data-uid="overflow"][data-id="water"]')
+        expect(overflow).to_be_visible()
+        before=stock(page)
+        assert before[1]=={'bolt':192,'water':1} and len(before[2])==192
+        # Position focus by script only to avoid 192 unrelated Tab stops;
+        # all subsequent activation and movement use browser keyboard events.
+        overflow.focus()
+        page.keyboard.press('Enter')
+        expect(overflow).to_have_attribute('aria-pressed','true')
+        expect(overflow).to_be_focused(timeout=1500)
+        page.locator('[data-stash="auto"]').click()
+        expect(page.locator('.stash-message')).to_contain_text('들어가지 않습니다')
+        assert stock(page)==before
+        # Free a vertical 1x2 slot using the regular direct-sale controls.
+        for i in (0,6):
+            page.locator(f'[data-stash="select"][data-uid="s-overflow-fill-{i}"]').click()
+            page.locator('[data-stash="sell"]').click()
+        before_place=stock(page)
+        assert before_place[1]=={'bolt':190,'water':1}
+        overflow.focus()
+        page.keyboard.press('Enter')
+        expect(overflow).to_be_focused(timeout=1500)
+        page.locator(area).focus()
+        page.keyboard.press('ArrowDown')
+        expect(slot(page,0,0)).to_be_focused()
+        page.keyboard.press('Enter')
+        expect(page.locator('.stash-message')).to_contain_text('배치 완료')
+        after=stock(page)
+        assert after[0:2]==before_place[0:2]
+        units=[u for u in after[2] if u['g']=='water']
+        assert len(units)==1 and (units[0]['x'],units[0]['y'])==(0,0)
+        expect(overflow).to_have_count(0)
+        page.reload()
+        expect(page.locator('[data-stash-grid]')).to_be_visible()
+        assert stock(page)==after
+        assert not errors, errors
+        print(f'PASS {width}px full warehouse: overflow focus, blocked placement, two sales, one UID placement, reload',flush=True)
+    finally:
+        ctx.close()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('widths', nargs='*', type=int)
@@ -201,5 +265,6 @@ if __name__ == '__main__':
             for width in args.widths or [390,1280]:
                 exercise(browser, width)
                 exercise_trade_keyboard(browser, width)
+                exercise_overflow_keyboard(browser, width)
         finally:
             browser.close()
