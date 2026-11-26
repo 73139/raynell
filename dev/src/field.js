@@ -151,6 +151,10 @@ const ORDERS = [
   {id:'ward-shuttle',after:'ward-packing',image:'bunker-med',issuer:'윤서진 · 의무실',title:'의무 셔틀 시운전',
     text:'의무실에서 환승 정류장을 다시 엽니다. 첫 출격에서 폐쇄 검문소 대기 차량 행렬의 배차판을 조정하고 정상 탈출하세요. 다음 출격에서 확정한 노선의 출발 정류장에 호출을 넣고, 제한시간 안에 도착 정류장에서 응답한 뒤 정상 탈출하세요. 열쇠나 소모품은 필요 없습니다.',
     get cr(){return shuttleRate().cr;},get xp(){return shuttleRate().xp;},goal:'1차 배차 확정 및 2차 시운전 도착 응답',target:2,progress:()=>shuttleProgress()},
+  {id:'passage-test',after:'stores',image:'bunker-security',issuer:'벙커 통행반',title:'생활권 통행 차단 시험',
+    text:'외곽 경계 울타리에서 외곽과 검문소 사이 한 방향을 지정하고 정상 귀환하세요. 다음 출격부터 그 방향이 실제로 닫힙니다. 출발 쪽 차단판을 확인한 뒤 현장에서 비상 해제하거나 군수 창고 배차 사무동에서 정식 복구한 후 정상 귀환하세요.',
+    get cr(){return passageRate().cr;},get xp(){return passageRate().xp;},goal:'방향 확정 후 다음 출격에서 통행 복구',target:2,
+    progress:()=>Number(Boolean(career.gateTest))+Number(Boolean(field.gateTest?.fix))},
   {id:'ration-survey',after:'scout',image:'bunker-kitchen',issuer:'벙커 급양반',title:'원정 급양표',
     text:'서로 다른 두 권역의 거점에서, 가방이나 주머니의 식량과 음료를 한 번씩 사용해 회복량을 측정하세요. 각각 실제로 5 이상, 두 번 합쳐 20 이상 회복하고 정상 탈출하면 수당을 받습니다. 같은 권역의 같은 종류는 가장 높은 기록 한 건만 남습니다. 길 위 보급은 측정하지 않습니다. 어느 권역에서 먼저 먹거나 마실지는 자유입니다.',
     cr:36000,xp:125,goal:'서로 다른 두 권역에서 식량·음료로 회복한 합계',target:20,progress:()=>rationPair(field.rationUses)?.gain||0}
@@ -161,10 +165,11 @@ function readCareer(raw={},reply=null,clinic=null) {
   const number = n => Number.isSafeInteger(n) && n>=0 ? n : 0;
   const completed = Array.isArray(raw?.done) ? raw.done : [];
   const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed,reply,clinic) &&
+    (q.id!==PASSAGE_ORDER || (passagePlanValid(raw.gateTest)&&raw.gateTest.receipt)) &&
     (q.id!==SHUTTLE_ORDER || (wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)&&raw.shuttle.receipt)) &&
     (q.id!==WARD_FIELD_ID || wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)) &&
     (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
-  career = {...(raw?.archive?.length&&validArchiveRows(raw.archive)?{archive:raw.archive.map(row=>({...row}))}:{}),...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)?{shuttle:{...raw.shuttle}}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  career = {...(done.includes('stores')&&passagePlanValid(raw.gateTest)?{gateTest:{...raw.gateTest}}:{}),...(raw?.archive?.length&&validArchiveRows(raw.archive)?{archive:raw.archive.map(row=>({...row}))}:{}),...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)?{shuttle:{...raw.shuttle}}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
     done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply,clinic))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
@@ -350,11 +355,13 @@ function reconcileEnd(result,at,exit=null){
   const order=award?.order;
   if(award?.payable){
     commission=order.cr;missionXp=order.xp;orderName=order.title;
+    if(order.id===PASSAGE_ORDER)career.gateTest={...career.gateTest,receipt:{...field.gateTest,returnedAt:at}};
     if(order.id===SHUTTLE_ORDER)career.shuttle={...career.shuttle,receipt:{...field.shuttle,returnedAt:at}};
     if(order.id===WARD_FIELD_ID)career.wardCheckReceipt={...field.wardCheck};
     if(order.id===RELIEF_ORDER)career.reliefReceipt={...field.reliefDelivery};
     career.done.push(order.id);career.order=null;
   }
+  if(rating==='success'&&career.order===PASSAGE_ORDER&&field.gateTest?.stage==='plan')career.gateTest={...field.gateTest,returnedAt:at};
   if(rating==='success'&&career.order===SHUTTLE_ORDER&&field.shuttle?.stage==='plan'){
     career.shuttle={...field.shuttle,returnedAt:at};
   }
@@ -399,7 +406,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost, ...(summary.liftGrams!==undefined?{liftGrams:summary.liftGrams}:{}), ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.shuttle;delete field.rationUses;delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.gateTest;delete field.shuttle;delete field.rationUses;delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
@@ -452,6 +459,7 @@ function resultPage(){
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
     dockReceipt(r)+(r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
+    (career.gateTest?.raidId===r.raidId?'<p data-passage-return>'+esc(passageLabel(career.gateTest.from))+' · 다음 출격부터 통행 차단 · 이번 수당 0 CR</p>':'')+
     (career.shuttle?.raidId===r.raidId?'<p data-shuttle-dispatch>'+esc(SHUTTLE_ROUTES[career.shuttle.route].name)+' 배차 확정 · 이번 출격 수당 0 CR · 다음 출격에서 '+esc(shuttleName(SHUTTLE_ROUTES[career.shuttle.route].from))+' 호출</p>':'')+
     (r.orderName?'<p class="exit-ok">'+esc(r.orderName)+' 의뢰 완료 · '+money(r.commission)+'</p>':'')+
     (next?'<button type="button" data-bui="order-followup" data-id="'+esc(next.id)+'" data-return-id="'+r.raidId+'" '+(writer?'':'disabled')+'>벙커 복귀 · 후속 의뢰 보기 · '+esc(next.title)+'</button>':'')+

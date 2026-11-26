@@ -229,12 +229,13 @@ function resolveObjective(pin = objectivePin) {
   if (kind === 'order') {
     const order = ORDERS.find(entry => entry.id === id);
     const assigned = bunkerOrderGoals(order);
-    const goals = assigned.map(([label, current, target],i) => ({label, value:id===SHUTTLE_ORDER&&i===0?current:0, target}));
+    const goals = assigned.map(([label, current, target],i) => ({label, value:(id===SHUTTLE_ORDER||id===PASSAGE_ORDER)&&i===0?current:0, target}));
     if (isActive()) {
       assigned.slice(0,-1).forEach((row,index)=>{if(row[1]>0)goals[index].projected=row[1];});
       if (objectiveRaidRating(Object.values(field.boxes).filter(box => box.complete).length) === 'success') {
+        if(id===PASSAGE_ORDER&&field.gateTest?.stage==='plan')goals[0].projected=1;
         if(id===SHUTTLE_ORDER&&field.shuttle?.stage==='plan')goals[0].projected=1;
-        if(id!==SHUTTLE_ORDER||field.shuttle?.arrived)goals[goals.length-1].projected=1;
+        if((id!==SHUTTLE_ORDER||field.shuttle?.arrived)&&(id!==PASSAGE_ORDER||field.gateTest?.fix))goals[goals.length-1].projected=1;
       }
     }
     const recovery=order.recovery&&isActive()
@@ -245,10 +246,10 @@ function resolveObjective(pin = objectivePin) {
     const sample=order.sample?sampleInspection(order,isActive()?field:null,isActive()?field.bag:equipmentState.bag):null;
     if(sample && !raid && sample.carried)goals[1].value=1;
     const observations=order.id==='weather-survey'&&isActive()?surveyObservations():[];
-    const locations=order.id===SHUTTLE_ORDER?shuttleLocations():order.id===WARD_FIELD_ID?wardCheckLocations():order.id===RELIEF_ORDER?reliefDirections():order.id==='sealed-mail'?postalLocations():order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
+    const locations=order.id===PASSAGE_ORDER?passageLocations():order.id===SHUTTLE_ORDER?shuttleLocations():order.id===WARD_FIELD_ID?wardCheckLocations():order.id===RELIEF_ORDER?reliefDirections():order.id==='sealed-mail'?postalLocations():order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
       ? inspections.filter(site=>!site.complete).map(({zone,landmark})=>({zone,landmark}))
       : order.id==='pump-gauge' && (!isActive()||!pumpGaugeProgress())?[PUMP_SITE]:recoveryDestinations(order,carried,search);
-    return {source, title:order.title, kindLabel:'벙커 의뢰', status:id===SHUTTLE_ORDER&&!career.shuttle?'1차 정상 귀환 시 배차 확정':'정상 탈출 시 정산',
+    return {source, title:order.title, kindLabel:'벙커 의뢰', status:id===PASSAGE_ORDER&&!career.gateTest?'1차 정상 귀환 시 차단 방향 확정':id===SHUTTLE_ORDER&&!career.shuttle?'1차 정상 귀환 시 배차 확정':'정상 탈출 시 정산',
       goals, materials:[], recovery, search, inspections, locations, sample};
   }
 

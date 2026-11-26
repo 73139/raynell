@@ -99,6 +99,7 @@ function bunkerOrderState(q){
 function bunkerOrderGoals(q){
   const state=bunkerOrderState(q);
   const active=state==='active'&&raid&&!field.result;
+  if(q.id===PASSAGE_ORDER)return passageGoals();
   if(q.id===SHUTTLE_ORDER)return shuttleGoals();
   if(q.id===RATION_ORDER)return rationOrderGoals();
   if(q.id==='sealed-mail'){
@@ -138,8 +139,9 @@ function ordersView(){
     detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>${fundingDossierReturn(q)}
     ${bunkerPicture(q.image,q.title+' 현장','bu-order-image')}
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
-    <h3>보상</h3><div class="bu-reward"><strong>${q.id===SHUTTLE_ORDER&&!career.shuttle?'노선별 수당':money(q.cr)}</strong><strong>${q.id===SHUTTLE_ORDER&&!career.shuttle?'배차표 참조':'+'+q.xp+' XP'}</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
+    <h3>보상</h3><div class="bu-reward"><strong>${q.id===PASSAGE_ORDER&&!career.gateTest?.receipt&&!field.gateTest?.fix?'복구 방식별 수당':q.id===SHUTTLE_ORDER&&!career.shuttle?'노선별 수당':money(q.cr)}</strong><strong>${q.id===PASSAGE_ORDER&&!career.gateTest?.receipt&&!field.gateTest?.fix?'통행 시험표 참조':q.id===SHUTTLE_ORDER&&!career.shuttle?'배차표 참조':'+'+q.xp+' XP'}</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
     ${q.id==='weather-survey'&&state!=='done'?'<div class="shell-actions"><button data-cui="forecast">세 권역 예보 비교</button></div>':''}
+    ${q.id===PASSAGE_ORDER?passageDossier():''}
     ${q.id===SHUTTLE_ORDER?shuttleDossier():''}
     ${q.id===WARD_FIELD_ID?wardPackingDossier():''}
     ${q.id===RELIEF_ORDER?reliefPanel():''}

@@ -123,7 +123,7 @@ function commitJourneyAction(change) {
 function startJourney(to) {
   if (!writer || !isActive() || field.action || field.contact || field.journey) return;
   const profile=routeProfile(raid.zone,to);
-  if (!profile) return;
+  if (!profile || passageClosed(raid.zone,to)) return;
   commitJourneyAction(()=>{
     const legs=Array.from({length:profile.distance},()=>rollTravelLeg(profile,Math.random));
     const schedule={rules:'v20',stepMs:routeStepDuration(profile),legs};

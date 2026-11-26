@@ -48,6 +48,7 @@ function exitForecast(exit, now) {
   const reward=' · '+order.title+' · 의뢰 보상 ';
   if(award.payable)return summary+reward+money(order.cr)+' / '+order.xp+' XP';
   let detail='';
+  if(order.id===PASSAGE_ORDER && field.gateTest?.stage==='plan')detail+=normal?' · 다음 출격 차단 방향 확정 예정':' · 조기 귀환 시 방향 지정 취소';
   if(order.id===SHUTTLE_ORDER && field.shuttle?.stage==='plan')detail+=normal?' · 배차 확정 예정 · 다음 출격 시운전 후 수당 지급':' · 조기 귀환 시 이번 배차 선택 취소';
   else if(progress<order.target)detail+=' · 목표 미달 · '+order.goal+' '+progress+'/'+order.target;
   else if(!normal)detail+=' · 의뢰 목표 충족 '+progress+'/'+order.target;
@@ -85,8 +86,9 @@ function exitPanel() {
       const total = balance < 0 ? money(-balance) + ' 부족' : '요금 차감 후 ' + money(balance) + ' (의뢰 보상 전)';
       fare = '<p data-exit-fare>벙커 ' + money(wallet) + ' · 휴대 ' + money(carried) + '<br>' + total + '</p>';
     }
+    const closed=!here&&passageClosed(raid.zone,exit.zone);
     const data = here ? 'data-field="extract" data-exit="' + exit.id + '"' : 'data-field="move" data-index="' + exit.zone + '"';
-    return `<div class="exit-card"><div><span class="mono">EXIT / ${exit.id.toUpperCase()}</span><h3>${exit.name}</h3><p>${FIELD_ZONES[exit.zone].name} · ${exit.sec}초</p><p>${exit.desc}${window ? ' · 남은 레이드 시간 ' + window : ''}</p><b class="${reason ? 'exit-warn' : 'exit-ok'}">${reason || (waiting ? '탈출 대기 중' : '이용 가능')}</b>${fare}${here ? '<p data-exit-forecast="' + exit.id + '"' + (forecast ? '' : ' hidden') + '>' + esc(forecast) + '</p>' : ''}</div><button ${data} ${field.action || (here && reason) ? 'disabled' : ''}>${here ? (waiting ? '탈출 대기 중' : '탈출 시작') : '지역 이동 · ' + routeTimeLabel(raid.zone, exit.zone)}</button></div>`;
+    return `<div class="exit-card"><div><span class="mono">EXIT / ${exit.id.toUpperCase()}</span><h3>${exit.name}</h3><p>${FIELD_ZONES[exit.zone].name} · ${exit.sec}초</p><p>${exit.desc}${window ? ' · 남은 레이드 시간 ' + window : ''}</p><b class="${reason ? 'exit-warn' : 'exit-ok'}">${reason || (waiting ? '탈출 대기 중' : '이용 가능')}</b>${fare}${here ? '<p data-exit-forecast="' + exit.id + '"' + (forecast ? '' : ' hidden') + '>' + esc(forecast) + '</p>' : ''}</div><button ${data} ${field.action || closed || (here && reason) ? 'disabled' : ''}>${here ? (waiting ? '탈출 대기 중' : '탈출 시작') : closed?'시험 차단 · 창고 경유 가능':'지역 이동 · ' + routeTimeLabel(raid.zone, exit.zone)}</button></div>`;
   }).join('');
   return `<section class="field-section"><h2>탈출구 <small>${field.exits.length}곳 배정</small></h2><p class="mini-field">탈출 위치로 이동한 뒤 대기 시간이 끝나야 귀환합니다. 탈출 비용은 성공 시 정산합니다.</p><div class="exit-list">${cards}</div>${exitNotice ? '<p class="exit-warn" role="status">' + exitNotice + '</p>' : ''}<button data-field="abandon" ${field.action ? 'disabled' : ''}>레이드 포기</button></section>`;
 }
@@ -364,6 +366,7 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(d.field==='passage')return handlePassage(d);
 if(d.field==='shuttle')return handleShuttle(d);
 if(d.field==='ward-compare')return compareWardPacking(d);
 if(d.field==='relief-deliver')return handleReliefDelivery(d);

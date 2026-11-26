@@ -18,6 +18,8 @@
 .command-map-chart{position:relative;width:100%;aspect-ratio:774/507;background-size:100% 100%;background-color:#242b26}
 .command-roads{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .command-road path{fill:none;stroke:#c9c7b1;stroke-width:2;stroke-opacity:.72}
+.command-passage{position:absolute;left:50%;top:11%;transform:translateX(-50%);padding:.15rem .4rem;border:1px solid #d9ab73;background:#24221c;color:#ffe0a8;font-size:clamp(11px,1.2vw,15px);font-weight:700;line-height:1.3;white-space:nowrap;pointer-events:none}
+.command-passage[data-passage-map="open"]{border-color:#a3b99a;color:#dcebd0}
 .command-road.active path{stroke:#e4c575;stroke-width:3.1;stroke-opacity:1}
 .cmd-pip{fill:#20231c;stroke:#eeeadd;stroke-width:2}
 .cmd-pip.passed{fill:#dbc487;stroke:#f3e4b1}

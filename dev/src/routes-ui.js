@@ -69,9 +69,10 @@ function routeOption(profile,mode,objective) {
     ? '<span class="route-match">'+esc(kitName(tpl))+' <small>(목표 물품)</small></span>'
     : esc(kitName(tpl))).join(' · ');
   const riskClass=contact<=10?'low':contact<=20?'moderate':'high';
+  const closed=passageClosed(from,to);
   const move=mode==='live'&&!field.journey&&!field.contact?
     '<button type="button" class="route-move" data-field="move" data-index="'+to+'" '+
-      (field.action?'disabled ':'')+'aria-label="'+esc(name+' 경유 · '+target+'로 이동 시작')+'">'+target+'로 이동 <span aria-hidden="true">›</span></button>':'';
+      (field.action||closed?'disabled ':'')+'aria-label="'+esc(name+' 경유 · '+target+'로 이동 시작')+'">'+target+'로 이동 <span aria-hidden="true">›</span></button>':'';
   return '<article class="route-card" data-route-card data-from="'+from+'" data-to="'+to+'">'+
     '<header><h3>'+esc(target)+'</h3><p>'+esc(name)+'</p></header>'+
     '<dl class="route-facts"><div><dt>이동</dt><dd data-route-time>'+routeTimeLabel(from,to)+'</dd></div>'+
@@ -82,6 +83,7 @@ function routeOption(profile,mode,objective) {
     '<div><dt>칸당 보급</dt><dd data-route-supply>'+supply+'%</dd></div>'+
     '<div><dt>칸당 무사 통과</dt><dd data-route-clear>'+clear+'%</dd></div>'+routeEnergyFacts(distance,mode)+'</dl>'+
     '<div class="route-pool"><h4>길목 보급 후보</h4><p data-route-sources>'+candidateNames+'</p></div>'+
+    (closed?'<p class="exit-warn" data-passage-closed>통행 시험 차단 · '+esc(passageSpot(PASSAGE_BOARDS[from]))+'에서 확인하거나 군수 창고를 경유하세요.</p>':'')+
     routeObjectiveNote(objective,to)+routeDeadlineWarning(mode==='live'?raid.endsAt-adjusted*distance:null)+move+'</article>';
 }
 

@@ -74,7 +74,15 @@ function commandRoads(){
   }).join('');
 }
 
-function commandMapPlot(selected,objective){
+function commandPassage(){
+  const plan=career.gateTest;
+  if(career.order!==PASSAGE_ORDER||!plan||plan.receipt||raid&&!isActive())return null;
+  const from=plan.from,to=1-from,open=Boolean(raid&&field.gateTest?.fix);
+  return {open,label:COMMAND_ZONES[from].short+' → '+COMMAND_ZONES[to].short+(open?' 개통':' 차단'),
+    legend:open?'직통 '+routeDistance(from,to)+'칸 통행 재개 · 정상 귀환 시 복구 수당 지급':
+      '역방향 이용 가능 · 군수 창고 경유 '+(routeDistance(from,2)+routeDistance(2,to))+'칸 · '+passageSpot(PASSAGE_BOARDS[from])+'에서 차단 확인'};
+}
+function commandMapPlot(selected,objective,passage){
   const stations=COMMAND_ZONES.map(({short,icon,x,y},i)=>{
     const here=isActive()&&raid.zone===i&&!field.journey;
     const marker=objective?objectiveLocationLabel(objective.locations,i):'';
@@ -84,6 +92,7 @@ function commandMapPlot(selected,objective){
   }).join('');
   return `<div class="command-map-chart" style="background-image:url('${artURL('map-terrain')}')" role="group" aria-label="B-04 작전 지도 · 작은 원 하나는 이동 거리 1칸">
     <svg class="command-roads" viewBox="0 0 774 507" preserveAspectRatio="none" aria-hidden="true">${commandRoads()}</svg>${stations}
+    ${passage?'<span class="command-passage" data-passage-map="'+(passage.open?'open':'closed')+'">'+esc(passage.label)+'</span>':''}
   </div>`;
 }
 
@@ -92,6 +101,7 @@ function commandMapAction(selected){
   if(phase==='idle')return '<button class="command-deploy" data-page="prep">'+commandIcon('forward')+'출격 준비</button>';
   if(phase==='expired')return '<button class="command-deploy" data-page="raid">작전 결과 확인</button>';
   if(field.journey||field.contact||field.action||raid.zone===selected)return '<button class="command-deploy" data-page="raid">'+commandIcon('forward')+(field.contact?'조우 상황 보기':field.journey?'이동 상황 보기':'현장으로 복귀')+'</button>';
+  if(passageClosed(raid.zone,selected))return '<button class="command-deploy" disabled>시험 차단 · 군수 창고 경유 가능</button>';
   return `<button class="command-deploy" data-field="move" data-index="${selected}">${commandIcon('forward')}이동 시작 · ${routeTimeLabel(raid.zone,selected)}</button>`;
 }
 
@@ -117,12 +127,13 @@ function sectorMapPage(){
   const selected=commandZoneSelection(),meta=COMMAND_ZONES[selected],area=FIELD_ZONES[selected];
   const journey=isActive()?field.journey:null;
   const origin=isActive()?raid.zone:selected;
-  const legend=journey?'이동 중인 경로가 지도에 표시됩니다.':isActive()?'권역을 누르면 해당 지역의 정보를 볼 수 있습니다.':'지도에서 출격할 권역을 선택하세요.';
+  const passage=commandPassage();
+  const legend=passage?esc(passage.legend):journey?'이동 중인 경로가 지도에 표시됩니다.':isActive()?'권역을 누르면 해당 지역의 정보를 볼 수 있습니다.':'지도에서 출격할 권역을 선택하세요.';
   const brief=raid&&!isActive()?'':'<button type="button" class="cmd-route-choice route-overview-link" data-cui="routes">'+
     commandIcon('diamond')+'<span>'+(journey?'경로 시간 보기':'이동 경로 비교')+'</span><b aria-hidden="true">↓</b></button>';
   const compare=journey?routeStatusPanel():(!raid||isActive()?routeComparison(origin,raid?'live':'preview',objective):'');
   return `<h1 class="command-page-title"><span>02</span> 작전 지도</h1><section class="command-map" aria-label="작전 지도">
-    <div class="command-map-left">${commandMapPlot(selected,objective)}<p class="command-key"><i aria-hidden="true"></i>${legend}</p></div>
+    <div class="command-map-left">${commandMapPlot(selected,objective,passage)}<p class="command-key"><i aria-hidden="true"></i>${legend}</p></div>
     <section class="command-brief" aria-label="선택한 권역">
       <div class="command-postcard"><img src="${artURL(meta.art)}" alt="${area.name} 전경"></div>
       <h2>${commandIcon('forward')}${area.name}</h2>
