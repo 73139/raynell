@@ -18,3 +18,5 @@
   .stash-layout{grid-template-columns:minmax(0,1fr)}
   .stash-layout .loot-panel,.stash-sidebar .panel{padding:12px}
 }
+
+.stash-grid [data-position-pinned]::after{content:'고정';position:absolute;top:1px;right:1px;padding:0 2px;background:#222e27;color:#f5e8ae;font:600 10px/1.25 sans-serif;pointer-events:none}

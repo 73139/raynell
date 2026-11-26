@@ -185,7 +185,7 @@ function gearView(){
   if(raid&&field.result)return loResultLink()+possessionsPanel();
   const k=currentKit(),active=Boolean(raid);
   return '<div class="loadout-ui lo-gear">'+loHead('04',active?'현장 장비':'장비·창고',active?FIELD_ZONES[raid.zone].name:'B-04 벙커',active?'<button data-page="raid">현장 복귀</button>':'<div class="lo-workshop-links"><button data-page="presets">장비 프리셋·정비</button><button data-page="prep">출격 준비</button></div>')+loMsg()+
-    gearReadinessMarkup(k,active)+possessionsPanel()+loLayout('gear')+loWearPanel(k)+loBag(k,active)+(active?'<section class="lo-pane">'+loTitle('현장 보관')+'<div class="lo-pane-body">'+(kitGroundPanel()||'<p>이 지역에 내려놓은 물품이 없습니다.</p>')+'<button data-page="health">건강 상태</button></div></section>':loDepot())+'</div>'+loQuickbar(k)+(active?'':loArmory())+'</div>';
+    gearReadinessMarkup(k,active)+possessionsPanel()+loLayout('gear')+loWearPanel(k)+loBag(k,active)+(active?'<section class="lo-pane">'+loTitle('현장 보관')+'<div class="lo-pane-body">'+(kitGroundPanel()||'<p data-ground-empty tabindex="-1">이 지역에 내려놓은 물품이 없습니다.</p>')+'<button data-page="health">건강 상태</button></div></section>':loDepot())+'</div>'+loQuickbar(k)+(active?'':loArmory())+'</div>';
 }
 function lootView(b){
   const z=FIELD_ZONES[raid.zone],def=z.boxes[Number(b.key.split('-')[1])],size=b.size||BOX_SIZE,found=b.items.filter(o=>o.revealed).length;
@@ -231,6 +231,8 @@ function loUseQuick(i,keyboard=false){
   handleEquipment({gear:'consume',unit:unit.uid});
 }
 function handleLoadoutUI(d){
+  if(d.loadout==='pin-position')return toggleStashPin(d.uid);
+  const sortKeyboard=d.loadout==='sort'&&document.activeElement?.matches?.('[data-loadout="sort"]:focus-visible');
   if(d.loadout==='focus-deploy'){
     if(page!=='prep'||raid)return;
     const selector='.lo-prep .lo-deploy[data-raid="start"]';
@@ -256,12 +258,19 @@ function handleLoadoutUI(d){
     const i=Number(d.index);
     if(Number.isInteger(i)&&i>=0&&i<10&&(!raid||!field.result))loUseQuick(i);
     return;
-  }else if(d.loadout==='sort'&&!raid){
-    const original=stashSlots.slice(),packed=kitArrange(original.map(o=>({...o,x:0,y:0})),stashSize());
+  }else if(d.loadout==='sort'&&!raid&&writer){
+    const fixed=stashSlots.filter(unit=>stashPositionPins.has(unit.uid));
+    const movable=stashSlots.filter(unit=>!stashPositionPins.has(unit.uid)).map(unit=>({...unit,x:0,y:0}));
+    const packed=kitArrange(movable,stashSize(),fixed);
     if(packed.left.length){stashNotice='현재 배치를 유지했습니다. 큰 물품을 모두 정렬할 여유 공간이 없습니다.';}
-    else{stashSlots=packed.placed;refreshStashLayout();stashSelection=null;stashNotice='물품을 크기순으로 정리했습니다.';persist();}
+    else{
+      stashSlots=packed.placed;refreshStashLayout();stashSelection=null;
+      stashNotice=fixed.length?'고정한 '+fixed.length+'개를 제자리에 두고 크기순으로 정리했습니다.':'물품을 크기순으로 정리했습니다.';
+      saveInventoryMove();
+    }
   }else return;
   renderKeep();
+  if(sortKeyboard)document.querySelector('[data-loadout="sort"]')?.focus?.({preventScroll:true});
   if(d.loadout==='assign')document.querySelector('.lo-quick')?.scrollIntoView({block:'nearest'});
 }
 document.addEventListener('keydown',event=>{

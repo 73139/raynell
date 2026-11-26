@@ -36,7 +36,7 @@ const probe = `globalThis.game={
   readField:raidPage,get w(){return writer},get fee(){return wallet},
   lookup:id=>handleDB({db:"lookup",id}),supply:buyMaterial,
   start:()=>handleRaidAction('start'), ack:()=>handleRaidAction('ack'),
-  field:handleField,gear:handleEquipment,build:handleHideout,order:changeOrder,
+  loadout:handleLoadoutUI,stashAction:handleStash,field:handleField,gear:handleEquipment,build:handleHideout,order:changeOrder,
   tick:updateRaidClock,persist,draw:renderKeep,check:validateBackup,importFile:importSave,
   exportFile:exportSave,shuffle:shuffleExits,condition:id=>exitCondition(exitBy(id)),
   window:trainWindow,settings:backupPanel,unit:kitUnit,stock:stashCount,

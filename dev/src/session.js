@@ -106,6 +106,7 @@ function readSession(current){
   loadStashLayout(snap?.stashSlots,(snap?.version??0)<16);
   loadEquipment(snap?.equipment, snap?.version ?? 0);
   loadCash(snap);
+  stashPositionPins=new Set(validStashPins(snap?.stashPositionPins,stashSlots)?snap?.stashPositionPins:[]);
   loadInjuries(snap?.injuryState,snap?.version ?? 0);
   initializeGearLedger(snap?.version ?? 0);
   loadPresetBook(snap?.version >= 21 ? snap.presets : null);
@@ -123,7 +124,7 @@ function readSession(current){
   objectivePin = [17,18,19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(snap?.version) ? normalizeObjectivePin(snap.objectivePin) : null;
   loadOnboarding([19,20,21,22,23,24,25,26,27,28,29,32,34,35,SAVE_VERSION].includes(snap?.version) ? snap.onboarding : null, Boolean(snap || r || f));
 }
-function snapshot(){return {version:SAVE_VERSION,writerBuild:WRITER_BUILD,revision,marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...cashProjection(wallet),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
+function snapshot(){const moneyState=cashProjection(wallet);return {version:SAVE_VERSION,writerBuild:WRITER_BUILD,revision,marketCarts,saleReceipts,injuryState,gearOverflow,lootGoal:lootPlan,lootDestination,barterHunt,survivor:survivorState,campaign:campaignState,finale:finaleState,presets:presetBook,onboarding:onboardingCheckpoint(),objectivePin:normalizeObjectivePin(objectivePin),raid,field,...moneyState,...stashPinSnapshot(moneyState.stashSlots),wallet,lastSummary,career,equipment:equipmentState,hideout,contracts:traderContracts,periodic:periodicContracts}}
 function writeSession(){
   if(!writer)return false;
   const nextRevision = revision + 1;
@@ -141,6 +142,7 @@ function writeSession(){
     lastCheckpointJSON=serialized;
     raidStorageOK=true;
     applyCashProjection(next);
+    if(stashPositionPins.size)stashPositionPins=new Set(next.stashPositionPins);
     objectivePin = next.objectivePin;
     onboardingState = next.onboarding;
     revision = nextRevision;
@@ -222,7 +224,7 @@ function validateBackup(raw){
   if(!integer(level,0,FACILITIES.stash.levels.length))return false;
   const [cols,rows]=stashSize(level);
   if(!s.stashSlots.every(o=>sizedTile(o,cols-1,rows-1)&&o.x+o.w<=cols&&o.y+o.h<=rows))return false;
-  if(!validSaleReceipts(s.saleReceipts))return false;
+  if(!validStashPins(s.stashPositionPins,s.stashSlots)||!validSaleReceipts(s.saleReceipts))return false;
   const soldLabels=new Set(Object.values(s.saleReceipts??{}).flatMap(receipt=>receipt.lines));
   const placedUnits = new Set(s.stashSlots);
   const namedPresets = new Set(s.version >= 21 && Array.isArray(s.presets) ? s.presets : []);

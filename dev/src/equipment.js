@@ -112,8 +112,8 @@ function kitFit(list,size,item) {
   return next?{...item,...next,w:item.h,h:item.w}:null;
 }
 function kitSorted(items) {return items.slice().sort((a,b)=>b.w*b.h-a.w*a.h);}
-function kitArrange(items,size) {
-  const placed=[],left=[];
+function kitArrange(items,size,fixed=[]) {
+  const placed=fixed.slice(),left=[];
   for(const item of kitSorted(items)){
     const fit=kitFit(placed,size,item);
     if(fit)placed.push(fit);else left.push(item);
@@ -382,6 +382,7 @@ function kitPrepMove(x,y) {
 function handleEquipment(d) {
   reconcile();
   const active=Boolean(raid),k=currentKit(),a=d.gear;
+  let groundFocusIndex=-1;
   if(active&&(field.result||field.action||((field.contact||field.journey)&&a!=='consume'))){gearNotice=field.action?'진행 중인 행동이 끝나면 장비를 변경할 수 있습니다.':'이동·교전 중에는 가방에 있는 소모품만 사용할 수 있습니다.';renderKeep();return;}
   switch(a){
     case 'issue':
@@ -423,6 +424,8 @@ function handleEquipment(d) {
       if(!active)return;
       const ground=kitGround(),i=ground.findIndex(o=>o.uid===d.unit);
       if(i<0)return;
+      const origin=globalThis.document?.activeElement;
+      if(origin?.dataset?.gear==='recover'&&origin.dataset.unit===d.unit&&origin.matches(':focus-visible'))groundFocusIndex=i;
       const o=ground[i];
       if(o.g===ISSUE_PACK){
         if(k.worn.back){gearNotice='현재 배낭을 먼저 내려놓으세요.';break;}
@@ -458,7 +461,17 @@ function handleEquipment(d) {
     gearNotice='변경을 저장하지 못해 저장된 장비와 재고를 다시 불러왔습니다.';
   } else if (typeof writeSession!=='function') persist();
   notice=gearNotice;if(typeof page!=='undefined'&&page==='stash')stashNotice=gearNotice;renderKeep();
+  if(groundFocusIndex>=0){
+    const buttons=document.querySelectorAll('.kit-ground [data-gear="recover"]');
+    const previous=Array.from(buttons).find(button=>button.dataset.unit===d.unit);
+    const next=previous||buttons[Math.min(groundFocusIndex,buttons.length-1)]||document.querySelector('[data-ground-empty]');
+    next?.focus();
+  }
 }
+// Moving focus to the next object must not collect it while the same Enter key is held.
+inside.addEventListener('keydown',event=>{
+  if(event.key==='Enter'&&event.repeat&&event.target.closest?.('.kit-ground [data-gear="recover"]'))event.preventDefault();
+});
 let kitDragged=null;
 inside.addEventListener('dragstart',event=>{
   const tile=event.target.closest('[data-gear="select"]');if(!tile||raid)return;

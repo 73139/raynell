@@ -1,5 +1,36 @@
 // Aggregate stock includes every item in the grid and in the incoming-goods queue.
 let stashSlots = [];
+let stashPositionPins=new Set();
+function stashPinSnapshot(slots){
+  if(!stashPositionPins.size)return {};
+  const pins=slots.filter(unit=>stashPositionPins.has(unit.uid)).map(unit=>unit.uid);
+  return pins.length?{stashPositionPins:pins}:{};
+}
+function validStashPins(pins,slots){
+  if(pins===undefined)return true;
+  if(!Array.isArray(pins)||pins.length>slots.length||new Set(pins).size!==pins.length)return false;
+  const owned=new Set(slots.map(unit=>unit.uid));
+  return pins.every(uid=>typeof uid==='string'&&owned.has(uid));
+}
+function stashPinButton(unit){
+  if(!unit||unit.uid==='overflow'||raid)return '';
+  const pinned=stashPositionPins.has(unit.uid);
+  return '<button type="button" data-loadout="pin-position" data-uid="'+esc(unit.uid)+'" aria-pressed="'+pinned+'"'+(writer?'':' disabled')+'>정리 위치 고정</button>';
+}
+function toggleStashPin(uid){
+  if(raid||!writer||!stashSlots.some(unit=>unit.uid===uid)||
+     (stashSelection?.uid!==uid&&cashSelected!==uid))return;
+  const before=stashPositionPins,updated=new Set(before);
+  if(updated.has(uid))updated.delete(uid);else updated.add(uid);
+  stashPositionPins=updated;
+  if(!writeSession()){
+    if(stashPositionPins===updated)stashPositionPins=before;
+    stashNotice='위치 고정을 저장하지 못했습니다. 창고의 현재 상태를 확인하세요.';
+  }else stashNotice=updated.has(uid)?'크기순 정리 때 이 물품의 칸과 방향을 유지합니다.':'이 물품의 위치 고정을 해제했습니다.';
+  renderKeep();
+  const toggle=[...document.querySelectorAll('[data-loadout="pin-position"]')].find(button=>button.dataset.uid===uid && button.getClientRects().length);
+  toggle?.focus?.({preventScroll:true});
+}
 let stashSelection = null;
 let stashDrag = null;
 let stashNotice = '';
@@ -368,7 +399,8 @@ function stashGridMarkup(filter = null) {
     if(s.g==='cr_notes')return cashStashTile(s);
     const g = GOODS[s.g], chosen = stashSelection?.uid === s.uid;
     const display = esc(caseDisplayName(s)), title = s.alias ? display + ' · ' + esc(g[0]) : display;
-    return `<button class="loot-tile ${chosen ? 'chosen' : ''} ${filter && !filter(s.g) ? 'lo-muted-tile' : ''}" data-stash="select" data-id="${s.g}" data-uid="${s.uid}" draggable="${stashAtBunker()}" aria-pressed="${chosen}" aria-label="${title} · ${s.w}×${s.h} · ${s.x + 1}열 ${s.y + 1}행" title="${title}" style="grid-column:${s.x + 1}/span ${s.w};grid-row:${s.y + 1}/span ${s.h}">${typeof itemArt==='function'?itemArt(s.g,'item-symbol'):ico(g[4], 'item-symbol')}<span>${display}</span></button>`;
+    const pinned=stashPositionPins.has(s.uid);
+    return `<button class="loot-tile ${chosen ? 'chosen' : ''} ${filter && !filter(s.g) ? 'lo-muted-tile' : ''}" data-stash="select" data-id="${s.g}" data-uid="${s.uid}" ${pinned?'data-position-pinned="true"':''} draggable="${stashAtBunker()}" aria-pressed="${chosen}" aria-label="${title}${pinned?' · 정리 위치 고정':''} · ${s.w}×${s.h} · ${s.x + 1}열 ${s.y + 1}행" title="${title}" style="grid-column:${s.x + 1}/span ${s.w};grid-row:${s.y + 1}/span ${s.h}">${typeof itemArt==='function'?itemArt(s.g,'item-symbol'):ico(g[4], 'item-symbol')}<span>${display}</span></button>`;
   }).join('');
   return `<div class="spatial-grid stash-grid" data-stash-grid style="--cols:${cols};--rows:${rows}">${cells}${tiles}</div>`;
 }
@@ -448,7 +480,7 @@ function stashSelectionMarkup() {
       ${s.w !== s.h ? '<button data-stash="rotate" aria-pressed="' + rot + '">90° 회전</button>' : ''}
       ${rot && s.uid !== 'overflow' ? '<button data-stash="rotate-here">현재 위치에 적용</button>' : ''}
       ${s.uid === 'overflow' ? '<button data-stash="auto">빈 공간에 배치</button>' : ''}
-      ${equipmentStashActions(s.g, s.uid)}
+      ${stashPinButton(s)}${equipmentStashActions(s.g, s.uid)}
       <button data-stash="sell" ${saleRestriction ? 'disabled aria-describedby="stash-sale-reason"' : manualNote ? 'aria-describedby="ward-sale-direct"' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
       <button data-db="lookup" data-id="${s.g}">도감 보기</button><button data-stash="clear">선택 해제</button>
     </div>${manualNote}${saleRestriction?'<p id="stash-sale-reason">'+esc(saleRestriction)+'</p>':''}${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
@@ -466,7 +498,7 @@ function storagePage() {
     ${cashCompartmentMarkup()}
     ${possessionsPanel()}
     <div class="stash-layout">
-      <section class="loot-panel"><div class="field-label"><span>STORAGE</span><span>Lv.${hideoutLevel('stash')}</span></div><h2>보관 격자 <small>${cols} × ${rows} · ${occupied} / ${capacity}칸</small></h2>${total ? '' : '<p class="mini-field">창고가 비어 있습니다. 레이드에서 물품을 가방에 넣고 탈출하면 이곳에 보관됩니다.</p>'}${stashViewport()}</section>
+      <section class="loot-panel"><div class="field-label"><span>STORAGE</span><span>Lv.${hideoutLevel('stash')}</span></div><h2>보관 격자 <small>${cols} × ${rows} · ${occupied} / ${capacity}칸</small></h2>${!raid&&stashSlots.length>1?'<button type="button" data-loadout="sort"'+(writer?'':' disabled')+'>크기순 정리</button>':''}${total ? '' : '<p class="mini-field">창고가 비어 있습니다. 레이드에서 물품을 가방에 넣고 탈출하면 이곳에 보관됩니다.</p>'}${stashViewport()}</section>
       <div class="stash-sidebar">
         <section class="panel stash-detail">${stashSelectionMarkup()}<div class="stash-message" role="status">${stashNotice}</div></section>
         <section class="panel"><h2>입고 대기 <small>${(total - stashSlots.length).toLocaleString('ko-KR')}개</small></h2>${overflow.length ? '<p>창고에 자리가 부족해 대기 중인 물품입니다. 물품을 선택해 배치하거나 사용할 수 있습니다.</p><div class="db-list stash-overflow">' + overflow.map(([id, n]) => `<button data-stash="select" data-uid="overflow" data-id="${id}" aria-pressed="${stashSelection?.uid === 'overflow' && stashSelection.id === id}">${ico(GOODS[id][4])}<span>${GOODS[id][0]}</span><b>×${n.toLocaleString('ko-KR')}</b></button>`).join('') + '</div>' : '<p>입고를 기다리는 물품이 없습니다.</p>'}</section>

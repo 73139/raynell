@@ -5,8 +5,9 @@ function cashTileArt(){
 }
 function cashAmountLabel(amount){return amount.toLocaleString('ko-KR');}
 function cashTile(unit,area){
-  const chosen=cashSelected===unit.uid, label=money(unit.amount)+' 지폐 · '+(unit.y+1)+'행 '+(unit.x+1)+'열';
-  return '<button type="button" class="loot-tile cash-tile'+(chosen?' chosen':'')+'" data-cash="select" data-cash-area="'+area+'" data-uid="'+esc(unit.uid)+'" aria-label="'+label+'" title="'+label+'" draggable="'+(!raid&&writer)+'" aria-pressed="'+chosen+'" style="grid-column:'+(unit.x+1)+';grid-row:'+(unit.y+1)+'">'+cashTileArt()+'<b>'+cashAmountLabel(unit.amount)+'</b></button>';
+  const pinned=area==='stash'&&stashPositionPins.has(unit.uid);
+  const chosen=cashSelected===unit.uid, label=money(unit.amount)+' 지폐 · '+(unit.y+1)+'행 '+(unit.x+1)+'열'+(pinned?' · 정리 위치 고정':'');
+  return '<button type="button" class="loot-tile cash-tile'+(chosen?' chosen':'')+'" '+(pinned?'data-position-pinned="true" ':'')+'data-cash="select" data-cash-area="'+area+'" data-uid="'+esc(unit.uid)+'" aria-label="'+label+'" title="'+label+'" draggable="'+(!raid&&writer)+'" aria-pressed="'+chosen+'" style="grid-column:'+(unit.x+1)+';grid-row:'+(unit.y+1)+'">'+cashTileArt()+'<b>'+cashAmountLabel(unit.amount)+'</b></button>';
 }
 function cashStashTile(unit){return cashTile(unit,'stash');}
 function cashCompartmentMarkup(){
@@ -15,7 +16,7 @@ function cashCompartmentMarkup(){
   const unit=where?sources[where].find(u=>u.uid===cashSelected):null;
   let cells='';
   for(let y=0;y<CASH_DRAWER[1];y++)for(let x=0;x<CASH_DRAWER[0];x++)cells+='<button type="button" class="slot" data-cash="cell" data-cash-area="pocket" data-x="'+x+'" data-y="'+y+'" aria-label="지폐 보관칸 '+(y+1)+'행 '+(x+1)+'열" style="grid-column:'+(x+1)+';grid-row:'+(y+1)+'"></button>';
-  const actions=unit&&!raid?'<div class="cash-controls"><label>옮길 금액 (CR)<input data-cash-amount type="number" min="1" max="'+unit.amount+'" step="1" value="'+unit.amount+'"></label><div><button type="button" data-cash="move" data-to="stash">창고로</button><button type="button" data-cash="move" data-to="pocket">'+(where==='pocket'?'빈 보관칸으로':'지폐 보관칸으로')+'</button><button type="button" data-cash="move" data-to="bag">출격 가방으로</button><button type="button" data-cash="cancel">선택 해제</button></div><small>일부 금액을 입력하면 분할됩니다. 다른 지폐 묶음을 누르면 합쳐집니다.</small></div>':'';
+  const actions=unit&&!raid?'<div class="cash-controls"><label>옮길 금액 (CR)<input data-cash-amount type="number" min="1" max="'+unit.amount+'" step="1" value="'+unit.amount+'"></label><div><button type="button" data-cash="move" data-to="stash">창고로</button><button type="button" data-cash="move" data-to="pocket">'+(where==='pocket'?'빈 보관칸으로':'지폐 보관칸으로')+'</button><button type="button" data-cash="move" data-to="bag">출격 가방으로</button>'+(where==='stash'?stashPinButton(unit):'')+'<button type="button" data-cash="cancel">선택 해제</button></div><small>일부 금액을 입력하면 분할됩니다. 다른 지폐 묶음을 누르면 합쳐집니다.</small></div>':'';
   return '<section class="cash-compartment" aria-label="CR 지폐 보관칸"><div class="cash-heading"><h3>지폐 보관칸</h3><span>결제 가능 <b>'+money(wallet)+'</b></span></div><div class="cash-layout"><div class="spatial-grid cash-grid" style="--cols:6;--rows:2">'+cells+cashPocket.map(u=>cashTile(u,'pocket')).join('')+'</div>'+actions+'</div><p class="cash-help">'+(cashSum(bag)?'출격 가방 '+money(cashSum(bag))+' · ':'')+'보관칸과 창고의 지폐는 결제에 사용됩니다. 가방에 넣은 지폐는 탈출 시 회수됩니다.</p>'+(cashMessage?'<p class="cash-status" role="status">'+esc(cashMessage)+'</p>':'')+'</section>';
 }
 function cashAmountInput(){const input=inside.querySelector?.('[data-cash-amount]');return input?Number(input.value):undefined;}
