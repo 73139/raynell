@@ -25,7 +25,7 @@ import time
 from urllib.parse import urlsplit
 import uuid
 
-KEY = "rl-reboot-session-v34"
+CURRENT_KEY = re.compile(rb"""\bconst\s+SAVE_KEY\s*=\s*['"](rl-reboot-session-v[0-9]+)['"]""")
 DEFAULT_URL = "https://rustline-protocol-web.onrender.com/"
 CHECKS = ("90s", "3m", "30m")
 TOLERANCE_MS = 45_000
@@ -225,6 +225,7 @@ class Runner:
     def __init__(self, page, journal, expect):
         self.page, self.j, self.expect = page, journal, expect
         self.release = None
+        self.save_key = None
 
     def load(self, hash_name):
         self.j.budget()
@@ -238,17 +239,22 @@ class Runner:
         title = self.page.title()
         if not re.search(r"RUSTLINE.*v\d+\.\d+", title, re.I):
             raise Access("public URL did not return a recognized Rustline release")
-        self.release = {"url": self.j.url, "sha256": hashlib.sha256(response.body()).hexdigest(), "title": title[:100]}
+        body = response.body()
+        match = CURRENT_KEY.search(body)
+        if match is None:
+            raise Access("Cannot identify the public build's save generation")
+        self.save_key = match.group(1).decode("ascii")
+        self.release = {"url": self.j.url, "sha256": hashlib.sha256(body).hexdigest(), "title": title[:100], "saveKey": self.save_key}
         previous = read(self.j.root / "release.json")
         if self.release != previous:
             self.j.event("build-observed", release=self.release)
             write(self.j.root / "release.json", self.release)
-        self.page.wait_for_function("k => !!localStorage.getItem(k)", arg=KEY, timeout=self.j.budget())
+        self.page.wait_for_function("k => !!localStorage.getItem(k)", arg=self.save_key, timeout=self.j.budget())
         self.j.budget()
 
     def snap(self):
         self.j.budget()
-        state = self.page.evaluate("k => JSON.parse(localStorage.getItem(k))", KEY)
+        state = self.page.evaluate("k => JSON.parse(localStorage.getItem(k))", self.save_key)
         if not isinstance(state, dict) or not {"stash", "hideout", "career", "raid", "lastSummary"} <= state.keys():
             raise Access("unsupported or unavailable Rustline save interface")
         return state
