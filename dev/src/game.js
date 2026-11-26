@@ -408,17 +408,29 @@ function catalogReturnButton(){
   if(constructionCatalogOrigin)return '<button type="button" data-db="plan-return">‹ 전체 건설 견적으로</button>';
   return reliefCatalogBack()||archiveCatalogBack();
 }
-function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${catalogReturnButton()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id||archiveCatalogOrigin===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
+function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${catalogReturnButton()}<button type="button" data-db="list-return">‹ 물품 목록으로</button><div class="db-detail-title">${ico(g[4])}<div><h2 tabindex="-1">${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id||archiveCatalogOrigin===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
 function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin||archiveCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
 function facilityDetail(){return bunkerFacilityDetail()}
 function bunkerPage(){return bunkerHubPage()}
 function handleDB(d){
   if(d.db==='prev'||d.db==='next'){
-    catalogOffset=Math.max(0,catalogOffset+(d.db==='next'?24:-24));$('#db-results').innerHTML=catalogResults();return;
+    catalogOffset=Math.max(0,catalogOffset+(d.db==='next'?24:-24));$('#db-results').innerHTML=catalogResults();
+    // Replacing the pager removes the active element. At either boundary use the still-enabled direction.
+    const next=$('#db-results [data-db="'+d.db+'"]:not(:disabled)')||$('#db-results [data-db="'+(d.db==='next'?'prev':'next')+'"]:not(:disabled)');
+    (next||$('#db-query'))?.focus?.({preventScroll:true});
+    return;
   }
-  if(d.db==='item'&&GOODS[d.id]){
+  if(d.db==='item'&&Object.hasOwn(GOODS,d.id)){
     procurementNote='';catalogSelected=d.id;$('#db-detail').innerHTML=catalogDetail();$('#db-results').innerHTML=catalogResults();
+    const heading=$('#db-detail .db-detail-title h2');
+    heading?.focus?.({preventScroll:true});
     if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});return;
+  }
+  if(d.db==='list-return'&&page==='catalog'){
+    const tile=catalogSelected&&Object.hasOwn(GOODS,catalogSelected)?$('#db-results [data-db="item"][data-id="'+catalogSelected+'"]'):null;
+    const target=tile||$('#db-query');
+    target?.focus?.({preventScroll:true});target?.scrollIntoView?.({block:'nearest'});
+    return;
   }
   if(d.db==='archive-return'){
     if(archiveCatalogOrigin&&['catalog','lootplan'].includes(page))returnToArchiveItem(archiveCatalogOrigin);
