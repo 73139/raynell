@@ -97,3 +97,6 @@
   .lo-layout[data-panel]>section{display:none}
   .lo-layout[data-panel="0"]>section:nth-child(1),.lo-layout[data-panel="1"]>section:nth-child(2),.lo-layout[data-panel="2"]>section:nth-child(3){display:block}
 }
+
+.lo-loot [data-cell="bag"]:focus-visible{position:relative;z-index:3;outline:3px solid #f3dc9b;outline-offset:-3px}
+.lo-loot [data-field-placing] .loot-tile{pointer-events:none}

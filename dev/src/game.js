@@ -255,7 +255,29 @@ function handleRaidAction(action,data={}){
   }
   save();renderKeep();
 }
-function gridMarkup(items,size,side){const unknown=side==='loot',objective=unknown?resolveObjective():null;let cells='';for(let y=0;y<size[1];y++)for(let x=0;x<size[0];x++)cells+=`<button class="slot" data-cell="${side}" data-x="${x}" data-y="${y}" aria-label="${side==='bag'?'가방':'상자'} ${x+1}열 ${y+1}행" style="grid-column:${x+1};grid-row:${y+1}"></button>`;return `<div class="spatial-grid" data-grid="${side}" style="--cols:${size[0]};--rows:${size[1]}">${cells}${items.map(o=>{const g=GOODS[o.g],hidden=unknown&&!o.revealed,searching=hidden&&field.action?.uid===o.uid,selected=picked?.uid===o.uid&&picked?.side===side;const hint=unknown&&!hidden?objectiveLootHint(o,objective):'';return `<button class="loot-tile ${hidden?'unknown':''} ${searching?'searching':''} ${selected?'chosen':''}" style="grid-column:${o.x+1}/span ${o.w};grid-row:${o.y+1}/span ${o.h}" ${hidden?(field.action?'disabled':`data-field="search" data-uid="${o.uid}"`):`draggable="true" data-pick="${o.uid}" data-side="${side}"`} aria-label="${hidden?(searching?'수색 중':'미확인 물품 수색'):esc(g[0]+hint)}" ${hint?'title="'+esc(g[0]+hint)+'"':''}>${hidden?ico('search','search-symbol')+(searching?'<span class="tile-progress" aria-hidden="true"><i id="tile-progress-fill"></i></span>':''):`${itemArt(o.g,'item-symbol')}<span>${o.g==='cr_notes'?money(o.amount):g[0]}</span><small>${o.w}×${o.h}</small>${unknown?objectiveLootBadge(hint)+huntBadge(o):''}`}</button>`}).join('')}</div>`}
+function gridMarkup(items,size,side){
+  const source=side==='loot', objective=source?resolveObjective():null;
+  const placing=!source&&Boolean(picked&&selectedItem());
+  const manual=placing&&picked.placing===true;
+  let cells='';
+  for(let y=0;y<size[1];y++)for(let x=0;x<size[0];x++){
+    const pos=`class="slot" data-cell="${side}" data-x="${x}" data-y="${y}" style="grid-column:${x+1};grid-row:${y+1}"`;
+    cells+=placing?`<button type="button" tabindex="-1" ${pos} aria-label="가방 ${x+1}열 ${y+1}행에 배치"></button>`:
+      `<span ${pos} aria-hidden="true"></span>`;
+  }
+  const tiles=items.map(o=>{
+    const g=GOODS[o.g],hidden=source&&!o.revealed,searching=hidden&&field.action?.uid===o.uid;
+    const selected=picked?.uid===o.uid&&picked?.side===side;
+    const hint=source&&!hidden?objectiveLootHint(o,objective):'';
+    const pos=`data-tile-x="${o.x}" data-tile-y="${o.y}"`;
+    const action=manual?'tabindex="-1"':hidden?(field.action?'disabled':'data-field="search"'):`draggable="true" data-pick="${esc(o.uid)}" data-side="${side}" aria-pressed="${Boolean(selected)}"`;
+    const label=hidden?(searching?'수색 중':'미확인 물품 수색'):esc(g[0]+hint);
+    const art=hidden?ico('search','search-symbol')+(searching?'<span class="tile-progress" aria-hidden="true"><i id="tile-progress-fill"></i></span>':''):
+      `${itemArt(o.g,'item-symbol')}<span>${o.g==='cr_notes'?money(o.amount):g[0]}</span><small>${o.w}×${o.h}</small>${source?objectiveLootBadge(hint)+huntBadge(o):''}`;
+    return `<button type="button" class="loot-tile ${hidden?'unknown':''} ${searching?'searching':''} ${selected?'chosen':''}" style="grid-column:${o.x+1}/span ${o.w};grid-row:${o.y+1}/span ${o.h}" ${pos} ${action} aria-label="${label}" ${hint?'title="'+label+'"':''}>${art}</button>`;
+  }).join('');
+  return `<div class="spatial-grid" data-grid="${side}" ${manual?'data-field-placing="true"':''} style="--cols:${size[0]};--rows:${size[1]}">${cells}${tiles}</div>`;
+}
 function fieldTileSelection(tile){
   const {pick:uid,side}=tile.dataset;
   const sameTile=picked?.uid===uid && picked.side===side;
@@ -317,7 +339,7 @@ function transfer(x,y){
 }
 function actionMarkup(){const a=field.action;if(!a)return '';return `<div class="field-progress"><div>${ico('search','search-symbol')} <b>${a.type==='scan'?'주변 탐색':(a.type==='move'||a.type==='travel-step')?'지역 이동':a.type==='extract'?'탈출 대기':a.type==='engage'?'교전':a.type==='evade'?'도주':a.type==='treat'?'부위 치료':'내용물 확인'} 중</b><span id="field-seconds"></span></div><div class="progress-track"><i id="field-progress"></i></div>${field.contact||field.journey?'':'<button data-field="cancel">취소</button>'}</div>`}
 function bagPanel(){const weight=field.bag.reduce((a,o)=>a+GOODS[o.g][3],0);return `<section class="loot-panel"><div class="field-label"><span>PERSONAL INVENTORY</span><span>${weight.toFixed(1)} kg</span></div><h2>${hasRaidBackpack()?"내 가방":"주머니"} <small>${raidBagSize().join(" × ")}</small></h2>${gridMarkup(field.bag,raidBagSize(),'bag')}<p class="mini-field">물품 선택 → 빈 칸 터치 / PC 드래그</p></section>`}
-function selectionPanel(){const o=selectedItem();return `<div class="selection-panel" role="status">${o?`<b>${GOODS[o.g][0]}</b><span>${picked.rot?o.h:o.w}×${picked.rot?o.w:o.h} · ${GOODS[o.g][3]} kg · ${GOODS[o.g][5]} · ${o.g==='cr_notes'?'액면 금액':'예상 가치'} ${(o.g==='cr_notes'?o.amount:GOODS[o.g][6]).toLocaleString('ko-KR')} CR</span><button data-field="rotate" aria-pressed="${picked.rot}">↻ 회전</button>${picked.side==='loot'?lootPickupMarkup(o):''}${picked.side==="bag"?equipmentSelectionActions(o):''}<button data-db="lookup" data-id="${o.g}">도감</button><button data-field="unselect">선택 해제</button>`:'<span>물품을 선택하여 이동하십시오.</span>'}${notice?`<p class="expired-text">${notice}</p>`:''}</div>`}
+function selectionPanel(){const o=selectedItem();return `<div class="selection-panel" role="status">${o?`<b>${GOODS[o.g][0]}</b><span>${picked.rot?o.h:o.w}×${picked.rot?o.w:o.h} · ${GOODS[o.g][3]} kg · ${GOODS[o.g][5]} · ${o.g==='cr_notes'?'액면 금액':'예상 가치'} ${(o.g==='cr_notes'?o.amount:GOODS[o.g][6]).toLocaleString('ko-KR')} CR</span><button data-field="rotate" aria-pressed="${picked.rot}">↻ 회전</button>${picked.side==='loot'?lootPickupMarkup(o):''}${page==='raid'&&openBox()?'<button data-field="place">가방에서 칸 지정</button>':''}${picked.side==="bag"?equipmentSelectionActions(o):''}<button data-db="lookup" data-id="${o.g}">도감</button><button data-field="unselect">선택 해제</button>`:'<span>물품을 선택하여 이동하십시오.</span>'}${notice?`<p class="expired-text">${notice}</p>`:''}</div>`}
 function raidPage(){if(!raid)return head('FIELD / STANDBY','레이드 대기','작전 지도에서 출격하십시오.')+`<button class="primary" data-page="map">출격 준비</button>`;if(!isActive())return summaryPage();if(field.contact)return contactPage();if(field.journey)return journeyPage();const z=FIELD_ZONES[raid.zone],b=openBox(),a=field.action;const base=`<div class="field-metrics"><div>체력 <b>${field.hp}</b></div><div>기력 <b>${field.energy}</b></div><div>수분 <b>${field.water}</b></div><div>위험도 <b>${z.risk}</b></div></div>`;if(b)return lootView(b);
 return `<div class="field-heading"><div><span class="mono">FIELD / SECTOR 0${raid.zone+1}</span><h1>${z.name}</h1></div><div class="field-links"><button data-page="map">작전 지도</button><button data-page="inventory">가방 ${field.bag.length}개</button></div></div>${base}${weatherBrief('field',raid.zone)}${injuryFieldBrief()}${gearReadinessMarkup(field, true)}${actionMarkup()}${landmarkPanel()}${routeChoicesPanel()}${exitPanel()}<section class="field-section"><h2>현장 기록</h2><div class="field-log">${field.log.slice(0,6).map((l,i)=>`<p><span>›</span> ${esc(l)}</p>`).join('')}</div></section>`}
 function inventoryPage(){return equipmentPage()}
@@ -328,9 +350,12 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(d.field==='postal-pickup'||d.field==='postal-stamp')return handlePostal(d);
 if(d.field==='survey-observe')return handleWeatherObservation(d);
 if(d.field==='gauge-read'||d.field==='gauge-report')return handlePumpGauge(d);
-switch(d.field){case 'landmark':return selectLandmark(Number(d.index));case 'extract':{const e=exitBy(d.exit);if(!e||a||raid.zone!==e.zone)return;const reason=exitCondition(e);if(reason){exitNotice=reason;renderKeep();return}field.open=null;picked=null;logField(`${e.name} 탈출 대기 시작.`);beginAction('extract',e.sec*1000,{exit:e.id});return}case 'abandon':if(!a&&confirm('레이드를 포기하면 현재 소지 물품을 모두 잃습니다. 계속합니까?')){finishRaid('abandoned',Date.now());persist();renderKeep()}return;case 'scan':if(nextLandmarkBox(raid.zone)<0)return;beginAction('scan',4000);return;case 'move':{const dest=Number(d.index);if(!a&&routeDistance(raid.zone,dest)){page='raid';save();startJourney(dest)}return}case 'open':{let i=Number(d.index);if(!a&&!field.open&&!lootBoxIsLocked(raid.zone,i)&&currentLandmark().boxes.includes(i)&&field.found[raid.zone].includes(i)){field.open=boxKey(raid.zone,i);picked=null;notice=''}break}case 'close':if(a?.type==='search')field.action=null;field.open=null;picked=null;notice='';break;case 'search':{const b=openBox(),o=b?.items.find(o=>!o.revealed&&(!d.uid||d.uid===o.uid));if(d.uid&&!o)return;if(o&&!a){beginAction('search',1800,{key:b.key,uid:o.uid,...(d.uid?{single:true}:{})});return}if(b&&!a&&!o){b.complete=true;logField('컨테이너에 남은 물품이 없습니다.')}break}case 'cancel':if(a?.type==='treat'){const result=cancelInjuryTreatment();notice=result.message;renderKeep();return;}field.action=null;logField('행동 취소.');break;case 'take':if(picked?.side==='loot')transfer();return;case 'rotate':if(picked)picked.rot=!picked.rot;break;case 'unselect':picked=null;notice='';break;}persist();renderKeep()}
+switch(d.field){case 'landmark':return selectLandmark(Number(d.index));case 'extract':{const e=exitBy(d.exit);if(!e||a||raid.zone!==e.zone)return;const reason=exitCondition(e);if(reason){exitNotice=reason;renderKeep();return}field.open=null;picked=null;logField(`${e.name} 탈출 대기 시작.`);beginAction('extract',e.sec*1000,{exit:e.id});return}case 'abandon':if(!a&&confirm('레이드를 포기하면 현재 소지 물품을 모두 잃습니다. 계속합니까?')){finishRaid('abandoned',Date.now());persist();renderKeep()}return;case 'scan':if(nextLandmarkBox(raid.zone)<0)return;beginAction('scan',4000);return;case 'move':{const dest=Number(d.index);if(!a&&routeDistance(raid.zone,dest)){page='raid';save();startJourney(dest)}return}case 'open':{let i=Number(d.index);if(!a&&!field.open&&!lootBoxIsLocked(raid.zone,i)&&currentLandmark().boxes.includes(i)&&field.found[raid.zone].includes(i)){field.open=boxKey(raid.zone,i);loMobilePanel.loot=2;picked=null;notice=''}break}case 'close':if(a?.type==='search')field.action=null;field.open=null;picked=null;notice='';break;case 'search':{const b=openBox(),position=d.tileX!==undefined&&d.tileY!==undefined;
+const o=b?.items.find(o=>!o.revealed&&(!d.uid||d.uid===o.uid)&&(!position||o.x===Number(d.tileX)&&o.y===Number(d.tileY)));
+if((d.uid||position)&&!o)return;if(o&&!a){beginAction('search',1800,{key:b.key,uid:o.uid,...(d.uid||position?{single:true}:{})});return}if(b&&!a&&!o){b.complete=true;logField('컨테이너에 남은 물품이 없습니다.')}break}case 'cancel':if(a?.type==='treat'){const result=cancelInjuryTreatment();notice=result.message;renderKeep();return;}field.action=null;logField('행동 취소.');break;case 'place':return startFieldPlacement();case 'take':if(picked?.side==='loot')transfer();return;case 'rotate':if(picked)picked.rot=!picked.rot;break;case 'unselect':picked=null;notice='';break;}persist();renderKeep()}
 /* @gameplay-modules */
 let rendering=false, lastContentView='';
 function contentView(){
@@ -430,6 +455,7 @@ function render(){
     const injuryFocus=captureInjuryFocus();
     const maintenanceFocus=captureMaintenanceFocus();
     const lootFocus=captureLootPlanFocus();
+    const fieldFocus=captureFieldLootFocus();
     const cartFocus=marketCartFocusSelector();
     const weatherFocus=weatherFocusSelector();
     const routeFocus=document.activeElement?.matches?.('[data-route-compare], [data-route-status]');
@@ -443,6 +469,7 @@ function render(){
     restoreCampaignFocus(campaignFocus);
     restoreSurvivorFocus(survivorFocus);
     restoreLootPlanFocus(lootFocus);
+    restoreFieldLootFocus(fieldFocus);
     restoreMaintenanceFocus(maintenanceFocus);
     restoreInjuryFocus(injuryFocus);
     if(cartFocus)(content.querySelector?.(cartFocus)||content.querySelector?.('[data-cart-panel]'))?.focus?.({preventScroll:true});

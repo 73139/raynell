@@ -106,7 +106,9 @@ function loBag(kit,active){
   const weight=kit.bag.reduce((n,o)=>n+GOODS[o.g][3],0);
   const grid=active?gridMarkup(kit.bag,size,'bag'):kitPrepGrid(kit);
   return '<section class="lo-pane lo-bag">'+loTitle(title,used+' / '+cap+' 칸','bag')+
-    '<div class="lo-pane-body">'+grid+
+    '<div class="lo-pane-body">'+(active&&page==='raid'&&openBox()&&picked?'<p class="mini-field" data-field-placement-help id="field-placement-help">방향키로 칸 선택 · Enter로 배치</p>':'')+grid+
+    (active&&page==='raid'&&openBox()&&picked?.placing?'<button data-field="unselect">배치 취소</button>':'')+
+    (active&&page==='raid'&&openBox()&&picked?.side==='loot'&&notice?'<p role="status">'+esc(notice)+'</p>':'')+
     (active&&sel?selectionPanel():'')+(sel?loBindButton(sel.g):'')+
     '<div class="lo-spec"><span>'+size.join(' × ')+' 격자</span><span>'+weight.toFixed(1)+' kg</span></div></div></section>';
 }
@@ -187,9 +189,9 @@ function gearView(){
 }
 function lootView(b){
   const z=FIELD_ZONES[raid.zone],def=z.boxes[Number(b.key.split('-')[1])],size=b.size||BOX_SIZE,found=b.items.filter(o=>o.revealed).length;
-  return '<div class="loadout-ui lo-loot">'+loHead('05','상자 수색',z.name+' · '+def[0],'<button data-field="close">현장 복귀</button>')+
+  return '<div class="loadout-ui lo-loot" data-field-box="'+esc(b.key)+'">'+loHead('05','상자 수색',z.name+' · '+def[0],'<button data-field="close">현장 복귀</button>')+
     weatherBrief('field',raid.zone)+huntSummary('loot')+objectivePanel('loot')+loLayout('loot')+loWearPanel(field)+loBag(field,true)+'<section class="lo-pane lo-source">'+loTitle(def[0],b.complete?'수색 완료':'수색 대상','search')+
-    '<div class="lo-pane-body">'+(field.survivorScavenge?.box===b.key?'<p class="lo-note" data-scavenge-trace>먼지 위로 물건을 꺼낸 자국이 나 있습니다. 누군가 먼저 이 상자를 뒤졌습니다.</p>':'')+gridMarkup(b.items,size,'loot')+'<div class="lo-spec"><span>'+size.join(' × ')+' 격자</span><span>남은 물품 '+b.items.length+' · 확인 '+found+'</span></div>'+actionMarkup()+
+    '<div class="lo-pane-body">'+(field.survivorScavenge?.box===b.key?'<p class="lo-note" data-scavenge-trace>먼지 위로 물건을 꺼낸 자국이 나 있습니다. 누군가 먼저 이 상자를 뒤졌습니다.</p>':'')+gridMarkup(b.items,size,'loot')+'<div class="lo-spec" data-field-search-status tabindex="-1" role="status"><span>'+size.join(' × ')+' 격자</span><span>남은 물품 '+b.items.length+' · 확인 '+found+'</span></div>'+actionMarkup()+
     (picked?.side==='loot'?selectionPanel()+objectiveSelectedItem(selectedItem()):'')+
     (b.complete&&b.items.length===0?'<p>상자가 비었습니다.</p>':'')+
     '<button class="primary lo-search" data-field="search" '+(field.action||b.complete?'disabled':'')+'>'+ico('search')+' '+(b.complete?'수색 완료':field.action?'수색 중':'내용물 수색')+'</button></div></section></div>'+loQuickbar(field)+loMsg()+'</div>';
@@ -302,4 +304,87 @@ inside.addEventListener('drop',e=>{
     gearPick={uid:kitDragged,rot:gearPick?.uid===kitDragged&&gearPick.rot};moveBagToStashCell(x,y);kitDragged=null;
   }
   saveInventoryMove();renderKeep();
+});
+
+// The field panels are replaced when a search advances or a placement changes.
+// Read the focused control before the replacement and restore it only for keyboard input.
+function captureFieldLootFocus(){
+  const control=document.activeElement;
+  if(page!=='raid'||!control?.matches?.(':focus-visible'))return null;
+  const screen=control.closest('[data-field-box]');
+  if(!screen&&!control.matches('[data-field="open"]'))return null;
+  return {button:{...control.dataset},box:screen?.dataset.fieldBox,selection:screen?.querySelector('.loot-tile.chosen')?.dataset.pick};
+}
+function focusFieldControl(...selectors){
+  for(const selector of selectors){
+    if(!selector)continue;
+    const node=Array.from(document.querySelectorAll(selector)).find(el=>!el.disabled&&el.getClientRects().length);
+    if(!node)continue;
+    node.focus({preventScroll:true});node.scrollIntoView({block:'nearest',inline:'nearest'});
+    return node;
+  }
+  return null;
+}
+function restoreFieldLootFocus(previous){
+  if(!previous||page!=='raid'||!isActive()||field.contact||field.journey)return;
+  const d=previous.button,close='[data-field="close"]',search='.lo-search:not(:disabled)',loot='[data-side="loot"][data-pick]';
+  if(!openBox()){
+    if(d.field==='close'&&previous.box)focusFieldControl('[data-field="open"][data-index="'+previous.box.split('-')[1]+'"]');
+    return;
+  }
+  if(d.field==='open'){
+    focusFieldControl(search,loot,close);return;
+  }
+  if(previous.box!==field.open)return;
+  if(d.field==='search'||d.fieldSearchStatus!==undefined){
+    if(field.action?.type==='search'){
+      const status=focusFieldControl('[data-field-search-status]');
+      if(status&&d.tileX!==undefined){status.dataset.tileX=d.tileX;status.dataset.tileY=d.tileY;}
+    }else{
+      const found=d.tileX!==undefined?loot+'[data-tile-x="'+d.tileX+'"][data-tile-y="'+d.tileY+'"]':null;
+      focusFieldControl(found,loot,search,close);
+    }
+    return;
+  }
+  if(d.loadout==='mobile-tab'){
+    focusFieldControl('[data-screen="loot"][data-index="'+d.index+'"]');return;
+  }
+  if(d.cell==='bag'){
+    const cell='button[data-cell="bag"][data-x="'+d.x+'"][data-y="'+d.y+'"]';
+    const moved=field.bag.find(u=>u.x===Number(d.x)&&u.y===Number(d.y));
+    focusFieldControl(picked?cell:null,moved?'[data-side="bag"][data-pick="'+CSS.escape(moved.uid)+'"]':null,loot,close);return;
+  }
+  if(d.pick){
+    const tile='[data-side="'+d.side+'"][data-pick="'+CSS.escape(d.pick)+'"]';
+    focusFieldControl(picked?.uid===d.pick?'[data-field="rotate"]':null,tile,loot,close);return;
+  }
+  if(d.field==='take'){
+    focusFieldControl(picked?'[data-field="take"]':null,loot,search,close);return;
+  }
+  if(['rotate','unselect','place'].includes(d.field)){
+    const prior=previous.selection?'[data-pick="'+CSS.escape(previous.selection)+'"]':null;
+    focusFieldControl(picked?'[data-field="'+d.field+'"]':null,prior,loot,search,close);
+  }
+}
+
+function startFieldPlacement(){
+  const unit=selectedItem();
+  if(page!=='raid'||!openBox()||!unit||!isActive()||field.contact)return;
+  picked.placing=true;
+  loMobilePanel.loot=1;
+  renderKeep();
+  const pos=picked.side==='bag'?unit:transferPlacement(unit,true,picked.rot).pos;
+  const cell=focusFieldControl('button[data-cell="bag"][data-x="'+(pos?.x??0)+'"][data-y="'+(pos?.y??0)+'"]');
+  if(cell)cell.setAttribute('aria-describedby','field-placement-help');
+}
+inside.addEventListener('keydown',event=>{
+  if(event.altKey||event.ctrlKey||event.metaKey||event.shiftKey||page!=='raid'||!field?.open||!picked)return;
+  const offset={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[event.key];
+  const cell=event.target.closest?.('button[data-cell="bag"]');
+  if(!offset||!cell)return;
+  event.preventDefault();
+  const [cols,rows]=raidBagSize();
+  const x=Math.min(cols-1,Math.max(0,Number(cell.dataset.x)+offset[0]));
+  const y=Math.min(rows-1,Math.max(0,Number(cell.dataset.y)+offset[1]));
+  focusFieldControl('button[data-cell="bag"][data-x="'+x+'"][data-y="'+y+'"]');
 });

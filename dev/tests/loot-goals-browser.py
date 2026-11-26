@@ -252,7 +252,7 @@ def new_game(browser,width,folder,wall=False):
             # Reveal one specific item; hidden grid remains opaque until the search ends.
             uid=contents[0]['uid']
             tab(p,'loot',2)
-            hidden=p.locator(f'[data-field="search"][data-uid="{uid}"]:visible')
+            hidden=p.locator(f"[data-field=search][data-tile-x='{contents[0]['x']}'][data-tile-y='{contents[0]['y']}']:visible")
             expect(hidden).to_have_attribute('aria-label','미확인 물품 수색')
             hidden.click()
             until(p,read(p)['field']['action']['end']+350,wall)

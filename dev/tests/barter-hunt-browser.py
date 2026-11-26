@@ -45,7 +45,7 @@ def acquire(p):
     loot['tab'](p, 'loot', 2)
     expect(p.locator('[data-hunt-badge]')).to_have_count(0)
     uid = unit['uid']
-    search = p.locator(f'[data-field="search"][data-uid="{uid}"]:visible')
+    search = p.locator(f"[data-field=search][data-tile-x='{unit['x']}'][data-tile-y='{unit['y']}']:visible")
     expect(search).to_have_attribute('aria-label', '미확인 물품 수색')
     search.click()
     common['until'](p, snapshot(p)['field']['action']['end']+350)

@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.69</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.70</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -365,6 +365,9 @@
   .lo-layout[data-panel]>section{display:none}
   .lo-layout[data-panel="0"]>section:nth-child(1),.lo-layout[data-panel="1"]>section:nth-child(2),.lo-layout[data-panel="2"]>section:nth-child(3){display:block}
 }
+
+.lo-loot [data-cell="bag"]:focus-visible{position:relative;z-index:3;outline:3px solid #f3dc9b;outline-offset:-3px}
+.lo-loot [data-field-placing] .loot-tile{pointer-events:none}
 
 .bu-screen{--bu-border:#3e494d;--bu-line:#2c363b;--bu-muted:#a8b4b8;--bu-gold:#c8bc87;--bu-ready:#b8d798;min-width:0;color:#e8eae6;font-family:inherit}
 .bu-screen, .bu-screen *{box-sizing:border-box}
@@ -1881,7 +1884,29 @@ function handleRaidAction(action,data={}){
   }
   save();renderKeep();
 }
-function gridMarkup(items,size,side){const unknown=side==='loot',objective=unknown?resolveObjective():null;let cells='';for(let y=0;y<size[1];y++)for(let x=0;x<size[0];x++)cells+=`<button class="slot" data-cell="${side}" data-x="${x}" data-y="${y}" aria-label="${side==='bag'?'가방':'상자'} ${x+1}열 ${y+1}행" style="grid-column:${x+1};grid-row:${y+1}"></button>`;return `<div class="spatial-grid" data-grid="${side}" style="--cols:${size[0]};--rows:${size[1]}">${cells}${items.map(o=>{const g=GOODS[o.g],hidden=unknown&&!o.revealed,searching=hidden&&field.action?.uid===o.uid,selected=picked?.uid===o.uid&&picked?.side===side;const hint=unknown&&!hidden?objectiveLootHint(o,objective):'';return `<button class="loot-tile ${hidden?'unknown':''} ${searching?'searching':''} ${selected?'chosen':''}" style="grid-column:${o.x+1}/span ${o.w};grid-row:${o.y+1}/span ${o.h}" ${hidden?(field.action?'disabled':`data-field="search" data-uid="${o.uid}"`):`draggable="true" data-pick="${o.uid}" data-side="${side}"`} aria-label="${hidden?(searching?'수색 중':'미확인 물품 수색'):esc(g[0]+hint)}" ${hint?'title="'+esc(g[0]+hint)+'"':''}>${hidden?ico('search','search-symbol')+(searching?'<span class="tile-progress" aria-hidden="true"><i id="tile-progress-fill"></i></span>':''):`${itemArt(o.g,'item-symbol')}<span>${o.g==='cr_notes'?money(o.amount):g[0]}</span><small>${o.w}×${o.h}</small>${unknown?objectiveLootBadge(hint)+huntBadge(o):''}`}</button>`}).join('')}</div>`}
+function gridMarkup(items,size,side){
+  const source=side==='loot', objective=source?resolveObjective():null;
+  const placing=!source&&Boolean(picked&&selectedItem());
+  const manual=placing&&picked.placing===true;
+  let cells='';
+  for(let y=0;y<size[1];y++)for(let x=0;x<size[0];x++){
+    const pos=`class="slot" data-cell="${side}" data-x="${x}" data-y="${y}" style="grid-column:${x+1};grid-row:${y+1}"`;
+    cells+=placing?`<button type="button" tabindex="-1" ${pos} aria-label="가방 ${x+1}열 ${y+1}행에 배치"></button>`:
+      `<span ${pos} aria-hidden="true"></span>`;
+  }
+  const tiles=items.map(o=>{
+    const g=GOODS[o.g],hidden=source&&!o.revealed,searching=hidden&&field.action?.uid===o.uid;
+    const selected=picked?.uid===o.uid&&picked?.side===side;
+    const hint=source&&!hidden?objectiveLootHint(o,objective):'';
+    const pos=`data-tile-x="${o.x}" data-tile-y="${o.y}"`;
+    const action=manual?'tabindex="-1"':hidden?(field.action?'disabled':'data-field="search"'):`draggable="true" data-pick="${esc(o.uid)}" data-side="${side}" aria-pressed="${Boolean(selected)}"`;
+    const label=hidden?(searching?'수색 중':'미확인 물품 수색'):esc(g[0]+hint);
+    const art=hidden?ico('search','search-symbol')+(searching?'<span class="tile-progress" aria-hidden="true"><i id="tile-progress-fill"></i></span>':''):
+      `${itemArt(o.g,'item-symbol')}<span>${o.g==='cr_notes'?money(o.amount):g[0]}</span><small>${o.w}×${o.h}</small>${source?objectiveLootBadge(hint)+huntBadge(o):''}`;
+    return `<button type="button" class="loot-tile ${hidden?'unknown':''} ${searching?'searching':''} ${selected?'chosen':''}" style="grid-column:${o.x+1}/span ${o.w};grid-row:${o.y+1}/span ${o.h}" ${pos} ${action} aria-label="${label}" ${hint?'title="'+label+'"':''}>${art}</button>`;
+  }).join('');
+  return `<div class="spatial-grid" data-grid="${side}" ${manual?'data-field-placing="true"':''} style="--cols:${size[0]};--rows:${size[1]}">${cells}${tiles}</div>`;
+}
 function fieldTileSelection(tile){
   const {pick:uid,side}=tile.dataset;
   const sameTile=picked?.uid===uid && picked.side===side;
@@ -1943,7 +1968,7 @@ function transfer(x,y){
 }
 function actionMarkup(){const a=field.action;if(!a)return '';return `<div class="field-progress"><div>${ico('search','search-symbol')} <b>${a.type==='scan'?'주변 탐색':(a.type==='move'||a.type==='travel-step')?'지역 이동':a.type==='extract'?'탈출 대기':a.type==='engage'?'교전':a.type==='evade'?'도주':a.type==='treat'?'부위 치료':'내용물 확인'} 중</b><span id="field-seconds"></span></div><div class="progress-track"><i id="field-progress"></i></div>${field.contact||field.journey?'':'<button data-field="cancel">취소</button>'}</div>`}
 function bagPanel(){const weight=field.bag.reduce((a,o)=>a+GOODS[o.g][3],0);return `<section class="loot-panel"><div class="field-label"><span>PERSONAL INVENTORY</span><span>${weight.toFixed(1)} kg</span></div><h2>${hasRaidBackpack()?"내 가방":"주머니"} <small>${raidBagSize().join(" × ")}</small></h2>${gridMarkup(field.bag,raidBagSize(),'bag')}<p class="mini-field">물품 선택 → 빈 칸 터치 / PC 드래그</p></section>`}
-function selectionPanel(){const o=selectedItem();return `<div class="selection-panel" role="status">${o?`<b>${GOODS[o.g][0]}</b><span>${picked.rot?o.h:o.w}×${picked.rot?o.w:o.h} · ${GOODS[o.g][3]} kg · ${GOODS[o.g][5]} · ${o.g==='cr_notes'?'액면 금액':'예상 가치'} ${(o.g==='cr_notes'?o.amount:GOODS[o.g][6]).toLocaleString('ko-KR')} CR</span><button data-field="rotate" aria-pressed="${picked.rot}">↻ 회전</button>${picked.side==='loot'?lootPickupMarkup(o):''}${picked.side==="bag"?equipmentSelectionActions(o):''}<button data-db="lookup" data-id="${o.g}">도감</button><button data-field="unselect">선택 해제</button>`:'<span>물품을 선택하여 이동하십시오.</span>'}${notice?`<p class="expired-text">${notice}</p>`:''}</div>`}
+function selectionPanel(){const o=selectedItem();return `<div class="selection-panel" role="status">${o?`<b>${GOODS[o.g][0]}</b><span>${picked.rot?o.h:o.w}×${picked.rot?o.w:o.h} · ${GOODS[o.g][3]} kg · ${GOODS[o.g][5]} · ${o.g==='cr_notes'?'액면 금액':'예상 가치'} ${(o.g==='cr_notes'?o.amount:GOODS[o.g][6]).toLocaleString('ko-KR')} CR</span><button data-field="rotate" aria-pressed="${picked.rot}">↻ 회전</button>${picked.side==='loot'?lootPickupMarkup(o):''}${page==='raid'&&openBox()?'<button data-field="place">가방에서 칸 지정</button>':''}${picked.side==="bag"?equipmentSelectionActions(o):''}<button data-db="lookup" data-id="${o.g}">도감</button><button data-field="unselect">선택 해제</button>`:'<span>물품을 선택하여 이동하십시오.</span>'}${notice?`<p class="expired-text">${notice}</p>`:''}</div>`}
 function raidPage(){if(!raid)return head('FIELD / STANDBY','레이드 대기','작전 지도에서 출격하십시오.')+`<button class="primary" data-page="map">출격 준비</button>`;if(!isActive())return summaryPage();if(field.contact)return contactPage();if(field.journey)return journeyPage();const z=FIELD_ZONES[raid.zone],b=openBox(),a=field.action;const base=`<div class="field-metrics"><div>체력 <b>${field.hp}</b></div><div>기력 <b>${field.energy}</b></div><div>수분 <b>${field.water}</b></div><div>위험도 <b>${z.risk}</b></div></div>`;if(b)return lootView(b);
 return `<div class="field-heading"><div><span class="mono">FIELD / SECTOR 0${raid.zone+1}</span><h1>${z.name}</h1></div><div class="field-links"><button data-page="map">작전 지도</button><button data-page="inventory">가방 ${field.bag.length}개</button></div></div>${base}${weatherBrief('field',raid.zone)}${injuryFieldBrief()}${gearReadinessMarkup(field, true)}${actionMarkup()}${landmarkPanel()}${routeChoicesPanel()}${exitPanel()}<section class="field-section"><h2>현장 기록</h2><div class="field-log">${field.log.slice(0,6).map((l,i)=>`<p><span>›</span> ${esc(l)}</p>`).join('')}</div></section>`}
 function inventoryPage(){return equipmentPage()}
@@ -1954,9 +1979,12 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(d.field==='postal-pickup'||d.field==='postal-stamp')return handlePostal(d);
 if(d.field==='survey-observe')return handleWeatherObservation(d);
 if(d.field==='gauge-read'||d.field==='gauge-report')return handlePumpGauge(d);
-switch(d.field){case 'landmark':return selectLandmark(Number(d.index));case 'extract':{const e=exitBy(d.exit);if(!e||a||raid.zone!==e.zone)return;const reason=exitCondition(e);if(reason){exitNotice=reason;renderKeep();return}field.open=null;picked=null;logField(`${e.name} 탈출 대기 시작.`);beginAction('extract',e.sec*1000,{exit:e.id});return}case 'abandon':if(!a&&confirm('레이드를 포기하면 현재 소지 물품을 모두 잃습니다. 계속합니까?')){finishRaid('abandoned',Date.now());persist();renderKeep()}return;case 'scan':if(nextLandmarkBox(raid.zone)<0)return;beginAction('scan',4000);return;case 'move':{const dest=Number(d.index);if(!a&&routeDistance(raid.zone,dest)){page='raid';save();startJourney(dest)}return}case 'open':{let i=Number(d.index);if(!a&&!field.open&&!lootBoxIsLocked(raid.zone,i)&&currentLandmark().boxes.includes(i)&&field.found[raid.zone].includes(i)){field.open=boxKey(raid.zone,i);picked=null;notice=''}break}case 'close':if(a?.type==='search')field.action=null;field.open=null;picked=null;notice='';break;case 'search':{const b=openBox(),o=b?.items.find(o=>!o.revealed&&(!d.uid||d.uid===o.uid));if(d.uid&&!o)return;if(o&&!a){beginAction('search',1800,{key:b.key,uid:o.uid,...(d.uid?{single:true}:{})});return}if(b&&!a&&!o){b.complete=true;logField('컨테이너에 남은 물품이 없습니다.')}break}case 'cancel':if(a?.type==='treat'){const result=cancelInjuryTreatment();notice=result.message;renderKeep();return;}field.action=null;logField('행동 취소.');break;case 'take':if(picked?.side==='loot')transfer();return;case 'rotate':if(picked)picked.rot=!picked.rot;break;case 'unselect':picked=null;notice='';break;}persist();renderKeep()}
+switch(d.field){case 'landmark':return selectLandmark(Number(d.index));case 'extract':{const e=exitBy(d.exit);if(!e||a||raid.zone!==e.zone)return;const reason=exitCondition(e);if(reason){exitNotice=reason;renderKeep();return}field.open=null;picked=null;logField(`${e.name} 탈출 대기 시작.`);beginAction('extract',e.sec*1000,{exit:e.id});return}case 'abandon':if(!a&&confirm('레이드를 포기하면 현재 소지 물품을 모두 잃습니다. 계속합니까?')){finishRaid('abandoned',Date.now());persist();renderKeep()}return;case 'scan':if(nextLandmarkBox(raid.zone)<0)return;beginAction('scan',4000);return;case 'move':{const dest=Number(d.index);if(!a&&routeDistance(raid.zone,dest)){page='raid';save();startJourney(dest)}return}case 'open':{let i=Number(d.index);if(!a&&!field.open&&!lootBoxIsLocked(raid.zone,i)&&currentLandmark().boxes.includes(i)&&field.found[raid.zone].includes(i)){field.open=boxKey(raid.zone,i);loMobilePanel.loot=2;picked=null;notice=''}break}case 'close':if(a?.type==='search')field.action=null;field.open=null;picked=null;notice='';break;case 'search':{const b=openBox(),position=d.tileX!==undefined&&d.tileY!==undefined;
+const o=b?.items.find(o=>!o.revealed&&(!d.uid||d.uid===o.uid)&&(!position||o.x===Number(d.tileX)&&o.y===Number(d.tileY)));
+if((d.uid||position)&&!o)return;if(o&&!a){beginAction('search',1800,{key:b.key,uid:o.uid,...(d.uid||position?{single:true}:{})});return}if(b&&!a&&!o){b.complete=true;logField('컨테이너에 남은 물품이 없습니다.')}break}case 'cancel':if(a?.type==='treat'){const result=cancelInjuryTreatment();notice=result.message;renderKeep();return;}field.action=null;logField('행동 취소.');break;case 'place':return startFieldPlacement();case 'take':if(picked?.side==='loot')transfer();return;case 'rotate':if(picked)picked.rot=!picked.rot;break;case 'unselect':picked=null;notice='';break;}persist();renderKeep()}
 // A raid carries its exit assignment, contact and timers until settlement.
 const ESCAPE_CHANCE = 0.65;
 const CONTACTS = [
@@ -2044,6 +2072,9 @@ const ORDERS = [
     cr:18000,xp:65,goal:'규격표 확인 및 PVC 배관 휴대',target:2,
     sample:{site:{zone:0,landmark:6,boxOrdinal:0},item:'rl_08_15'},
     progress:order=>sampleInspection(order,field,field.bag).count},
+  {id:'sealed-mail',after:'handover-ledgers',image:'bunker-stash',issuer:'벙커 배차반',title:'봉인 우편낭 회송',
+    text:'군수 보급 창고 반송 화물실에서 봉인 우편낭을 인수해 폐쇄 검문소 통행증 발급소에 인계하세요. 우편낭은 가방 두 칸을 차지합니다. 한 출격에서 접수 도장을 받은 뒤 정상 탈출하면 수당을 지급합니다. 출격이 끝나면 미인계 화물과 접수 기록은 회수됩니다.',
+    cr:30000,xp:105,goal:'우편낭 인수 및 중계소 인계',target:2,progress:()=>postalProgress()},
   {id:'weather-survey',surveyFunding:true,image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
     text:'안개가 수송로의 거리 표식을 얼마나 가리는지 맑은 날과 비교합니다. 지도에서 세 권역의 예보를 보고 첫 관측지를 고르세요. 외곽 경계 울타리, 검문소 대기 차량 행렬, 군수 창고 하역 도크가 관측 지점입니다. 한 출격에서 서로 다른 두 권역의 맑음과 안개를 한 번씩 기록하고 정상 탈출하세요. 관측 버튼을 누른 시점의 현장 날씨가 기록됩니다. 두 날씨의 관측 순서는 자유입니다.',
     cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length}
@@ -2212,7 +2243,8 @@ function reconcileEnd(result,at,exit=null){
   if(survivorState.active?.raidId===raid.startedAt){
     at=Math.max(at,survivorLastAction(survivorState.active),field.survivorScavenge?.at||0);
   }
-  const goods=field.bag.map(o=>o.g).filter(id=>id!=='cr_notes'&&Object.hasOwn(GOODS,id));
+  const recoveredBag=field.bag.filter(unit=>unit.g!==POSTAL_ITEM);
+  const goods=recoveredBag.map(o=>o.g).filter(id=>id!=='cr_notes'&&Object.hasOwn(GOODS,id));
   const carriedCash=typeof cashSum==='function'?cashSum(field.bag):0;
   const returned=result==='success';
   const elapsed=Math.max(0,Math.min(RAID_DURATION_MS,at-raid.startedAt));
@@ -2238,7 +2270,7 @@ function reconcileEnd(result,at,exit=null){
   const gearReport=sortieGearReport(returned);
   const walletBeforeSettlement=wallet;
   if(returned){
-    for(const unit of field.bag){
+    for(const unit of recoveredBag){
       if(unit.g==='rl_bp_dressing')receiveWardSheet(unit.uid);
       else if(unit.g!=='cr_notes')addStashGoods(unit.g,1,unit.gear);
     }
@@ -2267,7 +2299,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
@@ -3859,7 +3891,7 @@ function landmarkPanel(){
     <div class="landmark-header"><div><small>현재 랜드마크</small><h2 tabindex="-1">${point.name}</h2></div>
       <details class="landmark-picker"><summary>랜드마크 선택 · ${LANDMARKS[zi].length}곳</summary>
         <div class="landmark-list">${options}</div></details></div>
-    <p class="landmark-description">${point.description}</p>${sourceHint}${pumpGaugePanel()}${surveyReadingPanel()}
+    <p class="landmark-description">${point.description}</p>${sourceHint}${pumpGaugePanel()}${surveyReadingPanel()}${postalPanel()}
     <button class="primary search-button" data-field="scan" ${busy||nextLandmarkBox()<0?'disabled':''}>${ico('search')} 주변 탐색 <small>${durationLabel('scan',4000)}</small></button>
     <h3 class="landmark-box-title">발견한 수색 대상 <small>${visible.length} / ${point.boxes.length}</small></h3>
     <div class="container-list">${cards||'<p class="empty-field">주변을 탐색해 이곳의 수색 대상을 발견하세요.</p>'}</div>
@@ -4138,7 +4170,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=69000; // Derived from the release title by build.py.
+const WRITER_BUILD=70000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4215,6 +4247,11 @@ function readSession(current){
     if(!Array.isArray(box.size))box.size=BOX_SIZE.slice();
   }
   readCareer(snap?.career);
+  postalNotice='';
+  if(!validPostalCargo(raid,field,career.order)){
+    delete field.postal;field.bag=field.bag.filter(u=>u.g!==POSTAL_ITEM);
+    if(Array.isArray(field.gearGround))field.gearGround=field.gearGround.map(list=>Array.isArray(list)?list.filter(u=>u.g!==POSTAL_ITEM):[]);
+  }
   if(!validPumpGauge(raid,field,career.order))delete field.pumpGauge;
   if(!validWeatherSurvey(raid,field,career.order))delete field.weatherSurvey;
   loadTraderContracts(snap?.contracts);
@@ -4387,7 +4424,7 @@ function validateBackup(raw){
   if(s.version>=24 && s.plannedDepartureZone!==undefined && (s.raid || (s.version<27 && !s.lootDestination) || !integer(s.plannedDepartureZone,0,FIELD_ZONES.length-1)))return false;
   if(!validWardBackup(s)||!validCaseBackup(s)||!validateEquipmentBackup(s)||!validContractsBackup(s.contracts)||!validRecurringSave(s.periodic))return false;
   const r=s.raid,f=s.field;
-  if(!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
+  if(!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
   if(r!==null&&(!dict(r)||!integer(r.startedAt,1)||r.endsAt-r.startedAt!==RAID_DURATION_MS||!integer(r.zone,0,2)))return false;
   if(f.raidId!==(r?.startedAt||0)||!Array.isArray(f.bag)||!f.bag.every(tile)||!Array.isArray(f.found)||f.found.length!==3||!f.found.every((a,z)=>Array.isArray(a)&&a.every(i=>integer(i,0,FIELD_ZONES[z].boxes.length-1))))return false;
   if(!Array.isArray(f.log)||!f.log.every(x=>typeof x==='string')||!dict(f.boxes))return false;
@@ -4750,7 +4787,9 @@ function loBag(kit,active){
   const weight=kit.bag.reduce((n,o)=>n+GOODS[o.g][3],0);
   const grid=active?gridMarkup(kit.bag,size,'bag'):kitPrepGrid(kit);
   return '<section class="lo-pane lo-bag">'+loTitle(title,used+' / '+cap+' 칸','bag')+
-    '<div class="lo-pane-body">'+grid+
+    '<div class="lo-pane-body">'+(active&&page==='raid'&&openBox()&&picked?'<p class="mini-field" data-field-placement-help id="field-placement-help">방향키로 칸 선택 · Enter로 배치</p>':'')+grid+
+    (active&&page==='raid'&&openBox()&&picked?.placing?'<button data-field="unselect">배치 취소</button>':'')+
+    (active&&page==='raid'&&openBox()&&picked?.side==='loot'&&notice?'<p role="status">'+esc(notice)+'</p>':'')+
     (active&&sel?selectionPanel():'')+(sel?loBindButton(sel.g):'')+
     '<div class="lo-spec"><span>'+size.join(' × ')+' 격자</span><span>'+weight.toFixed(1)+' kg</span></div></div></section>';
 }
@@ -4831,9 +4870,9 @@ function gearView(){
 }
 function lootView(b){
   const z=FIELD_ZONES[raid.zone],def=z.boxes[Number(b.key.split('-')[1])],size=b.size||BOX_SIZE,found=b.items.filter(o=>o.revealed).length;
-  return '<div class="loadout-ui lo-loot">'+loHead('05','상자 수색',z.name+' · '+def[0],'<button data-field="close">현장 복귀</button>')+
+  return '<div class="loadout-ui lo-loot" data-field-box="'+esc(b.key)+'">'+loHead('05','상자 수색',z.name+' · '+def[0],'<button data-field="close">현장 복귀</button>')+
     weatherBrief('field',raid.zone)+huntSummary('loot')+objectivePanel('loot')+loLayout('loot')+loWearPanel(field)+loBag(field,true)+'<section class="lo-pane lo-source">'+loTitle(def[0],b.complete?'수색 완료':'수색 대상','search')+
-    '<div class="lo-pane-body">'+(field.survivorScavenge?.box===b.key?'<p class="lo-note" data-scavenge-trace>먼지 위로 물건을 꺼낸 자국이 나 있습니다. 누군가 먼저 이 상자를 뒤졌습니다.</p>':'')+gridMarkup(b.items,size,'loot')+'<div class="lo-spec"><span>'+size.join(' × ')+' 격자</span><span>남은 물품 '+b.items.length+' · 확인 '+found+'</span></div>'+actionMarkup()+
+    '<div class="lo-pane-body">'+(field.survivorScavenge?.box===b.key?'<p class="lo-note" data-scavenge-trace>먼지 위로 물건을 꺼낸 자국이 나 있습니다. 누군가 먼저 이 상자를 뒤졌습니다.</p>':'')+gridMarkup(b.items,size,'loot')+'<div class="lo-spec" data-field-search-status tabindex="-1" role="status"><span>'+size.join(' × ')+' 격자</span><span>남은 물품 '+b.items.length+' · 확인 '+found+'</span></div>'+actionMarkup()+
     (picked?.side==='loot'?selectionPanel()+objectiveSelectedItem(selectedItem()):'')+
     (b.complete&&b.items.length===0?'<p>상자가 비었습니다.</p>':'')+
     '<button class="primary lo-search" data-field="search" '+(field.action||b.complete?'disabled':'')+'>'+ico('search')+' '+(b.complete?'수색 완료':field.action?'수색 중':'내용물 수색')+'</button></div></section></div>'+loQuickbar(field)+loMsg()+'</div>';
@@ -4948,6 +4987,89 @@ inside.addEventListener('drop',e=>{
   saveInventoryMove();renderKeep();
 });
 
+// The field panels are replaced when a search advances or a placement changes.
+// Read the focused control before the replacement and restore it only for keyboard input.
+function captureFieldLootFocus(){
+  const control=document.activeElement;
+  if(page!=='raid'||!control?.matches?.(':focus-visible'))return null;
+  const screen=control.closest('[data-field-box]');
+  if(!screen&&!control.matches('[data-field="open"]'))return null;
+  return {button:{...control.dataset},box:screen?.dataset.fieldBox,selection:screen?.querySelector('.loot-tile.chosen')?.dataset.pick};
+}
+function focusFieldControl(...selectors){
+  for(const selector of selectors){
+    if(!selector)continue;
+    const node=Array.from(document.querySelectorAll(selector)).find(el=>!el.disabled&&el.getClientRects().length);
+    if(!node)continue;
+    node.focus({preventScroll:true});node.scrollIntoView({block:'nearest',inline:'nearest'});
+    return node;
+  }
+  return null;
+}
+function restoreFieldLootFocus(previous){
+  if(!previous||page!=='raid'||!isActive()||field.contact||field.journey)return;
+  const d=previous.button,close='[data-field="close"]',search='.lo-search:not(:disabled)',loot='[data-side="loot"][data-pick]';
+  if(!openBox()){
+    if(d.field==='close'&&previous.box)focusFieldControl('[data-field="open"][data-index="'+previous.box.split('-')[1]+'"]');
+    return;
+  }
+  if(d.field==='open'){
+    focusFieldControl(search,loot,close);return;
+  }
+  if(previous.box!==field.open)return;
+  if(d.field==='search'||d.fieldSearchStatus!==undefined){
+    if(field.action?.type==='search'){
+      const status=focusFieldControl('[data-field-search-status]');
+      if(status&&d.tileX!==undefined){status.dataset.tileX=d.tileX;status.dataset.tileY=d.tileY;}
+    }else{
+      const found=d.tileX!==undefined?loot+'[data-tile-x="'+d.tileX+'"][data-tile-y="'+d.tileY+'"]':null;
+      focusFieldControl(found,loot,search,close);
+    }
+    return;
+  }
+  if(d.loadout==='mobile-tab'){
+    focusFieldControl('[data-screen="loot"][data-index="'+d.index+'"]');return;
+  }
+  if(d.cell==='bag'){
+    const cell='button[data-cell="bag"][data-x="'+d.x+'"][data-y="'+d.y+'"]';
+    const moved=field.bag.find(u=>u.x===Number(d.x)&&u.y===Number(d.y));
+    focusFieldControl(picked?cell:null,moved?'[data-side="bag"][data-pick="'+CSS.escape(moved.uid)+'"]':null,loot,close);return;
+  }
+  if(d.pick){
+    const tile='[data-side="'+d.side+'"][data-pick="'+CSS.escape(d.pick)+'"]';
+    focusFieldControl(picked?.uid===d.pick?'[data-field="rotate"]':null,tile,loot,close);return;
+  }
+  if(d.field==='take'){
+    focusFieldControl(picked?'[data-field="take"]':null,loot,search,close);return;
+  }
+  if(['rotate','unselect','place'].includes(d.field)){
+    const prior=previous.selection?'[data-pick="'+CSS.escape(previous.selection)+'"]':null;
+    focusFieldControl(picked?'[data-field="'+d.field+'"]':null,prior,loot,search,close);
+  }
+}
+
+function startFieldPlacement(){
+  const unit=selectedItem();
+  if(page!=='raid'||!openBox()||!unit||!isActive()||field.contact)return;
+  picked.placing=true;
+  loMobilePanel.loot=1;
+  renderKeep();
+  const pos=picked.side==='bag'?unit:transferPlacement(unit,true,picked.rot).pos;
+  const cell=focusFieldControl('button[data-cell="bag"][data-x="'+(pos?.x??0)+'"][data-y="'+(pos?.y??0)+'"]');
+  if(cell)cell.setAttribute('aria-describedby','field-placement-help');
+}
+inside.addEventListener('keydown',event=>{
+  if(event.altKey||event.ctrlKey||event.metaKey||event.shiftKey||page!=='raid'||!field?.open||!picked)return;
+  const offset={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[event.key];
+  const cell=event.target.closest?.('button[data-cell="bag"]');
+  if(!offset||!cell)return;
+  event.preventDefault();
+  const [cols,rows]=raidBagSize();
+  const x=Math.min(cols-1,Math.max(0,Number(cell.dataset.x)+offset[0]));
+  const y=Math.min(rows-1,Math.max(0,Number(cell.dataset.y)+offset[1]));
+  focusFieldControl('button[data-cell="bag"][data-x="'+x+'"][data-y="'+y+'"]');
+});
+
 // The same career, orders and facilities are used by the raid settlement and the terminal.
 let bunkerOrderSelected = 'scout';
 let bunkerOrderFilter = 'all';
@@ -5049,6 +5171,10 @@ function bunkerOrderState(q){
 function bunkerOrderGoals(q){
   const state=bunkerOrderState(q);
   const active=state==='active'&&raid&&!field.result;
+  if(q.id==='sealed-mail'){
+    const progress=state==='done'?2:active?postalProgress():0;
+    return [['반송 화물실에서 우편낭 인수',Number(progress>=1),1],['통행증 발급소 접수 도장',Number(progress===2),1],['정상 탈출',Number(state==='done'),1]];
+  }
   if(q.id==='weather-survey'){
     const rows=active?surveyObservations():[];
     return [['맑음 기록',Number(state==='done'||rows.some(row=>row.condition==='clear')),1],
@@ -8219,7 +8345,7 @@ function resolveObjective(pin = objectivePin) {
     const sample=order.sample?sampleInspection(order,isActive()?field:null,isActive()?field.bag:equipmentState.bag):null;
     if(sample && !raid && sample.carried)goals[1].value=1;
     const observations=order.id==='weather-survey'&&isActive()?surveyObservations():[];
-    const locations=order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
+    const locations=order.id==='sealed-mail'?postalLocations():order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
       ? inspections.filter(site=>!site.complete).map(({zone,landmark})=>({zone,landmark}))
       : order.id==='pump-gauge' && (!isActive()||!pumpGaugeProgress())?[PUMP_SITE]:recoveryDestinations(order,carried,search);
     return {source, title:order.title, kindLabel:'벙커 의뢰', status:'정상 탈출 시 정산',
@@ -12993,6 +13119,91 @@ function handleHuntCase(d){
   locatePossession(row.key);
 }
 
+// Issued cargo is a real bag tile. It cannot enter a merchant shelf, a container roll, or the warehouse.
+const POSTAL_ITEM='rl_sealed_mail',POSTAL_ORDER='sealed-mail';
+const POSTAL_PICKUP={zone:2,landmark:4},POSTAL_RELAY={zone:1,landmark:4};
+Object.defineProperty(GOODS,POSTAL_ITEM,{value:['봉인 우편낭',2,1,0.8,'bag','의뢰 화물',0]});
+Object.defineProperty(ITEM_META,POSTAL_ITEM,{value:{usage:'반송 화물실에서 인수해 통행증 발급소에 인계하는 출격 전용 우편낭',rarity:'의뢰품',lootSources:[],hideoutUses:[]}});
+let postalNotice='';
+function postalGroundZone(sortie){
+  return (Array.isArray(sortie?.gearGround)?sortie.gearGround:[]).findIndex(list=>Array.isArray(list)&&list.some(unit=>unit?.g===POSTAL_ITEM));
+}
+function validPostalCargo(r,f,order){
+  const record=f?.postal;
+  const units=[...(Array.isArray(f?.bag)?f.bag:[]),...(Array.isArray(f?.gearGround)?f.gearGround.flat():[])].filter(unit=>unit?.g===POSTAL_ITEM);
+  if(record===undefined)return !units.length;
+  if(!r || !f || f.result || order!==POSTAL_ORDER || !record || typeof record!=='object' || Array.isArray(record) ||
+     Object.keys(record).length!==3 || f.raidId!==r.startedAt || record.raidId!==r.startedAt ||
+     !Array.isArray(f.visited) || !f.visited.includes(POSTAL_PICKUP.zone))return false;
+  const validTime=at=>Number.isSafeInteger(at)&&at>=r.startedAt&&at<r.endsAt&&at<=Date.now();
+  if(!validTime(record.issuedAt))return false;
+  if(record.stampedAt===null){
+    const ground=postalGroundZone(f);
+    return (ground<0||f.visited.includes(ground)) && units.length===1 && units[0].uid==='post-'+r.startedAt && units[0].revealed===true;
+  }
+  return !units.length && validTime(record.stampedAt) && record.stampedAt>record.issuedAt && f.visited.includes(POSTAL_RELAY.zone);
+}
+function validPostalBackup(s){
+  const cargo=unit=>unit?.g===POSTAL_ITEM;
+  const done=s.career?.done;
+  if((s.career?.order===POSTAL_ORDER || done?.includes?.(POSTAL_ORDER)) &&
+     (!Array.isArray(done) || !done.includes('handover-ledgers') || (s.career.order===POSTAL_ORDER && done.includes(POSTAL_ORDER))))return false;
+  if(s.stash?.[POSTAL_ITEM] || s.equipment?.bag?.some(cargo) ||
+     s.stashSlots?.some(unit=>cargo(unit)||unit.contents?.some?.(cargo)) ||
+     s.lastSummary?.goods?.includes?.(POSTAL_ITEM) || s.career?.history?.some?.(row=>row?.goods?.includes?.(POSTAL_ITEM)) ||
+     Object.values(s.field?.boxes||{}).some(box=>box?.items?.some?.(cargo)))return false;
+  return validPostalCargo(s.raid,s.field,s.career?.order);
+}
+function postalProgress(){
+  if(!field.postal || !validPostalCargo(raid,field,career.order))return 0;
+  return field.postal.stampedAt===null?1:2;
+}
+function postalLocations(){
+  if(!isActive())return [POSTAL_PICKUP,POSTAL_RELAY];
+  const stage=postalProgress();
+  if(!stage)return [POSTAL_PICKUP];
+  if(stage===2)return [];
+  const ground=postalGroundZone(field);
+  return ground<0?[POSTAL_RELAY]:[{zone:ground}];
+}
+function postalAt(site){return raid?.zone===site.zone && field.landmarkByZone?.[site.zone]===site.landmark;}
+function postalPlacement(){
+  return kitFit(field.bag,raidBagSize(),{g:POSTAL_ITEM,uid:'post-'+raid.startedAt,x:0,y:0,w:2,h:1,revealed:true});
+}
+function postalPanel(){
+  if(career.order!==POSTAL_ORDER || !isActive())return '';
+  const stage=postalProgress(),ground=postalGroundZone(field),pickup=postalAt(POSTAL_PICKUP),relay=postalAt(POSTAL_RELAY);
+  let status,action='',label='',blocked=!writer||Boolean(field.action||field.contact||field.journey||field.open);
+  if(!stage){
+    status='군수 보급 창고 · 반송 화물실에서 인수하세요. 가방에 붙어 있는 두 칸이 필요합니다.';
+    if(pickup){action='postal-pickup';label='우편낭 인수 · 2칸';if(!postalPlacement()){status='가방 공간이 부족합니다. 붙어 있는 두 칸을 비워 주세요.';blocked=true;}}
+  }else if(stage===2){status='접수 도장을 받았습니다. 정상 탈출하면 운송 수당을 받습니다.';}
+  else if(ground>=0){status=FIELD_ZONES[ground].name+' 바닥에 우편낭이 있습니다. 해당 권역의 ‘이 지역에 내려놓은 물품’에서 회수하세요.';}
+  else{status='우편낭 휴대 중 · 폐쇄 검문소 통행증 발급소에 인계하세요.';if(relay){action='postal-stamp';label='우편낭 인계 · 접수 도장 받기';}}
+  return '<section class="pump-gauge" data-postal-stage="'+(stage===2?'stamped':ground>=0?'ground':stage?'carried':'waiting')+'"><h3>봉인 우편낭 회송</h3><p tabindex="-1" role="status">'+esc(status)+(postalNotice?' '+esc(postalNotice):'')+'</p>'+
+    (action?'<button type="button" data-field="'+action+'" data-raid-id="'+raid.startedAt+'" '+(blocked?'disabled':'')+'>'+label+'</button>':'')+
+    '</section>';
+}
+function handlePostal(d){
+  if(!writer||!isActive()||career.order!==POSTAL_ORDER||String(raid.startedAt)!==d.raidId||Date.now()>=raid.endsAt||
+     field.action||field.contact||field.journey||field.open||!validPostalCargo(raid,field,career.order))return;
+  const owner=field,previous=field.postal,bag=field.bag;
+  if(d.field==='postal-pickup'){
+    if(previous||!postalAt(POSTAL_PICKUP))return;
+    const unit=postalPlacement();if(!unit)return;
+    field.bag=[...bag,unit];field.postal={raidId:raid.startedAt,issuedAt:Date.now(),stampedAt:null};
+  }else{
+    if(!previous||previous.stampedAt!==null||!postalAt(POSTAL_RELAY)||!bag.some(u=>u.g===POSTAL_ITEM))return;
+    field.bag=bag.filter(u=>u.g!==POSTAL_ITEM);field.postal={...previous,stampedAt:Date.now()};
+  }
+  postalNotice='';
+  if(!writeSession() && owner===field){
+    field.bag=bag;if(previous)field.postal=previous;else delete field.postal;
+    postalNotice='운송 기록을 저장할 수 없습니다. 다시 시도하세요.';
+  }
+  renderKeep();$('[data-postal-stage] [role="status"]')?.focus?.({preventScroll:true});
+}
+
 // Shared command terminal. The region, wallet and carried space are read directly from the session.
 const artCache=new Map();
 function artURL(key){
@@ -13162,6 +13373,7 @@ function render(){
     const injuryFocus=captureInjuryFocus();
     const maintenanceFocus=captureMaintenanceFocus();
     const lootFocus=captureLootPlanFocus();
+    const fieldFocus=captureFieldLootFocus();
     const cartFocus=marketCartFocusSelector();
     const weatherFocus=weatherFocusSelector();
     const routeFocus=document.activeElement?.matches?.('[data-route-compare], [data-route-status]');
@@ -13175,6 +13387,7 @@ function render(){
     restoreCampaignFocus(campaignFocus);
     restoreSurvivorFocus(survivorFocus);
     restoreLootPlanFocus(lootFocus);
+    restoreFieldLootFocus(fieldFocus);
     restoreMaintenanceFocus(maintenanceFocus);
     restoreInjuryFocus(injuryFocus);
     if(cartFocus)(content.querySelector?.(cartFocus)||content.querySelector?.('[data-cart-panel]'))?.focus?.({preventScroll:true});

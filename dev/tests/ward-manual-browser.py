@@ -92,7 +92,7 @@ def find_sheet(page, natural):
     assert tile['g']==SHEET and tile['revealed'] is False
     grid=page.locator('[data-grid="loot"]')
     expect(grid).not_to_contain_text('작업지침')
-    tile_node=grid.locator('[data-field="search"][data-uid="'+tile['uid']+'"]')
+    tile_node=grid.locator(f"[data-field=search][data-tile-x='{tile['x']}'][data-tile-y='{tile['y']}']")
     expect(tile_node).to_have_accessible_name('미확인 물품 수색')
     tile_node.click()
     finish(page,natural)

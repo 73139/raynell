@@ -85,6 +85,9 @@ const ORDERS = [
     cr:18000,xp:65,goal:'규격표 확인 및 PVC 배관 휴대',target:2,
     sample:{site:{zone:0,landmark:6,boxOrdinal:0},item:'rl_08_15'},
     progress:order=>sampleInspection(order,field,field.bag).count},
+  {id:'sealed-mail',after:'handover-ledgers',image:'bunker-stash',issuer:'벙커 배차반',title:'봉인 우편낭 회송',
+    text:'군수 보급 창고 반송 화물실에서 봉인 우편낭을 인수해 폐쇄 검문소 통행증 발급소에 인계하세요. 우편낭은 가방 두 칸을 차지합니다. 한 출격에서 접수 도장을 받은 뒤 정상 탈출하면 수당을 지급합니다. 출격이 끝나면 미인계 화물과 접수 기록은 회수됩니다.',
+    cr:30000,xp:105,goal:'우편낭 인수 및 중계소 인계',target:2,progress:()=>postalProgress()},
   {id:'weather-survey',surveyFunding:true,image:'bunker-tower',issuer:'벙커 기상반',title:'두 권역의 시정 관측',
     text:'안개가 수송로의 거리 표식을 얼마나 가리는지 맑은 날과 비교합니다. 지도에서 세 권역의 예보를 보고 첫 관측지를 고르세요. 외곽 경계 울타리, 검문소 대기 차량 행렬, 군수 창고 하역 도크가 관측 지점입니다. 한 출격에서 서로 다른 두 권역의 맑음과 안개를 한 번씩 기록하고 정상 탈출하세요. 관측 버튼을 누른 시점의 현장 날씨가 기록됩니다. 두 날씨의 관측 순서는 자유입니다.',
     cr:26000,xp:95,goal:'다른 권역의 맑음과 안개 기록',target:2,progress:()=>surveyObservations().length}
@@ -253,7 +256,8 @@ function reconcileEnd(result,at,exit=null){
   if(survivorState.active?.raidId===raid.startedAt){
     at=Math.max(at,survivorLastAction(survivorState.active),field.survivorScavenge?.at||0);
   }
-  const goods=field.bag.map(o=>o.g).filter(id=>id!=='cr_notes'&&Object.hasOwn(GOODS,id));
+  const recoveredBag=field.bag.filter(unit=>unit.g!==POSTAL_ITEM);
+  const goods=recoveredBag.map(o=>o.g).filter(id=>id!=='cr_notes'&&Object.hasOwn(GOODS,id));
   const carriedCash=typeof cashSum==='function'?cashSum(field.bag):0;
   const returned=result==='success';
   const elapsed=Math.max(0,Math.min(RAID_DURATION_MS,at-raid.startedAt));
@@ -279,7 +283,7 @@ function reconcileEnd(result,at,exit=null){
   const gearReport=sortieGearReport(returned);
   const walletBeforeSettlement=wallet;
   if(returned){
-    for(const unit of field.bag){
+    for(const unit of recoveredBag){
       if(unit.g==='rl_bp_dressing')receiveWardSheet(unit.uid);
       else if(unit.g!=='cr_notes')addStashGoods(unit.g,1,unit.gear);
     }
@@ -308,7 +312,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
