@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.49</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.50</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -90,6 +90,11 @@
 .facility-recipe{justify-content:space-between;border-top:1px solid #40503c;padding:10px 0}
 .facility-recipe small{display:block;line-height:1.55;font-size:.86em}
 .facility-recipe button{min-height:42px;flex-shrink:0}
+.facility-recipe[data-production-recipe]>div{flex:1 1 15rem;min-width:0}
+.craft-inputs{display:grid;gap:4px;margin:3px 0 5px}
+.craft-inputs>[data-craft-input]{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2px 10px;text-align:left;font-size:.86em}
+.craft-inputs>button{min-height:44px;padding:4px 8px}
+.craft-inputs>button span:last-child{color:#ebbb88}.craft-inputs>span{padding:3px 8px;color:#c1d79c}
 .facility-clock{white-space:nowrap}
 @media(max-width:700px){
  .facility-layout{display:flex;flex-direction:column}
@@ -2866,7 +2871,7 @@ function advanceHideout(now = Date.now()) {
   return changed;
 }
 function missingMaterials(inputs) {
-  return Object.entries(inputs).some(([id,qty]) => stashCount(id) < qty);
+  return Object.entries(inputs).some(([id,qty]) => stashRemovableCount(id) < qty);
 }
 function facilityBuildStatus(id, tier) {
   const f = FACILITIES[id];
@@ -2954,6 +2959,17 @@ function facilityMaterials(inputs) {
     return `<button data-db="lookup" data-id="${id}">${ico(g[4])}<span><b>${g[0]}</b><small>${itemSources(id)}</small></span><span class="${qtyHeld < qty ? 'facility-deficit' : 'facility-ready'}">${qtyHeld} / ${qty}개</span></button>`;
   }).join('')}</div>`;
 }
+function productionIngredients(facility,recipe,inputs) {
+  const rows=Object.entries(inputs).map(([item,need])=>{
+    const held=stashRemovableCount(item),shortage=Math.max(0,need-held);
+    const info=`<span>${GOODS[item][0]} · ${held} / ${need}</span>`;
+    const attrs=`data-craft-input="${item}" data-shortage="${shortage}"`;
+    if(!shortage)return `<span ${attrs} tabindex="-1">${info}<span>충족</span></span>`;
+    return `<button type="button" ${attrs} data-db="craft-ingredient" data-id="${item}" data-facility="${facility}" data-recipe="${recipe}">${info}<span>${shortage}개 부족 · 수급처 ›</span></button>`;
+  });
+  const caption=hideout.production[facility]?.recipe===recipe?'다음 제작 · 창고 사용 가능 / 필요':'창고 사용 가능 / 필요';
+  return rows.length?`<small>${caption}</small><div class="craft-inputs">${rows.join('')}</div>`:'<small>소모 재료 없음</small>';
+}
 function facilityProductionPanel(id) {
   const level = hideoutLevel(id);
   const list = FACILITY_PRODUCTION[id];
@@ -2965,9 +2981,8 @@ function facilityProductionPanel(id) {
   return manual+`<section class="facility-operations"><h3>시설 작업</h3>
     ${job ? `<p class="facility-current">${facilityRecipe(id,job.recipe).name} · ${facilityTimer(job.end)} 남음</p>` : ''}
     ${available.map(([r,i]) => {
-      const inputs = Object.entries(r.inputs).map(([g,qty]) => `${GOODS[g][0]} ${stashCount(g)}/${qty}`).join(' · ') || '소모 재료 없음';
       const status = productionStatus(id,i);
-      return `<div class="facility-recipe"><div><b>${r.name}</b><small>재료 · ${inputs}</small><small>지급 · ${productionResult(r)}</small>${i===WARD_RECIPE?'<small>사용 시 체력 +'+(28+hideoutRecoveryBonus('hp'))+' · 한 칸에 휴대</small>':''}</div><button data-hideout="produce" data-id="${id}" data-recipe="${i}" ${status ? 'disabled' : ''}>${status || '시작'}<small>${hideoutTime(productionMs(r))}</small></button></div>`;
+      return `<div class="facility-recipe" data-production-recipe="${i}"><div><b>${r.name}</b>${productionIngredients(id,i,r.inputs)}<small>지급 · ${productionResult(r)}</small>${i===WARD_RECIPE?'<small>사용 시 체력 +'+(28+hideoutRecoveryBonus('hp'))+' · 한 칸에 휴대</small>':''}</div><button data-hideout="produce" data-id="${id}" data-recipe="${i}" ${status ? 'disabled' : ''}>${status || '시작'}<small>${hideoutTime(productionMs(r))}</small></button></div>`;
     }).join('')}
     <p class="mini-field">완료된 물품과 대금은 창고와 지갑에 자동 지급됩니다.</p></section>`;
 }
@@ -12389,16 +12404,50 @@ function renderKeep(){
 
 // Item catalog and selected facility.
 let catalogQuery='',catalogCategory='',catalogOffset=0,catalogSelected=null,facilitySelected='power',facilityTier=1;
+let craftCatalogOrigin=null;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const money=n=>n.toLocaleString('ko-KR')+' CR';
 function itemSources(id){return ITEM_META[id].lootSources.map(t=>LOOT_TABLES[t].name).join(' · ')}
 function catalogRows(){return Object.entries(GOODS).filter(([id,g])=>(!catalogCategory||g[5]===catalogCategory)&&(!catalogQuery||[id,g[0],g[5],ITEM_META[id].usage,itemSources(id)].join(' ').toLowerCase().includes(catalogQuery.toLowerCase()))).sort((a,b)=>a[1][0].localeCompare(b[1][0],'ko'))}
 function catalogResults(){const rows=catalogRows(),max=Math.max(0,Math.floor((rows.length-1)/24)*24);catalogOffset=Math.min(catalogOffset,max);return `<div class="db-summary"><span>${rows.length}종 · ${rows.length?catalogOffset+1:0}–${Math.min(catalogOffset+24,rows.length)}</span><button data-db="prev" ${catalogOffset===0?'disabled':''}>이전</button><button data-db="next" ${catalogOffset+24>=rows.length?'disabled':''}>다음</button></div><div class="db-list">${rows.slice(catalogOffset,catalogOffset+24).map(([id,g])=>`<button data-db="item" data-id="${id}" aria-pressed="${catalogSelected===id}">${ico(g[4])}<span><b>${g[0]}</b><small>${g[5]} · ${g[1]}×${g[2]} · ${g[3]} kg</small></span><span>${money(g[6])}</span></button>`).join('')||'<p>검색 결과가 없습니다.</p>'}</div>`}
-function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p><h3>시설 요구 재료</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>현재 시설 요구 재료에는 포함되지 않습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
-function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`<button data-page="bunker">‹ 하이드아웃</button><div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
+function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:''}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p><h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
+function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
 function facilityDetail(){return bunkerFacilityDetail()}
 function bunkerPage(){return bunkerHubPage()}
-function handleDB(d){if(d.db==='prev'||d.db==='next'){catalogOffset=Math.max(0,catalogOffset+(d.db==='next'?24:-24));$('#db-results').innerHTML=catalogResults();return}if(d.db==='item'&&GOODS[d.id]){procurementNote='';catalogSelected=d.id;$('#db-detail').innerHTML=catalogDetail();$('#db-results').innerHTML=catalogResults();if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});return}if(d.db==='lookup'&&GOODS[d.id]){procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;page='catalog';save();render();$('.content').scrollTop=0;return}if(d.db==='facility'&&FACILITIES[d.id])return openBunkerFacility(d.id,Number(d.tier));if(d.db==='tier')return handleBunkerUI({bui:'tier',tier:d.tier})}
+function handleDB(d){
+  if(d.db==='prev'||d.db==='next'){
+    catalogOffset=Math.max(0,catalogOffset+(d.db==='next'?24:-24));$('#db-results').innerHTML=catalogResults();return;
+  }
+  if(d.db==='item'&&GOODS[d.id]){
+    procurementNote='';catalogSelected=d.id;$('#db-detail').innerHTML=catalogDetail();$('#db-results').innerHTML=catalogResults();
+    if(innerWidth<=700)$('#db-detail').scrollIntoView({block:'start'});return;
+  }
+  if(d.db==='craft-return'){
+    if(page!=='catalog'||!craftCatalogOrigin)return;
+    const {facility,tier,recipe,item}=craftCatalogOrigin;
+    openBunkerFacility(facility,tier);
+    const input=$(`[data-production-recipe="${recipe}"] [data-craft-input="${item}"]`);
+    if(input){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest'});}
+    return;
+  }
+  if((d.db==='lookup'||d.db==='craft-ingredient')&&Object.hasOwn(GOODS,d.id)){
+    if(d.db==='craft-ingredient'){
+      const recipe=d.recipe===WARD_RECIPE?WARD_RECIPE:Number(d.recipe);
+      if(page!=='facility'||d.facility!==facilitySelected||!facilityRecipeAvailable(d.facility,recipe))return;
+      const inputs=facilityRecipe(d.facility,recipe).inputs;
+      if(!Object.hasOwn(inputs,d.id)||stashRemovableCount(d.id)>=inputs[d.id])return;
+      craftCatalogOrigin={facility:d.facility,tier:facilityTier,recipe,item:d.id};
+    }else craftCatalogOrigin=null;
+    procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
+    page='catalog';save();render();
+    if(craftCatalogOrigin){
+      const back=$('[data-db="craft-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
+    }else $('.content').scrollTop=0;
+    return;
+  }
+  if(d.db==='facility'&&FACILITIES[d.id])return openBunkerFacility(d.id,Number(d.tier));
+  if(d.db==='tier')return handleBunkerUI({bui:'tier',tier:d.tier});
+}
 inside.addEventListener('input',e=>{if(e.target.id==='db-query'){catalogQuery=e.target.value;catalogOffset=0;$('#db-results').innerHTML=catalogResults()}});
 inside.addEventListener('change',e=>{if(e.target.id==='db-category'){catalogCategory=e.target.value;catalogOffset=0;$('#db-results').innerHTML=catalogResults()}});
 
@@ -12410,6 +12459,7 @@ function render(){
     reconcile();
     inside.classList.toggle('large',large);
     document.documentElement.classList.toggle('reduce-motion',reduce);
+    if(page!=='catalog')craftCatalogOrigin=null;
     inside.dataset.page=page;
     const content=$('.content'),current=contentView();
     const scrollAreas=current===lastContentView&&(page==='inventory'||page==='stash'||page==='trade')?captureStashScroll():null;
@@ -12452,10 +12502,13 @@ world.addEventListener('click',e=>{const b=e.target.closest('button');if(!b||bus
 function openTerminalLink(){
   const hash=window.location?.hash;
   const guideTarget = hash === '#guide' && onboardingView().mode === 'active' ? (raid ? 'raid' : 'home') : 'settings';
-  const target={'#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt','#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map','#guide':guideTarget,'#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];
+  const target={'#clinic':'facility','#health':'health','#maintenance':'maintenance','#lootplan':'lootplan','#barterhunt':'barterhunt','#survivors':'survivors','#campaign':'campaign','#presets':'presets','#map':'map','#routes':'map','#weather':'map','#guide':guideTarget,'#shop':'trade','#cart':'trade','#quests':'traderQuests','#stash':'stash','#daily':'traderQuests','#weekly':'traderQuests'}[hash];
   if(!target||busy)return;
   if(view==='photo'){
     world.hidden=true;inside.hidden=false;view='inside';
+  }
+  if(hash==='#clinic'){
+    openBunkerFacility('med');$('.content').focus({preventScroll:true});return;
   }
   if(target==='traderQuests')setTraderQuestMode(hash==='#daily'?'daily':hash==='#weekly'?'weekly':'standing');
   if(hash==='#cart')openMarketCartLink();
