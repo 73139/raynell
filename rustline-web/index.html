@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.74</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.76</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -140,6 +140,9 @@
 .kit-vitals b{margin-left:.2em;color:var(--text,#e7e9dd)}
 @media(max-width:760px){.kit-layout.on-raid>.kit-wear{order:2}}
 
+.kit-ground .kit-rows>div>span{min-width:0;overflow-wrap:anywhere}
+#inside .kit-ground button[data-gear="recover"]{min-height:44px}
+
 .landmark-header>div>small,.landmark-description,.landmark-box-title small{color:var(--muted)}
 .landmark-header{display:flex;gap:10px;align-items:start;justify-content:space-between;flex-wrap:wrap}
 .landmark-header h2{margin:3px 0}
@@ -271,6 +274,10 @@
   color:var(--lo-text);font-family:var(--font,Arial),sans-serif;
 }
 .loadout-ui *{box-sizing:border-box}
+.lo-prep{position:relative}
+.lo-prep .lo-deploy-shortcut{position:absolute;inset-inline-start:0;top:0;z-index:4}
+.lo-prep .lo-deploy-shortcut:not(:focus){clip-path:inset(50%);pointer-events:none;overflow:hidden;width:1px;height:1px;padding:0;border:0}
+
 .loadout-ui button:focus-visible,.loadout-ui summary:focus-visible{outline:2px solid #e9d798;outline-offset:2px;z-index:3}
 .lo-head{display:flex;gap:1rem;align-items:center;margin:0 0 .75rem;padding:.5rem 0 .7rem;border-bottom:1px solid var(--lo-line)}
 .lo-head>div{display:flex;gap:.6rem;align-items:center;white-space:nowrap}
@@ -1590,6 +1597,9 @@
 .tg-construction-uses li{display:flex;justify-content:space-between;flex-wrap:wrap;gap:2px 8px;padding:3px 0}
 .tg-construction-uses li b{font-weight:600}
 
+.ward-sale-note{margin:6px 0;padding:7px 10px;border-left:3px solid #c5ac72;line-height:1.55}
+.tg-unit-compact .ward-sale-note{flex-basis:100%;margin:0}
+
 .tg-touch-drop{
   position:fixed;z-index:9999;left:50%;bottom:max(14px,env(safe-area-inset-bottom));
   transform:translateX(-50%);width:min(390px,calc(100% - 28px));padding:10px 14px;
@@ -2870,15 +2880,16 @@ function stashSelectionMarkup() {
   const g = GOODS[s.g], canEdit = stashAtBunker(), rot = stashSelection.rot;
   const w = rot ? s.h : s.w, h = rot ? s.w : s.h;
   const saleRestriction = canEdit ? stashSaleRestriction(s) : '';
+  const manualNote = canEdit && s.g===WARD_SHEET && !saleRestriction ? wardSaleNote(1,'direct') : '';
   return `<div class="db-detail-title">${ico(g[4])}<div><h2>${esc(caseDisplayName(s))}</h2><p>${s.alias ? esc(g[0]) + ' · ' : ''}${g[5]} · ${w} × ${h}칸 · ${g[3]} kg</p></div></div>
     <div class="stash-tools">${canEdit ? `
       ${s.w !== s.h ? '<button data-stash="rotate" aria-pressed="' + rot + '">90° 회전</button>' : ''}
       ${rot && s.uid !== 'overflow' ? '<button data-stash="rotate-here">현재 위치에 적용</button>' : ''}
       ${s.uid === 'overflow' ? '<button data-stash="auto">빈 공간에 배치</button>' : ''}
       ${equipmentStashActions(s.g, s.uid)}
-      <button data-stash="sell" ${saleRestriction ? 'disabled aria-describedby="stash-sale-reason"' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
+      <button data-stash="sell" ${saleRestriction ? 'disabled aria-describedby="stash-sale-reason"' : manualNote ? 'aria-describedby="ward-sale-direct"' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
       <button data-db="lookup" data-id="${s.g}">도감 보기</button><button data-stash="clear">선택 해제</button>
-    </div>${saleRestriction?'<p id="stash-sale-reason">'+esc(saleRestriction)+'</p>':''}${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
+    </div>${manualNote}${saleRestriction?'<p id="stash-sale-reason">'+esc(saleRestriction)+'</p>':''}${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
 }
 
 function storagePage() {
@@ -3044,6 +3055,19 @@ function updateWardManual(action,uid){
   if(owner!==hideout)return '다른 탭의 최신 기록을 불러왔습니다. 원본의 위치를 확인하세요.';
   owner.wardManual=book;stash=beforeStock;stashSlots=beforeSlots;
   return '저장할 수 없어 원본과 등록 상태를 복원했습니다.';
+}
+function wardSaleNote(quantity, context){
+  if(!quantity || raid || hideout.wardManual.registered)return '';
+  let owned=0;
+  for(const row of physicalPossessionLocations()){
+    if(row.id===WARD_SHEET)owned+=row.quantity;
+  }
+  if(quantity>owned)return '';
+  const remainder=owned-quantity;
+  const sale=context==='preview'?'선택한 원본 포함 ':context==='tray'?'판매대 원본 ':'원본 ';
+  return '<p class="mini-field ward-sale-note" id="ward-sale-'+context+'"><strong>의무실 등록 가능</strong> · '+
+    '원본 1장을 등록하면 의무실 Lv.1부터 야전 처치포를 만들 수 있습니다.<br>'+
+    sale+quantity+'장 판매 시 '+(remainder?'보유 원본 '+remainder+'장 남음':'마지막 보유 원본까지 판매')+'</p>';
 }
 function wardManualPanel(){
   const book=hideout.wardManual;
@@ -3391,9 +3415,12 @@ function kitUnitGrams(unit){
   const module=unit.gear?.module;
   return Math.round(GOODS[unit.g][3]*1000)+(module?Math.round(GOODS[module][3]*1000):0);
 }
-function selectedMassMarkup(unit){
+function kitUnitMassText(unit){
   const module=unit.gear?.module;
-  return '<span data-selected-mass>'+kitUnitGrams(unit)/1000+' kg'+(module?' ('+esc(kitName(module))+' 포함)':'')+'</span>';
+  return kitUnitGrams(unit)/1000+' kg'+(module?' ('+kitName(module)+' 포함)':'');
+}
+function selectedMassMarkup(unit){
+  return '<span data-selected-mass>'+esc(kitUnitMassText(unit))+'</span>';
 }
 function packMassLabel(bag){
   return bag.reduce((grams,unit)=>grams+kitUnitGrams(unit),0)/1000+' kg';
@@ -3528,10 +3555,38 @@ function equipmentDeployInfo() {
 }
 function kitGroundPanel(){
   if(!raid||field.result||field.journey)return '';
-  const ground=kitGround();
-  if(!ground.length)return '';
-  return '<section class="panel kit-ground"><h2>이 지역에 내려놓은 물품</h2><p>'+FIELD_ZONES[raid.zone].name+' · 떠나기 전에 회수할 수 있습니다.</p><div class="kit-rows">'+ground.map(o=>
-    '<div><span>'+esc(kitName(o.g))+'</span>'+gearButton('recover',o.g===ISSUE_PACK?'다시 메기':'회수',{unit:o.uid},Boolean(field.action||field.contact))+'</div>').join('')+'</div></section>';
+  const ground=field.gearGround?.[raid.zone];
+  if(!ground?.length)return '';
+  const counts=new Map(),seen=new Map();
+  const names=ground.map(unit=>{
+    const suffix=unit.gear?' #'+gearSerial(unit.gear.uid):isCashUnit(unit)?' · '+money(unit.amount):'';
+    const name=kitName(unit.g)+suffix;
+    counts.set(name,(counts.get(name)||0)+1);
+    return name;
+  });
+  const rows=ground.map((unit,i)=>{
+    const gear=unit.gear,name=names[i],total=counts.get(name);
+    let label=name,details='';
+    if(total>1){
+      if(gear)label=kitName(unit.g)+' #'+gear.uid;
+      else{
+        const ordinal=(seen.get(name)||0)+1;
+        seen.set(name,ordinal);label=name+' ('+ordinal+'/'+total+')';
+      }
+    }
+    if(gear){
+      const spec=gearSpec(gear.g),state=[kitUnitMassText(unit)];
+      if(gear.durability<spec.maxDurability)state.push('내구도 '+gear.durability+'/'+spec.maxDurability);
+      if(gear.ammo<spec.capacity)state.push('탄약 '+gear.ammo+'/'+spec.capacity+'발');
+      details='<small>'+esc(state.join(' · '))+'</small>';
+    }
+    const ref='ground-unit-'+i,button='ground-recover-'+i,action=unit.g===ISSUE_PACK?'다시 메기':'회수';
+    return '<div><span id="'+ref+'">'+esc(label)+details+'</span><button type="button" id="'+button+
+      '" aria-labelledby="'+ref+' '+button+'" data-gear="recover" data-unit="'+esc(unit.uid)+'"'+
+      (field.action||field.contact?' disabled':'')+'>'+action+'</button></div>';
+  });
+  return '<section class="panel kit-ground"><h2>이 지역에 내려놓은 물품</h2><p>'+esc(FIELD_ZONES[raid.zone].name)+
+    ' · 떠나기 전에 회수할 수 있습니다.</p><div class="kit-rows">'+rows.join('')+'</div></section>';
 }
 function kitSlotPanel(kit) {
   const active=Boolean(raid),blocked=Boolean(active&&(field.action||field.contact||field.journey));
@@ -4216,7 +4271,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=74000; // Derived from the release title by build.py.
+const WRITER_BUILD=76000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4906,7 +4961,7 @@ function sortiePreflightMarkup(kit,zoneId){
 function prepView(){
   if(raid)return field.result?loResultLink():loHead('03','출격 준비','진행 중인 작전으로 복귀할 수 있습니다.')+'<button class="primary" data-page="raid">현장 복귀</button>'+objectivePanel('prep');
   const k=equipmentState,checks=[['주 장비',Boolean(k.worn.primary)],['방호복',Boolean(k.worn.armor)],['배낭',Boolean(k.worn.back)],['의료품',k.bag.some(u=>kitSupply(u.g)?.stat==='hp')],['수분 보급품',k.bag.some(u=>kitSupply(u.g)?.stat==='water')]];
-  return '<div class="loadout-ui lo-prep">'+loHead('03','출격 준비','B-04 벙커 · '+FIELD_ZONES[zone].name,'<button data-page="presets">장비 프리셋·정비</button>')+loMsg()+
+  return '<div class="loadout-ui lo-prep"><button type="button" class="lo-deploy-shortcut" data-loadout="focus-deploy">출격 시작 버튼으로 이동</button>'+loHead('03','출격 준비','B-04 벙커 · '+FIELD_ZONES[zone].name,'<button data-page="presets">장비 프리셋·정비</button>')+loMsg()+
     weatherBrief('prep',zone)+lootPlanLink(zone)+gearReadinessMarkup(k)+sortiePreflightMarkup(k,zone)+objectivePanel('prep')+loLayout('prep')+loWearPanel(k)+loBag(k,false)+'<section class="lo-pane lo-check">'+loTitle('출격 체크리스트')+
     '<div class="lo-pane-body"><div class="lo-pair"><span>투입 지역</span><b>'+FIELD_ZONES[zone].name+'</b></div><div class="lo-pair"><span>작전 제한 시간</span><b>'+Math.round(RAID_DURATION_MS/60000)+'분</b></div>'+
     '<div class="lo-pair" data-prep-cash><span>반입 지폐</span><b>'+money(cashSum(k.bag))+'</b></div><h3>장비 상태</h3>'+
@@ -4964,6 +5019,18 @@ function loUseQuick(i,keyboard=false){
   handleEquipment({gear:'consume',unit:unit.uid});
 }
 function handleLoadoutUI(d){
+  if(d.loadout==='focus-deploy'){
+    if(page!=='prep'||raid)return;
+    const selector='.lo-prep .lo-deploy[data-raid="start"]';
+    const target=document.querySelector(selector);
+    if(!target)return;
+    if(!target.getClientRects().length){
+      loMobilePanel.prep=2;
+      renderKeep();
+    }
+    document.querySelector(selector)?.focus();
+    return;
+  }
   if(d.loadout==='mobile-tab'&&Object.hasOwn(LO_MOBILE,d.screen)&&['0','1','2'].includes(d.index)){loMobilePanel[d.screen]=Number(d.index);}
   else if(d.loadout==='shop'){loShopOpen=!loShopOpen;}
   else if(d.loadout==='slot'){loSlot=loSlot===d.slot?null:d.slot;}
@@ -12690,12 +12757,15 @@ function tradeWarehouse(trader) {
     (marketUI.mode==='sell'&&tradeGridState.saleUid?tradeSelectedUnit(trader,true):'')+
     cashCompartmentMarkup()+tradeBoard('stash',tiles,cols,rows,'',cells)+'</section>';
 }
+function saleQuantityWithSelection(unit, traderId) {
+  const selling = new Set(tradeSaleDraft(traderId).map(row => row.uid));
+  selling.add(unit.uid);
+  return stashSlots.filter(row => row.g === unit.g && selling.has(row.uid)).length;
+}
 function saleConstructionUses(unit, quote, traderId) {
   const uses = ITEM_META[unit.g]?.hideoutUses;
   if (!quote.ok || !uses?.length) return '';
-  const selling = new Set(tradeSaleDraft(traderId).map(row => row.uid));
-  selling.add(unit.uid);
-  const quantity = stashSlots.filter(row => row.g === unit.g && selling.has(row.uid)).length;
+  const quantity = saleQuantityWithSelection(unit,traderId);
   const owned = stashCount(unit.g);
   const rows = uses.map(({facility, level, quantity:required}) => {
     let status = '건설에 ' + required + '개 필요';
@@ -12711,12 +12781,13 @@ function tradeSelectedUnit(trader,compact=false) {
   const unit=stashSlots.find(row=>row.uid===tradeGridState.saleUid);
   if(!unit)return compact?'':'<p class="tg-help">내 창고에서 판매할 물품을 선택하세요.</p>';
   const quote=saleQuote(trader.id,[unit.uid]),staged=(tradeGridState.sales.get(trader.id)||[]).some(row=>row.uid===unit.uid);
+  const manualNote=compact && quote.ok && unit.g===WARD_SHEET ? wardSaleNote(saleQuantityWithSelection(unit,trader.id),'preview') : '';
   return '<div class="tg-unit-detail'+(compact?' tg-unit-compact':'')+'">'+(compact?'':'<div class="tg-detail-art">'+itemArt(unit.g)+'</div>')+
     '<div><strong>'+esc(caseDisplayName(unit))+'</strong><small>창고 '+(unit.y+1)+'행 '+(unit.x+1)+'열 · '+unit.w+'×'+unit.h+'칸</small>'+
     (!compact?'<small>'+esc(GOODS[unit.g][5])+' · '+esc(ITEM_META[unit.g]?.rarity||'일반')+'</small>':'')+'</div>'+
-    (compact?'<button class="tg-minor" data-tg="sell-add" data-uid="'+esc(unit.uid)+'"'+(!quote.ok||staged?' disabled':'')+'>'+(staged?'판매 대기':'판매대에 올리기')+'</button>':
+    (compact?'<button class="tg-minor" data-tg="sell-add" data-uid="'+esc(unit.uid)+'"'+(manualNote?' aria-describedby="ward-sale-preview"':'')+(!quote.ok||staged?' disabled':'')+'>'+(staged?'판매 대기':'판매대에 올리기')+'</button>':
     '<div class="tg-unit-value">'+(quote.ok?'매입가 <b>'+money(quote.total)+'</b>':esc(quote.reason||'매입 대상 외'))+'</div>')+
-    (compact?saleConstructionUses(unit,quote,trader.id):'')+'</div>';
+    manualNote+(compact?saleConstructionUses(unit,quote,trader.id):'')+'</div>';
 }
 function tradeIntakePanel(trader) {
   const standing=traderStanding(trader.id);
@@ -12739,6 +12810,7 @@ function saleObjectiveMarkup(quote) {
 }
 function tradeSalePanel(trader) {
   const draft=tradeSaleDraft(trader.id),uids=draft.map(row=>row.uid),quote=saleQuote(trader.id,uids);
+  const manualNote=quote.ok ? wardSaleNote(quote.lines.filter(line=>line.item===WARD_SHEET).length,'tray') : '';
   const tiles=draft.map(row=>({...stashSlots.find(unit=>unit.uid===row.uid),x:row.x,y:row.y}));
   const board=tiles.map(tile=>tradeTile({...tile,item:tile.g},{name:caseDisplayName(tile),uid:tile.uid,action:'data-tg="sale-select"',
     chosen:tradeGridState.saleUid===tile.uid,badge:stashSalePrice(tile.g).toLocaleString('ko-KR'),drag:'sale',description:'판매 대기'})).join('');
@@ -12752,8 +12824,8 @@ function tradeSalePanel(trader) {
     (draft.length?'<ul class="tg-sale-lines">'+lines+'</ul>':'')+
     '<div class="tg-settle"><dl class="mc-sums"><div class="mc-grand"><dt>판매 합계</dt><dd data-sale-total>'+money(quote.total||0)+'</dd></div>'+
     '<div><dt>정산 후 잔액</dt><dd data-sale-balance>'+money(quote.after??wallet)+'</dd></div></dl>'+
-    saleObjectiveMarkup(quote)+
-    '<button class="tg-primary" data-tg="sell-confirm" data-trader="'+trader.id+'" data-token="'+esc(quote.token||'')+'"'+(!quote.ok?' disabled':'')+'>판매 확정</button>'+
+    saleObjectiveMarkup(quote)+manualNote+
+    '<button class="tg-primary" data-tg="sell-confirm" data-trader="'+trader.id+'" data-token="'+esc(quote.token||'')+'"'+(manualNote?' aria-describedby="ward-sale-tray"':'')+(!quote.ok?' disabled':'')+'>판매 확정</button>'+
     (!quote.ok&&draft.length?'<p class="tg-warning">'+esc(quote.reason||'')+'</p>':'')+
     '<p class="tg-status" role="status" data-sale-notice tabindex="-1">'+esc(tradeGridState.notice)+'</p></div>'+saleReceiptMarkup(trader,!draft.length)+'</section>';
 }
@@ -12854,6 +12926,14 @@ function handleTradeGridUI(d) {
   }
   if((d.tg==='recipe'&&innerWidth<=850)||(d.tg==='sell-add'&&(keyboard||innerWidth<=850)))
     marketCartFocus($('[data-trade-pane="order"]'));
+  if(keyboard && d.tg==='sell-remove'){
+    const next=$('[data-tg="sell-remove"]')||$('[data-trade-pane="order"]');
+    marketCartFocus(next,false);
+  }
+  if(keyboard && d.tg==='sale-select'){
+    const remove=[...document.querySelectorAll('[data-tg="sell-remove"]')].find(button=>button.dataset.uid===d.uid);
+    marketCartFocus(remove||$('[data-trade-pane="order"]'),false);
+  }
   if(keyboard&&d.tg==='sell-confirm')marketCartFocus($('[data-sale-notice]'));
 }
 function tradeDropPoint(board,e) {

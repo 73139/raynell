@@ -120,7 +120,7 @@ def exercise(browser, width):
 def exercise_trade_keyboard(browser, width):
     """Keyboard-only buy, stage, cancel, select, settle; pointer/touch parity."""
     ctx = browser.new_context(viewport={'width':width,'height':844}, has_touch=width<=500,
-                              reduced_motion='reduce')
+                              reduced_motion='reduce',ignore_https_errors=os.getenv('RUSTLINE_IGNORE_HTTPS_ERRORS')=='1')
     page = ctx.new_page()
     errors, focus_errors = [], []
     page.on('pageerror', lambda error: errors.append(str(error)))

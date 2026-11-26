@@ -12,7 +12,7 @@ const v11 = 'rl-reboot-session-v11';
 const v12 = 'rl-reboot-session-v36'; // Active save key used by gameplay scenarios.
 const probe = `globalThis.game={
   facilityProductionPanel,kitSupply,facilitySearchInputs,facilitySearchPlan,facilitySearchMarkup,
-  wardTrialView,wardTrialAction,wardTrialPanel,
+  wardTrialView,wardTrialAction,wardTrialPanel,wardSaleNote,
   cashAction,cashBalance,cashCanCredit,
   fieldAppraisal,kitUnitGrams,packMassLabel,
   huntCalculateOdds,huntContainerOdds,catalogFieldMarkup,catalogFieldDisclosure,
