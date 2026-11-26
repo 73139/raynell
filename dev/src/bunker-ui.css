@@ -103,3 +103,11 @@
   .bu-table-wrap .bu-log-detail{box-sizing:border-box;width:min(100%,calc(100cqi - 12px));position:sticky;left:0}
   .bu-screen .bu-row-open{min-width:44px;min-height:44px}
 }
+.bu-construction-plan [data-plan-phase]{display:block;color:var(--muted)}
+.bu-plan-budget{padding:8px 12px 12px;border-top:1px solid var(--bu-line)}
+.bu-plan-budget dl{margin:6px 0}.bu-plan-budget dl>div{display:flex;justify-content:space-between;gap:10px}
+.bu-plan-budget dd{margin:0;text-align:right;font-weight:700}
+.bu-construction-plan .bu-plan-budget p{margin:6px 0}
+.bu-plan-items{margin:8px 0 0;padding:0;list-style:none}
+.bu-plan-items li{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);align-items:center;gap:8px;border-top:1px solid var(--bu-line)}
+.bu-plan-items button{min-height:44px;text-align:left}.bu-plan-items small{display:block;color:var(--muted)}

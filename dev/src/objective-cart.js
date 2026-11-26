@@ -21,14 +21,14 @@ function facilityFundingPlan(balance){
   const best=plans[0];
   return best?{orders:best.orders.map(order=>order.id),reward:best.reward,remaining:deficit-best.reward}:null;
 }
-function objectiveCartView(objective=resolveObjective()){
-  const view={source:objective?.source||null,title:objective?.title||'',goals:objective?.goals||[],
-    lines:[],groups:[],token:'',quantity:0,total:0,reason:'',ok:false,budget:null};
-  if(!objective){view.reason='먼저 조달할 목표를 고정하세요.';return view;}
-  const shelves=MARKET_TRADERS.map(({id})=>({
+function procurementShelves(){
+  return MARKET_TRADERS.map(({id})=>({
     trader:id,available:new Set(marketGoods(id,'buy')),draft:marketCarts.traders[id]?.items||[]
   }));
-  for(const {id,required,owned,usable,missing} of objective.materials){
+}
+function procurementLines(materials,shelves){
+  const lines=[];
+  for(const {id,required,owned,usable,missing} of materials){
     const sellers=shelves.filter(shop=>shop.available.has(id));
     let inCart=0;
     let seller=sellers[0];
@@ -41,26 +41,37 @@ function objectiveCartView(objective=resolveObjective()){
     const add=seller?remainder:0;
     const unit=seller?GOODS[id][6]:0;
     const status=!missing?'ready':!remainder?'covered':seller?'available':'unavailable';
-    view.lines.push({item:id,required,owned,usable,missing,inCart,add,unit,subtotal:unit*add,trader:seller?.trader||null,status});
+    lines.push({item:id,required,owned,usable,missing,inCart,add,unit,subtotal:unit*add,trader:seller?.trader||null,status});
   }
+  return lines;
+}
+function facilityPurchaseBudget(lines,build){
+  const catalog=[],unavailable=[];
+  for(const line of lines){
+    if(!line.missing || line.trader)continue;
+    const reason=supplyItemLock(line.item);
+    if(catalogMaterialListed(line.item) && !reason){
+      const unit=GOODS[line.item][6];
+      catalog.push({item:line.item,missing:line.missing,unit,subtotal:unit*line.missing});
+    }else unavailable.push({...line,reason});
+  }
+  // Cart quantities are still unpaid. A catalog-only unit never enters a merchant's cart.
+  const retail=lines.reduce((sum,line)=>sum+line.missing*line.unit,0);
+  const direct=catalog.reduce((sum,line)=>sum+line.subtotal,0);
+  const materials=retail+direct;
+  const inCart=lines.reduce((sum,line)=>sum+Math.min(line.missing,line.inCart)*line.unit,0);
+  const total=unavailable.length?null:materials+build;
+  return {materials,retail,direct,catalog,inCart,build,wallet,total,balance:total===null?null:wallet-total,unavailable};
+}
+function objectiveCartView(objective=resolveObjective()){
+  const view={source:objective?.source||null,title:objective?.title||'',goals:objective?.goals||[],
+    lines:[],groups:[],token:'',quantity:0,total:0,reason:'',ok:false,budget:null};
+  if(!objective){view.reason='먼저 조달할 목표를 고정하세요.';return view;}
+  const shelves=procurementShelves();
+  view.lines=procurementLines(objective.materials,shelves);
   if(view.source.kind==='facility'){
     const step=FACILITIES[view.source.id].levels[view.source.tier-1];
-    const catalog=[],unavailable=[];
-    for(const line of view.lines){
-      if(!line.missing || line.trader)continue;
-      const reason=supplyItemLock(line.item);
-      if(catalogMaterialListed(line.item) && !reason){
-        const unit=GOODS[line.item][6];
-        catalog.push({item:line.item,missing:line.missing,unit,subtotal:unit*line.missing});
-      }else unavailable.push({...line,reason});
-    }
-    // Cart quantities are still unpaid. A catalog-only unit never enters a merchant's cart.
-    const retail=view.lines.reduce((sum,line)=>sum+line.missing*line.unit,0);
-    const direct=catalog.reduce((sum,line)=>sum+line.subtotal,0);
-    const materials=retail+direct;
-    const inCart=view.lines.reduce((sum,line)=>sum+Math.min(line.missing,line.inCart)*line.unit,0);
-    const total=unavailable.length?null:materials+step.costCR;
-    view.budget={materials,retail,direct,catalog,inCart,build:step.costCR,wallet,total,balance:total===null?null:wallet-total,unavailable};
+    view.budget=facilityPurchaseBudget(view.lines,step.costCR);
     view.budget.funding=facilityFundingPlan(view.budget.balance);
   }
   for(const shop of shelves){

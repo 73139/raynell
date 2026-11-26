@@ -185,6 +185,75 @@ function facilityConstructionSteps(id, tier) {
   include(id, tier);
   return steps;
 }
+function constructionBudget(steps){
+  const quantities=new Map();
+  let build=0;
+  for(const step of steps){
+    if(step.paid)continue;
+    build+=step.cost;
+    for(const [id,count] of Object.entries(FACILITIES[step.room].levels[step.level-1].materials)){
+      quantities.set(id,(quantities.get(id)||0)+count);
+    }
+  }
+  const materials=Array.from(quantities,([id,required])=>objectiveMaterial(id,required,true));
+  const lines=procurementLines(materials,procurementShelves());
+  const budget=facilityPurchaseBudget(lines,build);
+  const prices=new Map(budget.catalog.map(row=>[row.item,row.unit]));
+  for(const line of lines)if(line.trader)prices.set(line.item,line.unit);
+  const remaining=new Map(lines.map(line=>[line.item,line.usable]));
+  // Allocate existing stock in the displayed build order. A shared prerequisite consumes it once.
+  const phases=steps.map(step=>{
+    if(step.paid)return null;
+    let materials=0,partial=false;
+    for(const [id,count] of Object.entries(FACILITIES[step.room].levels[step.level-1].materials)){
+      const held=Math.min(count,remaining.get(id));
+      remaining.set(id,remaining.get(id)-held);
+      if(count===held)continue;
+      if(prices.has(id))materials+=(count-held)*prices.get(id);
+      else partial=true;
+    }
+    return {materials,partial};
+  });
+  return {budget,lines,phases};
+}
+function constructionBudgetBody({budget,lines}){
+  const partial=budget.total===null,known=budget.build+budget.materials;
+  const balance=budget.wallet-known;
+  const row=(key,label,value)=>'<div><dt>'+label+'</dt><dd data-plan-'+key+'>'+money(value)+'</dd></div>';
+  const catalog=new Map(budget.catalog.map(r=>[r.item,r]));
+  const blocked=new Map(budget.unavailable.map(r=>[r.item,r.reason||'현금 구매 경로 없음']));
+  const items=lines.map(line=>{
+    const label=kitName(line.item);
+    const source=line.trader?findMarketTrader(line.trader).name:catalog.has(line.item)?'도감 직접 주문':'';
+    const price=line.unit||catalog.get(line.item)?.unit||0;
+    const detail=!line.missing?'창고에서 전량 충당':blocked.has(line.item)?'현재 구매 불가 · '+blocked.get(line.item):
+      source+' · '+line.missing+'개 × '+money(price)+' = '+money(line.missing*price);
+    return '<li data-plan-item="'+esc(line.item)+'"><button type="button" data-db="plan-material" data-id="'+esc(line.item)+
+      '" aria-label="'+esc(label+' 도감 열기')+'">'+esc(label)+' ›</button><div>필요 '+line.required+' · 창고 사용 '+Math.min(line.required,line.usable)+
+      ' · 부족 '+line.missing+'<small>'+esc(detail)+'</small></div></li>';
+  }).join('');
+  const result=partial?(balance<0?'확인된 금액만으로도 '+money(-balance)+' 부족':'확인된 금액 충당 가능')+' · 현재 살 수 없는 자재가 있어 전체 예산 미정':
+    balance<0?'지갑에서 '+money(-balance)+' 부족':balance>0?'구매·착공 후 '+money(balance)+' 남음':'구매·착공 후 잔액 0 CR';
+  return '<section class="bu-plan-budget" data-plan-quote="'+(partial?'partial':'complete')+'"><h3>남은 단계 전체 예산</h3><dl>'+
+    row('build','남은 건설비',budget.build)+row('materials','구매 가능한 부족 자재비',budget.materials)+
+    row(partial?'known':'total',partial?'확인된 금액':'구매·착공 합계',known)+row('wallet','현재 지갑',budget.wallet)+'</dl>'+
+    '<strong data-plan-balance>'+result+'</strong><p>현재 상인 진열과 도감 주문가 기준입니다. 창고 자재를 앞 단계부터 배정합니다. 출격 가방·케이스 속 물품과 모듈 장착 장비는 제외합니다. 장바구니에 담은 부족분은 결제 전까지 구매비에 포함됩니다.</p>'+
+    '<ul class="bu-plan-items" aria-label="전체 단계에 필요한 자재">'+items+'</ul></section>';
+}
+function populateConstructionBudget(details){
+  if(page!=='facility'||!details?.open||!details.isConnected)return;
+  if(details.dataset.buildPlan!==facilitySelected||Number(details.dataset.tier)!==facilityTier)return;
+  const steps=facilityConstructionSteps(facilitySelected,facilityTier);
+  if(steps.length<2)return;
+  const result=constructionBudget(steps);
+  const rows=details.querySelectorAll('[data-plan-room]');
+  result.phases.forEach((phase,i)=>{
+    const note=rows[i]?.querySelector('[data-plan-phase]');
+    if(note&&phase)note.textContent=(phase.partial?'확인된 자재 구매비 ':'자재 구매비 ')+money(phase.materials)+' · '+
+      (phase.partial?'구매 불가 자재 별도':'단계 합계 '+money(steps[i].cost+phase.materials));
+  });
+  details.querySelector('[data-plan-budget]').innerHTML=constructionBudgetBody(result);
+}
 function bunkerConstructionPlan(id, tier) {
   const steps = facilityConstructionSteps(id, tier);
   if (steps.length < 2) return '';
@@ -193,12 +262,12 @@ function bunkerConstructionPlan(id, tier) {
   const rows = steps.map(step => {
     const title = esc(FACILITIES[step.room].name) + ' Lv.' + step.level;
     return '<li data-plan-room="' + step.room + '" data-plan-tier="' + step.level + '"><span>' + title +
-      '</span> <span>' + (step.paid ? '공사 중 · 지불 완료 · ' + facilityTimer(hideout.builds[step.room].end) + ' 남음' : money(step.cost)) + '</span></li>';
+      '</span> <span>' + (step.paid ? '공사 중 · 지불 완료 · ' + facilityTimer(hideout.builds[step.room].end) + ' 남음' : money(step.cost)) + '</span>'+ (step.paid?'':'<small data-plan-phase></small>')+'</li>';
   }).join('');
-  return '<details class="bu-construction-plan" data-build-plan><summary>선행 공사 포함 ' + steps.length +
-    '단계 · 남은 건설비 ' + money(unpaid) + '</summary><ol>' + rows + '</ol><p>' +
-    (shortfall ? '현재 지갑 기준 ' + money(shortfall) + ' 부족' : '현재 지갑으로 남은 건설비 충당 가능') +
-    ' · 자재 구입비 별도</p></details>';
+  return '<details class="bu-construction-plan" data-build-plan="' + id + '" data-tier="' + tier + '"><summary>선행 공사 포함 ' + steps.length +
+    '단계 · 남은 건설비 ' + money(unpaid) + ' · 전체 견적 보기</summary><ol>' + rows + '</ol><p data-plan-build-balance>' +
+    (shortfall ? '건설비만 계산하면 ' + money(shortfall) + ' 부족' : '현재 지갑으로 남은 건설비 충당 가능') +
+    '</p><div data-plan-budget></div></details>';
 }
 function bunkerDetailView(){
   const id=Object.hasOwn(FACILITIES,facilitySelected)?facilitySelected:'power',f=FACILITIES[id],level=hideoutLevel(id);

@@ -45,6 +45,13 @@ function guideDeployment(v, retry) {
 function guideFieldInstruction(v) {
   const exit = exitBy('b04'), zoneId = v.goal.zone, landmark = LANDMARKS[zoneId][v.goal.landmark];
   const extract = v.step === 'extract' || v.step === 'unassigned';
+  if (v.step==='unassigned' && objectivePin && !field.action && !field.contact && !field.journey &&
+      !sameObjective(objectivePin,{kind:'contract',id:ONBOARDING_QUEST})) {
+    const objective=resolveObjective();
+    if (objective) return guideInstruction('고정한 목표를 진행하세요',
+      objective.title+'의 현장 진행도를 확인하세요. 배급소 찬장 의뢰는 귀환 후에 수락할 수 있습니다.',
+      'objective','고정 목표 보기');
+  }
   if (page !== 'raid') return guideInstruction(extract?'탈출구로 복귀하세요':'배급소 식당을 수색하세요',
     '진행 중인 작전의 현장 화면에서 계속할 수 있습니다.','field','현장으로 복귀');
   if (field.action) {
@@ -210,6 +217,19 @@ function guideActivate(d, v) {
     case 'deploy': return handleRaidAction('start');
     case 'kit': return navigatePage('inventory');
     case 'field': return navigatePage('raid');
+    case 'objective': {
+      let panel=document.querySelector('.content [data-objective-panel]');
+      if (!panel && page!=='raid') {
+        navigatePage('raid');
+        panel=document.querySelector('.content [data-objective-panel]');
+      }
+      if (panel) {
+        panel.tabIndex=-1;
+        panel.focus({preventScroll:true});
+        panel.querySelector('h2')?.scrollIntoView({block:'center',inline:'nearest'});
+      }
+      return;
+    }
     case 'contact': return guideRevealChoices('.contact-buttons');
     case 'supply': return guideRevealChoices('.contact-buttons');
     case 'ack': return handleRaidAction('ack');
@@ -266,7 +286,7 @@ function handleOnboardingUI(data) {
   const next=guideDirection(v);
   if (!next?.action||data.guideAction!==next.action||String(data.guideValue??'')!==String(next.value??'')) {renderKeep();return;}
   guideActivate(next,v);
-  if (next.action!=='contact'&&next.action!=='supply') restoreOnboardingFocus('next',true);
+  if (!['contact','supply','objective'].includes(next.action)) restoreOnboardingFocus('next',true);
 }
 
 // A double-click or held key is one activation even when the first action replaces the button.

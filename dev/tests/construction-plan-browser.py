@@ -69,10 +69,10 @@ def scenario(browser, width):
             else:
                 expect(panel.locator("time[data-facility-end]")).to_have_count(0)
             if shortage is not None:
-                expect(panel.locator("p")).to_contain_text(f"{shortage:,} CR 부족")
+                expect(panel.locator("[data-plan-build-balance]")).to_contain_text(f"{shortage:,} CR 부족")
             else:
-                expect(panel.locator("p")).to_contain_text("충당 가능")
-            expect(panel.locator("p")).to_contain_text("자재 구입비 별도")
+                expect(panel.locator("[data-plan-build-balance]")).to_contain_text("충당 가능")
+            expect(panel.locator("[data-plan-quote]")).to_be_visible()
             assert panel.evaluate("""n => {const r=n.getBoundingClientRect();return r.left>=-1 &&
                 r.right<=innerWidth+1 && n.scrollWidth<=n.clientWidth+1}""")
             assert saved() == before, "Opening the plan changed the game save"

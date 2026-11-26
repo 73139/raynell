@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.80</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.81</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -484,6 +484,14 @@
   .bu-table-wrap .bu-log-detail{box-sizing:border-box;width:min(100%,calc(100cqi - 12px));position:sticky;left:0}
   .bu-screen .bu-row-open{min-width:44px;min-height:44px}
 }
+.bu-construction-plan [data-plan-phase]{display:block;color:var(--muted)}
+.bu-plan-budget{padding:8px 12px 12px;border-top:1px solid var(--bu-line)}
+.bu-plan-budget dl{margin:6px 0}.bu-plan-budget dl>div{display:flex;justify-content:space-between;gap:10px}
+.bu-plan-budget dd{margin:0;text-align:right;font-weight:700}
+.bu-construction-plan .bu-plan-budget p{margin:6px 0}
+.bu-plan-items{margin:8px 0 0;padding:0;list-style:none}
+.bu-plan-items li{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);align-items:center;gap:8px;border-top:1px solid var(--bu-line)}
+.bu-plan-items button{min-height:44px;text-align:left}.bu-plan-items small{display:block;color:var(--muted)}
 
 .mk-screen{--mk-border:#454d4a;--mk-line:#343d3a;--mk-paper:#d1cdab;--mk-sub:#a6afa7;--mk-panel:#141c1e;--mk-metal:linear-gradient(115deg,#222b2c,#141b1d);max-width:1520px;margin:0 auto;color:#e7e8df;font-variant-numeric:tabular-nums}
 .mk-screen h1,.mk-screen h2,.mk-screen h3,.mk-screen p,.mk-screen dl,.mk-screen dd{margin:0}
@@ -4341,7 +4349,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=80000; // Derived from the release title by build.py.
+const WRITER_BUILD=81000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -5459,6 +5467,75 @@ function facilityConstructionSteps(id, tier) {
   include(id, tier);
   return steps;
 }
+function constructionBudget(steps){
+  const quantities=new Map();
+  let build=0;
+  for(const step of steps){
+    if(step.paid)continue;
+    build+=step.cost;
+    for(const [id,count] of Object.entries(FACILITIES[step.room].levels[step.level-1].materials)){
+      quantities.set(id,(quantities.get(id)||0)+count);
+    }
+  }
+  const materials=Array.from(quantities,([id,required])=>objectiveMaterial(id,required,true));
+  const lines=procurementLines(materials,procurementShelves());
+  const budget=facilityPurchaseBudget(lines,build);
+  const prices=new Map(budget.catalog.map(row=>[row.item,row.unit]));
+  for(const line of lines)if(line.trader)prices.set(line.item,line.unit);
+  const remaining=new Map(lines.map(line=>[line.item,line.usable]));
+  // Allocate existing stock in the displayed build order. A shared prerequisite consumes it once.
+  const phases=steps.map(step=>{
+    if(step.paid)return null;
+    let materials=0,partial=false;
+    for(const [id,count] of Object.entries(FACILITIES[step.room].levels[step.level-1].materials)){
+      const held=Math.min(count,remaining.get(id));
+      remaining.set(id,remaining.get(id)-held);
+      if(count===held)continue;
+      if(prices.has(id))materials+=(count-held)*prices.get(id);
+      else partial=true;
+    }
+    return {materials,partial};
+  });
+  return {budget,lines,phases};
+}
+function constructionBudgetBody({budget,lines}){
+  const partial=budget.total===null,known=budget.build+budget.materials;
+  const balance=budget.wallet-known;
+  const row=(key,label,value)=>'<div><dt>'+label+'</dt><dd data-plan-'+key+'>'+money(value)+'</dd></div>';
+  const catalog=new Map(budget.catalog.map(r=>[r.item,r]));
+  const blocked=new Map(budget.unavailable.map(r=>[r.item,r.reason||'현금 구매 경로 없음']));
+  const items=lines.map(line=>{
+    const label=kitName(line.item);
+    const source=line.trader?findMarketTrader(line.trader).name:catalog.has(line.item)?'도감 직접 주문':'';
+    const price=line.unit||catalog.get(line.item)?.unit||0;
+    const detail=!line.missing?'창고에서 전량 충당':blocked.has(line.item)?'현재 구매 불가 · '+blocked.get(line.item):
+      source+' · '+line.missing+'개 × '+money(price)+' = '+money(line.missing*price);
+    return '<li data-plan-item="'+esc(line.item)+'"><button type="button" data-db="plan-material" data-id="'+esc(line.item)+
+      '" aria-label="'+esc(label+' 도감 열기')+'">'+esc(label)+' ›</button><div>필요 '+line.required+' · 창고 사용 '+Math.min(line.required,line.usable)+
+      ' · 부족 '+line.missing+'<small>'+esc(detail)+'</small></div></li>';
+  }).join('');
+  const result=partial?(balance<0?'확인된 금액만으로도 '+money(-balance)+' 부족':'확인된 금액 충당 가능')+' · 현재 살 수 없는 자재가 있어 전체 예산 미정':
+    balance<0?'지갑에서 '+money(-balance)+' 부족':balance>0?'구매·착공 후 '+money(balance)+' 남음':'구매·착공 후 잔액 0 CR';
+  return '<section class="bu-plan-budget" data-plan-quote="'+(partial?'partial':'complete')+'"><h3>남은 단계 전체 예산</h3><dl>'+
+    row('build','남은 건설비',budget.build)+row('materials','구매 가능한 부족 자재비',budget.materials)+
+    row(partial?'known':'total',partial?'확인된 금액':'구매·착공 합계',known)+row('wallet','현재 지갑',budget.wallet)+'</dl>'+
+    '<strong data-plan-balance>'+result+'</strong><p>현재 상인 진열과 도감 주문가 기준입니다. 창고 자재를 앞 단계부터 배정합니다. 출격 가방·케이스 속 물품과 모듈 장착 장비는 제외합니다. 장바구니에 담은 부족분은 결제 전까지 구매비에 포함됩니다.</p>'+
+    '<ul class="bu-plan-items" aria-label="전체 단계에 필요한 자재">'+items+'</ul></section>';
+}
+function populateConstructionBudget(details){
+  if(page!=='facility'||!details?.open||!details.isConnected)return;
+  if(details.dataset.buildPlan!==facilitySelected||Number(details.dataset.tier)!==facilityTier)return;
+  const steps=facilityConstructionSteps(facilitySelected,facilityTier);
+  if(steps.length<2)return;
+  const result=constructionBudget(steps);
+  const rows=details.querySelectorAll('[data-plan-room]');
+  result.phases.forEach((phase,i)=>{
+    const note=rows[i]?.querySelector('[data-plan-phase]');
+    if(note&&phase)note.textContent=(phase.partial?'확인된 자재 구매비 ':'자재 구매비 ')+money(phase.materials)+' · '+
+      (phase.partial?'구매 불가 자재 별도':'단계 합계 '+money(steps[i].cost+phase.materials));
+  });
+  details.querySelector('[data-plan-budget]').innerHTML=constructionBudgetBody(result);
+}
 function bunkerConstructionPlan(id, tier) {
   const steps = facilityConstructionSteps(id, tier);
   if (steps.length < 2) return '';
@@ -5467,12 +5544,12 @@ function bunkerConstructionPlan(id, tier) {
   const rows = steps.map(step => {
     const title = esc(FACILITIES[step.room].name) + ' Lv.' + step.level;
     return '<li data-plan-room="' + step.room + '" data-plan-tier="' + step.level + '"><span>' + title +
-      '</span> <span>' + (step.paid ? '공사 중 · 지불 완료 · ' + facilityTimer(hideout.builds[step.room].end) + ' 남음' : money(step.cost)) + '</span></li>';
+      '</span> <span>' + (step.paid ? '공사 중 · 지불 완료 · ' + facilityTimer(hideout.builds[step.room].end) + ' 남음' : money(step.cost)) + '</span>'+ (step.paid?'':'<small data-plan-phase></small>')+'</li>';
   }).join('');
-  return '<details class="bu-construction-plan" data-build-plan><summary>선행 공사 포함 ' + steps.length +
-    '단계 · 남은 건설비 ' + money(unpaid) + '</summary><ol>' + rows + '</ol><p>' +
-    (shortfall ? '현재 지갑 기준 ' + money(shortfall) + ' 부족' : '현재 지갑으로 남은 건설비 충당 가능') +
-    ' · 자재 구입비 별도</p></details>';
+  return '<details class="bu-construction-plan" data-build-plan="' + id + '" data-tier="' + tier + '"><summary>선행 공사 포함 ' + steps.length +
+    '단계 · 남은 건설비 ' + money(unpaid) + ' · 전체 견적 보기</summary><ol>' + rows + '</ol><p data-plan-build-balance>' +
+    (shortfall ? '건설비만 계산하면 ' + money(shortfall) + ' 부족' : '현재 지갑으로 남은 건설비 충당 가능') +
+    '</p><div data-plan-budget></div></details>';
 }
 function bunkerDetailView(){
   const id=Object.hasOwn(FACILITIES,facilitySelected)?facilitySelected:'power',f=FACILITIES[id],level=hideoutLevel(id);
@@ -8645,14 +8722,14 @@ function facilityFundingPlan(balance){
   const best=plans[0];
   return best?{orders:best.orders.map(order=>order.id),reward:best.reward,remaining:deficit-best.reward}:null;
 }
-function objectiveCartView(objective=resolveObjective()){
-  const view={source:objective?.source||null,title:objective?.title||'',goals:objective?.goals||[],
-    lines:[],groups:[],token:'',quantity:0,total:0,reason:'',ok:false,budget:null};
-  if(!objective){view.reason='먼저 조달할 목표를 고정하세요.';return view;}
-  const shelves=MARKET_TRADERS.map(({id})=>({
+function procurementShelves(){
+  return MARKET_TRADERS.map(({id})=>({
     trader:id,available:new Set(marketGoods(id,'buy')),draft:marketCarts.traders[id]?.items||[]
   }));
-  for(const {id,required,owned,usable,missing} of objective.materials){
+}
+function procurementLines(materials,shelves){
+  const lines=[];
+  for(const {id,required,owned,usable,missing} of materials){
     const sellers=shelves.filter(shop=>shop.available.has(id));
     let inCart=0;
     let seller=sellers[0];
@@ -8665,26 +8742,37 @@ function objectiveCartView(objective=resolveObjective()){
     const add=seller?remainder:0;
     const unit=seller?GOODS[id][6]:0;
     const status=!missing?'ready':!remainder?'covered':seller?'available':'unavailable';
-    view.lines.push({item:id,required,owned,usable,missing,inCart,add,unit,subtotal:unit*add,trader:seller?.trader||null,status});
+    lines.push({item:id,required,owned,usable,missing,inCart,add,unit,subtotal:unit*add,trader:seller?.trader||null,status});
   }
+  return lines;
+}
+function facilityPurchaseBudget(lines,build){
+  const catalog=[],unavailable=[];
+  for(const line of lines){
+    if(!line.missing || line.trader)continue;
+    const reason=supplyItemLock(line.item);
+    if(catalogMaterialListed(line.item) && !reason){
+      const unit=GOODS[line.item][6];
+      catalog.push({item:line.item,missing:line.missing,unit,subtotal:unit*line.missing});
+    }else unavailable.push({...line,reason});
+  }
+  // Cart quantities are still unpaid. A catalog-only unit never enters a merchant's cart.
+  const retail=lines.reduce((sum,line)=>sum+line.missing*line.unit,0);
+  const direct=catalog.reduce((sum,line)=>sum+line.subtotal,0);
+  const materials=retail+direct;
+  const inCart=lines.reduce((sum,line)=>sum+Math.min(line.missing,line.inCart)*line.unit,0);
+  const total=unavailable.length?null:materials+build;
+  return {materials,retail,direct,catalog,inCart,build,wallet,total,balance:total===null?null:wallet-total,unavailable};
+}
+function objectiveCartView(objective=resolveObjective()){
+  const view={source:objective?.source||null,title:objective?.title||'',goals:objective?.goals||[],
+    lines:[],groups:[],token:'',quantity:0,total:0,reason:'',ok:false,budget:null};
+  if(!objective){view.reason='먼저 조달할 목표를 고정하세요.';return view;}
+  const shelves=procurementShelves();
+  view.lines=procurementLines(objective.materials,shelves);
   if(view.source.kind==='facility'){
     const step=FACILITIES[view.source.id].levels[view.source.tier-1];
-    const catalog=[],unavailable=[];
-    for(const line of view.lines){
-      if(!line.missing || line.trader)continue;
-      const reason=supplyItemLock(line.item);
-      if(catalogMaterialListed(line.item) && !reason){
-        const unit=GOODS[line.item][6];
-        catalog.push({item:line.item,missing:line.missing,unit,subtotal:unit*line.missing});
-      }else unavailable.push({...line,reason});
-    }
-    // Cart quantities are still unpaid. A catalog-only unit never enters a merchant's cart.
-    const retail=view.lines.reduce((sum,line)=>sum+line.missing*line.unit,0);
-    const direct=catalog.reduce((sum,line)=>sum+line.subtotal,0);
-    const materials=retail+direct;
-    const inCart=view.lines.reduce((sum,line)=>sum+Math.min(line.missing,line.inCart)*line.unit,0);
-    const total=unavailable.length?null:materials+step.costCR;
-    view.budget={materials,retail,direct,catalog,inCart,build:step.costCR,wallet,total,balance:total===null?null:wallet-total,unavailable};
+    view.budget=facilityPurchaseBudget(view.lines,step.costCR);
     view.budget.funding=facilityFundingPlan(view.budget.balance);
   }
   for(const shop of shelves){
@@ -9370,6 +9458,13 @@ function guideDeployment(v, retry) {
 function guideFieldInstruction(v) {
   const exit = exitBy('b04'), zoneId = v.goal.zone, landmark = LANDMARKS[zoneId][v.goal.landmark];
   const extract = v.step === 'extract' || v.step === 'unassigned';
+  if (v.step==='unassigned' && objectivePin && !field.action && !field.contact && !field.journey &&
+      !sameObjective(objectivePin,{kind:'contract',id:ONBOARDING_QUEST})) {
+    const objective=resolveObjective();
+    if (objective) return guideInstruction('고정한 목표를 진행하세요',
+      objective.title+'의 현장 진행도를 확인하세요. 배급소 찬장 의뢰는 귀환 후에 수락할 수 있습니다.',
+      'objective','고정 목표 보기');
+  }
   if (page !== 'raid') return guideInstruction(extract?'탈출구로 복귀하세요':'배급소 식당을 수색하세요',
     '진행 중인 작전의 현장 화면에서 계속할 수 있습니다.','field','현장으로 복귀');
   if (field.action) {
@@ -9535,6 +9630,19 @@ function guideActivate(d, v) {
     case 'deploy': return handleRaidAction('start');
     case 'kit': return navigatePage('inventory');
     case 'field': return navigatePage('raid');
+    case 'objective': {
+      let panel=document.querySelector('.content [data-objective-panel]');
+      if (!panel && page!=='raid') {
+        navigatePage('raid');
+        panel=document.querySelector('.content [data-objective-panel]');
+      }
+      if (panel) {
+        panel.tabIndex=-1;
+        panel.focus({preventScroll:true});
+        panel.querySelector('h2')?.scrollIntoView({block:'center',inline:'nearest'});
+      }
+      return;
+    }
     case 'contact': return guideRevealChoices('.contact-buttons');
     case 'supply': return guideRevealChoices('.contact-buttons');
     case 'ack': return handleRaidAction('ack');
@@ -9591,7 +9699,7 @@ function handleOnboardingUI(data) {
   const next=guideDirection(v);
   if (!next?.action||data.guideAction!==next.action||String(data.guideValue??'')!==String(next.value??'')) {renderKeep();return;}
   guideActivate(next,v);
-  if (next.action!=='contact'&&next.action!=='supply') restoreOnboardingFocus('next',true);
+  if (!['contact','supply','objective'].includes(next.action)) restoreOnboardingFocus('next',true);
 }
 
 // A double-click or held key is one activation even when the first action replaces the button.
@@ -13900,7 +14008,7 @@ function renderKeep(){
 
 // Item catalog and selected facility.
 let catalogQuery='',catalogCategory='',catalogOffset=0,catalogSelected=null,facilitySelected='power',facilityTier=1;
-let craftCatalogOrigin=null;
+let craftCatalogOrigin=null,constructionCatalogOrigin=null;
 let activeTerminalLink=null,pendingTerminalLink=false;
 const terminalReturnViews=new WeakMap();
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -13908,8 +14016,8 @@ const money=n=>n.toLocaleString('ko-KR')+' CR';
 function itemSources(id){return ITEM_META[id].lootSources.map(t=>LOOT_TABLES[t].name).join(' · ')}
 function catalogRows(){return Object.entries(GOODS).filter(([id,g])=>(!catalogCategory||g[5]===catalogCategory)&&(!catalogQuery||[id,g[0],g[5],ITEM_META[id].usage,itemSources(id)].join(' ').toLowerCase().includes(catalogQuery.toLowerCase()))).sort((a,b)=>a[1][0].localeCompare(b[1][0],'ko'))}
 function catalogResults(){const rows=catalogRows(),max=Math.max(0,Math.floor((rows.length-1)/24)*24);catalogOffset=Math.min(catalogOffset,max);return `<div class="db-summary"><span>${rows.length}종 · ${rows.length?catalogOffset+1:0}–${Math.min(catalogOffset+24,rows.length)}</span><button data-db="prev" ${catalogOffset===0?'disabled':''}>이전</button><button data-db="next" ${catalogOffset+24>=rows.length?'disabled':''}>다음</button></div><div class="db-list">${rows.slice(catalogOffset,catalogOffset+24).map(([id,g])=>`<button data-db="item" data-id="${id}" aria-pressed="${catalogSelected===id}">${ico(g[4])}<span><b>${g[0]}</b><small>${g[5]} · ${g[1]}×${g[2]} · ${g[3]} kg</small></span><span>${money(g[6])}</span></button>`).join('')||'<p>검색 결과가 없습니다.</p>'}</div>`}
-function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:reliefCatalogBack()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
-function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
+function catalogDetail(){if(!catalogSelected||!GOODS[catalogSelected])return '<p>물품을 선택하면 루팅 장소와 시설 사용처가 표시됩니다.</p>';const id=catalogSelected,g=GOODS[id],m=ITEM_META[id];return `${craftCatalogOrigin?`<button type="button" data-db="craft-return">‹ ${facilityRecipe(craftCatalogOrigin.facility,craftCatalogOrigin.recipe).name} 작업으로</button>`:constructionCatalogOrigin?'<button type="button" data-db="plan-return">‹ 전체 건설 견적으로</button>':reliefCatalogBack()}<div class="db-detail-title">${ico(g[4])}<div><h2>${g[0]}</h2><p>${g[5]} · ${m.rarity} (임시 밸런스)</p></div></div><p>${g[1]}×${g[2]} 칸 · ${g[3]} kg · ${exchangeRestricted(id)?'회수 평가액 ':''}${money(g[6])}</p><h3>사용처</h3><p>${m.usage}</p><h3>루팅 가능한 컨테이너</h3><p>${itemSources(id)||(id==='rl_craft_dressing'?'의무실 제작 전용':BARTER_RECIPES.some(r=>r.item===id)?'상인 물물교환으로 획득':'등록된 루팅 장소가 없습니다.')}</p>${reliefCatalogSeller(id)}${catalogFieldDisclosure(id,reliefCatalogOrigin?.item===id)}<h3>시설 건설에 쓰이는 단계</h3>${m.hideoutUses.length?m.hideoutUses.map(u=>`<button class="db-link" data-db="facility" data-id="${u.facility}" data-tier="${u.level}">${FACILITIES[u.facility].name} Lv.${u.level} · ${u.quantity}개 ›</button>`).join(''):'<p>이 물품을 요구하는 건설 단계가 없습니다.</p>'}<p class="mono">${id}</p>${supplyPanel(id)}`}
+function catalogPage(){const cats=[...new Set(Object.values(GOODS).map(g=>g[5]))].sort((a,b)=>a.localeCompare(b,'ko'));return head('06 / ITEM DATABASE','물품 도감',Object.keys(GOODS).length+'종 물품 · 루팅 출처 및 시설 요구 재료 확인')+`${craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin?'':'<button data-page="bunker">‹ 하이드아웃</button>'}<div class="db-layout"><section class="panel"><div class="db-filters"><label>이름 · 용도 · 컨테이너<input id="db-query" type="search" value="${esc(catalogQuery)}" placeholder="예: 정수 필터" autocomplete="off"></label><label>분류<select id="db-category"><option value="">전체 분류</option>${cats.map(c=>`<option ${catalogCategory===c?'selected':''}>${c}</option>`).join('')}</select></label></div><div id="db-results">${catalogResults()}</div></section><section class="panel" id="db-detail">${catalogDetail()}</section></div>`}
 function facilityDetail(){return bunkerFacilityDetail()}
 function bunkerPage(){return bunkerHubPage()}
 function handleDB(d){
@@ -13930,6 +14038,19 @@ function handleDB(d){
     link?.focus?.({preventScroll:true});link?.scrollIntoView?.({block:'nearest'});
     return;
   }
+  if(d.db==='plan-return'){
+    if(page!=='catalog'||!constructionCatalogOrigin)return;
+    const {facility,tier,item}=constructionCatalogOrigin;
+    openBunkerFacility(facility,tier);
+    const panel=$('[data-build-plan]');
+    if(panel){
+      panel.open=true;
+      populateConstructionBudget(panel);
+    }
+    const focus=$('[data-db="plan-material"][data-id="'+item+'"]')||$('[data-bui="tier"][aria-pressed="true"]');
+    focus?.focus?.({preventScroll:true});focus?.scrollIntoView?.({block:'nearest'});
+    return;
+  }
   if(d.db==='craft-return'){
     if(page!=='catalog'||!craftCatalogOrigin)return;
     const {facility,tier,recipe,item}=craftCatalogOrigin;
@@ -13938,7 +14059,13 @@ function handleDB(d){
     if(input){input.focus({preventScroll:true});input.scrollIntoView({block:'nearest'});}
     return;
   }
-  if(['lookup','craft-ingredient','relief-material'].includes(d.db)&&Object.hasOwn(GOODS,d.id)){
+  if(['lookup','craft-ingredient','relief-material','plan-material'].includes(d.db)&&Object.hasOwn(GOODS,d.id)){
+    if(d.db==='plan-material'){
+      if(page!=='facility')return;
+      const steps=facilityConstructionSteps(facilitySelected,facilityTier);
+      if(steps.length<2||!steps.some(s=>!s.paid && Object.hasOwn(FACILITIES[s.room].levels[s.level-1].materials,d.id)))return;
+      constructionCatalogOrigin={facility:facilitySelected,tier:facilityTier,item:d.id};
+    }else constructionCatalogOrigin=null;
     if(d.db==='relief-material'){
       if(page!=='orders'||bunkerOrderSelection().q?.id!==RELIEF_ORDER||career.reliefReceipt||field.reliefDelivery||
          !Object.hasOwn(RELIEF_REQUESTS,d.kind)||!Object.hasOwn(RELIEF_REQUESTS[d.kind].items,d.id))return;
@@ -13953,8 +14080,8 @@ function handleDB(d){
     }else craftCatalogOrigin=null;
     procurementNote='';catalogSelected=d.id;catalogQuery=GOODS[d.id][0];catalogCategory='';catalogOffset=0;
     page='catalog';save();render();
-    if(craftCatalogOrigin||reliefCatalogOrigin){
-      const back=$(craftCatalogOrigin?'[data-db="craft-return"]':'[data-db="relief-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
+    if(craftCatalogOrigin||reliefCatalogOrigin||constructionCatalogOrigin){
+      const back=$(craftCatalogOrigin?'[data-db="craft-return"]':constructionCatalogOrigin?'[data-db="plan-return"]':'[data-db="relief-return"]');back.focus({preventScroll:true});back.scrollIntoView({block:'start'});
     }else $('.content').scrollTop=0;
     return;
   }
@@ -13963,6 +14090,9 @@ function handleDB(d){
 }
 inside.addEventListener('toggle',e=>{
   const details=e.target,id=details.dataset?.catalogSources;
+  if(details.dataset?.buildPlan && details.open && !details.querySelector('[data-plan-budget]')?.hasChildNodes()){
+    populateConstructionBudget(details);return;
+  }
   if(!id || !details.open || page!=='catalog' || catalogSelected!==id)return;
   const sites=details.querySelector('[data-catalog-sites]');
   if(!sites.hasChildNodes())sites.innerHTML=catalogFieldMarkup(id,huntRegions(id));
@@ -13980,7 +14110,7 @@ function render(){
     document.documentElement.classList.toggle('reduce-motion',reduce);
     if(activeTerminalLink && !terminalLinkMatches())releaseTerminalLink();
     rememberTerminalView();
-    if(page!=='catalog')craftCatalogOrigin=null;
+    if(page!=='catalog'){craftCatalogOrigin=null;constructionCatalogOrigin=null;}
     if(page!=='catalog'&&page!=='lootplan')reliefCatalogOrigin=null;
     if(page!=='orders')fundingDossier=null;
     inside.dataset.page=page;
