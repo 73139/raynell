@@ -1,0 +1,50 @@
+.sv-ui{--sv-ink:#edf0de;--sv-dim:#c0c8b7;--sv-line:#53604d;--sv-paper:#1c231d;--sv-gold:#e3ce8f;color:var(--sv-ink);min-width:0}
+.sv-ui *, .sv-nav *{box-sizing:border-box}
+.sv-ui :is(h1,h2,h3,p,blockquote,ul,ol){margin:0}
+.sv-ui p,.sv-ui blockquote{font-size:.88rem;line-height:1.53;overflow-wrap:anywhere}
+.sv-ui p{color:var(--sv-dim)}
+.sv-journal,.sv-sheet,.sv-contact,.sv-clue,.sv-meeting,.sv-field{display:grid;align-content:start;gap:.5rem;min-width:0}
+.sv-journal{max-width:1020px;margin:0 auto;gap:.7rem}
+.sv-cover{position:relative;isolation:isolate;display:flex;align-items:end;min-height:130px;overflow:hidden;border:1px solid var(--sv-line);padding:1.1rem 1.35rem;background:var(--sv-paper)}
+.sv-cover:before{position:absolute;inset:0;z-index:-1;content:"";background:linear-gradient(95deg,#151b15 12%,#1a2218e6 40%,#1d261a48 88%),var(--sv-art) 65% 53%/cover no-repeat}
+.sv-cover div{max-width:60ch}
+#inside .sv-cover h1{color:#f6f2df;font-size:clamp(1.3rem,2.5vw,2rem);line-height:1.25;margin:0 0 .28rem}
+.sv-cover p{color:#e0e4d4;text-shadow:0 1px 3px #121710}
+.sv-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:.7rem}
+.sv-sheet,.sv-field{border:1px solid var(--sv-line);background:linear-gradient(110deg,#222b21,var(--sv-paper));padding:.75rem .9rem}
+.sv-field{border-left:3px solid #ad9c67;margin:0 0 .6rem}
+.sv-field-head,.sv-clue header,.sv-meeting header,.sv-contact header,.sv-sheet>h2{display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap}
+#inside .sv-ui h2{font-size:1.02rem;color:var(--sv-ink);line-height:1.35}
+#inside .sv-ui h3{font-size:.94rem;color:var(--sv-ink);line-height:1.4}
+.sv-sheet>h2{padding:0 0 .38rem;border-bottom:1px solid var(--sv-line)}
+.sv-list{list-style:none;padding:0;display:grid;gap:.42rem}
+.sv-clue,.sv-meeting,.sv-contact{padding:.55rem .7rem;border:1px solid #44513f;background:#171e18}
+.sv-contact{border-left:3px solid #859a75}
+.sv-clue[data-decision=follow]{border-left:3px solid #bdab74}.sv-clue[data-decision=pass]{border-left:3px solid #647060}
+.sv-ui header span,.sv-sheet h2 span,.sv-meta,.sv-meeting small{font-size:.76rem;font-weight:500;color:var(--sv-dim)}
+.sv-meta{display:flex;flex-wrap:wrap;gap:.18rem .58rem;line-height:1.4;font-variant-numeric:tabular-nums}
+.sv-ui .sv-mark,.sv-sheet h2 span{color:var(--sv-gold)}
+.sv-contact blockquote{color:#edf0e0;padding-left:.55rem;border-left:2px solid #6c805c;white-space:pre-line}
+.sv-ui .sv-receipt{color:#d3dfab;border-left:2px solid #9daa74;padding-left:.5rem}
+.sv-ui .sv-terms{color:#e0d5b3}.sv-terms b{color:#eadebe}
+.sv-ui .sv-depart{padding-top:.28rem;border-top:1px solid #364432;font-size:.78rem}
+.sv-actions,.sv-search{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem .5rem;min-width:0}
+.sv-search>span{font-size:.78rem;color:var(--sv-dim)}
+#inside .sv-ui button,.sv-nav button{min-height:40px;line-height:1.35;font:inherit;font-size:.83rem;white-space:normal;overflow-wrap:anywhere}
+#inside .sv-ui button{padding:.35rem .65rem}
+#inside .sv-ui button:focus-visible,#inside .sv-nav button:focus-visible{outline:2px solid #e5d581;outline-offset:2px}
+#inside .sv-ui .primary{background:#85905b;color:#10170f;border-color:#a3af7e}
+#inside .sv-ui .primary:disabled{background:#3b4435;color:#aab29e;border-color:#56604b}
+#inside .sv-ui .sv-text{padding:.15rem .45rem;color:var(--sv-gold);border-color:transparent;background:transparent}
+.sv-nav{min-width:0;margin:.4rem 0}
+#inside .sv-nav button{display:flex;align-items:center;gap:.5rem;width:100%;justify-content:flex-start;min-height:38px;text-align:left;color:#dedbc2;background:#202820;border:1px solid #485341;padding:.35rem .65rem}
+.sv-nav svg{width:17px;height:17px;flex:none;color:#b3bd99}.sv-nav i{margin-left:auto}.sv-nav i,.sv-text i{font-style:normal}
+.sv-ui .sv-quiet{font-size:.8rem}
+.sv-notice:empty{display:none}
+.sv-ui .sv-notice:not(:empty){border-left:2px solid #b6ad7f;background:#2a3126;padding:.35rem .55rem;color:#eceddc}
+@media(max-width:700px){
+ .sv-columns{grid-template-columns:minmax(0,1fr)}
+ .sv-cover{min-height:105px;padding:.8rem}.sv-cover:before{background:linear-gradient(90deg,#151b15ed 10%,#182016b5 62%,#15201573),var(--sv-art) center/cover no-repeat}
+ .sv-sheet,.sv-field{padding:.55rem .65rem}.sv-clue,.sv-meeting,.sv-contact{padding:.45rem .55rem}
+ #inside .sv-ui button,#inside .sv-nav button{min-height:44px}
+}

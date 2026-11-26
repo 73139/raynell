@@ -1,0 +1,42 @@
+// Exercise the three sub-tabs and the exact period identity carried by rendered buttons.
+const {assert,boot,clone,v12} = require('./game-fixture.cjs');
+const now={now:Date.parse('2026-11-25T04:00:00Z')};
+const blank=boot({},now,{},'#daily');
+assert.match(blank.content(),/data-period="daily"/);
+const weekly=boot({},now,{},'#weekly');
+assert.match(weekly.content(),/data-period="weekly"/);
+const sample=blank.g.board('supply','daily');
+const order=sample.entries.find(e=>e.quest.type==='delivery').quest;
+const scenario=clone(blank.g.s);
+for(const goal of order.goals)scenario.stash[goal.item]=goal.target;
+const b=boot({[v12]:scenario},now,{},'#daily');
+function cardAction(contract){
+  b.click({contract,mode:'daily',key:String(sample.key),trader:'supply',id:order.id});
+}
+cardAction('periodAccept');
+assert.match(b.content(),/한미정에게 납품/);
+cardAction('periodClaim');
+assert.match(b.content(),/aria-label="받은 보상"/);
+const receipt=b.g.board('supply','daily').entries.find(e=>e.quest.id===order.id).receipt;
+assert.ok(receipt);
+assert.match(b.content(),new RegExp(b.g.goods[receipt.loot[0].id][0]));
+const paid=b.g.s.wallet;
+cardAction('periodClaim');
+assert.equal(b.g.s.wallet,paid);
+b.click({contract:'board',mode:'weekly'});
+assert.match(b.content(),/무작위 보급품 2개/);
+b.click({contract:'trader',id:'medic'});
+assert.match(b.content(),/윤서진의 주간 의뢰/);
+b.click({contract:'board',mode:'daily'});
+assert.match(b.content(),/윤서진의 일일 의뢰/);
+b.click({contract:'board',mode:'standing'});
+assert.match(b.content(),/윤서진 우호도/);
+assert.doesNotMatch(b.content(),/id="recurring-board"/);
+const again=boot(b.storage,now,{},'#daily');
+assert.match(again.content(),/aria-label="받은 보상"/);
+now.now+=86400000;
+again.click({contract:'periodAccept',mode:'daily',key:String(sample.key),trader:'supply',id:order.id});
+assert.equal(again.g.s.wallet,paid);
+assert.doesNotMatch(again.content(),/aria-label="받은 보상"/);
+assert.equal(again.g.board('supply','daily').entries.every(e=>e.status==='available'),true);
+console.log('PASS recurring UI routes, merchant + period selection, named hand-in button, saved loot receipt, stale claim and retained standing quests.');

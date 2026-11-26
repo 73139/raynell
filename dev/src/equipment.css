@@ -1,0 +1,31 @@
+.kit-toolbar,.kit-heading,.kit-deploy,.kit-actions{display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.kit-toolbar,.kit-deploy{margin:.7rem 0 1rem}
+.kit-heading{justify-content:space-between;margin-bottom:.8rem}
+.kit-heading h2,.kit-report h2{margin:0}
+.kit-heading>span,.kit-slot-head,.kit-rows small{color:var(--muted,#b2b6a4)}
+.kit-layout{display:grid;grid-template-columns:minmax(0,1.14fr) minmax(0,1fr);gap:1rem;align-items:start}
+.kit-layout>*,.kit-bag{min-width:0}
+.kit-slots{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
+.kit-slot{display:flex;flex-direction:column;gap:.25rem;align-items:flex-start;padding:.65rem;border:1px solid #41483d;background:#1a201a;min-width:0}
+.kit-slot.occupied{border-color:#647650;background:#242c20}
+.kit-slot-head{display:flex;align-items:center;gap:.45rem;font-size:.82rem}
+.kit-slot-head svg{width:1.4rem;height:1.4rem;flex:none}
+.kit-slot b,.kit-rows b{word-break:keep-all;overflow-wrap:anywhere}
+.kit-slot small,.kit-slot button,.kit-rows small{font-size:.8rem}
+.kit-slot small{color:#c0c8b6;line-height:1.4;min-height:1.4em}
+.kit-slot button{margin-top:auto;min-height:34px;padding:.25rem .6rem}
+.kit-actions button,.kit-rows button{margin:0}
+.kit-rows>div,.kit-report li{display:flex;gap:.5rem;align-items:center;justify-content:space-between;border-bottom:1px solid #3c4638;padding:.55rem 0}
+.kit-rows small{display:block}
+.kit-rows .kit-actions{justify-content:flex-end}
+.kit-store,.kit-ground,.kit-shelf,.kit-report{margin-top:1rem}
+.kit-shelf details{margin-top:.75rem;border-top:1px solid #424e3a;padding:.75rem 0}
+.kit-shelf summary{cursor:pointer;color:var(--accent,#d0dda0)}
+.kit-notice{background:#293120;border-left:3px solid #9bad6e;padding:.6rem .8rem;line-height:1.5;color:#e0eacb}
+.kit-report ul{list-style:none;padding:0;margin-bottom:0}
+.kit-bag .spatial-grid{margin-bottom:.5rem}
+@media(max-width:760px){.kit-layout{grid-template-columns:minmax(0,1fr)}.kit-rows>div{flex-wrap:wrap}.kit-slot{padding:.55rem}.kit-slot button{min-height:40px}}
+.kit-layout .spatial-grid{width:min(100%,calc(var(--cols) * 52px + 2px));aspect-ratio:var(--cols) / var(--rows);grid-template-columns:repeat(var(--cols),minmax(0,1fr));grid-template-rows:repeat(var(--rows),minmax(0,1fr))}
+.kit-vitals{display:flex;gap:.6rem 1.2rem;flex-wrap:wrap;margin:.6rem 0;color:var(--muted,#b2b6a4)}
+.kit-vitals b{margin-left:.2em;color:var(--text,#e7e9dd)}
+@media(max-width:760px){.kit-layout.on-raid>.kit-wear{order:2}}

@@ -1,0 +1,485 @@
+// Aggregate stock includes every item in the grid and in the incoming-goods queue.
+let stashSlots = [];
+let stashSelection = null;
+let stashDrag = null;
+let stashNotice = '';
+let stashUidSequence = 0;
+
+const CASE_ACCESS_CARDS = ['keycard','rl_16_21','rl_16_22','rl_16_23','rl_16_24','rl_16_25','rl_16_26'];
+const CASE_WEAPON_ITEMS = ['rl10_carbine','rl12_sidearm','rl_05_15','optic','rl_x_carbine','rl_x_optic'];
+const STORAGE_CASES = {
+  rs_case_med: {size:[7,7], accepts:'의료 물품', categories:['의료']},
+  rs_case_food: {size:[8,8], accepts:'식량 · 음료 · 물통', categories:['식량','음료'], extras:['water']},
+  rs_case_junk: {size:[14,14], accepts:'재료 · 전자 · 공구 · 연료 · 천 조각', categories:['재료','전자','공구','연료'], extras:['cloth']},
+  rs_case_weapon: {size:[5,10], accepts:'무기 · 탄약 · 광학 모듈', categories:['탄약'], extras:CASE_WEAPON_ITEMS},
+  rs_case_weapon_large: {size:[6,15], accepts:'무기 · 탄약 · 광학 모듈', categories:['탄약'], extras:CASE_WEAPON_ITEMS},
+  rs_case_pistol: {size:[4,3], accepts:'권총 · 탄약', categories:['탄약'], extras:['rl12_sidearm']},
+  rs_case_ammo: {size:[7,7], accepts:'탄약', categories:['탄약']},
+  rs_case_docs: {size:[4,4], accepts:'문서 · 정보 · 열쇠 · 출입증 · SSD', categories:['정보','열쇠'], extras:['ssd','rl_04_06']},
+  rs_case_keys: {size:[4,4], accepts:'금속 열쇠', categories:['열쇠'], exclude:CASE_ACCESS_CARDS},
+  rs_case_cards: {size:[3,3], accepts:'키카드 · 구역 출입증', extras:CASE_ACCESS_CARDS},
+  rs_case_injector: {size:[3,3], accepts:'주사기 팩', extras:['rl_11_29']},
+  rs_case_items: {size:[8,8], accepts:'일반 물품 전반 · 보관함 중첩 불가', general:true}
+};
+
+const CASE_ALIAS_MAX = 24;
+
+function caseAliasValue(raw) {
+  if (typeof raw !== 'string' || /[\x00-\x1f\x7f-\x9f\u2028-\u202e\u2066-\u2069]/u.test(raw)) return null;
+  const value = raw.normalize('NFC').trim().replace(/\s+/gu, ' ');
+  return Array.from(value).length <= CASE_ALIAS_MAX ? value : null;
+}
+
+function caseDisplayName(unit) {
+  return unit.alias || GOODS[unit.g][0];
+}
+
+function renameStorageCase(uid, raw) {
+  if (!writer || raid) return {ok:false, message:'벙커의 플레이 중인 탭에서 별칭을 변경하세요.'};
+  const index = stashSlots.findIndex(unit => unit.uid === uid && Object.hasOwn(STORAGE_CASES, unit.g));
+  if (index < 0) return {ok:false, message:'창고에 배치된 보관함을 다시 선택하세요.'};
+  const alias = caseAliasValue(raw);
+  if (alias === null) return {ok:false, message:'별칭은 줄바꿈 없이 24자까지 입력할 수 있습니다.'};
+
+  // Edit a single instance. If another tab has won, writeSession restores that tab's snapshot.
+  const original = stashSlots[index], inventory = stash;
+  const updated = {...original};
+  if (alias) updated.alias = alias;
+  else delete updated.alias;
+  stashSlots[index] = updated;
+  if (!writeSession()) {
+    if (stash !== inventory) return {ok:false, message:'다른 탭의 변경 사항을 불러왔습니다. 보관함을 다시 확인하세요.'};
+    stashSlots[index] = original;
+    return {ok:false, message:'별칭을 저장하지 못했습니다. 다시 시도하세요.'};
+  }
+  return {ok:true, message:alias ? '보관함 별칭을 저장했습니다.' : '보관함 별칭을 지웠습니다.'};
+}
+
+function caseAccepts(caseId, itemId) {
+  if (!Object.hasOwn(STORAGE_CASES,caseId) || !Object.hasOwn(GOODS,itemId)) return false;
+  const rule=STORAGE_CASES[caseId], category=GOODS[itemId][5];
+  if (itemId==='cr_notes' || category==='보관함' || rule.exclude?.includes(itemId)) return false;
+  return Boolean(rule.general || rule.categories?.includes(category) || rule.extras?.includes(itemId));
+}
+
+function validCaseContents(caseId, contents) {
+  if (contents === undefined) return true;
+  if (!Object.hasOwn(STORAGE_CASES,caseId) || !Array.isArray(contents)) return false;
+  const size = STORAGE_CASES[caseId].size;
+  if (contents.length > size[0]*size[1]) return false;
+  const placed = [], uids = new Set();
+  for (const unit of contents) {
+    if (!unit || !caseAccepts(caseId,unit.g) || typeof unit.uid !== 'string' ||
+        !/^s-[a-z0-9-]{1,72}$/.test(unit.uid) || uids.has(unit.uid) || unit.contents !== undefined || unit.alias !== undefined) return false;
+    const [,w,h] = GOODS[unit.g];
+    if (!((unit.w === w && unit.h === h) || (unit.w === h && unit.h === w)) ||
+        !fits(placed,size,unit.x,unit.y,unit.w,unit.h)) return false;
+    uids.add(unit.uid);
+    placed.push(unit);
+  }
+  return true;
+}
+
+// Before importing a populated case, ensure the outer layout can restore that exact physical item.
+function validCaseBackup(s) {
+  const slots = s.stashSlots;
+  if (!slots.every(unit=>validCaseContents(unit.g,unit.contents))) return false;
+  if (!slots.every(unit => unit.alias === undefined || (
+    Object.hasOwn(STORAGE_CASES,unit.g) && typeof unit.alias === 'string' &&
+    unit.alias.length > 0 && caseAliasValue(unit.alias) === unit.alias))) return false;
+  if (slots.some(unit=>unit.contents?.length || unit.alias)) {
+    const level = s.hideout?.levels?.stash ?? 0;
+    if (!Number.isInteger(level) || level<0 || level>FACILITIES.stash.levels.length) return false;
+    const seen = new Set(), placed = [], counts = {};
+    for (const unit of slots) {
+      const [,w,h] = GOODS[unit.g];
+      const n = (counts[unit.g] || 0) + 1;
+      if (n > (s.stash[unit.g] || 0) || seen.has(unit.uid) || !/^s-[a-z0-9-]{1,72}$/.test(unit.uid) ||
+          !((unit.w===w&&unit.h===h)||(unit.w===h&&unit.h===w)) ||
+          !fits(placed,stashSize(level),unit.x,unit.y,unit.w,unit.h)) return false;
+      seen.add(unit.uid);
+      placed.push(unit);
+      counts[unit.g] = n;
+    }
+  }
+  // Cases are bunker-only; loose kit/field units never carry an inventory of their own.
+  const foreignUnits = [s.equipment?.bag, s.field?.bag, ...(Array.isArray(s.field?.gearGround)?s.field.gearGround:[])];
+  if (s.field?.boxes && typeof s.field.boxes === 'object') {
+    for (const box of Object.values(s.field.boxes)) foreignUnits.push(box?.items);
+  }
+  return foreignUnits.every(list=>!Array.isArray(list)||list.every(unit=>unit && !Object.hasOwn(STORAGE_CASES,unit.g) && unit.contents===undefined && unit.alias===undefined));
+}
+
+function stashRemovableCount(id) {
+  const total = stashCount(id);
+  if (!Object.hasOwn(STORAGE_CASES,id)) return total;
+  return total - stashSlots.filter(unit=>unit.g===id && unit.contents?.length).length;
+}
+
+function caseTransfer(uid, action, item) {
+  const fail = message => ({ok:false,message});
+  if (!writer || raid) return fail('벙커로 귀환한 뒤 플레이 중인 탭에서 옮기세요.');
+  if (action!=='put' && action!=='take') return fail('물품 이동을 다시 선택하세요.');
+  const index = stashSlots.findIndex(unit=>unit.uid===uid && Object.hasOwn(STORAGE_CASES,unit.g));
+  if (index<0) return fail('창고에 배치한 보관함을 선택하세요.');
+  const box=stashSlots[index], contents=box.contents||[];
+  const oldStock=stash, oldSlots=stashSlots.slice(), oldOverflow=gearOverflow.slice();
+  let id, updated;
+  if (action==='put') {
+    id=item;
+    if (!caseAccepts(box.g,id)) return fail('이 보관함에 넣을 수 없는 종류입니다.');
+    const [,w,h]=GOODS[id];
+    const physical=id==='rl_bp_dressing'?stashSlots.findLast(unit=>unit.g===id)?.uid:newStashUid();
+    const fit=kitFit(contents,STORAGE_CASES[box.g].size,{uid:physical,g:id,x:0,y:0,w,h});
+    if (!fit) return fail('보관함에 물품이 들어갈 공간이 없습니다.');
+    const gear=gearStashChoice(id,null); if (gear) fit.gear=gear;
+    if (!takeStashGoods(id)) return fail('창고에 해당 물품이 없습니다.');
+    updated=[...contents,fit];
+  } else {
+    const unit=contents.find(u=>u.uid===item);
+    if (!unit) return fail('꺼낼 물품을 다시 선택하세요.');
+    id=unit.g;
+    if (!addStashGoods(id,1,unit.gear,unit.uid)) return fail('창고에 빈 칸이나 보유 한도가 부족합니다.');
+    updated=contents.filter(u=>u.uid!==item);
+  }
+  // Removing a loose unit can shift the position of the case in the array.
+  stashSlots[stashSlots.indexOf(box)]={...box,contents:updated};
+  if (!writeSession()) {
+    if (stash !== oldStock) return fail('다른 탭의 최신 기록을 불러왔습니다.');
+    const beforeCount=stashCount(id)+(action==='put'?1:-1);
+    if (beforeCount) stash[id]=beforeCount; else delete stash[id];
+    stashSlots=oldSlots;gearOverflow=oldOverflow;
+    return fail('이동을 저장하지 못했습니다. 다시 시도하세요.');
+  }
+  return {ok:true,message:GOODS[id][0]+' 1개를 '+(action==='put'?'보관함에 넣었습니다.':'창고로 꺼냈습니다.')};
+}
+
+function stashSize(level = hideoutLevel('stash')) {
+  return [6, 32 + 8 * level];
+}
+
+function stashCount(id) {
+  return Object.hasOwn(GOODS, id) && Number.isSafeInteger(stash[id]) && stash[id] > 0 ? stash[id] : 0;
+}
+
+function stashOverflowCount(id) {
+  return stashCount(id) - stashSlots.filter(unit => unit.g === id).length;
+}
+
+function stashSalePrice(id) {
+  return Object.hasOwn(GOODS, id) ? Math.max(1, Math.floor(GOODS[id][6] / 2)) : 0;
+}
+
+function newStashUid() {
+  const suffix = globalThis.crypto?.randomUUID?.() ?? (Date.now().toString(36) + '-' + (++stashUidSequence).toString(36));
+  return 's-' + suffix;
+}
+
+function placeIncomingGoods(id, amount, incoming = null, newStock = false) {
+  const [, w, h] = GOODS[id];
+  const size = stashSize();
+  let placed=0;
+  for (; placed < amount; placed++) {
+    let width = w, height = h;
+    let pos = firstFit(stashSlots, size, width, height);
+    if (!pos && w !== h) {
+      width = h;
+      height = w;
+      pos = firstFit(stashSlots, size, width, height);
+    }
+    if (!pos) break;
+    const unit={uid:newStashUid(),g:id,...pos,w:width,h:height};
+    const offset=gearOverflow.findIndex(gear=>gear.g===id);
+    if (incoming) {unit.gear=incoming; incoming=null;}
+    else if (!newStock && offset>=0) {unit.gear=gearQueuePhysical(gearOverflow[offset]);gearQueueRemove(gearOverflow,id,1);}
+    gearEnsureUnit(unit);
+    stashSlots.push(unit);
+  }
+  if (incoming) {gearOverflow.push(incoming);placed++;}
+  if (newStock) gearQueueNew(id,amount-placed);
+}
+
+function refreshStashLayout() {
+  for (const id of Object.keys(stash)) {
+    const count = stashOverflowCount(id);
+    if (count > 0) placeIncomingGoods(id, count);
+  }
+}
+
+function loadStashLayout(savedSlots, expandLegacy = false) {
+  stashSlots = [];
+  stashSelection = stashDrag = null;
+  stashNotice = '';
+  if (!Array.isArray(savedSlots)) {
+    const ids = Object.keys(stash).filter(id => stashCount(id));
+    ids.sort((a, b) => GOODS[b][1] * GOODS[b][2] - GOODS[a][1] * GOODS[a][2]);
+    for (const id of ids) placeIncomingGoods(id, stashCount(id));
+    return;
+  }
+  const size = stashSize(), seen = new Set();
+  for (const s of savedSlots) {
+    if (!s || !stashCount(s.g) || stashOverflowCount(s.g) <= 0) continue;
+    const [, w, h] = GOODS[s.g];
+    if (!((s.w === w && s.h === h) || (s.w === h && s.h === w))) continue;
+    if (!fits(stashSlots, size, s.x, s.y, s.w, s.h)) continue;
+    const uid = typeof s.uid === 'string' && /^s-[a-z0-9-]{1,72}$/.test(s.uid) && !seen.has(s.uid) ? s.uid : newStashUid();
+    const unit = { uid, g: s.g, x: s.x, y: s.y, w: s.w, h: s.h };
+    if (s.g==='cr_notes'){if(!Number.isSafeInteger(s.amount)||s.amount<=0)continue;unit.amount=s.amount;unit.revealed=true;}
+    if (gearSpec(s.g)) unit.gear=s.gear||gearCreate(s.g,'legacy-stash-'+uid);
+    if (s.contents?.length && validCaseContents(s.g,s.contents)) {
+      unit.contents=s.contents;
+      for (const item of unit.contents) if (gearSpec(item.g)&&!item.gear) item.gear=gearCreate(item.g,'legacy-case-'+uid+'-'+item.x+'-'+item.y);
+    }
+    if (s.alias !== undefined && Object.hasOwn(STORAGE_CASES, s.g)) {
+      const alias = caseAliasValue(s.alias);
+      if (alias) unit.alias = alias;
+    }
+    stashSlots.push(unit);
+    seen.add(uid);
+  }
+  if (expandLegacy) refreshStashLayout();
+}
+
+function addStashGoods(id, amount = 1, gear = null, sourceUid = null) {
+  if(id==='cr_notes')return false;
+  if (!Object.hasOwn(GOODS, id) || !Number.isSafeInteger(amount) || amount < 1) return false;
+  const next = stashCount(id) + amount;
+  if (!Number.isSafeInteger(next)) return false;
+  if(id==='rl_bp_dressing'){
+    const uid=sourceUid??newStashUid(),pos=firstFit(stashSlots,stashSize(),1,1);
+    if(amount!==1 || !wardUid(uid) || !pos || stashSlots.some(unit=>unit.uid===uid))return false;
+    stash[id]=next;
+    stashSlots.push({uid,g:id,...pos,w:1,h:1});
+    return true;
+  }
+  stash[id] = next;
+  placeIncomingGoods(id, amount, gear, true);
+  return true;
+}
+
+function takeStashGoods(id, amount = 1, uid = null) {
+  if(id==='cr_notes')return false;
+  const count = stashCount(id);
+  if (!Number.isSafeInteger(amount) || amount < 1 || amount > stashRemovableCount(id)) return false;
+  const unplaced = stashOverflowCount(id);
+  if (uid === 'overflow') {
+    if (amount > unplaced) return false;
+  } else if (uid !== null) {
+    const index = stashSlots.findIndex(unit => unit.uid === uid && unit.g === id);
+    if (amount !== 1 || index < 0 || stashSlots[index].contents?.length) return false;
+    stashSlots.splice(index, 1);
+  } else {
+    let remove = Math.max(0, amount - unplaced);
+    for (let i = stashSlots.length - 1; i >= 0 && remove; i--) {
+      if (stashSlots[i].g === id && !stashSlots[i].contents?.length) {
+        stashSlots.splice(i, 1);
+        remove--;
+      }
+    }
+  }
+  const queued=uid===null?Math.min(unplaced,amount):uid==='overflow'?amount:0;
+  if (queued && gearOverflow.length) gearQueueRemove(gearOverflow,id,queued);
+  if (amount === count) delete stash[id];
+  else stash[id] = count - amount;
+  return true;
+}
+
+function stashConsume(materials) {
+  if (!materials || typeof materials !== 'object' || Array.isArray(materials)) return false;
+  const entries = Object.entries(materials);
+  if (!entries.every(([id, n]) => Number.isSafeInteger(n) && n > 0 && stashRemovableCount(id) >= n)) return false;
+  for (const [id, n] of entries) takeStashGoods(id, n);
+  return true;
+}
+
+function selectedStashUnit() {
+  if (!stashSelection) return null;
+  const { id, uid } = stashSelection;
+  if (uid === 'overflow') {
+    if (!stashOverflowCount(id)) return null;
+    return { uid, g: id, w: GOODS[id][1], h: GOODS[id][2] };
+  }
+  return stashSlots.find(s => s.uid === uid && s.g === id) || null;
+}
+
+function stashAtBunker() {
+  return !raid || Boolean(field?.result);
+}
+
+function arrangeStashUnit(x, y, automatic = false) {
+  const unit = selectedStashUnit();
+  if (!unit || !stashAtBunker()) return false;
+  const w = stashSelection.rot ? unit.h : unit.w;
+  const h = stashSelection.rot ? unit.w : unit.h;
+  const size = stashSize();
+  const pos = automatic ? firstFit(stashSlots, size, w, h, unit.uid) : { x, y };
+  if (!pos || !fits(stashSlots, size, pos.x, pos.y, w, h, unit.uid)) {
+    stashNotice = '이 자리에 들어가지 않습니다. 다른 빈 칸을 고르거나 물품을 회전하세요.';
+    return false;
+  }
+  if (unit.uid === 'overflow') {
+    const placed={uid:newStashUid(),g:unit.g,...pos,w,h};
+    if (gearSpec(unit.g)) {
+      placed.gear=gearStashChoice(unit.g,'overflow');
+      gearQueueRemove(gearOverflow,unit.g,1);
+    }
+    stashSlots.push(placed);
+  } else {
+    Object.assign(unit, pos, { w, h });
+  }
+  stashSelection = null;
+  stashNotice = GOODS[unit.g][0] + ' 배치 완료';
+  return true;
+}
+
+function stashGridMarkup(filter = null) {
+  const [cols, rows] = stashSize();
+  let cells = '';
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      cells += '<button class="slot" data-stash="place" data-x="' + x + '" data-y="' + y + '" style="grid-column:' + (x + 1) + ';grid-row:' + (y + 1) + '" aria-label="창고 ' + (x + 1) + '열 ' + (y + 1) + '행"></button>';
+    }
+  }
+  const tiles = stashSlots.map(s => {
+    if(s.g==='cr_notes')return cashStashTile(s);
+    const g = GOODS[s.g], chosen = stashSelection?.uid === s.uid;
+    const display = esc(caseDisplayName(s)), title = s.alias ? display + ' · ' + esc(g[0]) : display;
+    return `<button class="loot-tile ${chosen ? 'chosen' : ''} ${filter && !filter(s.g) ? 'lo-muted-tile' : ''}" data-stash="select" data-id="${s.g}" data-uid="${s.uid}" draggable="${stashAtBunker()}" aria-pressed="${chosen}" aria-label="${title} · ${s.w}×${s.h} · ${s.x + 1}열 ${s.y + 1}행" title="${title}" style="grid-column:${s.x + 1}/span ${s.w};grid-row:${s.y + 1}/span ${s.h}">${typeof itemArt==='function'?itemArt(s.g,'item-symbol'):ico(g[4], 'item-symbol')}<span>${display}</span></button>`;
+  }).join('');
+  return `<div class="spatial-grid stash-grid" data-stash-grid style="--cols:${cols};--rows:${rows}">${cells}${tiles}</div>`;
+}
+
+function stashViewport(filter) {
+  return '<div class="stash-scroll" data-scroll-key="warehouse-grid" role="region" tabindex="0" aria-label="창고 격자 스크롤">'+stashGridMarkup(filter)+'</div>';
+}
+
+// The shell replaces the contents of the active screen after a game action.
+// A case and the surrounding warehouse each own their own scroll position.
+function captureStashScroll() {
+  const positions=new Map(),active=document.activeElement;
+  const focused=active?.matches?.(':focus-visible')?active.closest('[data-scroll-key]'):null;
+  for(const area of document.querySelectorAll('[data-scroll-key]')){
+    const restoreFocus=area===focused;
+    positions.set(area.dataset.scrollKey,{top:area.scrollTop,left:area.scrollLeft,restoreFocus,
+      button:restoreFocus&&active.matches('button')?{...active.dataset}:null});
+  }
+  return positions;
+}
+function restoreStashScroll(positions) {
+  for(const area of document.querySelectorAll('[data-scroll-key]')){
+    const previous=positions.get(area.dataset.scrollKey);
+    if(!previous)continue;
+    area.scrollTop=previous.top;
+    area.scrollLeft=previous.left;
+    if(previous.restoreFocus){
+      const data=previous.button;
+      const button=data&&Array.from(area.querySelectorAll('button')).find(b=>
+        !b.disabled&&Object.keys(data).every(key=>b.dataset[key]===data[key]));
+      (button||area).focus({preventScroll:true});
+    }
+  }
+}
+
+function stashSelectionMarkup() {
+  const s = selectedStashUnit();
+  if (!s) return '<h2>선택한 물품</h2><p>창고나 입고 대기 목록에서 물품을 선택하세요.</p>';
+  const g = GOODS[s.g], canEdit = stashAtBunker(), rot = stashSelection.rot;
+  const w = rot ? s.h : s.w, h = rot ? s.w : s.h;
+  return `<div class="db-detail-title">${ico(g[4])}<div><h2>${esc(caseDisplayName(s))}</h2><p>${s.alias ? esc(g[0]) + ' · ' : ''}${g[5]} · ${w} × ${h}칸 · ${g[3]} kg</p></div></div>
+    <div class="stash-tools">${canEdit ? `
+      ${s.w !== s.h ? '<button data-stash="rotate" aria-pressed="' + rot + '">90° 회전</button>' : ''}
+      ${rot && s.uid !== 'overflow' ? '<button data-stash="rotate-here">현재 위치에 적용</button>' : ''}
+      ${s.uid === 'overflow' ? '<button data-stash="auto">빈 공간에 배치</button>' : ''}
+      ${equipmentStashActions(s.g, s.uid)}
+      <button data-stash="sell" ${s.contents?.length ? 'disabled title="내용물을 모두 꺼낸 뒤 판매할 수 있습니다."' : ''}>1개 판매 · ${money(stashSalePrice(s.g))}</button>` : ''}
+      <button data-db="lookup" data-id="${s.g}">도감 보기</button><button data-stash="clear">선택 해제</button>
+    </div>${Object.hasOwn(STORAGE_CASES,s.g)?casePanelMarkup(s):''}${canEdit ? '<p>빈 칸을 누르면 그 칸을 왼쪽 위 모서리로 삼아 배치합니다.</p>' : ''}`;
+}
+
+function storagePage() {
+  const [cols, rows] = stashSize(), capacity = cols * rows;
+  const ids = Object.keys(stash).filter(id => stashCount(id));
+  const total = ids.reduce((n, id) => n + stashCount(id), 0);
+  const overflow = ids.map(id => [id, stashOverflowCount(id)]).filter(([, count]) => count > 0);
+  const occupied = stashSlots.reduce((n, s) => n + s.w * s.h, 0);
+  return head('B-04 / STORAGE', '벙커 창고', '귀환한 물품을 정리하고 다음 출격을 준비합니다.') + `
+    <div class="db-summary stash-summary"><span>잔액 <b>${money(wallet)}</b> · 보관 ${total.toLocaleString('ko-KR')}개</span><button data-page="inventory">장비 관리</button><button data-page="bunker">하이드아웃</button></div>
+    ${stashAtBunker() ? '' : '<p class="mini-field">작전 중입니다. 창고 정리와 판매는 귀환 후 이용할 수 있습니다.</p>'}
+    ${cashCompartmentMarkup()}
+    ${possessionsPanel()}
+    <div class="stash-layout">
+      <section class="loot-panel"><div class="field-label"><span>STORAGE</span><span>Lv.${hideoutLevel('stash')}</span></div><h2>보관 격자 <small>${cols} × ${rows} · ${occupied} / ${capacity}칸</small></h2>${total ? '' : '<p class="mini-field">창고가 비어 있습니다. 레이드에서 물품을 가방에 넣고 탈출하면 이곳에 보관됩니다.</p>'}${stashViewport()}</section>
+      <div class="stash-sidebar">
+        <section class="panel stash-detail">${stashSelectionMarkup()}<div class="stash-message" role="status">${stashNotice}</div></section>
+        <section class="panel"><h2>입고 대기 <small>${(total - stashSlots.length).toLocaleString('ko-KR')}개</small></h2>${overflow.length ? '<p>창고에 자리가 부족해 대기 중인 물품입니다. 물품을 선택해 배치하거나 사용할 수 있습니다.</p><div class="db-list stash-overflow">' + overflow.map(([id, n]) => `<button data-stash="select" data-uid="overflow" data-id="${id}" aria-pressed="${stashSelection?.uid === 'overflow' && stashSelection.id === id}">${ico(GOODS[id][4])}<span>${GOODS[id][0]}</span><b>×${n.toLocaleString('ko-KR')}</b></button>`).join('') + '</div>' : '<p>입고를 기다리는 물품이 없습니다.</p>'}</section>
+      </div></div>`;
+}
+
+function handleStash(d) {
+  if (d.stash?.startsWith('case-')) { handleCaseUI(d); return; }
+  const unit = selectedStashUnit();
+  if(d.stash==='place'&&!unit && !raid && typeof gearPick!=='undefined' && gearPick && typeof moveBagToStashCell==='function'){
+    if(moveBagToStashCell(Number(d.x),Number(d.y))) saveInventoryMove();renderKeep();return;
+  }
+  if (d.stash === 'select') {
+    if (!stashCount(d.id)) return;
+    stashSelection = { id: d.id, uid: d.uid, rot: false };
+    if(typeof gearPick!=='undefined')gearPick=null;
+    stashNotice = '';
+  } else if (d.stash === 'clear') {
+    stashSelection = null;
+    stashNotice = '';
+  } else {
+    if (!stashAtBunker() || !unit) return;
+    let changed = false;
+    if (d.stash === 'rotate') stashSelection.rot = !stashSelection.rot;
+    if (d.stash === 'place') changed = arrangeStashUnit(Number(d.x), Number(d.y));
+    if (d.stash === 'auto') changed = arrangeStashUnit(0, 0, true);
+    if (d.stash === 'rotate-here') changed = arrangeStashUnit(unit.x, unit.y);
+    if (d.stash === 'sell') {
+      const price = stashSalePrice(unit.g);
+      if (!(typeof cashCanCredit==='function'?cashCanCredit(price):Number.isSafeInteger(wallet+price)) || !takeStashGoods(unit.g, 1, unit.uid)) return;
+      wallet += price;
+      stashNotice = `${GOODS[unit.g][0]} 1개 판매 · ${money(price)} 수령`;
+      stashSelection = null;
+      changed = true;
+    }
+    if (changed) saveInventoryMove();
+  }
+  renderKeep();
+}
+
+inside.addEventListener('click', event => {
+  const button = event.target.closest('button[data-stash]');
+  if (!busy && ['stash','inventory'].includes(page) && button) handleStash(button.dataset);
+});
+inside.addEventListener('dragstart', event => {
+  const tile = event.target.closest('[data-stash="select"][draggable="true"]');
+  if (!tile || !stashAtBunker()) return;
+  const unit = stashSlots.find(s => s.uid === tile.dataset.uid);
+  if (!unit) return;
+  const r = tile.getBoundingClientRect();
+  const rot = stashSelection?.uid === unit.uid && stashSelection.rot;
+  stashDrag = { id: unit.g, uid: unit.uid, rot, offsetX: rot ? 0 : Math.floor((event.clientX - r.left) * unit.w / r.width), offsetY: rot ? 0 : Math.floor((event.clientY - r.top) * unit.h / r.height) };
+  event.dataTransfer.setData('text/plain', unit.uid);
+  event.dataTransfer.effectAllowed = 'move';
+});
+inside.addEventListener('dragover', event => {
+  if (stashDrag && event.target.closest('[data-stash-grid]')) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'move';
+  }
+});
+inside.addEventListener('drop', event => {
+  const grid = event.target.closest('[data-stash-grid]');
+  if (!grid || !stashDrag || !stashAtBunker()) return;
+  event.preventDefault();
+  const rect = grid.getBoundingClientRect(), [cols, rows] = stashSize();
+  const x = Math.floor((event.clientX - rect.left - grid.clientLeft) * cols / grid.clientWidth) - stashDrag.offsetX;
+  const y = Math.floor((event.clientY - rect.top - grid.clientTop) * rows / grid.clientHeight) - stashDrag.offsetY;
+  stashSelection = { id: stashDrag.id, uid: stashDrag.uid, rot: stashDrag.rot };
+  stashDrag = null;
+  if (arrangeStashUnit(x, y)) saveInventoryMove();
+  renderKeep();
+});
+inside.addEventListener('dragend', () => { stashDrag = null; });

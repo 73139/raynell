@@ -1,0 +1,45 @@
+.route-compare,.route-status{--road-edge:#46504a;--road-muted:#b7c2b8;color:#e3e9dd;background:#151d1a;border:1px solid var(--road-edge);padding:.85rem 1rem;margin:.75rem 0;min-width:0}
+.route-compare>header,.route-status>header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.25rem .65rem}
+#inside .route-compare h2,#inside .route-status h2{font-size:1.07rem;line-height:1.4;margin:0;color:#edf0e1}
+.route-compare>header>span,.route-status>header>span{font-size:.83rem;color:#d4c7a0;font-weight:650}
+#inside .route-caption{color:var(--road-muted);font-size:.82rem;line-height:1.45;text-align:left;margin:.23rem 0 .6rem}
+.route-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+.route-card{border:1px solid var(--road-edge);border-radius:3px;background:#1c2621;min-width:0;padding:.66rem .78rem;display:flex;flex-direction:column;text-align:left}
+#inside .route-card h3{margin:0;color:#f1efe2;font-size:1.04rem;line-height:1.3}
+#inside .route-card header p{margin:.08rem 0 .4rem;font-size:.79rem;line-height:1.35;color:#c9c4ab}
+.route-facts,.route-status-times{margin:0;font-variant-numeric:tabular-nums}
+.route-facts>div,.route-status-times>div{display:flex;align-items:baseline;justify-content:space-between;gap:.25rem}
+.route-facts dt,.route-status-times dt{color:var(--road-muted);font-size:.78rem}
+.route-facts dd,.route-status-times dd{margin:0;color:#e4e8dc;font-size:.85rem;font-weight:650;text-align:right}
+.route-facts .route-risk-low{color:#b4d4b5}.route-facts .route-risk-moderate{color:#edcf91}.route-facts .route-risk-high{color:#f4b593}
+.route-pool{padding-top:.35rem;margin-top:.37rem;border-top:1px solid #39463c}
+#inside .route-pool h4{margin:0;font-size:.75rem;line-height:1.35;color:var(--road-muted);font-weight:550}
+#inside .route-pool p,#inside .route-card .route-pin{margin:.13rem 0 .2rem;font-size:.82rem;line-height:1.4;color:#e2e7da;overflow-wrap:anywhere;word-break:keep-all}
+.route-match,#inside .route-card .route-pin{color:#e7d39c}.route-match small{font-size:.72rem}
+#inside .route-card .route-pin{display:flex;align-items:flex-start;gap:.3rem;margin:.2rem 0 0;color:#ebd9ab}
+.route-pin svg{width:1em;height:1em;flex:0 0 1em;margin-top:.18em}
+#inside .route-card .route-move{width:100%;margin-top:auto;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:.4rem;background:#33443a;border:1px solid #6f8470;color:#eaf0e4;font:inherit;font-size:.84rem;font-weight:650;padding:.4rem .55rem}
+.route-card:has(.route-move) .route-pool:last-of-type,.route-card:has(.route-move) .route-pin{margin-bottom:.45rem}
+.route-move:focus-visible{outline:2px solid #f4d594;outline-offset:2px}
+.route-status .journey-endpoints{margin:.65rem 0}
+.route-status-times{display:flex;flex-wrap:wrap;gap:.35rem 1.3rem;justify-content:center}
+.route-status-times>div{gap:.4rem}
+.route-status-times dd small{font-size:.73rem;font-weight:400;color:var(--road-muted)}
+#inside .route-status>.route-caption{text-align:center;margin:.38rem 0 0}
+@media(max-width:600px){.route-compare,.route-status{padding:.6rem}.route-grid{gap:.4rem}.route-card{padding:.52rem}.route-facts dt,.route-facts dd{font-size:.79rem}#inside .route-card h3{font-size:.95rem}.route-status-times{gap:.35rem .65rem}}
+@media(max-width:348px){.route-grid{grid-template-columns:minmax(0,1fr)}}
+
+#inside .route-compare:focus-visible,#inside .route-status:focus-visible{outline:2px solid #d7c398;outline-offset:-2px}
+.command-map .route-overview-link{min-height:44px;color:#e4d7ae}
+
+#inside .route-deadline{margin:.35rem 0;color:#f0bc9c;font-size:.81rem;line-height:1.4}
+#inside .route-deadline[hidden]{display:none}
+
+#inside.large .route-compare h2,#inside.large .route-status h2{font-size:1.25rem}
+#inside.large .route-card h3{font-size:1.15rem}
+#inside.large .route-facts dt,#inside.large .route-facts dd,
+#inside.large .route-status-times dt,#inside.large .route-status-times dd,
+#inside.large .route-caption,#inside.large .route-card header p,
+#inside.large .route-pool p,#inside.large .route-pool h4,
+#inside.large .route-deadline,#inside.large .route-card .route-pin{font-size:1rem}
+@media(max-width:600px){#inside.large .route-grid{grid-template-columns:minmax(0,1fr)}}

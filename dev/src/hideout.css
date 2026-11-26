@@ -1,0 +1,36 @@
+.facility-account{display:grid;grid-template-columns:minmax(0,1.4fr) 1fr 1fr;margin:14px 0 10px;border:1px solid #536249;border-radius:4px;background:#172119}
+.facility-account>div{padding:12px clamp(7px,2vw,15px);display:grid;gap:5px;min-width:0}
+.facility-account>div+div{border-left:1px solid #41523e}
+.facility-account small,.facility-recipe small{color:#b6c2a8}
+.facility-account b,.facility-clock{font-variant-numeric:tabular-nums;color:#d3dda7}
+.facility-links{justify-content:flex-start;flex-wrap:wrap;gap:6px}
+.facility-feedback:not(:empty),.facility-current,.facility-effect{border-left:3px solid #b3c38d;background:#263022;padding:10px 12px;color:#e0e8c9;line-height:1.5}
+.facility-feedback:empty{display:none}
+.facility-effect b{display:block;color:#c6d79a}
+.facility-layout{align-items:start}
+.facility-layout .panel{min-width:0}
+.facility-bill{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 0;font-size:.94em}
+.facility-bill b{margin-left:4px}
+.facility-materials .facility-deficit{color:#ebbb88}
+.facility-materials .facility-ready{color:#c1d79c}
+.facility-build{margin:12px 0 4px;width:100%;min-height:44px}
+.facility-build:disabled,.facility-recipe button:disabled{opacity:.68}
+.facility-job-list{padding:0 0 10px}
+.facility-job-list button,.facility-recipe{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.facility-job-list button{width:100%;justify-content:space-between;margin:4px 0;text-align:left}
+.facility-operations{margin-top:20px;border-top:1px solid #51614b}
+.facility-recipe{justify-content:space-between;border-top:1px solid #40503c;padding:10px 0}
+.facility-recipe small{display:block;line-height:1.55;font-size:.86em}
+.facility-recipe button{min-height:42px;flex-shrink:0}
+.facility-recipe[data-production-recipe]>div{flex:1 1 15rem;min-width:0}
+.craft-inputs{display:grid;gap:4px;margin:3px 0 5px}
+.craft-inputs>[data-craft-input]{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:2px 10px;text-align:left;font-size:.86em}
+.craft-inputs>button{min-height:44px;padding:4px 8px}
+.craft-inputs>button span:last-child{color:#ebbb88}.craft-inputs>span{padding:3px 8px;color:#c1d79c}
+.facility-clock{white-space:nowrap}
+@media(max-width:700px){
+ .facility-layout{display:flex;flex-direction:column}
+ .facility-layout>.panel{width:100%;box-sizing:border-box}
+ .facility-directory .facilities{max-height:12rem;overflow:auto;overscroll-behavior:contain}
+ .facility-account>div{font-size:.93em}.facility-account small{font-size:.87em}
+}

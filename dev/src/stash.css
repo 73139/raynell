@@ -1,0 +1,19 @@
+.stash-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
+.stash-scroll{min-width:0;max-height:clamp(165px,48vh,550px);overflow:auto;overscroll-behavior:contain;container-type:inline-size;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#727a69 #151d1c}
+.stash-scroll:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.stash-scroll .spatial-grid.stash-grid{--cell:clamp(32px,calc((100cqw - 2px)/6),64px);display:grid;grid-template-columns:repeat(var(--cols),var(--cell));grid-template-rows:repeat(var(--rows),var(--cell));height:auto;width:max-content;max-width:none;aspect-ratio:auto;gap:0;padding:0;margin:0 auto}
+.stash-grid .loot-tile span{font-size:11px;line-height:1.2}
+.stash-grid .loot-tile .item-symbol{max-width:42px;max-height:43px}
+.stash-sidebar{display:grid;gap:12px;min-width:0}
+.stash-sidebar p{font-size:14px;line-height:1.6;color:var(--muted);margin:9px 0}
+.stash-sidebar h2 small{font:13px var(--mono);color:var(--muted)}
+.stash-sidebar .db-detail-title p{margin:4px 0}
+.stash-tools{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}
+.stash-tools button{font-size:14px;min-height:42px;padding:7px 10px}
+.stash-overflow{max-height:300px;overflow:auto}
+.stash-message:not(:empty){color:var(--accent);margin-top:10px;font-size:14px;line-height:1.5}
+.stash-summary b{color:var(--text)}
+@media(max-width:730px){
+  .stash-layout{grid-template-columns:minmax(0,1fr)}
+  .stash-layout .loot-panel,.stash-sidebar .panel{padding:12px}
+}

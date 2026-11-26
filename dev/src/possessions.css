@@ -1,0 +1,31 @@
+.pos-panel{min-width:0;margin:0 0 .85rem;padding:.75rem .9rem;border:1px solid #525e56;border-radius:3px;background:#192224;color:#e4e8db}
+.pos-panel>label,.pos-alias>label{display:flex;align-items:center;gap:.45rem;font-size:.94rem;font-weight:650;color:#e2e6d8;margin:0 0 .4rem}
+.pos-panel>label>svg{width:1.05rem;height:1.05rem;color:#cfc597}
+.pos-field{display:flex;align-items:stretch;gap:.4rem;min-width:0}
+.pos-field input{flex:1 1 12rem;width:0;min-width:0;min-height:42px;padding:.42rem .65rem;border:1px solid #69756a;border-radius:2px;background:#0e1719;color:#e9eddc;font:inherit;line-height:1.35}
+.pos-field input::placeholder{color:#aab6ae}
+#inside .pos-field button,#inside .pos-pages button{flex:none;min-height:42px;padding:.3rem .7rem;font-size:.85rem;line-height:1.35}
+.pos-field input:focus-visible,#inside .pos-panel button:focus-visible,.pos-status:focus-visible{outline:2px solid #e6d796;outline-offset:1px}
+.pos-panel .pos-status{margin:.55rem 0 .25rem;font-size:.82rem;color:#c9d0bf}
+#inside .pos-result{display:grid;grid-template-columns:minmax(9rem,1fr) minmax(12rem,2fr) auto;align-items:center;gap:.22rem .85rem;width:100%;min-height:44px;margin:0;padding:.38rem .6rem;text-align:left;border:0;border-top:1px solid #3c4945;border-radius:0;background:#182123;color:#e5e9dd;line-height:1.35}
+#inside .pos-result:hover,#inside .pos-result:focus-visible{background:#2b332c}
+.pos-item,.pos-path{min-width:0;overflow-wrap:anywhere;word-break:keep-all}
+.pos-item b{font-size:.89rem}.pos-item small{font-size:.78rem;white-space:nowrap;color:#d9cfa1}
+.pos-cash-breakdown{display:flex;flex-wrap:wrap;gap:.12rem 1rem;margin:.15rem 0 .35rem;font-variant-numeric:tabular-nums}
+.pos-panel .pos-status,.pos-item .pos-note-value,.pos-cash-breakdown span{overflow-wrap:anywhere;word-break:keep-all}
+.pos-item .pos-note-value{white-space:normal;font-variant-numeric:tabular-nums}
+.pos-path{color:#c0cbbf;font-size:.79rem}.pos-open{color:#dacf9d;white-space:nowrap;font-size:.75rem}
+.pos-pages{display:flex;align-items:center;justify-content:flex-end;gap:.65rem;margin-top:.35rem}.pos-pages span{color:#c8cebd;font-size:.8rem}
+.pos-alias{margin:.6rem 0 .2rem}.pos-alias label{font-size:.83rem}.pos-alias label small{color:#b6beb1;font-size:.72rem;font-weight:400}
+.pos-alias .pos-field{flex-wrap:wrap}.pos-alias .pos-field input{flex-basis:10rem}
+.pos-alias .pos-alias-status:empty{display:none}
+.pos-alias .pos-alias-status:not(:empty){color:#dbd2a6;font-size:.79rem}
+#inside .pos-found{position:relative;outline:3px solid #ffe18b!important;outline-offset:-3px!important;box-shadow:inset 0 0 0 5px #54451d!important}
+.sc-case:focus-visible{outline:2px solid #dacf9d;outline-offset:2px}
+.sc-head>div,.stash-detail .db-detail-title>div,.lo-detail .db-detail-title>div{min-width:0;overflow-wrap:anywhere}.stash-grid .loot-tile span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:760px){
+  .pos-panel{padding:.65rem;margin-bottom:.6rem}
+  #inside .pos-result{grid-template-columns:minmax(0,1fr) auto;gap:.1rem .45rem;padding:.35rem .45rem}
+  .pos-path{grid-column:1;grid-row:2}.pos-open{grid-column:2;grid-row:1 / span 2}
+  #inside .pos-field button,#inside .pos-pages button{min-height:44px}
+}

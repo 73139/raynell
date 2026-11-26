@@ -1,0 +1,20 @@
+.orders{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:10px}
+.orders h3{margin:4px 0}.orders small,.sortie-row span{color:var(--muted)}.orders button{width:100%}
+.sortie-row,.combat-vitals,.contact-buttons{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.sortie-row{padding:12px 0;border-bottom:1px solid var(--line)}.combat-vitals>div{flex:1;min-width:100px}.combat-vitals strong{display:block;color:var(--accent);font-size:1.4rem}
+.combat{border-left:3px solid var(--danger)}.contact-buttons button{flex:1;min-width:100px}.save-panel{margin-top:12px}.save-panel button{margin:4px 4px 4px 0}
+#tab-state{display:none;position:fixed;bottom:0;left:0;right:0;padding:14px;z-index:50;background:var(--panel);border:1px solid var(--accent);text-align:center}
+.read-only #tab-state{display:block}
+.journey-track{margin:12px 0;border:1px solid var(--line);padding:16px;background:var(--surface)}
+.journey-endpoints,.journey-dots{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.journey-endpoints b{flex:1;line-height:1.45;font-size:.95rem}.journey-endpoints b:last-child{text-align:right}
+.journey-dots{position:relative;gap:clamp(4px,1.2vw,12px)}
+.journey-dots::before{content:"";position:absolute;left:0;right:0;border-top:1px solid var(--line)}
+.journey-dot{position:relative;display:grid;place-items:center;width:1.55rem;height:1.55rem;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--muted);font:700 .8rem var(--mono)}
+.journey-dot.current{background:var(--accent);color:var(--canvas);border-color:var(--accent)}.journey-dot.passed{border-color:var(--success);color:var(--success)}
+.journey-track p{margin:12px 0 0;text-align:center;color:var(--muted);font-size:.9rem}
+.road-supply svg{width:2rem;height:2rem;color:var(--accent)}.combat .evade-result{color:var(--danger);font-weight:700}
+
+@media(max-width:600px){
+  [data-return-market]>summary{min-height:44px;padding-block:11px;cursor:pointer}
+}

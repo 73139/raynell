@@ -1,0 +1,26 @@
+.bh-page,.bh-summary{border:1px solid #50594a;background:#1c231e;color:#e0e3d5;padding:14px;margin:9px 0}
+.bh-heading,.bh-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.bh-heading h1,.bh-heading h2,.bh-points h2{margin:4px 0;font-size:18px}
+.bh-heading small,.bh-page p,.bh-summary p{color:#d0d4be;font-size:13px}
+.bh-counts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin:9px 0}
+.bh-counts div{border:1px solid #48513e;background:#242c23;padding:5px}
+.bh-counts dt,.bh-counts dd{margin:0;font-size:12px}.bh-counts dd{color:#ebdba6;font-size:15px;font-weight:700}
+.bh-page .lp-region{margin-top:12px}.bh-points{padding:12px}.bh-points .lp-point{margin-top:7px}
+.bh-summary .bh-heading button,.bh-page button,.tg-materials .bh-track{cursor:pointer}
+.bh-summary .bh-heading button,.bh-nav button,.bh-heading button{padding:4px 9px}
+.tg-materials .bh-track{grid-column:2 / -1;justify-self:start;min-height:28px!important;color:#ece0ad}
+.bh-badge{position:absolute;right:2px;top:2px;background:#686641;color:#fff3bf;font-size:10px;padding:1px 3px}
+@media(max-width:500px){.bh-page,.bh-summary{padding:9px}.bh-counts{grid-template-columns:repeat(2,minmax(0,1fr))}.bh-points{padding:8px}}
+.tg-materials li:has(.bh-track){display:grid;grid-template-columns:38px minmax(0,1fr) auto}
+.bh-item{display:flex;gap:10px;align-items:center;margin:10px 0}.bh-item>img,.bh-item>svg{width:42px;height:42px;object-fit:contain}.bh-item small{display:block;color:#d0d4be}
+.bh-cases{border:1px solid #515d48;padding:.35rem .6rem;margin:.55rem 0;min-width:0}
+.bh-cases summary{color:#e3dfbf;cursor:pointer;padding:.35rem 0;font-size:.88rem}
+.bh-cases p{margin:.25rem 0 .4rem;font-size:.8rem;color:#cbd0bd}
+.bh-cases ul{padding:0;margin:0;list-style:none}
+.bh-cases li,.tg-materials .bh-cases li{display:flex;align-items:center;justify-content:space-between;gap:.65rem;border-top:1px solid #394535;padding:.4rem 0}
+.bh-cases li span{min-width:0;overflow-wrap:anywhere}.bh-cases li b,.bh-cases li small{display:block}
+.bh-cases li small{color:#bec5b5;font-size:.76rem}.bh-cases li button{flex-shrink:0;min-height:34px}
+.tg-materials .bh-cases{grid-column:1/-1;margin:0}.bh-case-back{min-height:36px;margin:.4rem 0}
+
+.bh-points li[data-hunt-odds] small span{display:inline-block}
+.bh-points li[data-hunt-odds] b{color:#e9dca9;font-variant-numeric:tabular-nums}
