@@ -21,12 +21,15 @@ function matchesOrderRecovery(unit,{item,sources}){
 function countOrderRecovery(order){
   return field.bag.filter(unit=>matchesOrderRecovery(unit,order.recovery)).length;
 }
+function fullySearchedAt(sortie,zone,index){
+  if(!sortie?.found?.[zone]?.includes(index))return false;
+  const box=sortie.boxes?.[boxKey(zone,index)];
+  return Boolean(box?.complete===true&&Array.isArray(box.items)&&box.items.every(unit=>unit?.revealed===true));
+}
 function orderInspectionSites(order,sortie=field){
   return order.inspections.map(({zone,landmark,boxOrdinal})=>{
     const index=LANDMARKS[zone][landmark].boxes[boxOrdinal];
-    const box=sortie?.boxes?.[boxKey(zone,index)];
-    const complete=Boolean(sortie?.found?.[zone]?.includes(index) && box?.complete===true &&
-      Array.isArray(box.items) && box.items.every(unit=>unit.revealed===true));
+    const complete=fullySearchedAt(sortie,zone,index);
     return {zone,landmark,index,complete};
   });
 }
@@ -54,6 +57,47 @@ function sampleInspection(order, sortie, bag) {
   const carried = (bag || []).some(unit => unit.g === order.sample.item);
   return {site, carried, count:Number(site.complete) + Number(carried)};
 }
+// Stable zone-and-container keys are already used by the outing's found and searched records.
+function surveySite(key){
+  if(typeof key!=='string'||!/^([0-2])-(0|[1-9]\d*)$/.test(key))return null;
+  const [zone,index]=key.split('-').map(Number),site=FIELD_ZONES[zone]?.boxes?.[index];
+  return site?{key,zone,index,name:site[0]}:null;
+}
+function validSurveyList(keys){
+  return Array.isArray(keys)&&keys.length<=FIELD_ZONES.reduce((n,z)=>n+(z.boxes?.length||0),0)&&
+    new Set(keys).size===keys.length&&keys.every(key=>Boolean(surveySite(key)));
+}
+function completedSurveyKeys(sortie){
+  if(!Array.isArray(sortie?.found))return [];
+  const visited=new Set();
+  for(const [zone,indices] of sortie.found.entries()){
+    if(!Array.isArray(indices))continue;
+    for(const index of indices){
+      const key=boxKey(zone,index);
+      if(surveySite(key)&&fullySearchedAt(sortie,zone,index))visited.add(key);
+    }
+  }
+  return [...visited];
+}
+function recordReturnedSurveys(sortie){
+  const prior=new Set(career.surveyedBoxes||[]),fresh=completedSurveyKeys(sortie).filter(key=>!prior.has(key));
+  if(fresh.length)career.surveyedBoxes=[...prior,...fresh];
+  return fresh;
+}
+function validSurveyBackup(s){
+  const keys=s.career?.surveyedBoxes,arrivals=s.lastSummary?.newSurveyBoxes;
+  if(keys!==undefined&&!validSurveyList(keys))return false;
+  if(arrivals===undefined)return true;
+  return validSurveyList(arrivals)&&arrivals.length>0&&s.lastSummary.result==='success'&&['success','quick'].includes(s.lastSummary.rating)&&
+    arrivals.length<=s.lastSummary.searched&&arrivals.every(key=>keys?.includes(key));
+}
+function surveySummaryMarkup(summary){
+  const rows=summary?.newSurveyBoxes;
+  if(!rows?.length||!validSurveyList(rows))return '';
+  return '<details class="field-section survey-return" data-survey-return><summary>수색 수첩에 새로 기록한 상자 '+rows.length+'개</summary><ul>'+
+    rows.map(key=>{const site=surveySite(key);return '<li>'+esc(FIELD_ZONES[site.zone].name)+' · '+esc(site.name)+'</li>'}).join('')+'</ul></details>';
+}
+
 function orderUnlocked(order, done=career.done, reply, clinic) {
   if(order.afterWard && !paidWardDelivery(clinic===undefined?hideout:clinic))return false;
   if(order.afterReply && !(reply===undefined?finaleState.reply:reply))return false;
@@ -103,7 +147,10 @@ const ORDERS = [
     cr:36000,xp:110,goal:'외부 벙커 보급 요청 한 건 인계',target:1,progress:()=>reliefProgress()},
   {id:'ward-packing',afterWard:true,image:'bunker-med',issuer:'윤서진 · 의무실',title:'회수 포장 대조',
     text:'초도 납품 뒤 회수 포장을 점검합니다. 접이식 야전 처치포를 출격 가방에 담고, 외곽 임시 진료소의 진료대 응급함 또는 검문소 검역 천막의 응급 케이스를 끝까지 수색하세요. 임시 진료소는 열쇠 없이 이용합니다. 검역 천막의 케이스에는 검역실 열쇠가 필요합니다. 포장 표식에 대조한 바로 그 처치포를 가지고 정상 탈출하세요. 처치포는 귀환 후 창고에 보관됩니다.',
-    cr:18000,xp:75,goal:'포장을 대조한 처치포 원본 휴대',target:1,progress:()=>Number(wardCheckCarried())}
+    cr:18000,xp:75,goal:'포장을 대조한 처치포 원본 휴대',target:1,progress:()=>Number(wardCheckCarried())},
+  {id:'ward-shuttle',after:'ward-packing',image:'bunker-med',issuer:'윤서진 · 의무실',title:'의무 셔틀 시운전',
+    text:'의무실에서 환승 정류장을 다시 엽니다. 첫 출격에서 폐쇄 검문소 대기 차량 행렬의 배차판을 조정하고 정상 탈출하세요. 다음 출격에서 확정한 노선의 출발 정류장에 호출을 넣고, 제한시간 안에 도착 정류장에서 응답한 뒤 정상 탈출하세요. 열쇠나 소모품은 필요 없습니다.',
+    get cr(){return shuttleRate().cr;},get xp(){return shuttleRate().xp;},goal:'1차 배차 확정 및 2차 시운전 도착 응답',target:2,progress:()=>shuttleProgress()}
 ];
 let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={},reply=null,clinic=null) {
@@ -111,9 +158,10 @@ function readCareer(raw={},reply=null,clinic=null) {
   const number = n => Number.isSafeInteger(n) && n>=0 ? n : 0;
   const completed = Array.isArray(raw?.done) ? raw.done : [];
   const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed,reply,clinic) &&
+    (q.id!==SHUTTLE_ORDER || (wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)&&raw.shuttle.receipt)) &&
     (q.id!==WARD_FIELD_ID || wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)) &&
     (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
-  career = {...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  career = {...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)?{shuttle:{...raw.shuttle}}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
     done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply,clinic))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
@@ -296,9 +344,13 @@ function reconcileEnd(result,at,exit=null){
   const order=award?.order;
   if(award?.payable){
     commission=order.cr;missionXp=order.xp;orderName=order.title;
+    if(order.id===SHUTTLE_ORDER)career.shuttle={...career.shuttle,receipt:{...field.shuttle,returnedAt:at}};
     if(order.id===WARD_FIELD_ID)career.wardCheckReceipt={...field.wardCheck};
     if(order.id===RELIEF_ORDER)career.reliefReceipt={...field.reliefDelivery};
     career.done.push(order.id);career.order=null;
+  }
+  if(rating==='success'&&career.order===SHUTTLE_ORDER&&field.shuttle?.stage==='plan'){
+    career.shuttle={...field.shuttle,returnedAt:at};
   }
   if(returned && exit?.rule==='radio')recordGearUse(workingRaidRadio(),0,1);
   const gearReport=sortieGearReport(returned);
@@ -315,6 +367,10 @@ function reconcileEnd(result,at,exit=null){
   career.sorties++;career.xp+=earned+missionXp;career.victories+=victories;
   const summary={raidId:raid.startedAt,result,rating,exit:exit?.name||null,elapsed,goods,cost,visited,searched,victories,
     worn,earned,commission,missionXp,orderName,contractUpdates,gearReport,...(carriedCash?{carriedCash}:{})};
+  if(returned){
+    const discoveries=recordReturnedSurveys(field);
+    if(discoveries.length)summary.newSurveyBoxes=discoveries;
+  }
   settleInjuries(summary);
   delete field.gearUsage;delete field.legacyEngagement;
   const survivorSortie=survivorState.active?.raidId===raid.startedAt;
@@ -333,7 +389,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost, ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.shuttle;delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
@@ -380,12 +436,13 @@ function resultPage(){
   const counts={};
   for(const id of r.goods||[])if(Object.hasOwn(GOODS,id))counts[id]=(counts[id]||0)+1;
   return head('AFTER ACTION REPORT',label,returned?'휴대 물품을 벙커로 회수했습니다.':'이번 출격의 휴대 물품과 착용 장비를 잃었습니다.')+
-    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
+    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
     (r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
+    (career.shuttle?.raidId===r.raidId?'<p data-shuttle-dispatch>'+esc(SHUTTLE_ROUTES[career.shuttle.route].name)+' 배차 확정 · 이번 출격 수당 0 CR · 다음 출격에서 '+esc(shuttleName(SHUTTLE_ROUTES[career.shuttle.route].from))+' 호출</p>':'')+
     (r.orderName?'<p class="exit-ok">'+esc(r.orderName)+' 의뢰 완료 · '+money(r.commission)+'</p>':'')+
     (next?'<button type="button" data-bui="order-followup" data-id="'+esc(next.id)+'" data-return-id="'+r.raidId+'" '+(writer?'':'disabled')+'>벙커 복귀 · 후속 의뢰 보기 · '+esc(next.title)+'</button>':'')+
     '<h3>'+(returned?'회수한 물품':'잃은 물품')+'</h3><div class="db-list">'+(Object.entries(counts).map(([id,n])=>'<div class="stash-row">'+ico(GOODS[id][4])+'<span>'+GOODS[id][0]+'</span><b>×'+n+'</b></div>').join('')||'<p>휴대 물품 없음</p>')+'</div>'+returnMarketPanel()+equipmentSummary(r)+gearSettlementMarkup(r)+injurySummaryMarkup(r)+contractResultPanel(r.contractUpdates)+

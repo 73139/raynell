@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.81</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.83</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -271,6 +271,10 @@
 
 .command-status{position:absolute;inset:auto 0 0;display:flex;align-items:center;gap:12px;min-height:25px;padding:4px 12px;color:#c7cabe;background:linear-gradient(90deg,#111719f5,#121719db);border-top:1px solid #525a59;font-size:11px;line-height:1.2}.command-status>span+span{padding-left:10px;border-left:1px solid #4c5552}.command-status .command-signal{margin-left:auto;display:flex;align-items:center;gap:7px;border:0}.command-signal i{display:inline-block;width:11px;height:9px;background:linear-gradient(to top,#acc691 0 100%) 0 100% / 2px 3px no-repeat,linear-gradient(to top,#acc691 0 100%) 4px 100% / 2px 6px no-repeat,linear-gradient(to top,#acc691 0 100%) 8px 100% / 2px 9px no-repeat}.command-page-title{display:flex;align-items:center;gap:8px;margin:0 0 8px;padding-left:8px;border-left:3px solid #aaa985;line-height:1.1;font-size:clamp(18px,1.9vw,28px);color:#ecece3}.command-page-title>span{color:#c6c9be;font-variant-numeric:tabular-nums}
 @media(max-width:600px){.command-station[data-index="0"] b{transform:translateX(-14%)}.command-station[data-index="1"] b{transform:translateX(14%)}}
+
+.survey-map-journal,.survey-return{margin:12px 0;padding:0 12px;border:1px solid var(--bu-line,#424c40);border-radius:5px}.survey-map-journal>summary,.survey-return>summary{padding:12px 0;min-height:44px;cursor:pointer}.survey-map-journal>p{margin:0 0 12px;color:#c5cabb}.survey-sites,.survey-sites ul{list-style:none;margin:0;padding:0}.survey-sites{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;padding-bottom:12px}.survey-sites h3{margin:0 0 4px;font-size:1em}.survey-sites li li{display:flex;justify-content:space-between;align-items:baseline;gap:8px;border-top:1px solid #374136;padding:3px 0}.survey-sites [data-recorded] span:last-child{white-space:nowrap;color:#b4b9ac;font-size:.85em}.survey-sites [data-recorded="true"] span:last-child{color:#cde8ac}
+
+.survey-access{display:block;margin:2px 0;color:#d6c497;font-size:.82em}
 
 .loadout-ui{
   --lo-line:#3d4748;--lo-bg:#101719;--lo-edge:#8e9172;--lo-text:#e2e6df;--lo-sub:#a7b1ae;
@@ -1710,7 +1714,8 @@ function exitForecast(exit, now) {
   const reward=' · '+order.title+' · 의뢰 보상 ';
   if(award.payable)return summary+reward+money(order.cr)+' / '+order.xp+' XP';
   let detail='';
-  if(progress<order.target)detail+=' · 목표 미달 · '+order.goal+' '+progress+'/'+order.target;
+  if(order.id===SHUTTLE_ORDER && field.shuttle?.stage==='plan')detail+=normal?' · 배차 확정 예정 · 다음 출격 시운전 후 수당 지급':' · 조기 귀환 시 이번 배차 선택 취소';
+  else if(progress<order.target)detail+=' · 목표 미달 · '+order.goal+' '+progress+'/'+order.target;
   else if(!normal)detail+=' · 의뢰 목표 충족 '+progress+'/'+order.target;
   if(!normal){
     detail+=' · 정상 탈출까지 (대기 종료 기준) 생존 '+formatRaid(NORMAL_EXTRACTION.elapsedMs-elapsed)+
@@ -1859,7 +1864,7 @@ function updateRaidClock(){
   if((changed||objectiveTimeChanged||phase!==lastRaidPhase||(statusChanged&&page==='raid'&&!field.open))&&page!=='settings'&&!rendering){
     lastRaidPhase=phase;renderKeep();
   }else lastRaidPhase=phase;
-  updateRouteDeadlineWarnings();refreshExitForecasts();tickSurvivorUI();tickWeatherUI();
+  updateRouteDeadlineWarnings();refreshExitForecasts();tickSurvivorUI();tickWeatherUI();tickShuttle(now);
 }
 function handleRaidAction(action,data={}){
   if(!writer)return;
@@ -2025,6 +2030,7 @@ if(field.contact){
   return;
 }
 if(field.journey&&!(picked?.side==='bag'&&['rotate','unselect'].includes(d.field)))return handleJourneyField(d);
+if(d.field==='shuttle')return handleShuttle(d);
 if(d.field==='ward-compare')return compareWardPacking(d);
 if(d.field==='relief-deliver')return handleReliefDelivery(d);
 if(d.field==='postal-pickup'||d.field==='postal-stamp')return handlePostal(d);
@@ -2056,12 +2062,15 @@ function matchesOrderRecovery(unit,{item,sources}){
 function countOrderRecovery(order){
   return field.bag.filter(unit=>matchesOrderRecovery(unit,order.recovery)).length;
 }
+function fullySearchedAt(sortie,zone,index){
+  if(!sortie?.found?.[zone]?.includes(index))return false;
+  const box=sortie.boxes?.[boxKey(zone,index)];
+  return Boolean(box?.complete===true&&Array.isArray(box.items)&&box.items.every(unit=>unit?.revealed===true));
+}
 function orderInspectionSites(order,sortie=field){
   return order.inspections.map(({zone,landmark,boxOrdinal})=>{
     const index=LANDMARKS[zone][landmark].boxes[boxOrdinal];
-    const box=sortie?.boxes?.[boxKey(zone,index)];
-    const complete=Boolean(sortie?.found?.[zone]?.includes(index) && box?.complete===true &&
-      Array.isArray(box.items) && box.items.every(unit=>unit.revealed===true));
+    const complete=fullySearchedAt(sortie,zone,index);
     return {zone,landmark,index,complete};
   });
 }
@@ -2089,6 +2098,47 @@ function sampleInspection(order, sortie, bag) {
   const carried = (bag || []).some(unit => unit.g === order.sample.item);
   return {site, carried, count:Number(site.complete) + Number(carried)};
 }
+// Stable zone-and-container keys are already used by the outing's found and searched records.
+function surveySite(key){
+  if(typeof key!=='string'||!/^([0-2])-(0|[1-9]\d*)$/.test(key))return null;
+  const [zone,index]=key.split('-').map(Number),site=FIELD_ZONES[zone]?.boxes?.[index];
+  return site?{key,zone,index,name:site[0]}:null;
+}
+function validSurveyList(keys){
+  return Array.isArray(keys)&&keys.length<=FIELD_ZONES.reduce((n,z)=>n+(z.boxes?.length||0),0)&&
+    new Set(keys).size===keys.length&&keys.every(key=>Boolean(surveySite(key)));
+}
+function completedSurveyKeys(sortie){
+  if(!Array.isArray(sortie?.found))return [];
+  const visited=new Set();
+  for(const [zone,indices] of sortie.found.entries()){
+    if(!Array.isArray(indices))continue;
+    for(const index of indices){
+      const key=boxKey(zone,index);
+      if(surveySite(key)&&fullySearchedAt(sortie,zone,index))visited.add(key);
+    }
+  }
+  return [...visited];
+}
+function recordReturnedSurveys(sortie){
+  const prior=new Set(career.surveyedBoxes||[]),fresh=completedSurveyKeys(sortie).filter(key=>!prior.has(key));
+  if(fresh.length)career.surveyedBoxes=[...prior,...fresh];
+  return fresh;
+}
+function validSurveyBackup(s){
+  const keys=s.career?.surveyedBoxes,arrivals=s.lastSummary?.newSurveyBoxes;
+  if(keys!==undefined&&!validSurveyList(keys))return false;
+  if(arrivals===undefined)return true;
+  return validSurveyList(arrivals)&&arrivals.length>0&&s.lastSummary.result==='success'&&['success','quick'].includes(s.lastSummary.rating)&&
+    arrivals.length<=s.lastSummary.searched&&arrivals.every(key=>keys?.includes(key));
+}
+function surveySummaryMarkup(summary){
+  const rows=summary?.newSurveyBoxes;
+  if(!rows?.length||!validSurveyList(rows))return '';
+  return '<details class="field-section survey-return" data-survey-return><summary>수색 수첩에 새로 기록한 상자 '+rows.length+'개</summary><ul>'+
+    rows.map(key=>{const site=surveySite(key);return '<li>'+esc(FIELD_ZONES[site.zone].name)+' · '+esc(site.name)+'</li>'}).join('')+'</ul></details>';
+}
+
 function orderUnlocked(order, done=career.done, reply, clinic) {
   if(order.afterWard && !paidWardDelivery(clinic===undefined?hideout:clinic))return false;
   if(order.afterReply && !(reply===undefined?finaleState.reply:reply))return false;
@@ -2138,7 +2188,10 @@ const ORDERS = [
     cr:36000,xp:110,goal:'외부 벙커 보급 요청 한 건 인계',target:1,progress:()=>reliefProgress()},
   {id:'ward-packing',afterWard:true,image:'bunker-med',issuer:'윤서진 · 의무실',title:'회수 포장 대조',
     text:'초도 납품 뒤 회수 포장을 점검합니다. 접이식 야전 처치포를 출격 가방에 담고, 외곽 임시 진료소의 진료대 응급함 또는 검문소 검역 천막의 응급 케이스를 끝까지 수색하세요. 임시 진료소는 열쇠 없이 이용합니다. 검역 천막의 케이스에는 검역실 열쇠가 필요합니다. 포장 표식에 대조한 바로 그 처치포를 가지고 정상 탈출하세요. 처치포는 귀환 후 창고에 보관됩니다.',
-    cr:18000,xp:75,goal:'포장을 대조한 처치포 원본 휴대',target:1,progress:()=>Number(wardCheckCarried())}
+    cr:18000,xp:75,goal:'포장을 대조한 처치포 원본 휴대',target:1,progress:()=>Number(wardCheckCarried())},
+  {id:'ward-shuttle',after:'ward-packing',image:'bunker-med',issuer:'윤서진 · 의무실',title:'의무 셔틀 시운전',
+    text:'의무실에서 환승 정류장을 다시 엽니다. 첫 출격에서 폐쇄 검문소 대기 차량 행렬의 배차판을 조정하고 정상 탈출하세요. 다음 출격에서 확정한 노선의 출발 정류장에 호출을 넣고, 제한시간 안에 도착 정류장에서 응답한 뒤 정상 탈출하세요. 열쇠나 소모품은 필요 없습니다.',
+    get cr(){return shuttleRate().cr;},get xp(){return shuttleRate().xp;},goal:'1차 배차 확정 및 2차 시운전 도착 응답',target:2,progress:()=>shuttleProgress()}
 ];
 let career,orderFeedback='',raidAckFeedback='';
 function readCareer(raw={},reply=null,clinic=null) {
@@ -2146,9 +2199,10 @@ function readCareer(raw={},reply=null,clinic=null) {
   const number = n => Number.isSafeInteger(n) && n>=0 ? n : 0;
   const completed = Array.isArray(raw?.done) ? raw.done : [];
   const done = ORDERS.filter(q=>completed.includes(q.id) && orderUnlocked(q,completed,reply,clinic) &&
+    (q.id!==SHUTTLE_ORDER || (wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)&&raw.shuttle.receipt)) &&
     (q.id!==WARD_FIELD_ID || wardCheckRecord(raw.wardCheckReceipt,clinic?.wardTrial?.paid)) &&
     (q.id!==RELIEF_ORDER || validReliefRecord(raw.reliefReceipt,reply))).map(q=>q.id);
-  career = {...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
+  career = {...(raw?.surveyedBoxes?.length&&validSurveyList(raw.surveyedBoxes)?{surveyedBoxes:[...raw.surveyedBoxes]}:{}),...(done.includes(WARD_FIELD_ID)&&shuttlePlanValid(raw.shuttle,raw.wardCheckReceipt)?{shuttle:{...raw.shuttle}}:{}),...(done.includes(WARD_FIELD_ID)?{wardCheckReceipt:{...raw.wardCheckReceipt}}:{}),...(done.includes(RELIEF_ORDER)?{reliefReceipt:{...raw.reliefReceipt}}:{}),xp:number(raw?.xp), sorties:number(raw?.sorties), returns:number(raw?.returns),
     victories:number(raw?.victories), victoriesFrom:Number.isSafeInteger(raw?.victoriesFrom)?number(raw.victoriesFrom):number(raw?.sorties),
     done, order:ORDERS.some(q=>q.id===raw?.order && !done.includes(q.id) && orderUnlocked(q,done,reply,clinic))?raw.order:null,
     history:Array.isArray(raw?.history)?raw.history.slice(0,12).map(row=>{
@@ -2331,9 +2385,13 @@ function reconcileEnd(result,at,exit=null){
   const order=award?.order;
   if(award?.payable){
     commission=order.cr;missionXp=order.xp;orderName=order.title;
+    if(order.id===SHUTTLE_ORDER)career.shuttle={...career.shuttle,receipt:{...field.shuttle,returnedAt:at}};
     if(order.id===WARD_FIELD_ID)career.wardCheckReceipt={...field.wardCheck};
     if(order.id===RELIEF_ORDER)career.reliefReceipt={...field.reliefDelivery};
     career.done.push(order.id);career.order=null;
+  }
+  if(rating==='success'&&career.order===SHUTTLE_ORDER&&field.shuttle?.stage==='plan'){
+    career.shuttle={...field.shuttle,returnedAt:at};
   }
   if(returned && exit?.rule==='radio')recordGearUse(workingRaidRadio(),0,1);
   const gearReport=sortieGearReport(returned);
@@ -2350,6 +2408,10 @@ function reconcileEnd(result,at,exit=null){
   career.sorties++;career.xp+=earned+missionXp;career.victories+=victories;
   const summary={raidId:raid.startedAt,result,rating,exit:exit?.name||null,elapsed,goods,cost,visited,searched,victories,
     worn,earned,commission,missionXp,orderName,contractUpdates,gearReport,...(carriedCash?{carriedCash}:{})};
+  if(returned){
+    const discoveries=recordReturnedSurveys(field);
+    if(discoveries.length)summary.newSurveyBoxes=discoveries;
+  }
   settleInjuries(summary);
   delete field.gearUsage;delete field.legacyEngagement;
   const survivorSortie=survivorState.active?.raidId===raid.startedAt;
@@ -2368,7 +2430,7 @@ function reconcileEnd(result,at,exit=null){
     commission, missionXp, orderName, cost, ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
-  delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
+  delete field.shuttle;delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
   field.result=result;field.journey=null;field.bag=[];field.action=null;field.contact=null;field.open=null;picked=null;dragged=null;exitNotice='';
   logField(ENDINGS[rating][1]+'. 정산 완료.');
 }
@@ -2415,12 +2477,13 @@ function resultPage(){
   const counts={};
   for(const id of r.goods||[])if(Object.hasOwn(GOODS,id))counts[id]=(counts[id]||0)+1;
   return head('AFTER ACTION REPORT',label,returned?'휴대 물품을 벙커로 회수했습니다.':'이번 출격의 휴대 물품과 착용 장비를 잃었습니다.')+
-    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
+    huntSummary('result')+objectivePanel('result')+campaignSettlementNote(r)+finaleSettlementNote(r)+surveySummaryMarkup(r)+'<section class="panel result-panel"><h2 class="'+(returned?'exit-ok':'exit-warn')+'">'+code+'</h2>'+
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
     (r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
+    (career.shuttle?.raidId===r.raidId?'<p data-shuttle-dispatch>'+esc(SHUTTLE_ROUTES[career.shuttle.route].name)+' 배차 확정 · 이번 출격 수당 0 CR · 다음 출격에서 '+esc(shuttleName(SHUTTLE_ROUTES[career.shuttle.route].from))+' 호출</p>':'')+
     (r.orderName?'<p class="exit-ok">'+esc(r.orderName)+' 의뢰 완료 · '+money(r.commission)+'</p>':'')+
     (next?'<button type="button" data-bui="order-followup" data-id="'+esc(next.id)+'" data-return-id="'+r.raidId+'" '+(writer?'':'disabled')+'>벙커 복귀 · 후속 의뢰 보기 · '+esc(next.title)+'</button>':'')+
     '<h3>'+(returned?'회수한 물품':'잃은 물품')+'</h3><div class="db-list">'+(Object.entries(counts).map(([id,n])=>'<div class="stash-row">'+ico(GOODS[id][4])+'<span>'+GOODS[id][0]+'</span><b>×'+n+'</b></div>').join('')||'<p>휴대 물품 없음</p>')+'</div>'+returnMarketPanel()+equipmentSummary(r)+gearSettlementMarkup(r)+injurySummaryMarkup(r)+contractResultPanel(r.contractUpdates)+
@@ -2972,7 +3035,7 @@ function storagePage() {
       <section class="loot-panel"><div class="field-label"><span>STORAGE</span><span>Lv.${hideoutLevel('stash')}</span></div><h2>보관 격자 <small>${cols} × ${rows} · ${occupied} / ${capacity}칸</small></h2>${!raid&&stashSlots.length>1?'<button type="button" data-loadout="sort"'+(writer?'':' disabled')+'>크기순 정리</button>':''}${total ? '' : '<p class="mini-field">창고가 비어 있습니다. 레이드에서 물품을 가방에 넣고 탈출하면 이곳에 보관됩니다.</p>'}${stashViewport()}</section>
       <div class="stash-sidebar">
         <section class="panel stash-detail">${stashSelectionMarkup()}<div class="stash-message" role="status">${stashNotice}</div></section>
-        <section class="panel"><h2>입고 대기 <small>${(total - stashSlots.length).toLocaleString('ko-KR')}개</small></h2>${overflow.length ? '<p>창고에 자리가 부족해 대기 중인 물품입니다. 물품을 선택해 배치하거나 사용할 수 있습니다.</p><div class="db-list stash-overflow">' + overflow.map(([id, n]) => `<button data-stash="select" data-uid="overflow" data-id="${id}" aria-pressed="${stashSelection?.uid === 'overflow' && stashSelection.id === id}">${ico(GOODS[id][4])}<span>${GOODS[id][0]}</span><b>×${n.toLocaleString('ko-KR')}</b></button>`).join('') + '</div>' : '<p>입고를 기다리는 물품이 없습니다.</p>'}</section>
+        <section class="panel" data-scroll-key="warehouse-overflow" tabindex="-1" aria-label="입고 대기 목록"><h2>입고 대기 <small>${(total - stashSlots.length).toLocaleString('ko-KR')}개</small></h2>${overflow.length ? '<p>창고에 자리가 부족해 대기 중인 물품입니다. 물품을 선택해 배치하거나 사용할 수 있습니다.</p><div class="db-list stash-overflow">' + overflow.map(([id, n]) => `<button data-stash="select" data-uid="overflow" data-id="${id}" aria-pressed="${stashSelection?.uid === 'overflow' && stashSelection.id === id}">${ico(GOODS[id][4])}<span>${GOODS[id][0]}</span><b>×${n.toLocaleString('ko-KR')}</b></button>`).join('') + '</div>' : '<p>입고를 기다리는 물품이 없습니다.</p>'}</section>
       </div></div>`;
 }
 
@@ -4070,7 +4133,7 @@ function landmarkPanel(){
     <div class="landmark-header"><div><small>현재 랜드마크</small><h2 tabindex="-1">${point.name}</h2></div>
       <details class="landmark-picker"><summary>랜드마크 선택 · ${LANDMARKS[zi].length}곳</summary>
         <div class="landmark-list">${options}</div></details></div>
-    <p class="landmark-description">${point.description}</p>${sourceHint}${pumpGaugePanel()}${surveyReadingPanel()}${postalPanel()}${reliefPanel(true)}${wardFieldPanel()}
+    <p class="landmark-description">${point.description}</p>${sourceHint}${pumpGaugePanel()}${surveyReadingPanel()}${postalPanel()}${reliefPanel(true)}${wardFieldPanel()}${shuttleFieldPanel()}
     <button class="primary search-button" data-field="scan" ${busy||nextLandmarkBox()<0?'disabled':''}>${ico('search')} 주변 탐색 <small>${durationLabel('scan',4000)}</small></button>
     <h3 class="landmark-box-title">발견한 수색 대상 <small>${visible.length} / ${point.boxes.length}</small></h3>
     <div class="container-list">${cards||'<p class="empty-field">주변을 탐색해 이곳의 수색 대상을 발견하세요.</p>'}</div>
@@ -4349,7 +4412,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=81000; // Derived from the release title by build.py.
+const WRITER_BUILD=83000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4426,6 +4489,10 @@ function readSession(current){
     if(!Array.isArray(box.size))box.size=BOX_SIZE.slice();
   }
   readCareer(snap?.career,snap?.finale?.reply||null,snap?.hideout||null);
+  // A still-open, settled legacy outing contains its actual searched boxes. Older aggregate totals do not.
+  if(snap?.career?.surveyedBoxes===undefined&&raid&&field.result==='success'&&lastSummary?.raidId===raid.startedAt&&
+      ['success','quick'].includes(lastSummary.rating))recordReturnedSurveys(field);
+  if(field.shuttle&&!validShuttleBackup({...snap,raid,field,career}))delete field.shuttle;
   if(field.wardCheck&&!validWardFieldBackup({...snap,raid,field,career}))delete field.wardCheck;
   if(field.reliefDelivery&&!validReliefBackup({raid,field,career,finale:snap?.finale,lastSummary}))delete field.reliefDelivery;
   postalNotice='';
@@ -4612,7 +4679,7 @@ function validateBackup(raw){
     if(!Array.isArray(done)||!orderUnlocked(ORDERS.find(q=>q.id==='courier-checkin'),done)||
        (s.career.order==='courier-checkin'&&done.includes('courier-checkin')))return false;
   }
-  if(!validWardFieldBackup(s)||!validReliefBackup(s)||!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
+  if(!validSurveyBackup(s)||!validShuttleBackup(s)||!validWardFieldBackup(s)||!validReliefBackup(s)||!validPostalBackup(s)||!validPumpGauge(r,f,s.career?.order)||!validWeatherSurvey(r,f,s.career?.order))return false;
   if(r!==null&&(!dict(r)||!integer(r.startedAt,1)||r.endsAt-r.startedAt!==RAID_DURATION_MS||!integer(r.zone,0,2)))return false;
   if(f.raidId!==(r?.startedAt||0)||!Array.isArray(f.bag)||!f.bag.every(tile)||!Array.isArray(f.found)||f.found.length!==3||!f.found.every((a,z)=>Array.isArray(a)&&a.every(i=>integer(i,0,FIELD_ZONES[z].boxes.length-1))))return false;
   if(!Array.isArray(f.log)||!f.log.every(x=>typeof x==='string')||!dict(f.boxes))return false;
@@ -4848,6 +4915,23 @@ function commandMapAction(selected){
   return `<button class="command-deploy" data-field="move" data-index="${selected}">${commandIcon('forward')}이동 시작 · ${routeTimeLabel(raid.zone,selected)}</button>`;
 }
 
+function surveyMapJournal(zone){
+  const logged=new Set(career.surveyedBoxes||[]),area=FIELD_ZONES[zone];
+  const total=area.boxes.length,done=area.boxes.reduce((n,_,i)=>n+Number(logged.has(boxKey(zone,i))),0);
+  const rows=LANDMARKS[zone].map(point=>{
+    const boxes=point.boxes.map(index=>{
+      const key=boxKey(zone,index),recorded=logged.has(key);
+      const lock=lootLockView(zone,index);
+      const access=!lock?'':lock.unlocked?'이번 출격 개방':esc(lock.keyName)+(lock.carried?' · 휴대 중':' 필요');
+      return '<li data-survey-box="'+key+'" data-recorded="'+recorded+'"><span>'+esc(area.boxes[index][0])+
+        (access?'<small class="survey-access">'+access+'</small>':'')+'</span><span>'+(recorded?'기록 완료':'미기록')+'</span></li>';
+    }).join('');
+    return '<li><h3>'+esc(point.name)+'</h3><ul>'+boxes+'</ul></li>';
+  }).join('');
+  return '<details class="survey-map-journal" data-survey-journal="'+zone+'"><summary>'+esc(area.name)+' 수색 수첩 · '+done+' / '+total+'개</summary>'+
+    '<p>상자를 끝까지 수색하고 생환하면 기록됩니다. 같은 상자를 다시 조사해도 한 곳으로 셉니다.</p><ul class="survey-sites">'+rows+'</ul></details>';
+}
+
 function sectorMapPage(){
   const objective=resolveObjective();
   const selected=commandZoneSelection(),meta=COMMAND_ZONES[selected],area=FIELD_ZONES[selected];
@@ -4865,7 +4949,7 @@ function sectorMapPage(){
       <div class="command-route-info"><div>${commandIcon('pin')}<span>랜드마크</span><b>${LANDMARKS[selected].length}곳</b></div><button type="button" class="cmd-route-choice route-overview-link" data-cui="forecast">${weatherIcon('clear')}<span>권역별 기상 예보</span><b aria-hidden="true">↓</b></button>${brief}</div>
       ${commandMapAction(selected)}
     </section>
-  </section>${weatherBoard(selected)}${lootPlanLink(selected)}${survivorNavLink()}${compare}${objectivePanel('map',objective)}`;
+  </section>${weatherBoard(selected)}${surveyMapJournal(selected)}${lootPlanLink(selected)}${survivorNavLink()}${compare}${objectivePanel('map',objective)}`;
 }
 
 // The equipment, warehouse and field engines own quantities and coordinates.
@@ -5381,6 +5465,7 @@ function bunkerOrderState(q){
 function bunkerOrderGoals(q){
   const state=bunkerOrderState(q);
   const active=state==='active'&&raid&&!field.result;
+  if(q.id===SHUTTLE_ORDER)return shuttleGoals();
   if(q.id==='sealed-mail'){
     const progress=state==='done'?2:active?postalProgress():0;
     return [['반송 화물실에서 우편낭 인수',Number(progress>=1),1],['통행증 발급소 접수 도장',Number(progress===2),1],['정상 탈출',Number(state==='done'),1]];
@@ -5418,8 +5503,9 @@ function ordersView(){
     detail=`<header class="bu-order-title"><h2>${q.title}</h2><small>B-04 / ${String(ORDERS.indexOf(q)+1).padStart(3,'0')}</small></header>${fundingDossierReturn(q)}
     ${bunkerPicture(q.image,q.title+' 현장','bu-order-image')}
     <div class="bu-order-columns"><section><h3>의뢰 내용</h3><p>${q.text}</p><small>${q.issuer}</small></section><section><h3>목표</h3>${bunkerOrderGoals(q).map(([label,n,max])=>`<div class="bu-goal ${n===max?'ready':''}"><i aria-hidden="true">${n===max?'✓':''}</i>${label} <span>${n} / ${max}</span></div>`).join('')}</section></div>
-    <h3>보상</h3><div class="bu-reward"><strong>${money(q.cr)}</strong><strong>+${q.xp} XP</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
+    <h3>보상</h3><div class="bu-reward"><strong>${q.id===SHUTTLE_ORDER&&!career.shuttle?'노선별 수당':money(q.cr)}</strong><strong>${q.id===SHUTTLE_ORDER&&!career.shuttle?'배차표 참조':'+'+q.xp+' XP'}</strong><button class="bu-cta" data-order="${q.id}" ${disabled?'disabled':''}>${action}</button></div>
     ${q.id==='weather-survey'&&state!=='done'?'<div class="shell-actions"><button data-cui="forecast">세 권역 예보 비교</button></div>':''}
+    ${q.id===SHUTTLE_ORDER?shuttleDossier():''}
     ${q.id===WARD_FIELD_ID?wardPackingDossier():''}
     ${q.id===RELIEF_ORDER?reliefPanel():''}
     ${q.id==='courier-checkin'&&state!=='done'?courierCheckinPanel():''}
@@ -5582,6 +5668,12 @@ function openBunkerFacility(id,tier){
   const content=$('.content');if(content)content.scrollTop=0;
 }
 function handleBunkerUI(d){
+  if(d.bui==='shuttle-dossier'){
+    if(page!=='orders'||raid||bunkerOrderSelection().q?.id!==WARD_FIELD_ID||!career.wardCheckReceipt||career.done.includes(SHUTTLE_ORDER))return;
+    bunkerOrderFilter='all';bunkerOrderSelected=SHUTTLE_ORDER;renderKeep();
+    const heading=$('.bu-order-title h2');heading?.setAttribute?.('tabindex','-1');heading?.focus?.({preventScroll:true});
+    heading?.scrollIntoView?.({block:'nearest'});return;
+  }
   if(d.bui==='external-relief'){
     if(page!=='campaign'||!finaleState.reply)return;
     bunkerOrderSelected=RELIEF_ORDER;bunkerOrderFilter='all';navigatePage('orders');return;
@@ -8631,11 +8723,12 @@ function resolveObjective(pin = objectivePin) {
   if (kind === 'order') {
     const order = ORDERS.find(entry => entry.id === id);
     const assigned = bunkerOrderGoals(order);
-    const goals = assigned.map(([label, current, target]) => ({label, value:0, target}));
+    const goals = assigned.map(([label, current, target],i) => ({label, value:id===SHUTTLE_ORDER&&i===0?current:0, target}));
     if (isActive()) {
       assigned.slice(0,-1).forEach((row,index)=>{if(row[1]>0)goals[index].projected=row[1];});
       if (objectiveRaidRating(Object.values(field.boxes).filter(box => box.complete).length) === 'success') {
-        goals[goals.length-1].projected = 1;
+        if(id===SHUTTLE_ORDER&&field.shuttle?.stage==='plan')goals[0].projected=1;
+        if(id!==SHUTTLE_ORDER||field.shuttle?.arrived)goals[goals.length-1].projected=1;
       }
     }
     const recovery=order.recovery&&isActive()
@@ -8646,10 +8739,10 @@ function resolveObjective(pin = objectivePin) {
     const sample=order.sample?sampleInspection(order,isActive()?field:null,isActive()?field.bag:equipmentState.bag):null;
     if(sample && !raid && sample.carried)goals[1].value=1;
     const observations=order.id==='weather-survey'&&isActive()?surveyObservations():[];
-    const locations=order.id===WARD_FIELD_ID?wardCheckLocations():order.id===RELIEF_ORDER?reliefDirections():order.id==='sealed-mail'?postalLocations():order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
+    const locations=order.id===SHUTTLE_ORDER?shuttleLocations():order.id===WARD_FIELD_ID?wardCheckLocations():order.id===RELIEF_ORDER?reliefDirections():order.id==='sealed-mail'?postalLocations():order.id==='weather-survey'?(observations.length===2?[]:SURVEY_STATIONS.filter(site=>!observations.some(row=>row.zone===site.zone))):sample?(sample.site.complete?[]:[sample.site]):inspections
       ? inspections.filter(site=>!site.complete).map(({zone,landmark})=>({zone,landmark}))
       : order.id==='pump-gauge' && (!isActive()||!pumpGaugeProgress())?[PUMP_SITE]:recoveryDestinations(order,carried,search);
-    return {source, title:order.title, kindLabel:'벙커 의뢰', status:'정상 탈출 시 정산',
+    return {source, title:order.title, kindLabel:'벙커 의뢰', status:id===SHUTTLE_ORDER&&!career.shuttle?'1차 정상 귀환 시 배차 확정':'정상 탈출 시 정산',
       goals, materials:[], recovery, search, inspections, locations, sample};
   }
 
@@ -13840,7 +13933,8 @@ function wardPackingDossier(){
   const record=career.wardCheckReceipt;
   if(!record)return raid?'':'<div class="shell-actions"><button data-bui="facility" data-id="med">의무실 제작 보기</button><button data-page="stash">창고에서 출격 가방 준비</button></div>';
   const site=WARD_FIELD_SITES[record.site];
-  return '<p data-ward-packing-receipt>'+esc(LANDMARKS[site.zone][site.landmark].name)+' · '+site.mark+' 표식 대조 · 귀환 확인 #'+esc(gearSerial(record.uid))+'</p>';
+  return '<p data-ward-packing-receipt>'+esc(LANDMARKS[site.zone][site.landmark].name)+' · '+site.mark+' 표식 대조 · 귀환 확인 #'+esc(gearSerial(record.uid))+'</p>'+
+    (!raid&&!career.done.includes(SHUTTLE_ORDER)?'<button type="button" data-bui="shuttle-dossier">의무 셔틀 시운전 서류 보기</button>':'');
 }
 function wardInspectionSites(f){
   return orderInspectionSites({inspections:WARD_FIELD_SITES},f);
@@ -13917,6 +14011,149 @@ function compareWardPacking(d){
   field.wardCheck={raidId:raid.startedAt,at:Date.now(),uid:d.uid,site};
   if(!writeSession()&&owner===field)delete field.wardCheck;
   renderKeep();$('[data-ward-check="marked"] h3')?.focus?.({preventScroll:true});
+}
+
+// The depot books a route on normal return. A later sortie measures the journey between its two stops.
+const SHUTTLE_ORDER='ward-shuttle',SHUTTLE_DEPOT={zone:1,landmark:6};
+const SHUTTLE_ROUTES={
+  local:{name:'외곽 순환선',from:{zone:0,landmark:1},to:{zone:0,landmark:7},seconds:45,cr:38000,xp:120},
+  freight:{name:'창고 연결선',from:{zone:2,landmark:1},to:{zone:1,landmark:1},seconds:90,cr:50000,xp:155}
+};
+function shuttleName(point){return LANDMARKS[point.zone][point.landmark].name;}
+function shuttleAt(point){return raid.zone===point.zone&&field.landmarkByZone?.[raid.zone]===point.landmark;}
+function shuttleRate(){return SHUTTLE_ROUTES[field?.shuttle?.stage==='plan'?field.shuttle.route:career?.shuttle?.route]||SHUTTLE_ROUTES.local;}
+function shuttleProgress(){return Number(Boolean(career.shuttle))+Number(Boolean(field.shuttle?.arrived));}
+function shuttleGoals(){
+  return [['배차판 노선 확정 후 1차 정상 귀환',Number(Boolean(career.shuttle)),1],
+    ['다음 출격에서 제한시간 내 도착 응답',Number(Boolean(career.shuttle?.receipt||field.shuttle?.arrived)),1],
+    ['시운전 후 정상 탈출',Number(Boolean(career.shuttle?.receipt)),1]];
+}
+function shuttleLocations(now=Date.now()){
+  const entry=isActive()?field.shuttle:null;
+  if(!career.shuttle||entry?.stage==='plan')return entry?[]:[SHUTTLE_DEPOT];
+  if(entry?.arrived||career.shuttle.receipt)return [];
+  const route=SHUTTLE_ROUTES[career.shuttle.route];
+  return [entry && now<entry.at+route.seconds*1000 ? route.to : route.from];
+}
+function shuttleRoadBrief(route){
+  if(route.from.zone===route.to.zone)return '같은 권역 · 정류장 사이 권역 이동 없음';
+  const road=routeProfile(route.from.zone,route.to.zone);
+  return esc(road.name)+' '+road.distance+'칸 · 기본 이동 '+routeSeconds(routeStepDuration(road)*road.distance)+
+    ' · 도중 조우 확률 '+routeTripChance(road.contact,road.distance);
+}
+function shuttleDescription(route){
+  return esc(route.name)+' · '+esc(shuttleName(route.from))+' → '+esc(shuttleName(route.to))+
+    ' · '+route.seconds+'초 · '+money(route.cr)+' / '+route.xp+' XP<br><small>'+shuttleRoadBrief(route)+'</small>';
+}
+function shuttleDossier(){
+  const plan=career.shuttle;
+  const selected=plan&&SHUTTLE_ROUTES[plan.route];
+  const line=plan?.receipt?'시운전 완료 · '+esc(selected.name)+' · 실제 '+((plan.receipt.arrived-plan.receipt.at)/1000).toFixed(1)+'초':
+    plan?'1차 정상 귀환으로 확정 · '+esc(selected.name)+' · 다음 출격에서 '+esc(shuttleName(selected.from))+' 호출':
+    '1차 정상 귀환은 배차만 확정합니다. 수당은 2차 시운전 후 정상 귀환할 때 지급합니다.';
+  return '<section class="pump-gauge" data-shuttle-dossier><h3>의무반 배차표</h3><p>'+line+'</p><ul>'+
+    Object.values(SHUTTLE_ROUTES).map(route=>'<li>'+shuttleDescription(route)+'</li>').join('')+'</ul>'+
+    '<p>창고 연결선은 권역을 이동합니다. 호출 시간이 지나면 출발 정류장에서 다시 부를 수 있습니다. 배차 변경은 검문소 배차판을 조정한 뒤 정상 귀환해야 반영됩니다.</p></section>';
+}
+function shuttleButton(action,text,route){
+  return '<button type="button" data-field="shuttle" data-step="'+action+'" data-raid-id="'+raid.startedAt+'"'+(route?' data-route="'+route+'"':'')+
+    (!writer||field.action||field.open||field.contact||field.journey?' disabled':'')+'>'+esc(text)+'</button>';
+}
+function shuttleFieldPanel(now=Date.now()){
+  if(career.order!==SHUTTLE_ORDER||!isActive())return '';
+  const entry=field.shuttle,plan=career.shuttle,route=plan&&SHUTTLE_ROUTES[plan.route];
+  let body='',state='';
+  if(entry?.stage==='run'){
+    const seconds=Math.ceil((entry.at+route.seconds*1000-now)/1000);
+    if(entry.arrived){state='arrived';body='도착 응답 완료 · '+esc(route.name)+' · 정상 탈출하면 '+money(route.cr)+'와 '+route.xp+' XP를 받습니다.';}
+    else if(seconds>0){
+      state='timed';body=esc(shuttleName(route.to))+' 도착 응답까지 <strong data-shuttle-seconds>'+seconds+'</strong>초 남음.';
+      if(shuttleAt(route.to))body+=' '+shuttleButton('arrive','도착 응답');
+    }else{
+      state='expired';body='호출 시간이 지났습니다. '+esc(shuttleName(route.from))+'에서 다시 호출하세요.';
+      if(shuttleAt(route.from))body+=' '+shuttleButton('call','같은 노선 다시 호출');
+    }
+  }else if(shuttleAt(SHUTTLE_DEPOT)){
+    state='depot';
+    body=(entry?'선택한 노선 · '+esc(SHUTTLE_ROUTES[entry.route].name)+' · 정상 귀환 전까지 변경할 수 있습니다.':
+      plan?'현재 확정 · '+esc(route.name)+' · 다른 노선으로 배차를 변경할 수 있습니다.':'시운전할 노선을 배차판에서 선택하세요.')+
+      Object.entries(SHUTTLE_ROUTES).filter(([id])=>id!==(entry?.route||plan?.route)).map(([id,r])=>
+        '<div>'+shuttleDescription(r)+' '+shuttleButton('plan',r.name+' 배차',id)+'</div>').join('');
+  }else if(entry?.stage==='plan'){
+    state='booked';body=esc(SHUTTLE_ROUTES[entry.route].name)+' 배차 대기 · 이번 출격에서 정상 탈출해 노선을 확정하세요.';
+  }else if(route && shuttleAt(route.from)){
+    state='ready';body=shuttleDescription(route)+' '+shuttleButton('call','호출하고 시운전 시작');
+  }else return '';
+  return '<section class="pump-gauge" data-shuttle="'+state+'"><h3 tabindex="-1">의무 셔틀 시운전</h3><div>'+body+'</div></section>';
+}
+let shownShuttleExpiry=0;
+function tickShuttle(now){
+  const record=field.shuttle;
+  if(!record||record.stage!=='run'||record.arrived||!isActive())return;
+  const deadline=record.at+SHUTTLE_ROUTES[record.route].seconds*1000;
+  if(now>=deadline){
+    if(deadline!==shownShuttleExpiry){
+      shownShuttleExpiry=deadline;
+      if(!rendering&&(page==='map'||page==='raid'))renderKeep();
+    }
+    return;
+  }
+  const timer=page==='raid'&&$('[data-shuttle-seconds]');
+  const text=String(Math.ceil((deadline-now)/1000));
+  if(timer&&timer.textContent!==text)timer.textContent=text;
+}
+function handleShuttle(d){
+  const now=Date.now();
+  if(!writer||!isActive()||career.order!==SHUTTLE_ORDER||d.raidId!==String(raid.startedAt)||now>=raid.endsAt||
+     field.action||field.journey||field.open||field.contact)return;
+  const owner=field,old=field.shuttle,plan=career.shuttle,route=plan&&SHUTTLE_ROUTES[plan.route];
+  if(d.step==='plan'){
+    if(!Object.hasOwn(SHUTTLE_ROUTES,d.route)||!shuttleAt(SHUTTLE_DEPOT)||old?.stage==='run'||d.route===(old?.route||plan?.route))return;
+    field.shuttle={stage:'plan',route:d.route,raidId:raid.startedAt,at:now};
+  }else{
+    if(!plan||plan.receipt||raid.startedAt<plan.returnedAt||old?.stage==='plan')return;
+    const deadline=old?old.at+route.seconds*1000:0;
+    if(d.step==='call' && shuttleAt(route.from) && !old?.arrived && (!old||now>=deadline)){
+      field.shuttle={stage:'run',route:plan.route,raidId:raid.startedAt,at:now};
+    }else if(d.step==='arrive' && shuttleAt(route.to)&&old&&!old.arrived&&now<deadline){
+      field.shuttle={...old,arrived:now};
+    }else return;
+  }
+  if(!writeSession()&&owner===field){if(old)field.shuttle=old;else delete field.shuttle;}
+  renderKeep();$('[data-shuttle] h3')?.focus?.({preventScroll:true});
+}
+function shuttleLegValid(r,prior,kind){
+  if(!r||typeof r!=='object'||Array.isArray(r)||Object.keys(r).some(k=>!['route','stage','raidId','at','arrived','returnedAt','receipt'].includes(k))||r.stage!==kind||!Object.hasOwn(SHUTTLE_ROUTES,r.route)||!Number.isSafeInteger(r.raidId)||r.raidId<prior||
+    !Number.isSafeInteger(r.at)||r.at<r.raidId||r.at>=r.raidId+RAID_DURATION_MS||r.at>Date.now())return false;
+  return r.arrived===undefined || (kind==='run'&&Number.isSafeInteger(r.arrived)&&r.arrived>=r.at&&
+    r.arrived<Math.min(r.raidId+RAID_DURATION_MS,r.at+SHUTTLE_ROUTES[r.route].seconds*1000)&&r.arrived<=Date.now());
+}
+function shuttleReturned(r){
+  return Number.isSafeInteger(r.returnedAt)&&r.returnedAt>=(r.arrived??r.at)&&r.returnedAt<r.raidId+RAID_DURATION_MS&&r.returnedAt<=Date.now();
+}
+function shuttlePlanValid(p,proof){
+  if(!proof||!shuttleLegValid(p,proof.at,'plan')||p.raidId<=proof.raidId||!shuttleReturned(p))return false;
+  const r=p.receipt;
+  return r===undefined||(r.receipt===undefined&&shuttleLegValid(r,p.returnedAt,'run')&&r.raidId>p.raidId&&r.route===p.route&&r.arrived!==undefined&&shuttleReturned(r));
+}
+function validShuttleBackup(s){
+  const c=s.career,f=s.field,p=c?.shuttle,entry=f?.shuttle;
+  const done=Array.isArray(c?.done)&&c.done.includes(SHUTTLE_ORDER),active=c?.order===SHUTTLE_ORDER;
+  if(!done&&!active&&p===undefined&&entry===undefined)return true;
+  if(!Array.isArray(c.done)||!c.done.includes(WARD_FIELD_ID)||!wardCheckRecord(c.wardCheckReceipt,s.hideout?.wardTrial?.paid)||
+    (p!==undefined&&!shuttlePlanValid(p,c.wardCheckReceipt))||done!==Boolean(p?.receipt)||(done&&active))return false;
+  if(p){
+    const rec=p.receipt||p,summary=s.lastSummary,rate=SHUTTLE_ROUTES[p.route];
+    if(summary?.raidId===rec.raidId && (summary.rating!=='success'||summary.elapsed!==rec.returnedAt-rec.raidId||(p.receipt?
+      summary.orderName!==ORDERS.find(order=>order.id===SHUTTLE_ORDER).title||summary.commission!==rate.cr||summary.missionXp!==rate.xp:summary.commission!==0)))return false;
+  }
+  if(entry===undefined)return true;
+  if(!entry||typeof entry!=='object'||!s.raid||!active||f.result||entry.raidId!==s.raid.startedAt||entry.returnedAt!==undefined||entry.receipt!==undefined||!Array.isArray(f.visited))return false;
+  if(entry.raidId<=c.wardCheckReceipt.raidId || (p && entry.raidId<=p.raidId))return false;
+  if(entry.stage==='plan')return shuttleLegValid(entry,p?.returnedAt??c.wardCheckReceipt.at,'plan')&&f.visited.includes(SHUTTLE_DEPOT.zone);
+  if(!p||p.receipt||entry.route!==p.route||!shuttleLegValid(entry,p.returnedAt,'run'))return false;
+  const route=SHUTTLE_ROUTES[p.route];
+  return f.visited.includes(route.from.zone)&&(!entry.arrived||f.visited.includes(route.to.zone));
 }
 
 // Shared command terminal. The region, wallet and carried space are read directly from the session.

@@ -17,7 +17,8 @@ function wardPackingDossier(){
   const record=career.wardCheckReceipt;
   if(!record)return raid?'':'<div class="shell-actions"><button data-bui="facility" data-id="med">의무실 제작 보기</button><button data-page="stash">창고에서 출격 가방 준비</button></div>';
   const site=WARD_FIELD_SITES[record.site];
-  return '<p data-ward-packing-receipt>'+esc(LANDMARKS[site.zone][site.landmark].name)+' · '+site.mark+' 표식 대조 · 귀환 확인 #'+esc(gearSerial(record.uid))+'</p>';
+  return '<p data-ward-packing-receipt>'+esc(LANDMARKS[site.zone][site.landmark].name)+' · '+site.mark+' 표식 대조 · 귀환 확인 #'+esc(gearSerial(record.uid))+'</p>'+
+    (!raid&&!career.done.includes(SHUTTLE_ORDER)?'<button type="button" data-bui="shuttle-dossier">의무 셔틀 시운전 서류 보기</button>':'');
 }
 function wardInspectionSites(f){
   return orderInspectionSites({inspections:WARD_FIELD_SITES},f);
