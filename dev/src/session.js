@@ -291,6 +291,7 @@ function validateBackup(raw){
     if(!r||!dict(a)||!supportedAction||!integer(a.start)||!integer(a.end)||a.start>a.end)return false;
     if(a.type==='move'&&!integer(a.zone,0,2)||a.type==='search'&&!f.boxes[a.key]||a.type==='extract'&&!exitBy(a.exit))return false;
   }
+  if(!validDockBackup(s))return false;
   if(s.version>=28 && !validMarketCarts(s.marketCarts,s.contracts))return false;
   if(s.version>=26 && !validInjuryBackup(s))return false;
   const summary=s.lastSummary;
@@ -298,6 +299,9 @@ function validateBackup(raw){
   if(summary?.worn&&(!Array.isArray(summary.worn)||!summary.worn.every(x=>dict(x)&&Object.hasOwn(KIT_SLOTS,x.slot)&&kitSlot(x.id)===x.slot && (x.module === undefined || PRESET_MODULES[x.id]?.includes(x.module)))))return false;
   function validHistoryRow(row,index){
     if(!dict(row)||!Object.hasOwn(ENDINGS,row.rating)||!integer(row.elapsed)||!integer(row.xp))return false;
+    if(!validDockReceipt(row,row.rating))return false;
+    if(row.liftGrams!==undefined&&(!dockAccess(s.career.surveyedBoxes)||
+       (summary?.raidId===row.at-row.elapsed&&row.liftGrams!==summary.liftGrams)))return false;
     if(!validHistoryGear(row) || (row.gearReport!==undefined && (s.version<36 || index>=12 || !integer(row.at,1) || row.at<=row.elapsed || !historyGearMatches(row,summary))))return false;
     if(!Object.hasOwn(row,'carriedCash'))return true; // Older receipts omitted carried notes.
     if(!integer(row.carriedCash)||!integer(row.commission)||!integer(row.cost)||!Number.isSafeInteger(row.cash))return false;

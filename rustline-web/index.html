@@ -1,4 +1,4 @@
-<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.83</title><style>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="color-scheme" content="dark"><title>RUSTLINE PROTOCOL · RL-TC01 v0.84</title><style>
 :root{color-scheme:dark;--canvas:#10130e;--surface:#1c2019;--panel:#292e21;--hover:#343a2c;--line:#515943;--text:#ecebd8;--muted:#bdc2a9;--accent:#d7af66;--success:#b1c98d;--danger:#f1a18b;--mono:ui-monospace,Consolas,monospace;--sans:system-ui,'Malgun Gothic',sans-serif}*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--canvas);color:var(--text);font:15px/1.5 var(--sans)}button{font:inherit;color:inherit;cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:3px;min-height:44px;padding:10px 14px;transition:background .18s,border-color .18s,color .18s}button:hover{background:var(--hover);border-color:var(--accent)}button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}button:active{filter:brightness(1.22)}button.primary{background:var(--accent);color:#211b11;border-color:var(--accent);font-weight:800}button[aria-pressed=true],button[aria-current=page]{background:#443d26;color:var(--accent);border-color:var(--accent)}[hidden]{display:none!important}.mono{font:12px var(--mono);letter-spacing:.12em;color:var(--muted)}#world{position:absolute;inset:0;overflow:hidden;background:radial-gradient(ellipse at center,#2a3025,#10130e 72%)}#photo{position:absolute;object-fit:contain;transform-origin:0 0;user-select:none;pointer-events:none;max-width:none}#mask{position:absolute;inset:0;pointer-events:none}#glass{position:absolute;left:0;top:0;width:400px;height:660px;transform-origin:0 0;pointer-events:auto;overflow:hidden;border-radius:12px;background:#11170f;color:var(--text);box-shadow:inset 0 0 26px #0009;isolation:isolate}#glass::after{content:'';position:absolute;inset:0;background:linear-gradient(145deg,#a4c2a40d,transparent 40%),repeating-linear-gradient(0deg,#0000 0 3px,#00000014 3px 4px);pointer-events:none;z-index:5}.glass-content{height:100%;display:flex;flex-direction:column;padding:17px 19px;gap:12px;background:radial-gradient(ellipse at 50% 40%,#38432d55,transparent 65%),#131a12}.devicebar{display:flex;justify-content:space-between;align-items:center;padding-bottom:9px;border-bottom:1px solid #82906a55;font:11px var(--mono);color:#bac6a6}.led{width:7px;height:7px;background:var(--success);display:inline-block;border-radius:50%;margin-right:5px;box-shadow:0 0 8px #b1c98d77}.brand{font:900 43px/.95 var(--sans);letter-spacing:-.07em;text-align:center;margin-top:12px;color:#d8ddc6}.brand small{display:block;font:700 14px var(--mono);letter-spacing:.42em;color:var(--accent);margin-top:8px}.subtitle{text-align:center;font-size:12px;color:var(--muted);letter-spacing:.16em}.portal{height:178px;border:1px solid #83966a55;background:#1a2419;position:relative;overflow:hidden}.portal svg{width:100%;height:100%;display:block}.portal-label{position:absolute;left:10px;top:9px;font:10px var(--mono);color:#c0cdab}.portal-label.bottom{top:auto;bottom:8px;left:auto;right:10px}.mainbuttons{display:grid;gap:6px;flex:1;align-content:start}.mainbuttons button{min-height:42px;display:flex;align-items:center;gap:12px;text-align:left;font-weight:650;font-size:16px;padding:9px 15px;background:#1d291d;border-color:#526047}.mainbuttons button.primary{min-height:56px;background:#d7af66;color:#211b11;font-size:21px;justify-content:center;box-shadow:0 0 16px #d7af662a}.mainbuttons button span:last-child{margin-left:auto;font:11px var(--mono);opacity:.7}.mainbuttons button.primary span:last-child{margin-left:8px}.glassfoot{font:10px var(--mono);color:var(--muted);border-top:1px solid #82906a55;padding-top:8px;display:flex;justify-content:space-between}.standby{height:100%;display:grid;place-items:center;text-align:center;background:radial-gradient(ellipse,#293525,#0d120d 70%)}.standby h2{font:700 33px var(--mono);color:var(--accent);margin:12px 0}.standby p{color:var(--muted);margin:0 0 20px}.standby button{font-size:20px}.loading{height:4px;width:230px;background:var(--panel);margin:22px auto}.loading i{display:block;background:var(--accent);height:100%;animation:load .9s linear forwards}@keyframes load{from{width:0}to{width:100%}}#hardware{position:absolute;inset:0;pointer-events:none}#hardware button{position:absolute;pointer-events:auto;background:transparent;border:0;padding:0;min-height:0;border-radius:8px;color:transparent}#hardware button:hover,#hardware button:focus-visible{background:#d7af662c;outline:1px solid var(--accent)}#outside{position:absolute;inset:auto 0 max(14px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:8px;pointer-events:none}#outside button{pointer-events:auto;background:#151b13e8;font-size:12px;padding:8px 12px;min-height:40px}#outside button:hover{background:var(--panel)}#inside{position:absolute;inset:0;background:var(--surface);display:grid;grid-template-rows:auto minmax(0,1fr) auto;overflow:hidden}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px clamp(12px,3vw,32px);background:#14180f;border-bottom:1px solid var(--line)}.topbar b{font:700 16px var(--mono);letter-spacing:.08em;color:var(--accent)}.topbar .actions{display:flex;gap:6px}.topbar button{font-size:12px;padding:8px 11px}.body{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:0;max-width:1400px;width:100%;height:100%;margin:0 auto}.nav{padding:19px 10px;display:flex;flex-direction:column;gap:7px;border-right:1px solid var(--line);background:#20251b}.nav button{text-align:left;background:transparent;border-color:transparent}.nav button[aria-current=page]{background:#443d26;border-color:#776943;color:var(--accent)}.nav small{padding:8px;font:11px var(--mono);color:var(--muted)}.nav .ico{margin-right:10px;color:var(--accent)}.content{padding:clamp(16px,4vw,40px);overflow:auto;min-width:0;min-height:0}.head{border-bottom:1px solid var(--line);padding-bottom:16px;margin-bottom:20px}.head h1{font-size:clamp(28px,4vw,42px);margin:4px 0;letter-spacing:-.045em}.head p{color:var(--muted);margin:0}.panel{background:var(--panel);border:1px solid var(--line);padding:18px;border-radius:4px;min-width:0}.panel h2{font-size:18px;margin:0 0 10px}.hero{display:grid;grid-template-columns:1fr 210px;gap:18px;align-items:center;background:linear-gradient(110deg,#303727,#20261c);border:1px solid var(--line);padding:22px}.hero h2{font-size:26px;margin:5px 0}.hero p{color:var(--muted)}.hero svg{width:100%}.modules{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}.module{text-align:left;min-height:106px;display:grid;gap:6px;padding:16px}.module b{font-size:19px}.module small{color:var(--muted)}.twocol{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}.stack{display:grid;gap:9px}.stack button{text-align:left}.map{width:100%;height:auto;background:#192419;display:block}.grid-inv{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.cell{aspect-ratio:1;min-width:0;padding:5px;font-size:12px;display:grid;place-content:center;text-align:center;background:#20251b}.cell b{font-size:23px;color:var(--accent)}.cell.empty{border:1px solid #3d4535;color:#66705b}.setting{display:flex;align-items:center;justify-content:space-between;padding:14px 0;gap:14px;border-bottom:1px solid var(--line)}.setting:last-child{border:0}.setting small{display:block;color:var(--muted)}.entry{border-bottom:1px solid var(--line);padding:13px 0}.entry:last-child{border:0}.entry p{color:var(--muted)}.foot{display:flex;justify-content:space-between;padding:9px 17px;background:#14180f;border-top:1px solid var(--line);font:11px var(--mono);color:var(--muted)}#lock{position:absolute;inset:0;background:#141a12;display:grid;place-items:center;z-index:30;text-align:center}.large .content{font-size:18px}.large .content small{font-size:15px}.fade{animation:fade .25s ease-out}@keyframes fade{from{opacity:0}to{opacity:1}}@media(max-width:640px){.body{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.nav{grid-row:2;flex-direction:row;justify-content:space-around;border-top:1px solid var(--line);border-right:0;padding:5px;gap:3px}.nav small{display:none}.nav button{flex:1;text-align:center;padding:5px 2px;font-size:11px;min-width:0}.nav .ico{display:block;margin:0;font-size:16px}.content{grid-row:1;padding:16px}.topbar{padding:8px 10px}.topbar b{font-size:12px}.topbar button{padding:7px;font-size:11px}.hero{grid-template-columns:1fr 95px;padding:15px}.hero h2{font-size:21px}.twocol{grid-template-columns:1fr}.module{min-height:90px;padding:12px}.module b{font-size:16px}.foot{font-size:9px}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* Exact approved smartphone artwork with semantic interactive hit areas. */
@@ -1685,7 +1685,7 @@ let raid=null,field=null,raidStorageOK=true,lastRaidPhase='',picked=null,dragged
 const BOX_SIZE=[5,4];
 const SAVE09='rl-reboot-session-v09';
 let stash={},wallet=30000,lastSummary=null,exitNotice='',exitSig='';
-const EXITS=[{id:'b04',name:'B-04 지하 벙커',zone:0,sec:10,rule:'free',desc:'상시 개방 · 별도 조건 없음'},{id:'truck',name:'군용 수송 차량',zone:1,sec:60,rule:'pay',desc:'15,000 CR 필요 · 성공 시 차감'},{id:'tunnel',name:'비상 정비 통로',zone:0,sec:15,rule:'empty',desc:'배낭 미착용 · 주머니와 착용 장비는 반출 가능'},{id:'security',name:'지하 보안 출입구',zone:2,sec:20,rule:'card',desc:'통제구역 키카드 소지 필요'},{id:'train',name:'군수 수송 열차',zone:2,sec:30,rule:'train',desc:'레이드마다 정해진 시간에 개방'},{id:'rescue',name:'긴급 구조 지점',zone:1,sec:30,rule:'radio',desc:'무전기 소지 필요'}];
+const EXITS=[{id:'b04',name:'B-04 지하 벙커',zone:0,sec:10,rule:'free',desc:'상시 개방 · 별도 조건 없음'},{id:'truck',name:'군용 수송 차량',zone:1,sec:60,rule:'pay',desc:'15,000 CR 필요 · 성공 시 차감'},{id:'tunnel',name:'비상 정비 통로',zone:0,sec:15,rule:'empty',desc:'배낭 미착용 · 주머니와 착용 장비는 반출 가능'},{id:'security',name:'지하 보안 출입구',zone:2,sec:20,rule:'card',desc:'통제구역 키카드 소지 필요'},{id:'train',name:'군수 수송 열차',zone:2,sec:30,rule:'train',desc:'레이드마다 정해진 시간에 개방'},{id:'rescue',name:'긴급 구조 지점',zone:1,sec:30,rule:'radio',desc:'무전기 소지 필요'},{id:'lift',name:'하역 도크 화물 리프트',zone:2,sec:25,rule:'cargo',desc:'하역 도크 탑승 · 가방 화물 4.000 kg 이하 · 대원은 별도 좌석에 탑승하며 착용 장비는 화물 중량에서 제외'}];
 const exitBy=id=>EXITS.find(e=>e.id===id);
 function trainWindow(){const start=raid.startedAt+(10+Math.floor(raid.startedAt/1000)%5)*60000;return [start,start+5*60000]}
 function exitCondition(e,now=Date.now()){return pointStatus(e,now,true)}
@@ -1744,7 +1744,7 @@ function exitPanel() {
     const waiting = field.action?.type === 'extract' && field.action.exit === exit.id;
     const window = exit.rule === 'train' ? trainWindow().map(t => formatRaid(raid.endsAt - t)).join(' → ') : '';
     const forecast = here ? exitForecast(exit, now) : '';
-    let fare = '';
+    let fare = exit.rule==='cargo'?dockLoadPanel():'';
     if (exit.rule === 'pay') {
       const carried = cashSum(field.bag);
       const balance = vehicleFareBalance(carried);
@@ -2213,13 +2213,15 @@ function readCareer(raw={},reply=null,clinic=null) {
 }
 function playerLevel(){return 1+Math.floor(Math.sqrt(career.xp/150))}
 function shuffleExits(){
-  const pool=EXITS.filter(e=>e.id!=='b04').map(e=>e.id);
+  const pool=EXITS.filter(e=>e.id!=='b04'&&e.rule!=='cargo').map(e=>e.id);
   for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}
-  return ['b04',...pool.slice(0,1+Math.floor(Math.random()*3))];
+  const exits=['b04',...pool.slice(0,1+Math.floor(Math.random()*3))];
+  if(dockAccess(career.surveyedBoxes))exits.push('lift');
+  return exits;
 }
 function prepareSortie(legacy=false){
   if(!raid)return;
-  if(!Array.isArray(field.exits))field.exits=legacy?EXITS.map(e=>e.id):shuffleExits();
+  if(!Array.isArray(field.exits))field.exits=legacy?EXITS.filter(e=>e.rule!=='cargo').map(e=>e.id):shuffleExits();
   if(!Number.isInteger(field.hp))field.hp=100;
   if(!Number.isInteger(field.steps))field.steps=0;
   if(!Number.isInteger(field.nextContact))field.nextContact=3+Math.floor(Math.random()*2);
@@ -2241,6 +2243,7 @@ function pointStatus(e, time, starting){
   if(!raid||field.result||time>=raid.endsAt)return '레이드 종료';
   if(field.journey)return '이동 중';
   if(!field.exits?.includes(e.id))return '미배정 탈출구';
+  if(e.rule==='cargo'){const reason=dockStatus();if(reason)return reason;}
   if(e.rule==='pay'&&vehicleFareBalance()<0)return '15,000 CR 필요';
   if(e.rule==='empty'&&hasRaidBackpack())return '배낭을 벗어야 합니다';
   if(e.rule==='card'&&!raidHasItem('keycard'))return '통제구역 키카드 필요';
@@ -2412,6 +2415,7 @@ function reconcileEnd(result,at,exit=null){
     const discoveries=recordReturnedSurveys(field);
     if(discoveries.length)summary.newSurveyBoxes=discoveries;
   }
+  if(returned&&exit?.rule==='cargo')summary.liftGrams=kitBagGrams(field.bag);
   settleInjuries(summary);
   delete field.gearUsage;delete field.legacyEngagement;
   const survivorSortie=survivorState.active?.raidId===raid.startedAt;
@@ -2427,7 +2431,7 @@ function reconcileEnd(result,at,exit=null){
   career.history.unshift({
     rating, elapsed, xp:earned+missionXp, exit:summary.exit, at, zone:raid.zone,
     visited, searched, victories, carriedCash, cash:wallet-walletBeforeSettlement, goods:returned?goods.slice():[],
-    commission, missionXp, orderName, cost, ...archiveGearReport(gearReport)
+    commission, missionXp, orderName, cost, ...(summary.liftGrams!==undefined?{liftGrams:summary.liftGrams}:{}), ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
   delete field.shuttle;delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
@@ -2481,7 +2485,7 @@ function resultPage(){
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
-    (r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
+    dockReceipt(r)+(r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
     (career.shuttle?.raidId===r.raidId?'<p data-shuttle-dispatch>'+esc(SHUTTLE_ROUTES[career.shuttle.route].name)+' 배차 확정 · 이번 출격 수당 0 CR · 다음 출격에서 '+esc(shuttleName(SHUTTLE_ROUTES[career.shuttle.route].from))+' 호출</p>':'')+
     (r.orderName?'<p class="exit-ok">'+esc(r.orderName)+' 의뢰 완료 · '+money(r.commission)+'</p>':'')+
@@ -3550,8 +3554,9 @@ function kitUnitMassText(unit){
 function selectedMassMarkup(unit){
   return '<span data-selected-mass>'+esc(kitUnitMassText(unit))+'</span>';
 }
+function kitBagGrams(bag){return bag.reduce((grams,unit)=>grams+kitUnitGrams(unit),0);}
 function packMassLabel(bag){
-  return bag.reduce((grams,unit)=>grams+kitUnitGrams(unit),0)/1000+' kg';
+  return kitBagGrams(bag)/1000+' kg';
 }
 // Keep existing orientation and coordinates whenever possible.
 function kitFit(list,size,item) {
@@ -4412,7 +4417,7 @@ function validJourneyBackup(snapshot){
 const SAVE_VERSION=36;
 const SAVE_KEY='rl-reboot-session-v36';
 const SAVE35='rl-reboot-session-v35';
-const WRITER_BUILD=83000; // Derived from the release title by build.py.
+const WRITER_BUILD=84000; // Derived from the release title by build.py.
 const SAVE34='rl-reboot-session-v34';
 const SAVE32='rl-reboot-session-v32';
 const SAVE29='rl-reboot-session-v29';
@@ -4701,6 +4706,7 @@ function validateBackup(raw){
     if(!r||!dict(a)||!supportedAction||!integer(a.start)||!integer(a.end)||a.start>a.end)return false;
     if(a.type==='move'&&!integer(a.zone,0,2)||a.type==='search'&&!f.boxes[a.key]||a.type==='extract'&&!exitBy(a.exit))return false;
   }
+  if(!validDockBackup(s))return false;
   if(s.version>=28 && !validMarketCarts(s.marketCarts,s.contracts))return false;
   if(s.version>=26 && !validInjuryBackup(s))return false;
   const summary=s.lastSummary;
@@ -4708,6 +4714,9 @@ function validateBackup(raw){
   if(summary?.worn&&(!Array.isArray(summary.worn)||!summary.worn.every(x=>dict(x)&&Object.hasOwn(KIT_SLOTS,x.slot)&&kitSlot(x.id)===x.slot && (x.module === undefined || PRESET_MODULES[x.id]?.includes(x.module)))))return false;
   function validHistoryRow(row,index){
     if(!dict(row)||!Object.hasOwn(ENDINGS,row.rating)||!integer(row.elapsed)||!integer(row.xp))return false;
+    if(!validDockReceipt(row,row.rating))return false;
+    if(row.liftGrams!==undefined&&(!dockAccess(s.career.surveyedBoxes)||
+       (summary?.raidId===row.at-row.elapsed&&row.liftGrams!==summary.liftGrams)))return false;
     if(!validHistoryGear(row) || (row.gearReport!==undefined && (s.version<36 || index>=12 || !integer(row.at,1) || row.at<=row.elapsed || !historyGearMatches(row,summary))))return false;
     if(!Object.hasOwn(row,'carriedCash'))return true; // Older receipts omitted carried notes.
     if(!integer(row.carriedCash)||!integer(row.commission)||!integer(row.cost)||!Number.isSafeInteger(row.cash))return false;
@@ -4949,7 +4958,7 @@ function sectorMapPage(){
       <div class="command-route-info"><div>${commandIcon('pin')}<span>랜드마크</span><b>${LANDMARKS[selected].length}곳</b></div><button type="button" class="cmd-route-choice route-overview-link" data-cui="forecast">${weatherIcon('clear')}<span>권역별 기상 예보</span><b aria-hidden="true">↓</b></button>${brief}</div>
       ${commandMapAction(selected)}
     </section>
-  </section>${weatherBoard(selected)}${surveyMapJournal(selected)}${lootPlanLink(selected)}${survivorNavLink()}${compare}${objectivePanel('map',objective)}`;
+  </section>${weatherBoard(selected)}${surveyMapJournal(selected)}${dockPlan(selected)}${lootPlanLink(selected)}${survivorNavLink()}${compare}${objectivePanel('map',objective)}`;
 }
 
 // The equipment, warehouse and field engines own quantities and coordinates.
@@ -5413,7 +5422,7 @@ function bunkerHistoryDetail(row){
   return `<div class="bu-log-detail"><dl><div><dt>탈출구</dt><dd>${esc(row.exit||'—')}</dd></div><div><dt>방문 지역</dt><dd>${stat(row.visited)}</dd></div><div><dt>수색 완료</dt><dd>${stat(row.searched)}</dd></div><div><dt>교전 승리</dt><dd>${stat(row.victories)}</dd></div></dl>
     ${cashDetail}
     ${Array.isArray(row.goods)?`<p><b>회수 물품</b> ${[...items].map(([id,n])=>esc(GOODS[id][0])+' ×'+n).join(' · ')||'없음'}</p>`:'<p>이전 버전에서 저장된 기록입니다. 당시 저장된 항목만 표시됩니다.</p>'}
-    ${row.orderName?`<p><b>의뢰 완료</b> ${esc(row.orderName)} · ${bunkerHistoryCash(row.commission)} · +${Number(row.missionXp)} XP</p>`:''}${historyGearMarkup(row)}</div>`;
+    ${row.orderName?`<p><b>의뢰 완료</b> ${esc(row.orderName)} · ${bunkerHistoryCash(row.commission)} · +${Number(row.missionXp)} XP</p>`:''}${dockReceipt(row)}${historyGearMarkup(row)}</div>`;
 }
 function recentSettlementPanel(history){
   if (!history.length) return '';
@@ -14154,6 +14163,67 @@ function validShuttleBackup(s){
   if(!p||p.receipt||entry.route!==p.route||!shuttleLegValid(entry,p.returnedAt,'run'))return false;
   const route=SHUTTLE_ROUTES[p.route];
   return f.visited.includes(route.from.zone)&&(!entry.arrived||f.visited.includes(route.to.zone));
+}
+
+// The permanent notebook earns an extra exit on future departures; the assigned list belongs to the sortie.
+const DOCK_SURVEYS=['2-3','2-4','2-8'];
+const DOCK_LIFT_LIMIT=4000;
+function dockAccess(keys){return Array.isArray(keys)&&DOCK_SURVEYS.every(key=>keys.includes(key));}
+function dockWeight(grams){return (grams/1000).toFixed(3)+' kg';}
+function dockAtPlatform(sortie=field,current=raid){return current?.zone===2&&sortie.landmarkByZone?.[2]===1;}
+function dockStatus(){
+  if(!writer)return '플레이 중인 탭에서 탑승하세요';
+  if(!dockAtPlatform())return '군수 창고 하역 도크에서 탑승';
+  const mass=kitBagGrams(field.bag);
+  return mass>DOCK_LIFT_LIMIT?'화물 '+dockWeight(mass-DOCK_LIFT_LIMIT)+' 초과':'';
+}
+function dockPlan(zone){
+  if(zone!==2)return '';
+  const keys=career.surveyedBoxes||[],count=DOCK_SURVEYS.filter(key=>keys.includes(key)).length;
+  const rows=DOCK_SURVEYS.map(key=>{
+    const {index,name}=surveySite(key),site=LANDMARKS[2].find(place=>place.boxes.includes(index));
+    return '<li data-dock-survey="'+key+'">'+esc(site.name)+' · '+esc(name)+' — '+(keys.includes(key)?'생환 기록 완료':'미기록')+'</li>';
+  }).join('');
+  const eligible=dockAccess(keys);
+  const status=raid&&!field.result?(field.exits.includes('lift')?'이번 출격 배정':'이번 출격 미배정'):
+    eligible?'다음 출격부터 상시 배정':'세 상자를 끝까지 수색하고 생환하면 다음 출격부터 배정';
+  return '<details class="survey-map-journal" data-dock-plan><summary>하역 도크 화물 리프트 · 수색 기록 '+count+' / 3</summary>'+
+    '<p data-dock-status>'+status+'</p><ul>'+rows+'</ul><p>'+esc(exitBy('lift').desc)+' · 대기 '+exitBy('lift').sec+'초</p></details>';
+}
+function dockLoadPanel(){
+  const mass=kitBagGrams(field.bag);
+  const option=mass>DOCK_LIFT_LIMIT?(dockAtPlatform()?'':dockWeight(mass-DOCK_LIFT_LIMIT)+' 초과 · ')+'가방 물품을 이 지역 바닥에 내려놓거나 다른 배정 탈출구를 이용하세요.':'남은 화물 여유 '+dockWeight(DOCK_LIFT_LIMIT-mass);
+  return '<p data-dock-load>현재 가방 '+dockWeight(mass)+' / '+dockWeight(DOCK_LIFT_LIMIT)+' · '+option+'</p>'+
+    (mass>DOCK_LIFT_LIMIT?'<button type="button" data-page="inventory">가방 열기</button>':'');
+}
+function dockReceipt(row){
+  return Number.isSafeInteger(row?.liftGrams)?'<p data-dock-receipt><b>화물 리프트 인수 중량</b> '+dockWeight(row.liftGrams)+' · 가방 내용물</p>':'';
+}
+function validDockReceipt(row,rating){
+  if(!row)return true;
+  const lift=row.exit===exitBy('lift').name;
+  if(!lift)return row.liftGrams===undefined;
+  return ['quick','success'].includes(rating)&&Number.isSafeInteger(row.liftGrams)&&row.liftGrams>=0&&row.liftGrams<=DOCK_LIFT_LIMIT;
+}
+function validDockBackup(s){
+  const r=s.raid,f=s.field,summary=s.lastSummary,store=s.career?.surveyedBoxes;
+  const hasLift=Array.isArray(f?.exits)&&f.exits.includes('lift');
+  const receipt=summary?.liftGrams!==undefined,active=f?.action?.type==='extract'&&f.action.exit==='lift';
+  if(!validDockReceipt(summary,summary?.rating))return false;
+  if(!hasLift&&!active&&!receipt)return true;
+  if(!dockAccess(store))return false;
+  if(hasLift&&(!r||f.exits.filter(id=>id==='lift').length!==1))return false;
+  if(active){
+    const a=f.action;
+    if(!hasLift||!dockAtPlatform(f,r)||!Array.isArray(f.bag)||f.bag.some(u=>!u||!Object.hasOwn(GOODS,u.g)||
+      (u.gear?.module&&!Object.hasOwn(GOODS,u.gear.module)))||kitBagGrams(f.bag)>DOCK_LIFT_LIMIT||
+      f.result||f.contact||f.journey||a.end-a.start!==exitBy('lift').sec*1000||a.start<r.startedAt||a.end>=r.endsAt)return false;
+  }
+  if(r&&summary?.raidId===r.startedAt){
+    if(hasLift&&summary.newSurveyBoxes?.some(key=>DOCK_SURVEYS.includes(key)))return false;
+    if(receipt&&(!hasLift||!dockAtPlatform(f,r)||f.result!=='success'))return false;
+  }
+  return true;
 }
 
 // Shared command terminal. The region, wallet and carried space are read directly from the session.

@@ -172,13 +172,15 @@ function readCareer(raw={},reply=null,clinic=null) {
 }
 function playerLevel(){return 1+Math.floor(Math.sqrt(career.xp/150))}
 function shuffleExits(){
-  const pool=EXITS.filter(e=>e.id!=='b04').map(e=>e.id);
+  const pool=EXITS.filter(e=>e.id!=='b04'&&e.rule!=='cargo').map(e=>e.id);
   for(let i=pool.length-1;i>0;i--){const k=Math.floor(Math.random()*(i+1));[pool[i],pool[k]]=[pool[k],pool[i]]}
-  return ['b04',...pool.slice(0,1+Math.floor(Math.random()*3))];
+  const exits=['b04',...pool.slice(0,1+Math.floor(Math.random()*3))];
+  if(dockAccess(career.surveyedBoxes))exits.push('lift');
+  return exits;
 }
 function prepareSortie(legacy=false){
   if(!raid)return;
-  if(!Array.isArray(field.exits))field.exits=legacy?EXITS.map(e=>e.id):shuffleExits();
+  if(!Array.isArray(field.exits))field.exits=legacy?EXITS.filter(e=>e.rule!=='cargo').map(e=>e.id):shuffleExits();
   if(!Number.isInteger(field.hp))field.hp=100;
   if(!Number.isInteger(field.steps))field.steps=0;
   if(!Number.isInteger(field.nextContact))field.nextContact=3+Math.floor(Math.random()*2);
@@ -200,6 +202,7 @@ function pointStatus(e, time, starting){
   if(!raid||field.result||time>=raid.endsAt)return '레이드 종료';
   if(field.journey)return '이동 중';
   if(!field.exits?.includes(e.id))return '미배정 탈출구';
+  if(e.rule==='cargo'){const reason=dockStatus();if(reason)return reason;}
   if(e.rule==='pay'&&vehicleFareBalance()<0)return '15,000 CR 필요';
   if(e.rule==='empty'&&hasRaidBackpack())return '배낭을 벗어야 합니다';
   if(e.rule==='card'&&!raidHasItem('keycard'))return '통제구역 키카드 필요';
@@ -371,6 +374,7 @@ function reconcileEnd(result,at,exit=null){
     const discoveries=recordReturnedSurveys(field);
     if(discoveries.length)summary.newSurveyBoxes=discoveries;
   }
+  if(returned&&exit?.rule==='cargo')summary.liftGrams=kitBagGrams(field.bag);
   settleInjuries(summary);
   delete field.gearUsage;delete field.legacyEngagement;
   const survivorSortie=survivorState.active?.raidId===raid.startedAt;
@@ -386,7 +390,7 @@ function reconcileEnd(result,at,exit=null){
   career.history.unshift({
     rating, elapsed, xp:earned+missionXp, exit:summary.exit, at, zone:raid.zone,
     visited, searched, victories, carriedCash, cash:wallet-walletBeforeSettlement, goods:returned?goods.slice():[],
-    commission, missionXp, orderName, cost, ...archiveGearReport(gearReport)
+    commission, missionXp, orderName, cost, ...(summary.liftGrams!==undefined?{liftGrams:summary.liftGrams}:{}), ...archiveGearReport(gearReport)
   });
   career.history.length=Math.min(12,career.history.length);
   delete field.shuttle;delete field.wardCheck;delete field.reliefDelivery;delete field.postal;delete field.weatherSurvey;delete field.pumpGauge;pumpNotice=null;
@@ -440,7 +444,7 @@ function resultPage(){
     (rating==='quick'?'<p>7분 전에 귀환했고 수색 완료 2회와 교전 승리 1회 중 어느 조건도 채우지 않아 조기 탈출로 기록됐습니다. 물품은 보존되며 기본 경험치 25를 받습니다.</p>':'')+
     '<div class="field-metrics"><div>경과 시간<b>'+formatRaid(r.elapsed)+'</b></div><div>방문 지역<b>'+r.visited+'</b></div><div>수색 완료<b>'+r.searched+'</b></div><div>교전 승리<b>'+(r.victories||0)+'</b></div></div>'+
     '<p>'+esc(r.exit||'탈출구 미도달')+' · 탈출 비용 '+money(r.cost||0)+' · 경험치 +'+((r.earned||0)+(r.missionXp||0))+'</p>'+
-    (r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
+    dockReceipt(r)+(r.carriedCash?'<p>휴대 지폐 '+(returned?'회수':'손실')+' · '+money(r.carriedCash)+'</p>':'')+
     (returned && counts.rl_bp_dressing?'<p>작업지침을 회수했습니다. 의무실에서 원본을 등록하세요.'+(hideout.wardManual.waiting.length?' 창고 공간이 부족한 원본은 의무실 인계칸에 있습니다.':'')+'</p>':'')+
     (career.shuttle?.raidId===r.raidId?'<p data-shuttle-dispatch>'+esc(SHUTTLE_ROUTES[career.shuttle.route].name)+' 배차 확정 · 이번 출격 수당 0 CR · 다음 출격에서 '+esc(shuttleName(SHUTTLE_ROUTES[career.shuttle.route].from))+' 호출</p>':'')+
     (r.orderName?'<p class="exit-ok">'+esc(r.orderName)+' 의뢰 완료 · '+money(r.commission)+'</p>':'')+

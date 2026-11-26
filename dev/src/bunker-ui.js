@@ -47,7 +47,7 @@ function bunkerHistoryDetail(row){
   return `<div class="bu-log-detail"><dl><div><dt>탈출구</dt><dd>${esc(row.exit||'—')}</dd></div><div><dt>방문 지역</dt><dd>${stat(row.visited)}</dd></div><div><dt>수색 완료</dt><dd>${stat(row.searched)}</dd></div><div><dt>교전 승리</dt><dd>${stat(row.victories)}</dd></div></dl>
     ${cashDetail}
     ${Array.isArray(row.goods)?`<p><b>회수 물품</b> ${[...items].map(([id,n])=>esc(GOODS[id][0])+' ×'+n).join(' · ')||'없음'}</p>`:'<p>이전 버전에서 저장된 기록입니다. 당시 저장된 항목만 표시됩니다.</p>'}
-    ${row.orderName?`<p><b>의뢰 완료</b> ${esc(row.orderName)} · ${bunkerHistoryCash(row.commission)} · +${Number(row.missionXp)} XP</p>`:''}${historyGearMarkup(row)}</div>`;
+    ${row.orderName?`<p><b>의뢰 완료</b> ${esc(row.orderName)} · ${bunkerHistoryCash(row.commission)} · +${Number(row.missionXp)} XP</p>`:''}${dockReceipt(row)}${historyGearMarkup(row)}</div>`;
 }
 function recentSettlementPanel(history){
   if (!history.length) return '';

@@ -99,8 +99,9 @@ function kitUnitMassText(unit){
 function selectedMassMarkup(unit){
   return '<span data-selected-mass>'+esc(kitUnitMassText(unit))+'</span>';
 }
+function kitBagGrams(bag){return bag.reduce((grams,unit)=>grams+kitUnitGrams(unit),0);}
 function packMassLabel(bag){
-  return bag.reduce((grams,unit)=>grams+kitUnitGrams(unit),0)/1000+' kg';
+  return kitBagGrams(bag)/1000+' kg';
 }
 // Keep existing orientation and coordinates whenever possible.
 function kitFit(list,size,item) {

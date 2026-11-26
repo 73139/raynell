@@ -19,7 +19,7 @@ let raid=null,field=null,raidStorageOK=true,lastRaidPhase='',picked=null,dragged
 const BOX_SIZE=[5,4];
 const SAVE09='rl-reboot-session-v09';
 let stash={},wallet=30000,lastSummary=null,exitNotice='',exitSig='';
-const EXITS=[{id:'b04',name:'B-04 지하 벙커',zone:0,sec:10,rule:'free',desc:'상시 개방 · 별도 조건 없음'},{id:'truck',name:'군용 수송 차량',zone:1,sec:60,rule:'pay',desc:'15,000 CR 필요 · 성공 시 차감'},{id:'tunnel',name:'비상 정비 통로',zone:0,sec:15,rule:'empty',desc:'배낭 미착용 · 주머니와 착용 장비는 반출 가능'},{id:'security',name:'지하 보안 출입구',zone:2,sec:20,rule:'card',desc:'통제구역 키카드 소지 필요'},{id:'train',name:'군수 수송 열차',zone:2,sec:30,rule:'train',desc:'레이드마다 정해진 시간에 개방'},{id:'rescue',name:'긴급 구조 지점',zone:1,sec:30,rule:'radio',desc:'무전기 소지 필요'}];
+const EXITS=[{id:'b04',name:'B-04 지하 벙커',zone:0,sec:10,rule:'free',desc:'상시 개방 · 별도 조건 없음'},{id:'truck',name:'군용 수송 차량',zone:1,sec:60,rule:'pay',desc:'15,000 CR 필요 · 성공 시 차감'},{id:'tunnel',name:'비상 정비 통로',zone:0,sec:15,rule:'empty',desc:'배낭 미착용 · 주머니와 착용 장비는 반출 가능'},{id:'security',name:'지하 보안 출입구',zone:2,sec:20,rule:'card',desc:'통제구역 키카드 소지 필요'},{id:'train',name:'군수 수송 열차',zone:2,sec:30,rule:'train',desc:'레이드마다 정해진 시간에 개방'},{id:'rescue',name:'긴급 구조 지점',zone:1,sec:30,rule:'radio',desc:'무전기 소지 필요'},{id:'lift',name:'하역 도크 화물 리프트',zone:2,sec:25,rule:'cargo',desc:'하역 도크 탑승 · 가방 화물 4.000 kg 이하 · 대원은 별도 좌석에 탑승하며 착용 장비는 화물 중량에서 제외'}];
 const exitBy=id=>EXITS.find(e=>e.id===id);
 function trainWindow(){const start=raid.startedAt+(10+Math.floor(raid.startedAt/1000)%5)*60000;return [start,start+5*60000]}
 function exitCondition(e,now=Date.now()){return pointStatus(e,now,true)}
@@ -78,7 +78,7 @@ function exitPanel() {
     const waiting = field.action?.type === 'extract' && field.action.exit === exit.id;
     const window = exit.rule === 'train' ? trainWindow().map(t => formatRaid(raid.endsAt - t)).join(' → ') : '';
     const forecast = here ? exitForecast(exit, now) : '';
-    let fare = '';
+    let fare = exit.rule==='cargo'?dockLoadPanel():'';
     if (exit.rule === 'pay') {
       const carried = cashSum(field.bag);
       const balance = vehicleFareBalance(carried);

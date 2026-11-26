@@ -129,5 +129,5 @@ function sectorMapPage(){
       <div class="command-route-info"><div>${commandIcon('pin')}<span>랜드마크</span><b>${LANDMARKS[selected].length}곳</b></div><button type="button" class="cmd-route-choice route-overview-link" data-cui="forecast">${weatherIcon('clear')}<span>권역별 기상 예보</span><b aria-hidden="true">↓</b></button>${brief}</div>
       ${commandMapAction(selected)}
     </section>
-  </section>${weatherBoard(selected)}${surveyMapJournal(selected)}${lootPlanLink(selected)}${survivorNavLink()}${compare}${objectivePanel('map',objective)}`;
+  </section>${weatherBoard(selected)}${surveyMapJournal(selected)}${dockPlan(selected)}${lootPlanLink(selected)}${survivorNavLink()}${compare}${objectivePanel('map',objective)}`;
 }
