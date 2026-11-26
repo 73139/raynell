@@ -1,7 +1,12 @@
 """Earn the ledger prerequisite and personally carry a single mail parcel using the game UI.
-Set RUSTLINE_POSTAL_NATURAL=1 to use the browser's own wall clock and RNG (one mobile run).
+Set RUSTLINE_POSTAL_NATURAL=1 for the browser's wall clock and RNG (one mobile run).
+Set RUSTLINE_POSTAL_TRANSFER=1 to move the live sortie to a fresh profile via a downloaded file.
 """
+import json
 import os
+from contextlib import ExitStack
+from hashlib import sha256
+from tempfile import TemporaryDirectory
 from pathlib import Path
 from urllib.parse import urldefrag
 from playwright.sync_api import expect,sync_playwright
@@ -12,11 +17,20 @@ KEY='rl-reboot-session-v36';MAIL='sealed-mail';GOOD='rl_sealed_mail'
 
 def play(browser,width,natural):
     mobile=width==390
-    with browser.new_context(viewport={'width':width,'height':844},has_touch=mobile,is_mobile=mobile,reduced_motion='reduce',ignore_https_errors=os.getenv('RUSTLINE_IGNORE_HTTPS_ERRORS')=='1') as c:
-        if not LIVE:c.route(URL+'**',lambda r:r.fulfill(body=HTML,content_type='text/html; charset=utf-8'))
-        if not natural:c.add_init_script('Math.random=()=>0.10')
-        p=c.new_page();p.set_default_timeout(7500);p.set_default_navigation_timeout(60000);errors=[];p.on('pageerror',lambda e:errors.append(str(e)))
-        if not natural:p.clock.install()
+    transfer=os.getenv('RUSTLINE_POSTAL_TRANSFER')=='1'
+    errors=[]
+    with ExitStack() as stack:
+        def new_profile(clock=None):
+            ctx=stack.enter_context(browser.new_context(viewport={'width':width,'height':844},has_touch=mobile,is_mobile=mobile,
+                reduced_motion='reduce',ignore_https_errors=os.getenv('RUSTLINE_IGNORE_HTTPS_ERRORS')=='1'))
+            if not LIVE:ctx.route(URL+'**',lambda r:r.fulfill(body=HTML,content_type='text/html; charset=utf-8'))
+            if not natural:ctx.add_init_script('Math.random=()=>0.10')
+            page=ctx.new_page()
+            page.set_default_timeout(7500);page.set_default_navigation_timeout(60000)
+            page.on('pageerror',lambda e:errors.append(str(e)))
+            if not natural:page.clock.install(time=clock)
+            return ctx,page
+        c,p=new_profile()
         def click(sel):
             loc=p.locator(sel+':visible').first
             if mobile:loc.tap()
@@ -81,15 +95,56 @@ def play(browser,width,natural):
             previous.close()
         click('.nav [data-page=inventory]');bag_tab(1);click(f'[data-pick="{uid}"][data-side=bag]');click(f'[data-gear=drop][data-unit="{uid}"]')
         raid_tab(2);stage('ground');expect(p.locator('[data-postal-stage]')).to_contain_text('군수 보급 창고 바닥')
-        p.reload(wait_until='domcontentloaded');raid_tab(2);stage('ground');expect(p.locator('[data-field=postal-pickup]')).to_have_count(0)
+        if transfer:
+            def identity(state):
+                assert state['field']['postal']['raidId']==state['raid']['startedAt']
+                assert state['objectivePin']=={'kind':'order','id':MAIL} and state['career']['order']==MAIL
+                units=[(z,u['uid']) for z,ground in enumerate(state['field']['gearGround']) for u in ground if u['g']==GOOD]
+                assert units==[(2,uid)] and not any(u['g']==GOOD for u in state['field']['bag'])
+                return state['raid']['startedAt'],state['raid']['endsAt'],state['raid']['zone'],state['field']['landmarkByZone'][2],state['wallet'],units
+            before=identity(saved())
+            assert before[2:5]==(2,4,64000) and before[1]-before[0]==30*60000
+            click('.shell-settings')
+            with TemporaryDirectory(prefix='rustline-postal-transfer-') as directory:
+                with p.expect_download() as downloading:click('[data-backup=export]')
+                download=downloading.value;path=Path(directory)/download.suggested_filename
+                assert path.name=='Rustline_save_v36.json'
+                download.save_as(path)
+                raw=path.read_bytes();data=json.loads(raw)
+                assert data['format']=='rustline-tc01' and identity(data['session'])==before
+                clock=None if natural else p.evaluate('Date.now()/1000')
+                p.close();c.close()
+                c,p=new_profile(clock)
+                response=p.goto(URL+'#map');assert response.ok and response.body()==HTML
+                click('.shell-settings')
+                p.wait_for_function('k=>!!localStorage.getItem(k)',arg=KEY)
+                empty=saved()
+                assert empty['wallet']==30000 and empty['raid'] is None and not empty['career']['done'] and not empty['objectivePin']
+                confirmations=[]
+                def replace(dialog):
+                    confirmations.append((dialog.type,dialog.message))
+                    dialog.accept()
+                p.once('dialog',replace)
+                with p.expect_file_chooser() as choosing:click('[data-backup=import]')
+                choosing.value.set_files(path)
+                expect(p.locator('.save-panel [role=status]')).to_contain_text('백업을 복원했습니다.')
+                assert len(confirmations)==1 and confirmations[0][0]=='confirm' and '백업으로 교체' in confirmations[0][1]
+                assert identity(saved())==before
+                print('TRANSFER '+json.dumps(dict(start=before[0],end=before[1],zone=before[2],landmark=before[3],wallet=before[4],
+                    uid=uid,fileSize=len(raw),fileSha256=sha256(raw).hexdigest(),htmlSha256=sha256(HTML).hexdigest()),ensure_ascii=False),flush=True)
+        else:p.reload(wait_until='domcontentloaded')
+        raid_tab(2);stage('ground');expect(p.locator('[data-field=postal-pickup]')).to_have_count(0)
         click('.nav [data-page=inventory]');bag_tab(2);click(f'[data-gear=recover][data-unit="{uid}"]');raid_tab(2);stage('carried')
+        assert [unit['uid'] for unit in saved()['field']['bag'] if unit['g']==GOOD]==[uid]
         site(1,4);button=p.locator('[data-field=postal-stamp]');expect(button).to_be_enabled();button.focus();p.keyboard.press('Enter');stage('stamped');assert not any(x['g']==GOOD for x in saved()['field']['bag'])
         expect(p.locator('[data-field=postal-stamp]')).to_have_count(0)
+        assert not any(unit['g']==GOOD for ground in saved()['field']['gearGround'] for unit in ground)
         # A genuine two-case search qualifies for normal extraction without buying gear or fighting.
         search(1,4,5);search(1,4,9);r=extract();assert (r['rating'],r['commission'],r['missionXp'],r['goods'])==('success',30000,105,[])
         click('[data-raid=ack]');p.reload(wait_until='domcontentloaded');s=saved();assert s['wallet']==94000 and s['career']['done'].count(MAIL)==1 and not s['stash'] and s['career']['sorties']==2
+        assert sum(row.get('commission',0) for row in s['career']['history'])==64000 and s['career']['returns']==2
         nav('quests');click('[data-page=orders]');click(f'[data-bui=order][data-id="{MAIL}"]');expect(p.locator(f'[data-order="{MAIL}"]')).to_be_disabled();assert not errors,errors
-        print(f'PASS {width}px {"real clock/RNG" if natural else "controlled clock/RNG"}: new player earned access, real 2-cell mail, region drop and original UID recovered across reload, relay consumed it, normal extraction {r["elapsed"]} ms, one 30,000 CR / 105 XP payment, 94,000 CR after both orders.',flush=True)
+        print(f'PASS {width}px {"real clock/RNG" if natural else "controlled clock/RNG"}: new player earned access, real 2-cell mail, region drop and original UID recovered across {"file transfer" if transfer else "reload"}, relay consumed it, normal extraction {r["elapsed"]} ms, one 30,000 CR / 105 XP payment, 94,000 CR after both orders.',flush=True)
 
 if __name__=='__main__':
     natural=os.getenv('RUSTLINE_POSTAL_NATURAL')=='1';proxy={'server':os.environ['RUSTLINE_PROXY']} if os.getenv('RUSTLINE_PROXY') else None

@@ -72,7 +72,10 @@ function catalogFieldMarkup(id,regions){
   const available=regions.filter(region=>region.landmarks.length);
   if(!available.length)return '<p>현재 배정된 현장 보관함이 없습니다.</p>';
   const needsKey=available.every(region=>region.landmarks.every(point=>point.boxes.every(box=>box.keyId)));
-  return '<p>새 보관함 하나에 이 물품이 1개 이상 들어 있을 확률입니다. 빈 보관함도 포함합니다. 다른 생존자가 먼저 수색하면 남은 물품은 달라질 수 있습니다.</p>'+
+  const selected=lootPlan==='item/'+id;
+  return '<button type="button" data-lootplan="catalog-item" data-id="'+esc(id)+'"'+(writer?'':' disabled')+'>'+
+    (selected?'이 물품의 수색 계획 열기':'이 물품을 탐색 목표로 설정')+'</button><span role="status" data-track-status></span>'+
+    '<p>새 보관함 하나에 이 물품이 1개 이상 들어 있을 확률입니다. 빈 보관함도 포함합니다. 다른 생존자가 먼저 수색하면 남은 물품은 달라질 수 있습니다.</p>'+
     (needsKey?'<p><strong>모든 후보에 열쇠가 필요합니다.</strong></p>':'')+
     available.map(region=>'<section data-catalog-region="'+region.zone+'"><h4>'+esc(region.name)+'</h4><ul>'+
       region.landmarks.map(point=>'<li><b>'+esc(point.name)+'</b>'+point.boxes.map(box=>{

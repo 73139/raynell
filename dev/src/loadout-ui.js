@@ -156,10 +156,11 @@ function sortiePreflight(kit,zoneId){
       }
     }
   }
-  if(hunt){
-    const [,w,h]=GOODS[hunt.item];
+  const soughtItems=new Set([hunt?.item,lootGoalDefinition(lootPlan)?.item].filter(Boolean));
+  for(const item of soughtItems){
+    const [,w,h]=GOODS[item];
     const fit=Boolean(firstFit(kit.bag,size,w,h)||firstFit(kit.bag,size,h,w));
-    rows.push({kind:'fit',ok:fit,label:kitName(hunt.item)+' 회수 공간',detail:w+' × '+h+'칸 · '+(fit?'1개 배치 가능':'현재 배치 불가 (회전 포함)')});
+    rows.push({kind:'fit',ok:fit,label:kitName(item)+' 회수 공간',detail:w+' × '+h+'칸 · '+(fit?'1개 배치 가능':'현재 배치 불가 (회전 포함)')});
   }
   return {free,capacity:size[0]*size[1],rows,plan:exact||(!destination&&hunt)?'barterhunt':'lootplan'};
 }

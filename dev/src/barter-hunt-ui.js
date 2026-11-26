@@ -14,7 +14,12 @@ function huntSummary(where){
     (point?'<p>출격 지점 · '+esc(point)+'</p>':'')+'</section>';
 }
 function huntBadge(unit){
-  if(!unit.revealed||!barterHunt||unit.g!==barterHunt.item)return '';
+  if(!unit.revealed)return '';
+  if(lootPlan==='item/'+unit.g){
+    const barter=barterHunt?.item===unit.g;
+    return '<b class="bh-badge" data-catalog-track-badge'+(barter?' data-hunt-badge':'')+' aria-hidden="true">'+(barter?'교환·목표':'목표')+'</b>';
+  }
+  if(!barterHunt||unit.g!==barterHunt.item)return '';
   return '<b class="bh-badge" data-hunt-badge aria-label="추적 중인 교환 재료">교환</b>';
 }
 function huntTrackButton(trader,recipe,item){

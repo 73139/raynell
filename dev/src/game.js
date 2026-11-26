@@ -271,7 +271,8 @@ function gridMarkup(items,size,side){
     const hint=source&&!hidden?objectiveLootHint(o,objective):'';
     const pos=`data-tile-x="${o.x}" data-tile-y="${o.y}"`;
     const action=manual?'tabindex="-1"':hidden?(field.action?'disabled':'data-field="search"'):`draggable="true" data-pick="${esc(o.uid)}" data-side="${side}" aria-pressed="${Boolean(selected)}"`;
-    const label=hidden?(searching?'수색 중':'미확인 물품 수색'):esc(g[0]+hint);
+    const tracking=source&&!hidden&&lootPlan==='item/'+o.g?' · 도감 탐색 목표':'';
+    const label=hidden?(searching?'수색 중':'미확인 물품 수색'):esc(g[0]+hint+tracking);
     const art=hidden?ico('search','search-symbol')+(searching?'<span class="tile-progress" aria-hidden="true"><i id="tile-progress-fill"></i></span>':''):
       `${itemArt(o.g,'item-symbol')}<span>${o.g==='cr_notes'?money(o.amount):g[0]}</span><small>${o.w}×${o.h}</small>${source?objectiveLootBadge(hint)+huntBadge(o):''}`;
     return `<button type="button" class="loot-tile ${hidden?'unknown':''} ${searching?'searching':''} ${selected?'chosen':''}" style="grid-column:${o.x+1}/span ${o.w};grid-row:${o.y+1}/span ${o.h}" ${pos} ${action} aria-label="${label}" ${hint?'title="'+label+'"':''}>${art}</button>`;

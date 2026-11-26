@@ -122,6 +122,7 @@ def play(browser, width):
 
 
 if __name__=="__main__":
-    with sync_playwright() as pw,pw.chromium.launch(executable_path=os.getenv("RUSTLINE_CHROMIUM")) as browser:
+    proxy={"server":os.environ["RUSTLINE_PROXY"]} if os.getenv("RUSTLINE_PROXY") else None
+    with sync_playwright() as pw,pw.chromium.launch(executable_path=os.getenv("RUSTLINE_CHROMIUM"),proxy=proxy) as browser:
         for size in [390,1280]:
             play(browser,size)

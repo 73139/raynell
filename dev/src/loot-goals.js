@@ -14,13 +14,20 @@ const LOOT_LOCKS=[
 const lootForecasts=new Map();
 let lootPlan=null,lootDestination=null;
 
+function lootGoalDefinition(id){
+  if(typeof id!=='string')return null;
+  if(!id.startsWith('item/'))return LOOT_GOALS.find(goal=>goal.id===id)||null;
+  const item=id.slice(5);
+  if(!Object.hasOwn(ITEM_META,item)||!ITEM_META[item].lootSources.length)return null;
+  return {id,item,label:kitName(item)};
+}
 function validLootGoal(id){
-  return id===null || LOOT_GOALS.some(goal=>goal.id===id);
+  return id===null || Boolean(lootGoalDefinition(id));
 }
 function validLootDestination(value,goalId){
   if(value===null)return true;
   if(!value || typeof value!=='object' || value.goal!==goalId || !Number.isInteger(value.zone) || !Number.isInteger(value.index))return false;
-  const goal=LOOT_GOALS.find(row=>row.id===goalId);
+  const goal=lootGoalDefinition(goalId);
   return Boolean(goal && lootRegionsFor(goal)[value.zone]?.landmarks.some(point=>point.index===value.index));
 }
 function loadLootGoal(id,destination){
@@ -72,7 +79,9 @@ function lootTableForecast(goal,table){
 }
 function lootRegionsFor(goal){
   if(lootForecasts.has(goal.id))return lootForecasts.get(goal.id);
-  const tables=Object.fromEntries(Object.entries(LOOT_TABLES).map(([id,table])=>[id,lootTableForecast(goal,table)]));
+  const tables=Object.fromEntries(Object.entries(LOOT_TABLES).map(([id,table])=>[
+    id,goal.item?{score:huntContainerOdds(id,goal.item).whole,examples:[goal.item]}:lootTableForecast(goal,table)
+  ]));
   const regions=LANDMARKS.map((points,zone)=>{
     const landmarks=points.map((point,index)=>{
       const boxes=point.boxes.map(boxIndex=>{
@@ -90,8 +99,8 @@ function lootRegionsFor(goal){
   return regions;
 }
 function lootGoalView(){
-  const goal=LOOT_GOALS.find(row=>row.id===lootPlan);
-  return {selected:lootPlan,destination:lootDestination,goals:LOOT_GOALS,regions:goal?lootRegionsFor(goal):[]};
+  const goal=lootGoalDefinition(lootPlan);
+  return {selected:lootPlan,destination:lootDestination,goals:goal?.item?[...LOOT_GOALS,goal]:LOOT_GOALS,regions:goal?lootRegionsFor(goal):[]};
 }
 
 function startLootLocks(raidId){

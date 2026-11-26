@@ -30,17 +30,18 @@ function lootPlanPercent(probability){
   if(percent>0 && percent<.1)return '0.1% 미만';
   return Number(percent.toFixed(1)).toLocaleString('ko-KR')+'%';
 }
-function lootPlanBoxEvidence(z,box){
+function lootPlanBoxEvidence(z,box,item){
   const lock=box.keyId?lootLockView(z,box.index):null;
   const access=lock?(lock.legacy?'':lock.unlocked?' · 개방 완료':' · 열쇠 필요'):'';
-  return '<li><span>'+esc(box.name)+'</span><small>'+esc(box.tableName)+' · 첫 추첨 '+lootPlanPercent(box.score)+access+'</small></li>';
+  const chance=item?'상자 전체 1개 이상 '+huntOddsPercent(box.score):'첫 추첨 '+lootPlanPercent(box.score);
+  return '<li><span>'+esc(box.name)+'</span><small>'+esc(box.tableName)+' · '+chance+access+'</small></li>';
 }
-function lootPlanPoint(point,destination){
+function lootPlanPoint(point,destination,item){
   const z=point.zone;
   const chosen=destination?.zone===z&&destination.index===point.index;
   const buttonLabel=!raid?'이 지점으로 출격 준비':z===raid.zone?'이 랜드마크로 이동':'이 권역의 이동 경로';
   return '<article class="lp-point" data-lootplan-point data-zone="'+z+'" data-landmark="'+point.index+'" data-chosen="'+chosen+'">'+
-    '<h3>'+esc(point.name)+(chosen?'<small>지정한 지점</small>':'')+'</h3><ul>'+point.boxes.map(box=>lootPlanBoxEvidence(z,box)).join('')+
+    '<h3>'+esc(point.name)+(chosen?'<small>지정한 지점</small>':'')+'</h3><ul>'+point.boxes.map(box=>lootPlanBoxEvidence(z,box,item)).join('')+
     '</ul>'+lootPlanPointButton(z,point,buttonLabel)+'</article>';
 }
 
@@ -69,9 +70,11 @@ function lootPlanKeyCount(id){
 function lootPlanRegionSection(v,z,goal){
   const region=v.regions.find(r=>r.zone===z);
   const candidates=region?.landmarks||[];
-  const primary=candidates.slice(0,3).map(point=>lootPlanPoint(point,v.destination)).join('');
+  const primary=candidates.slice(0,3).map(point=>lootPlanPoint(point,v.destination,goal?.item)).join('');
   const remainder=candidates.slice(3);
-  const recommendation=goal
+  const recommendation=goal?.item
+    ? '<p>'+esc(goal.label)+' 하나 이상을 찾을 확률이 높은 지점부터 표시합니다. 각 지점의 새 상자를 모두 수색할 때의 순위이며, 잠긴 상자는 열쇠가 필요합니다.</p>'
+    : goal
     ? '<p>이 권역에서 '+esc(goal.label)+' 후보입니다. 상자별 수치는 첫 물품이 이 분류일 확률이며 빈 상자 가능성도 포함합니다. 지점은 상자들의 첫 추첨 중 한 번 이상 목표에 맞을 확률순입니다.</p>'
     : '<p>위에서 목표 물자를 선택하면 해당 분류를 찾을 수 있는 랜드마크와 상자가 표시됩니다.</p>';
   return '<section class="lp-region" aria-label="권역별 수색 후보">'+
@@ -81,7 +84,7 @@ function lootPlanRegionSection(v,z,goal){
     '<button class="lp-key-jump" type="button" data-lootplan="key">보관함 열쇠 보기</button></div>'+recommendation+
     (goal?(candidates.length?'<div class="lp-points">'+primary+'</div>':'<p>이 권역에는 해당 분류가 나오는 수색 대상이 없습니다.</p>'):'')+
     (remainder.length?'<details data-lp-more><summary>나머지 후보 '+remainder.length+'곳</summary><div class="lp-points">'+
-      remainder.map(point=>lootPlanPoint(point,v.destination)).join('')+'</div></details>':'')+'</div>'+lootPlanKeyCard(z)+'</div></section>';
+      remainder.map(point=>lootPlanPoint(point,v.destination,goal?.item)).join('')+'</div></details>':'')+'</div>'+lootPlanKeyCard(z)+'</div></section>';
 }
 
 function lootPlanPage(){
@@ -113,6 +116,15 @@ function lootPlanLockedCard(z,i,busy){
 }
 
 function handleLootPlanUI(d){
+  if(d.lootplan==='catalog-item'){
+    if(page!=='catalog'||catalogSelected!==d.id||!lootGoalDefinition('item/'+d.id)||!writer)return;
+    const result=setLootGoal('item/'+d.id);
+    if(!result.ok){$('#db-detail [data-track-status]').textContent=result.message;return;}
+    const view=lootGoalView(),here=raid?raid.zone:zone;
+    lootPlanRegion=view.regions[here]?.landmarks.length?here:view.regions.find(r=>r.landmarks.length)?.zone??here;
+    lootPlanFeedback='';navigatePage('lootplan');
+    $('.lp-selector [aria-pressed="true"]')?.focus?.({preventScroll:true});return;
+  }
   if(d.lootplan==='unlock'){
     if(page!=='raid')return;
     const reply=unlockLootBox(Number(d.raidId),Number(d.zone),Number(d.index));
