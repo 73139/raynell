@@ -266,7 +266,7 @@ function validateBackup(raw){
   if(!validBarterHunt(s.barterHunt,s.contracts))return false;
   if(s.version>=24 && !validLootGoalBackup(s))return false;
   if(s.version>=24 && s.plannedDepartureZone!==undefined && (s.raid || (s.version<27 && !s.lootDestination) || !integer(s.plannedDepartureZone,0,FIELD_ZONES.length-1)))return false;
-  if(!validWardBackup(s)||!validCaseBackup(s)||!validateEquipmentBackup(s)||!validContractsBackup(s.contracts)||!validRecurringSave(s.periodic))return false;
+  if(!validWardBackup(s)||!validCaseBackup(s)||!validateEquipmentBackup(s)||!validContractsBackup(s.contracts,s.lastSummary)||!validRecurringSave(s.periodic))return false;
   const r=s.raid,f=s.field;
   if(s.career?.order==='courier-checkin'||s.career?.done?.includes?.('courier-checkin')){
     const done=s.career.done;

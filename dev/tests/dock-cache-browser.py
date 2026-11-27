@@ -131,13 +131,21 @@ class Operator:
 def local_seed(html_path):
     # Seed only the three recorded surveys. Both pieces of equipment are bought through the shop.
     js = """const {boot,clone}=require('./tests/game-fixture.cjs');
-             const s=clone(boot().g.s);s.career.surveyedBoxes=['2-3','2-4','2-8'];
+             const b=boot(),s=clone(b.g.s);s.career.surveyedBoxes=['2-3','2-4','2-8'];
+             s.contracts.quarter.done=b.g.quests.filter(q=>q.trader==='quarter'&&q.tier<4).map(q=>q.id);
              process.stdout.write(JSON.stringify(s));"""
     return json.loads(subprocess.check_output(['node','-e',js,'seed',str(html_path)],cwd=DEV,text=True))
 
 
 def gear_units(units, serial):
     return [u for u in units if u.get('gear',{}).get('uid')==serial]
+
+
+def dock_contract(op):
+    op.visit('quests')
+    op.click('[data-contract=trader][data-id=quarter]')
+    op.click('[data-contract=tier][data-tier="4"]')
+    op.click('[data-contract=open][data-id=quarter-dock-chain]')
 
 
 def primary(browser, html, seed, width):
@@ -152,6 +160,9 @@ def primary(browser, html, seed, width):
         assert len(stock)==2
         for unit in stock:
             op.pack(unit['uid'])
+        dock_contract(op)
+        op.click('[data-contract=accept][data-id=quarter-dock-chain]')
+        assert op.saved()['contracts']['quarter']['active']['progress']==[0]
         op.start(2)
         first = op.saved()
         a,b = first['field']['bag']
@@ -195,6 +206,8 @@ def primary(browser, html, seed, width):
         assert ready['dockCache']['stage']=='ready' and ready['dockCache']['unit']['gear']==a['gear']
         assert ready['lastSummary']['liftGrams']==2100
         assert ready['lastSummary']['dockCacheOutcome']=='booked'
+        record=ready['contracts']['quarter']['active']
+        assert record['progress']==[1] and record['dockProof']['uid']==a['gear']['uid']
         expect(op.button('[data-dock-cache-receipt]')).to_contain_text('보관 확정')
         assert len(gear_units(ready['stashSlots'],b['gear']['uid']))==1 and not gear_units(ready['stashSlots'],a['gear']['uid'])
         op.click('[data-raid=ack]')
@@ -260,6 +273,20 @@ def primary(browser, html, seed, width):
         assert final['lastSummary']['liftGrams']==2100 and not final.get('dockCache')
         assert len(gear_units(final['stashSlots'],a['gear']['uid']))==1
         assert not gear_units(final['stashSlots'],b['gear']['uid'])
+        assert final['contracts']['quarter']['active']['progress']==[2]
+        assert final['contracts']['quarter']['active']['dockProof']['returnedRaidId']==second['raid']['startedAt']
+        op.click('[data-raid=ack]')
+        dock_contract(op)
+        before=op.saved()
+        op.click('[data-contract=claim][data-id=quarter-dock-chain]')
+        after=op.saved()
+        assert after['wallet']-before['wallet']==30000
+        assert after['career']['xp']-before['career']['xp']==120
+        op.page.reload()
+        dock_contract(op)
+        assert 'quarter-dock-chain' in op.saved()['contracts']['quarter']['done']
+        expect(op.button('[data-contract=claim][data-id=quarter-dock-chain]')).to_have_count(0)
+        assert op.saved()['wallet']==after['wallet']
         return pending, second
     finally:
         op.close()
@@ -278,6 +305,7 @@ def other_exit(browser,html,checkpoint,width,expected):
         assert not gear_units(saved['stashSlots'],checkpoint['dockCache']['unit']['gear']['uid'])
         assert saved['lastSummary']['exit']=='B-04 지하 벙커'
         assert saved['lastSummary']['dockCacheOutcome']==expected
+        assert saved['contracts']['quarter']['active']['progress']==[0]
         text='맡긴 장비를 잃었습니다' if expected=='forfeited' else '보관 기한이 끝났습니다'
         expect(op.button('[data-dock-cache-receipt]')).to_contain_text(text)
     finally:
