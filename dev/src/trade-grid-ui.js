@@ -44,10 +44,10 @@ function tradeStockGrid(ids) {
   const tiles=marketCartTiles(ids.map(item=>({item})));
   const html=tiles.map(tile=>{
     const item=tile.uid,price=GOODS[item][6];
-    return tradeTile({...tile,item},{action:'data-market="item" data-id="'+esc(item)+'"',cls:'mk-offer',drag:writer&&!raid?'stock':'',
-      chosen:marketUI.item===item,badge:price.toLocaleString('ko-KR'),description:money(price)});
+    return tradeTile({...tile,item},{action:'data-market="item" data-id="'+esc(item)+'"',cls:'mk-offer',drag:marketUI.mode==='buy'&&writer&&!raid?'stock':'',
+      chosen:marketUI.mode==='buy'&&marketUI.item===item,badge:price.toLocaleString('ko-KR'),description:money(price)});
   }).join('');
-  return tradeBoard('stock',html,6,tradeGridRows(tiles,3),ids.length?'':'진열된 물품이 없습니다.');
+  return tradeBoard('stock',html,6,tradeGridRows(tiles,8),ids.length?'':'진열된 물품이 없습니다.');
 }
 function tradeCartGrid(id,cart) {
   const tiles=marketCartTiles(marketCarts.traders[id]?.items||[]);
@@ -56,7 +56,7 @@ function tradeCartGrid(id,cart) {
     return tradeTile({...tile,item},{action:'data-tg="cart-select" data-id="'+esc(item)+'"',drag:writer&&!raid?'cart':'',
       chosen:tradeGridState.cartItem===item,badge:'×'+line.quantity,description:'주문 '+line.quantity+'개 · '+money(line.total)});
   }).join('');
-  return tradeBoard('cart',html,6,tradeGridRows(tiles,4,true),html?'':'상인 물품을 여기에 놓으세요')+
+  return tradeBoard('cart',html,6,tradeGridRows(tiles,8,true),html?'':'상인 물품을 여기에 놓으세요')+
     (tradeGridState.cartItem&&cart.lines.some(row=>row.item===tradeGridState.cartItem)?
     '<p class="tg-help">선택한 물품을 놓을 빈칸을 누르거나 방향키로 이동하세요.</p>':'');
 }
@@ -78,7 +78,7 @@ function tradeWarehouse(trader) {
   return '<section class="tg-warehouse tg-pane" data-trade-pane="stash" tabindex="-1">'+tradePaneHead('stash','내 창고',cols+'열 × '+rows+'행')+
     '<div class="tg-subhead"><span>점유 '+occupied+' / '+cols*rows+'칸</span><b>'+money(wallet)+'</b></div>'+
     (marketUI.mode==='sell'&&tradeGridState.saleUid?tradeSelectedUnit(trader,true):'')+
-    cashCompartmentMarkup()+tradeBoard('stash',tiles,cols,rows,'',cells)+'</section>';
+    tradeBoard('stash',tiles,cols,rows,'',cells)+cashCompartmentMarkup()+'</section>';
 }
 function saleQuantityWithSelection(unit, traderId) {
   const selling = new Set(tradeSaleDraft(traderId).map(row => row.uid));
@@ -114,7 +114,7 @@ function tradeSelectedUnit(trader,compact=false) {
 }
 function tradeIntakePanel(trader) {
   const standing=traderStanding(trader.id);
-  return '<section class="tg-intake tg-stock tg-pane" data-trade-pane="stock" tabindex="-1">'+tradePaneHead('stock','매입 기준',trader.name)+
+  return '<section class="tg-intake tg-stock tg-pane" data-trade-pane="stock" tabindex="-1">'+tradePaneHead('stock','상인 진열대',trader.name)+tradeStockGrid(marketGoods(trader.id,'buy'))+
     '<div class="tg-buyer"><div>'+marketPortrait(trader)+'</div><section><small>'+esc(trader.role)+'</small><h3>'+esc(trader.name)+'</h3><p>우호도 '+standing.tier+'단계</p></section></div>'+
     '<p class="tg-accept-head">매입 품목</p><div class="tg-categories">'+trader.categories.map(category=>'<span>'+esc(category)+'</span>').join('')+'</div>'+
     tradeSelectedUnit(trader)+'</section>';
@@ -143,7 +143,7 @@ function tradeSalePanel(trader) {
       '<button class="tg-minor" data-tg="sell-remove" data-uid="'+esc(unit.uid)+'" aria-label="'+esc(caseDisplayName(unit))+' 판매대에서 제외">제외</button></li>';
   }).join('');
   return '<section class="tg-transaction tg-pane" data-trade-pane="order" tabindex="-1">'+tradePaneHead('sale','판매대',draft.length+'개')+
-    tradeBoard('sale',board,6,tradeGridRows(tiles,4,true),board?'':'내 창고 물품을 여기에 놓으세요')+
+    tradeBoard('sale',board,6,tradeGridRows(tiles,8,true),board?'':'내 창고 물품을 여기에 놓으세요')+
     (draft.length?'<ul class="tg-sale-lines">'+lines+'</ul>':'')+
     '<div class="tg-settle"><dl class="mc-sums"><div class="mc-grand"><dt>판매 합계</dt><dd data-sale-total>'+money(quote.total||0)+'</dd></div>'+
     '<div><dt>정산 후 잔액</dt><dd data-sale-balance>'+money(quote.after??wallet)+'</dd></div></dl>'+

@@ -50,7 +50,7 @@ function marketShelf(trader,ids){
     : '<p class="mk-unlock-note"><strong>우호도 '+standing.tier+'단계</strong><span>모든 상품 개방</span></p>';
   const opened=standing.tier>=2?'<button type="button" data-market="unlocks" data-trader="'+trader.id+'">'+standing.tier+'단계 개방 상품·의뢰 보기</button>':'';
   return '<section class="mk-shelf tg-stock" data-trade-pane="stock" tabindex="-1">'+tradePaneHead('stock','상인 진열대','구매 가능 '+ids.length+'종')+
-    tradeStockGrid(ids)+marketCheckout(trader)+note+opened+'</section>';
+    tradeStockGrid(ids)+note+opened+'</section>';
 }
 function marketReceiptView(receipt){
   return '<section class="mk-checkout mk-receipt" aria-label="거래 결과"><div class="mk-pane-head"><h2>거래 내역</h2></div>'+
@@ -88,7 +88,7 @@ function marketView(){
   const mode=marketUI.mode,standing=traderStanding(trader.id);
   const stock=mode==='sell'?tradeIntakePanel(trader):mode==='barter'?tradeBarterStock(trader):marketShelf(trader,ids);
   const transaction=mode==='sell'?tradeSalePanel(trader):mode==='barter'?tradeBarterOrder(trader):marketCartPanel(trader,cart);
-  return '<div class="mk-screen tg-screen" data-mode="'+mode+'"><header class="mk-head"><h1>벙커 상점</h1>'+marketWorkspaceTabs(false)+
+  return '<div class="mk-screen tg-screen tg-counter" data-mode="'+mode+'"><header class="mk-head"><h1>벙커 상점</h1>'+marketWorkspaceTabs(false)+
     '<div class="mc-head-actions">'+marketCartJump(trader.id,cart)+'<button data-page="stash">벙커 창고 ↗</button></div></header>'+
     marketTraderList()+lock+'<div class="tg-toolbar">'+marketModeBar()+'<div class="tg-standing"><strong>'+esc(trader.name)+'</strong><span>우호도 '+standing.tier+'단계 · '+standing.points+'점</span></div></div>'+
     (mode==='buy'&&objectivePin&&!raid?procurementPanel(trader.id):'')+tradePaneLinks(mode)+'<div class="tg-workspace">'+stock+transaction+tradeWarehouse(trader)+'</div></div>';
@@ -117,7 +117,8 @@ function handleMarketUI(d){
       tradeGridState.notice='';tradeGridState.saleUid=null;tradeGridState.cartItem=null;
       marketUI.mode=d.mode;marketUI.item=null;marketResetOrder();break;
     case 'item':
-      if(!ids.includes(d.id))return;
+      if(marketUI.mode==='sell'&&marketGoods(trader.id,'buy').includes(d.id))marketUI.mode='buy';
+      else if(!ids.includes(d.id))return;
       marketUI.item=d.id;marketResetOrder();break;
     case 'quantity':{
       if(!marketUI.item||marketUI.receipt||!['-1','1'].includes(String(d.step)))return;
